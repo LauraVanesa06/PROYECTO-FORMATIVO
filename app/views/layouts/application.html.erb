@@ -22,38 +22,31 @@
     <%= javascript_importmap_tags %>
   </head>
 
-<body>
-  <main>
-    <header>
-      <h1>header</h1>
-    </header>
-    <nav>
-      <h3>nav</h3>
-    </nav>
-    <section id="main">
-      <aside>
-        <h1>aside</h1>
-        <%= link_to "cars1", cars1_path, class: "btn btn-primary" %>
-        <%= link_to "cars2", cars2_path, class: "btn btn-primary" %>
-        <%= link_to "home", welcome_path, class: "btn btn-primary" %>
+  <body>
+    <aside>
+      <h2>Menú</h2>
+      <nav>
+        <ul>
+          <li><span class="icono">🏠</span><span class="texto"><%= link_to "home", welcome_path%></span></li>
+          <li><span class="icono">🏍</span><span class="texto"><%= link_to "cars1", cars1_path%></span></li>
+          <li><span class="icono">🚗</span><span class="texto"><%= link_to "cars2", cars2_path%></span></li>
+          <li><a href="#"><span class="icono">📞</span><span class="texto">Contacto</span></a></li>
+        </ul>
+      </nav>
+    </aside>
 
+    <header>
+        <h1>Título de la Página</h1>
         <p class="notice"><%= notice %></p>
         <p class="alert"><%= alert %></p>
+    </header>
 
-      </aside>
-      <section id="content">
+    <main>
+      <%= yield %>
+    </main>
 
-
-        
-          <%= yield %>
-        
-      </section>
-    </section>
     <footer>
-      <h1>footer</h1>
+      <p>Pie de página</p>
     </footer>
-  </main>
-</body>
-  
-
+  </body>
 </html>
