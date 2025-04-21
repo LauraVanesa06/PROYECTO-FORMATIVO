@@ -1,67 +1,10 @@
-
-main{
-    border: 1px solid black;
-    margin: auto;
-    width: 1100px;
-    height: 700px;
-}
-
-header{
-    border: 1px solid black;;
-    height: 100px;
-    display: flex;
-    justify-content: center;
-}
-
-nav{
-    border: 1px solid black;
-    height: 50px;
-    display: flex;
-    justify-content: center;
-}
-
-aside{
-    border: 1px solid black;
-    height: 500px;
-    width: 300px;
-    text-align: center;
-}
-
-#main{
-    display: flex;
-    border: 1px solid black;
-    height: 500px;
-    display: flex;
-    justify-content: center;
-}
-
-#content{
-    border: 1px solid black;
-    height: 500px;
-    width: 800px;
-    text-align: center;
-}
-
-#people{
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    flex-direction: column;
-}
-
-.person{
-    align-items: center;
-}
-
-
-.title{
-    text-align: center;
-    margin: 20px;
-}
-
-footer{
-    border: 1px solid black;
-    height: 50px;
-    display: flex;
-    justify-content: center;
-}
+/*
+ * This is a manifest file that'll be compiled into application.css.
+ *
+ * With Propshaft, assets are served efficiently without preprocessing steps. You can still include
+ * application-wide styles in this file, but keep in mind that CSS precedence will follow the standard
+ * cascading order, meaning styles declared later in the document or manifest will override earlier ones,
+ * depending on specificity.
+ *
+ * Consider organizing styles into separate files for maintainability.
+ */

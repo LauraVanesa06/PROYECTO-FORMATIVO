@@ -22,38 +22,7 @@
     <%= javascript_importmap_tags %>
   </head>
 
-<body>
-  <main>
-    <header>
-      <h1>header</h1>
-    </header>
-    <nav>
-      <h3>nav</h3>
-    </nav>
-    <section id="main">
-      <aside>
-        <h1>aside</h1>
-        <%= link_to "cars1", cars1_path, class: "btn btn-primary" %>
-        <%= link_to "cars2", cars2_path, class: "btn btn-primary" %>
-        <%= link_to "home", welcome_path, class: "btn btn-primary" %>
-
-        <p class="notice"><%= notice %></p>
-        <p class="alert"><%= alert %></p>
-
-      </aside>
-      <section id="content">
-
-
-        
-          <%= yield %>
-        
-      </section>
-    </section>
-    <footer>
-      <h1>footer</h1>
-    </footer>
-  </main>
-</body>
-  
-
+  <body>
+    <%= yield %>
+  </body>
 </html>
