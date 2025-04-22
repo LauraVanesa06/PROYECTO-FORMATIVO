@@ -1,0 +1,9 @@
+body{
+    background-color: black;
+    display: flex;
+    justify-content: center;
+}
+header{
+    font-size: 30px;
+    color: white;
+}
