@@ -1,5 +1,0 @@
-<% if user_signed_in? %>
-    <h1>Bienvenidos al Himalaya</h1>
-    <h1>Bienvenido <%= current_user.email %></h1>
-    <%= link_to "Salir", destroy_user_session_path, method: :delete, class: "btn btn-primary" %>
-<% end %>
