@@ -20,7 +20,8 @@
 
   nav {
     background-color: #e2714d;
-    padding: 15px 0;
+    padding: 15px 0px;
+    padding-left: 90px;
   }
 
   nav ul {
@@ -54,6 +55,29 @@
     padding-top: 90px;
     text-align: center;
     font-size: 30px;
+  }
+
+  .container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 40px;
+  }
+
+  .menu {
+    display: flex;
+    gap: 30px;
+    margin: 0 auto;
+  }
+  
+  .logout {
+    color: #fffaf4;
+    font-weight: bold;
+    text-decoration: none;
+  }
+  
+  .logout:hover {
+    color: #ffcc9c;
   }
 
   .card {
