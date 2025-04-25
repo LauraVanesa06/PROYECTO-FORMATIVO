@@ -23,10 +23,35 @@
   </head>
 
   <body>
-  
-    <p class="notice"><%= notice %></p>
-    <p class="alert"><%= alert %></p>
+  <main>
+    <header>
+      <h1>header</h1>
+    </header>
+    <nav>
+      <h3>nav</h3>
+    </nav>
+    <section id="main">
+      <aside>
+        <h1>aside</h1>
+       
+        <%= link_to "home", index_path, class: "btn btn-primary" %>
 
-    <%= yield %>
-  </body>
+        <p class="notice"><%= notice %></p>
+        <p class="alert"><%= alert %></p>
+
+      </aside>
+      <section id="content">
+
+
+        
+          <%= yield %>
+        
+      </section>
+    </section>
+    <footer>
+      <h1>footer</h1>
+    </footer>
+  </main>
+</body>
+  
 </html>
