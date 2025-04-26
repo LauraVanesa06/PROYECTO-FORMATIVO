@@ -20,6 +20,7 @@
     <%# Includes all stylesheet files in app/assets/stylesheets %>
     <%= stylesheet_link_tag :app, "data-turbo-track": "reload" %>
     <%= javascript_importmap_tags %>
+    
   </head>
 
   <body>
@@ -29,12 +30,24 @@
     </header>
     <nav>
       <h3>nav</h3>
+      <% if user_signed_in? %>
+      Bienvenido, <%= current_user.email %> |
+    
+      <%= button_to "Cerrar sesión", destroy_user_session_path, method: :delete, form: { data: { turbo: true } }, class: "btn btn-danger", style: "background: none; border: none; padding: 0; color: red; cursor: pointer;" %>
+    
+    <% else %>
+      <%= link_to 'Iniciar sesión', new_user_session_path %>
+    <% end %>
+    
     </nav>
     <section id="main">
       <aside>
         <h1>aside</h1>
        
-        <%= link_to "home", index_path, class: "btn btn-primary" %>
+        <%= link_to "Home", authenticated_root_path, class: "btn btn-primary" %>
+
+
+
 
         <p class="notice"><%= notice %></p>
         <p class="alert"><%= alert %></p>
