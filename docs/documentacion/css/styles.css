@@ -6734,7 +6734,7 @@ textarea.form-control-lg {
   color: #dc3545 !important;
 }
 .link-danger:hover, .link-danger:focus {
-  color: #b02a37 !important;
+  color: #b02a37 !important;text-lg-start
 }
 
 .link-light {
@@ -6745,10 +6745,10 @@ textarea.form-control-lg {
 }
 
 .link-dark {
-  color: #212529 !important;
+  color: gray !important;
 }
 .link-dark:hover, .link-dark:focus {
-  color: #1a1e21 !important;
+  color: lightgray !important;
 }
 
 .ratio {
@@ -11309,7 +11309,12 @@ section#contact form#contactForm :-ms-input-placeholder {
   color: #ced4da;
 }
 
+#div-footer {
+  color: gray;
+}
+
 .footer {
+  background-color: #000;
   text-align: center;
   font-size: 0.9rem;
   font-family: "Montserrat", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
