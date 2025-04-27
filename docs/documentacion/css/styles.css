@@ -10959,8 +10959,9 @@ header.masthead .masthead-heading {
   font-weight: 700;
   line-height: 3.25rem;
   margin-bottom: 2rem;
-  word-wrap: break-word;
-  
+  overflow-wrap: break-word;
+  hyphens: auto;
+
   text-shadow:
     -1.5px -1.5px 0 grey,
      1.5px -1.5px 0 grey,
@@ -10986,6 +10987,8 @@ header.masthead .masthead-heading {
     font-weight: 700;
     line-height: 4.5rem;
     margin-bottom: 4rem;
+    overflow-wrap: break-word;
+    hyphens: auto;
   }
 }
 #portfolio .portfolio-item {
