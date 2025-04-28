@@ -1,4 +1,3 @@
 #cerrar{
-display: flex;
-float: left;
+display: grid;
 } 
