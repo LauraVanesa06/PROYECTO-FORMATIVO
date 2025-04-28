@@ -29,14 +29,14 @@
       <h1>header</h1>
     </header>
     <nav>
-      <h3>nav</h3>
+
       <% if user_signed_in? %>
       Bienvenido, <%= current_user.email %> |
     
-      <%= button_to "Cerrar sesión", destroy_user_session_path, method: :delete, form: { data: { turbo: true } }, class: "btn btn-danger", style: "background: none; border: none; padding: 0; color: red; cursor: pointer;" %>
+      <%= button_to "Cerrar sesión", destroy_user_session_path, method: :delete, form: { data: { turbo: true } }, id: "cerrar", class: "btn btn-outline-danger" %>
     
     <% else %>
-      <%= link_to 'Iniciar sesión', new_user_session_path %>
+      <%= link_to 'Iniciar sesión', new_user_session_path, class: "btn btn-outline-danger" %>
     <% end %>
     
     </nav>
@@ -44,10 +44,7 @@
       <aside>
         <h1>aside</h1>
        
-        <%= link_to "Home", authenticated_root_path, class: "btn btn-primary" %>
-
-
-
+        <%= link_to "Home", authenticated_root_path, class: "btn btn-outline-danger" %>
 
         <p class="notice"><%= notice %></p>
         <p class="alert"><%= alert %></p>
