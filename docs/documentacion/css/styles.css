@@ -6731,7 +6731,7 @@ textarea.form-control-lg {
   color: #dc3545 !important;
 }
 .link-danger:hover, .link-danger:focus {
-  color: #b02a37 !important;text-lg-start
+  color: #b02a37 !important;
 }
 
 .link-light {
@@ -10907,7 +10907,6 @@ p {
 @media (min-width: 992px) {
   
   #mainNav .navbar-brand {
-    font-size: 1.5em;
     transition: font-size 0.3s ease-in-out;
   }
   #mainNav .navbar-brand img {
