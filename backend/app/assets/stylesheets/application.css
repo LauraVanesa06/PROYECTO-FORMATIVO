@@ -47,7 +47,7 @@ main {
   
   /* LOGIN */
   .base {
-    background-color: #7964e1; 
+    background-color: #314559; 
     border-radius: 8px;
     width: 700px;
     height: 600px;
@@ -91,10 +91,23 @@ main {
   }
   
   #link {
-    color: #b84030;
+    color: white;
   }
   
   .field {
     margin-bottom: 10px;
   }
   
+hr{
+        border: none;
+        border-top: 1px solid #ff8000; 
+        width: 300px;
+    }
+
+    .base2{
+        text-align: center;   
+
+    }
+    h3{
+        color: white;
+    }

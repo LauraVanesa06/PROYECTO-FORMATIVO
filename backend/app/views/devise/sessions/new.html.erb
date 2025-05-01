@@ -26,13 +26,14 @@
       </div>
       <% end %>
   </div>
-      
-      <h2> BIENVENIDO </h2>
-      <p> -------------------------------------------- </p>
+  <div class="base2 text-center mt-3">
+      <h3> BIENVENIDO </h3>
+      <hr> </hr>
       <div class="text-center mt-3">
       <%= render "devise/shared/links" %>
       </div>
-      <p> -------------------------------------------- </p>
-    </div>  
+      <hr> </hr> 
+      <%= link_to "Regresar", authenticated_root_path, class:"btn btn-outline-light" %>
+  </div>  
 
 </div>
