@@ -52,8 +52,6 @@ main {
     width: 700px;
     height: 600px;
     margin: 100px auto;
-    display: flex;
-    justify-content: flex-start;
     padding-left: 40px;
     box-shadow: 0 6px 12px rgba(0,0,0,0.3);
   }
@@ -104,10 +102,7 @@ hr{
         width: 300px;
     }
 
-    .base2{
-        text-align: center;   
 
-    }
     h3{
         color: white;
     }
