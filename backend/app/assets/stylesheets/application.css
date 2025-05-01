@@ -49,20 +49,26 @@ footer{
 /*
 login
 */
-#cerrar{
-    display: grid;
-    } 
+
     #color label{
         color: #fbfbfb;
     }
     .login-container {
         background-color: #e1a464;
-        padding: 2rem;
+        padding: 1rem;
         border-radius: 8px;
         width: 300px;
         margin: 100px auto;
-        color: white;
+        color: rgb(255, 255, 255);
         box-shadow: 0 4px 10px rgba(0, 0, 0, 0.4);
+    }
+    .base{
+        background-color: #7964e1;
+      border-radius: 8px;
+        height: 500px;
+        width: 700px;
+        margin: 100px auto;
+
     }
     .form-control {
         width: 100%;
@@ -87,5 +93,8 @@ login
       #link{
         color: #b84030;
       }
-    
+    .form{
+        justify-self: flex-start;   
+        padding: 6px 6px 6px;  
+    }
       
