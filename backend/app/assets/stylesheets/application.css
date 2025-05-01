@@ -1,19 +1,22 @@
-
+/*
+MAQUETADO
+*/
 main{
-    border: 1px solid black;
-    margin: auto;
+    margin: 0 auto;
     width: 1100px;
-    height: 700px;
-}
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;}
 
 header{
-    border: 1px solid black;;
+    border: 1px solid black;
     height: 100px;
     display: flex;
     justify-content: center;
 }
 
 nav{
+    background-color: #ffe4b5;
     border: 1px solid black;
     height: 50px;
     display: flex;
@@ -21,23 +24,68 @@ nav{
 }
 
 aside{
+    background-color: #ffe4b5;
     border: 1px solid black;
-    height: 500px;
+    height: 100%;
     width: 300px;
     text-align: center;
 }
 
 #main{
     display: flex;
-    border: 1px solid black;
-    height: 500px;
-    display: flex;
+    flex: 1;
+   /* border: 1px solid black;*/
     justify-content: center;
 }
 
 #content{
-    border: 1px solid black;
-    height: 500px;
     width: 800px;
     text-align: center;
 }
+footer{
+    width: 1100px;
+}
+
+/*
+login
+*/
+#cerrar{
+    display: grid;
+    } 
+    #color label{
+        color: #fbfbfb;
+    }
+    .login-container {
+        background-color: #e1a464;
+        padding: 2rem;
+        border-radius: 8px;
+        width: 300px;
+        margin: 100px auto;
+        color: white;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.4);
+    }
+    .form-control {
+        width: 100%;
+        padding: 10px;
+        border: none;
+        border-radius: 5px;
+        background-color: #ecf0f1;
+      }
+    
+      .btn-login {
+        background-color: #bdc3c7;
+        color: #2c3e50;
+        padding: 10px 20px;
+        border: none;
+        border-radius: 5px;
+        width: 100%;
+        cursor: pointer;
+      }
+    
+ 
+    
+      #link{
+        color: #b84030;
+      }
+    
+      
