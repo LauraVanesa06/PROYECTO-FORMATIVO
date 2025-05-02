@@ -1,26 +1,43 @@
-<h2>Inicio de sesion</h2>
-
-<%= form_for(resource, as: resource_name, url: session_path(resource_name)) do |f| %>
-  <div class="field">
-    <%= f.label :email %><br />
-    <%= f.email_field :email, autofocus: true, autocomplete: "email" %>
-  </div>
-
-  <div class="field">
-    <%= f.label :password %><br />
-    <%= f.password_field :password, autocomplete: "current-password" %>
-  </div>
-
-  <% if devise_mapping.rememberable? %>
-    <div class="field">
-      <%= f.check_box :remember_me %>
-      <%= f.label :remember_me %>
+<div class="base d-flex flex-row align-items-center justify-content-start flex-wrap">
+  
+  <div class="login-container">
+    <%= form_for(resource, as: resource_name, url: session_path(resource_name)) do |f| %>
+        
+    <div class="field" >
+      <%= f.label :Usuario  %><br />
+      <%= f.email_field :email, autofocus: true, autocomplete: "email", class: "form-control" %>
     </div>
-  <% end %>
 
-  <div class="actions">
-    <%= f.submit "Log in" %>
+    <div class="field mt-3">
+      <%= f.label :Contraseña %><br />
+      <%= f.password_field :password, autocomplete: "current-password", class: "form-control" %>
+    </div>
+
+    <% if devise_mapping.rememberable? %>
+  
+      <div class="field mt-3">
+        <%= f.check_box :remember_me %>
+        <%= f.label :remember_me, "Recordarme" %>
+      </div>
+    <% end %>
+
+    <div class="actions mt-4">
+      <%= f.submit "Log in", class:"btn-login" %>
+    </div>
+  
+    <% end %>
   </div>
-<% end %>
+  
+  <div class="base2 text-center mt-3">
+    <h3> BIENVENIDO </h3>
+    <hr> </hr>
+    
+    <div class="text-center mt-3">
+      <%= render "devise/shared/links" %>
+    </div>
+    
+    <hr> </hr> 
+    <%= link_to "Regresar", authenticated_root_path, class:"btn btn-outline-light" %>
+  </div>  
 
-<%= render "devise/shared/links" %>
+</div>

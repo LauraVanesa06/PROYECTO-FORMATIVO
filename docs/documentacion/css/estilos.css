@@ -1,0 +1,11 @@
+.posicion{
+    margin: 0 60px;
+}
+.title{
+    margin-left: 40%;
+}
+.i:hover{
+    border: solid 2px rgb(201, 197, 197);
+    border-radius: 50%;
+    background-color: #6c747c ;
+}
