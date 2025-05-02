@@ -1,0 +1,128 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Segoe UI', sans-serif;
+  }
+
+  body {
+    background-color: #fff8f2;
+  }
+
+  header {
+    background-color: #b84030;
+    color: white;
+    padding: 20px;
+    text-align: center;
+    font-size: 30px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  }
+
+  nav {
+    background-color: #e2714d;
+    padding: 15px 0px;
+    padding-left: 90px;
+  }
+
+  nav ul {
+    list-style: none;
+    display: flex;
+    justify-content: center;
+    gap: 30px;
+  }
+
+  nav ul li a {
+    color: #fffaf4;
+    text-decoration: none;
+    font-weight: bold;
+    font-size: 16px;
+    transition: color 0.3s;
+  }
+
+  nav ul li a:hover {
+    color: #ffcc9c;
+  }
+
+  section {
+    height: 280px;
+    padding: 50px 20px;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 25px;
+  }
+
+  .welcome{
+    padding-top: 90px;
+    text-align: center;
+    font-size: 30px;
+  }
+
+  .container-header{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    padding: 10px;
+    background-color: #b84030;
+    color: white;
+  }
+
+  .container-nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 40px;
+  }
+
+  .img-empresa{
+    position: absolute;
+    left: 20px;
+  }
+
+  .menu {
+    display: flex;
+    gap: 30px;
+    margin: 0 auto;
+  }
+  
+  .logout {
+    color: #fffaf4;
+    font-weight: bold;
+    text-decoration: none;
+  }
+  
+  .logout:hover {
+    color: #ffcc9c;
+  }
+
+  .card {
+    background: #fff4ec;
+    padding: 50px;
+    border-radius: 10px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    text-align: center;
+    transition: transform 0.2s;
+  }
+
+  .card:hover {
+    transform: translateY(-4px);
+  }
+
+  .card h3 {
+    color: #b84030;
+    margin-bottom: 10px;
+  }
+
+  .card p {
+    font-size: 1.4rem;
+    color: #8e3e2d;
+  }
+
+  footer {
+    background-color: #b84030;
+    color: white;
+    text-align: center;
+    padding: 15px;
+    margin-top: 30px;
+    font-size: 0.95rem;
+  }
