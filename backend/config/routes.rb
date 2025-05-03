@@ -8,6 +8,9 @@ Rails.application.routes.draw do
   get "up" => "rails/health#show", as: :rails_health_check
   get "dashboard" => "dashboard#index"
   root "home#index", as: :authenticated_root
+  get 'productos', to: 'productos#productos'
+  get 'contactos', to: 'contactos#contacto'
+
     # Otras rutas que tengas
   
   
