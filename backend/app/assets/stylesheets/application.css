@@ -46,10 +46,15 @@ main {
   footer {
     max-width: 1100px;
     width: 100%;   }
+
+  
+
+  
   
   /* LOGIN */
   .base {
-    background-color: #314559; 
+   /* background-color: #314559; */
+   background-color: #e1a464;
     border-radius: 8px;
     width: 700px;
     height: 600px;
@@ -62,7 +67,7 @@ main {
   }
   
   .login-container {
-    background-color: #e1a464; 
+    background-color: #ffe374; 
     padding: 2rem;
     border-radius: 8px;
     width: 300px;
@@ -135,6 +140,7 @@ hr{
 
 }
 
+
 /* estilos del header*/
 .custom-header {
   height: 130px;
@@ -186,4 +192,36 @@ hr{
                -2px  2px 0 black,
                 2px -2px 0 black,
                 2px  2px 0 black;
+=======
+
+/* estilos del header*/
+.custom-header {
+  display: flex;
+  align-items: center;
+  background-color: #fef3c7; 
+  border-bottom: 2px solid black;
+  padding: 20px;
+  font-family: Arial, sans-serif;
+}
+
+.header-left {
+  font-size: 40px;
+  margin-right: 20px;
+}
+
+.header-text h1 {
+  font-size: 24px;
+  margin: 0;
+  color: red;
+  font-weight: bold;
+  text-shadow: 1px 1px black;
+}
+
+.header-text h2 {
+  font-size: 36px;
+  margin: 0;
+  color: yellow;
+  font-weight: bold;
+  text-shadow: 2px 2px black;
+
 }
