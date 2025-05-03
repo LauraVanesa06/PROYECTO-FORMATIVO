@@ -22,6 +22,7 @@ main {
     height: 50px;
     display: flex;
     justify-content: center;
+
   }
   
   aside {
@@ -45,7 +46,13 @@ main {
   
   footer {
     max-width: 1100px;
-    width: 100%;   }
+    width: 100%;   
+    background-color: #F5E1C3; /* Beige, igual al fondo de la página */
+    color: #A6271E; /* Texto en rojo oscuro */
+    padding: 20px;
+    text-align: center;
+    font-size: 20px;
+  }
 
   
 
@@ -189,7 +196,7 @@ hr{
   transform: scale(2, 2.2);
   transform-origin: left center;
   text-shadow: -2px -2px 0 black,
-               -2px  2px 0 black,
+              -2px  2px 0 black,
                 2px -2px 0 black,
                 2px  2px 0 black;
 }
@@ -224,4 +231,11 @@ hr{
   font-weight: bold;
   text-shadow: 2px 2px black;
 
+}
+.login-icon {
+  width: 32px;
+  height: 32px;
+  filter: invert(10%) sepia(100%) saturate(2000%) hue-rotate(-30deg) brightness(85%) contrast(130%);
+  cursor: pointer;
+  margin-bottom: 15%;
 }
