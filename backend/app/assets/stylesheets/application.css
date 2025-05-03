@@ -143,6 +143,59 @@ hr{
 
 /* estilos del header*/
 .custom-header {
+  height: 130px;
+  background-color: #ffefa6; 
+  border-bottom: 2px solid black;
+}
+
+.header-icon, .header-icon2{
+  display: flex;
+  align-items: center;
+}
+
+.h-icon{
+  width: 50px;
+  height: 95px;
+  transform: rotate(7deg);
+  transform-origin: center;
+  margin-right: 4px;
+}
+
+.h-icon2{
+  width: 200px;
+  height: 95px;
+}
+
+.header-text{
+  width: 360px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.text1-header{
+  color: red;
+  font-size: 24px;
+  font-weight: bold;
+  font-style: italic;
+  transform: scale(1.7, 1.2);
+  transform-origin: left center;
+}
+
+.text2-header{
+  color: yellow;
+  font-size: 30px;
+  font-family: 'Stencil Regular';
+  transform: scale(2, 2.2);
+  transform-origin: left center;
+  text-shadow: -2px -2px 0 black,
+               -2px  2px 0 black,
+                2px -2px 0 black,
+                2px  2px 0 black;
+=======
+
+/* estilos del header*/
+.custom-header {
   display: flex;
   align-items: center;
   background-color: #fef3c7; 
@@ -170,4 +223,5 @@ hr{
   color: yellow;
   font-weight: bold;
   text-shadow: 2px 2px black;
+
 }
