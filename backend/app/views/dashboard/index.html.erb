@@ -21,12 +21,16 @@
     <div class="container-nav">
       <ul class="menu">
         <li><a href="#">Inicio</a></li>
-        <li><a href="#">Inventario</a></li>
+        <li><a href="productos">Inventario</a></li>
         <li><a href="#">Ventas</a></li>
         <li><a href="#">Proveedores</a></li>
         <li><a href="#">Clientes</a></li>
       </ul>
-      <a href="" class="logout">Cerrar sesión</a>
+      <div>
+          <% if user_signed_in? %>
+            <%= button_to "Cerrar sesión", destroy_user_session_path, method: :delete, form: { data: { turbo: true } }, id: "cerrar", class: "btn btn-outline-danger btn-sm"%>
+          <% end %>
+        </div>
     </div>
   </nav>
 
