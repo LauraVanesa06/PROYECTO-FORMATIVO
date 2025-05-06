@@ -28,7 +28,7 @@
       </ul>
       <div>
           <% if user_signed_in? %>
-            <%= button_to "Cerrar sesión", destroy_user_session_path, method: :delete, form: { data: { turbo: true } }, id: "cerrar", class: "btn btn-outline-danger btn-sm"%>
+            <%= button_to "Cerrar sesión", destroy_user_session_path, method: :delete, form: { data: { turbo: true } }, id: "cerrar", class: "logout"%>
           <% end %>
         </div>
     </div>
