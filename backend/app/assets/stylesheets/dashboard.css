@@ -89,6 +89,9 @@
     color: #fffaf4;
     font-weight: bold;
     text-decoration: none;
+    border: none;
+    background: none;
+    font-size: 14px;
   }
   
   .logout:hover {
