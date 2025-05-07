@@ -1,0 +1,14 @@
+.section-container{
+    border: 1px solid black;
+    display: flex;
+    flex-direction: row;
+}
+.section-product{
+    border: 1px solid blue;
+    height: auto;
+    width: 75%;
+}
+.categorias{
+    border: 1px solid purple;
+    width: 25%;
+}
