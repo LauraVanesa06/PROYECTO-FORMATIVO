@@ -159,6 +159,12 @@ class HomeScreen extends StatelessWidget {
               child: Text('Incrementar'),
             ),
             SizedBox(height: 20),
+            // Botón para incrementar el contador
+            ElevatedButton(
+              onPressed: () => context.read<CounterCubit>().descrementar(), // Incrementar contador
+              child: Text('descrementar'),
+            ),
+            SizedBox(height: 20),
             // Botón para resetear el contador
             ElevatedButton(
               onPressed: () => context.read<CounterCubit>().reset(), // Resetear contador
