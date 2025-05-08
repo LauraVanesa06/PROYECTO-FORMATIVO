@@ -170,7 +170,189 @@ main {
 }
 
 
-@media (max-width: 768px) {
+.grupo {
+  margin-top: 40px;
+}
+
+.slider-wrapper {
+  position: relative;
+  overflow: hidden;
+  padding: 0 60px;
+}
+.slider-container { 
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  align-items: center;
+  margin: 10px 0;
+  gap: 20px;
+  overflow-x: auto;
+  scroll-behavior: smooth;
+  scrollbar-width: none;
+}
+.slider-container::-webkit-scrollbar {
+  display: none;
+}
+
+.botonL, .botonR {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 2;
+  background-color: #ffeda7;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: none;
+}
+
+.botonL { left: 10px; }
+.botonR { right: 10px; }
+
+.carta {
+  min-width: 200px;
+  flex: 0 0 auto;
+  background: white;
+  border-radius: 15px;
+  text-align: center;
+  padding: 10px;
+  border: 1px solid #ccc;
+  box-shadow: 0 0 10px rgba(0,0,0,0.1);
+}
+
+.carta h4 {
+  font-size: 20px;
+  margin: 10px 0;
+}
+
+.carta img {
+  object-fit: cover;
+  width: 300px;
+  height: 200px;
+  border-radius: 5px;
+}
+
+.contact-container {
+  display: flex;
+  flex-wrap: nowrap;
+  align-items: stretch;
+  gap: 15px;
+  padding: 40px 20px;
+  background-color: #fef3c7;
+  box-sizing: border-box;
+}
+.contact-image,
+.contact-info,
+.form-container {
+  flex: 1 1 0;
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+}
+
+.contact-info {
+  background-color: #f3d7a1;
+  color: #8b0000;
+  padding: 30px;
+  border-radius: 10px;
+  box-shadow: 4px 4px 6px rgba(0, 0, 0, 0.2);
+  justify-content: center;
+}
+
+.contact-info h2,
+.contact-info h1 {
+  margin-top: 0;
+}
+
+.contact-info a {
+  color: #8b0000;
+  text-decoration: underline;
+}
+
+.form-container {
+  background-color: #ffffff;
+  padding: 30px;
+  border-radius: 10px;
+  border: 2px solid #8b0000;
+  box-shadow: 4px 4px 6px rgba(0, 0, 0, 0.2);
+}
+
+.form-container h2 {
+  color: #8b0000;
+  margin-top: 0;
+}
+
+form {
+  display: flex;
+  flex-direction: column;
+}
+
+label {
+  margin-top: 10px;
+  font-weight: bold;
+  color: #000;
+}
+
+input,
+textarea {
+  padding: 10px;
+  margin-top: 5px;
+  border-radius: 5px;
+  border: 1px solid #8b0000;
+  background-color: #fffdf5;
+  font-family: inherit;
+}
+
+textarea {
+  resize: vertical;
+}
+
+.submit-btn {
+  background-color: #8b0000;
+  color: #f3d7a1;
+  border: none;
+  padding: 10px;
+  margin-top: 20px;
+  border-radius: 5px;
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.submit-btn:hover {
+  background-color: #a30000;
+}
+
+.contact-image {
+  text-align: center;
+  
+}
+
+.contact-image img {
+  max-width: 100%;
+  height: auto;
+  border: 2px solid #8b0000;
+  border-radius: 10px;
+  box-shadow: 4px 4px 6px rgba(0, 0, 0, 0.2);
+}
+
+.home-container{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 10px;
+  text-align: center;
+}
+
+/* Tablet */
+@media (min-width: 376px) and (max-width:1023px){
+  .text1-header {font-size: 33px;}
+  .text2-header{font-size: 38px;}
+  .custom-header img{height: 80px;}
+  .h-icon2{display: none;}
+
   .base {
     width: 90%;
     height: auto;
@@ -187,7 +369,63 @@ main {
     text-align: center;
   }
 
-  .text1-header {font-size: 54px;}
-  .text2-header{font-size: 70px;}
-  .custom-header img{height: 102px;}
+  .contact-container {
+    flex-direction: column;
+    align-items: center;
+    padding: 20px;
+  }
+
+  .contact-info,
+  .form-container,
+  .contact-image {
+    width: 100%;
+    margin-bottom: 20px;
+  }
+
+  .form-container {
+    border-left: none;
+    border-top: 3px solid #8b0000;
+  }
+}
+
+/* Moviles */
+
+@media (max-width: 375px) {
+  .h-icon2{display: none;}
+  .text1-header {font-size: 33px;}
+  .text2-header{font-size: 38px;}
+  .custom-header img{height: 80px;}
+
+  .navbar a{
+    margin: 2px;
+  }
+
+  .login-iconn{
+    width: fit-content;
+    height: 30px;
+    margin: 0;
+    /* width: 30px; */
+  }
+  .navbar img{
+    height: 30px;
+    width: 30px;
+  }
+
+  .contact-container {
+    flex-direction: column;
+    align-items: center;
+    padding: 20px;
+  }
+
+  .contact-info,
+  .form-container,
+  .contact-image {
+    width: 100%;
+    margin-bottom: 20px;
+  }
+
+  .form-container {
+    border-left: none;
+    border-top: 3px solid #8b0000;
+  }
 }

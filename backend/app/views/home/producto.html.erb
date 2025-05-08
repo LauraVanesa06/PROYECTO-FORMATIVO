@@ -1,2 +1,68 @@
-<h1>Home#producto</h1>
-<p>Find me in app/views/home/producto.html.erb</p>
+<div class="product-container">
+    <div class="grupo">
+    <h2>Producto1</h2>
+    <div class="slider-wrapper">
+        <button class="botonL" onclick="moverSlider('slider-Prod1', -1)">←</button>
+        <div class="slider-container" id="slider-Prod1">
+            <div class="carta">
+                <%= image_tag "", alt: "Producto1" %>
+                <h4>Prod1</h4>
+            </div>
+            <div class="carta">
+                <%= image_tag "", alt: "Producto2" %>
+                <h4>Prod2</h4>
+            </div>
+            <div class="carta">
+                <%= image_tag "", alt: "Producto3" %>
+                <h4>Prod3</h4>
+            </div>
+            <div class="carta">
+                <%= image_tag "", alt: "Producto4" %>
+                <h4>Prod4</h4>
+            </div>
+            <div class="carta">
+                <%= image_tag "", alt: "Producto5" %>
+                <h4>Prod5</h4>
+            </div>
+            <div class="carta">
+                <%= image_tag "", alt: "Producto6" %>
+                <h4>Prod6</h4>
+            </div>
+            </div>
+        <button class="botonR" onclick="moverSlider('slider-Prod1', 1)">→</button>
+    </div>
+    </div>
+    <div class="grupo">
+    <h2>Producto2</h2>
+    <div class="slider-wrapper">
+        <button class="botonL" onclick="moverSlider('slider-Prod2', -1)">←</button>
+        <div class="slider-container" id="slider-Prod2">
+            <div class="carta">
+                <%= image_tag "", alt: "Producto1" %>
+                <h4>Prod1</h4>
+            </div>
+            <div class="carta">
+                <%= image_tag "", alt: "Producto2" %>
+                <h4>Prod2</h4>
+            </div>
+            <div class="carta">
+                <%= image_tag "", alt: "Producto3" %>
+                <h4>Prod3</h4>
+            </div>
+            <div class="carta">
+                <%= image_tag "", alt: "Producto4" %>
+                <h4>Prod4</h4>
+            </div>
+            <div class="carta">
+                <%= image_tag "", alt: "Producto5" %>
+                <h4>Prod5</h4>
+            </div>
+            <div class="carta">
+                <%= image_tag "", alt: "Producto6" %>
+                <h4>Prod6</h4>
+            </div>
+            </div>
+        <button class="botonR" onclick="moverSlider('slider-Prod2', 1)">→</button>
+    </div>
+    </div>
+</div>
