@@ -13,6 +13,8 @@ main {
   display: flex;
   flex-direction: column;
 }
+
+#content{flex: 1;}
 .custom-header{
   background-color: #fef3c7;
   display: flex; 
@@ -181,7 +183,6 @@ main {
   }
 
   .base2 {
-    margin-top: 20px;
     width: 100%;
     text-align: center;
   }
