@@ -13,12 +13,18 @@ Rails.application.routes.draw do
   get "clientes" => "dashboard#clientes"
 
 
+
   root "home#index", as: :authenticated_root
   get 'productos', to: 'productos#productos'
   get 'contactos', to: 'contactos#contacto'
 
     # Otras rutas que tengas
-  
+    #login
+ 
+    devise_scope :users do
+      get 'acceso', to: 'usuarios/sessions#custom_login', as: :custom_login
+    end
+      
   
 
   # Render dynamic PWA files from app/views/pwa/* (remember to link manifest in application.html.erb)
