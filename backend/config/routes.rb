@@ -14,8 +14,8 @@ Rails.application.routes.draw do
 
 
   root "home#index", as: :authenticated_root
-  get 'productos', to: 'productos#productos'
-  get 'contactos', to: 'contactos#contacto'
+  get 'productos', to: 'home#producto'
+  get 'contactos', to: 'home#contacto'
 
     # Otras rutas que tengas
   

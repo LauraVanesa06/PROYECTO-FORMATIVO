@@ -1,5 +1,11 @@
 class HomeController < ApplicationController
-    skip_before_action :authenticate_user!, onli: [:index]
-    def index
-    end
+  skip_before_action :authenticate_user!
+  def index
+  end
+
+  def producto
+  end
+
+  def contacto
+  end
 end
