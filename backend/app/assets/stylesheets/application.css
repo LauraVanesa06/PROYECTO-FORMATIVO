@@ -53,22 +53,22 @@ main {
 
   /* LOGIN */
 .base {
-  background-color: #FFF7F0; /* Fondo beige claro, igual que el dashboard */
-  border-radius: 12px;
+  background-color: #FFF7F0;
+  border-radius: 8px;
   width: 700px;
   height: auto;
-  margin: 100px auto;
-  padding: 40px;
+  margin: 200px auto;
+  padding-left: 40px;
   box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
   display: flex;
   gap: 2rem;
 }
 
 .login-container {
-  background-color: #FFF0E5; /* Fondo suave, derivado del fondo general */
+  background-color: #FFF0E5;
   padding: 2rem;
   border-radius: 8px;
-  width: 300px;
+  display: flex;
   color: #B63C2D;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
 }
@@ -113,7 +113,7 @@ h3, h4, h5 {
 }
 
 .base2 {
-  margin-left: 40px;
+  margin-left: 80px;
   padding-top: 30px;
 }
 .base2 h3{
@@ -139,6 +139,7 @@ hr {
   .login-container {
     width: 100%;
     max-width: 350px;
+    
   }
 
   .base2 {

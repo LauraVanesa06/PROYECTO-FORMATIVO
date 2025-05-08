@@ -1,6 +1,8 @@
 Rails.application.routes.draw do
   
-  devise_for :users
+  devise_for :users, controllers: {
+    sessions: 'usuarios/sessions'
+  }
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
 
   # Reveal health status on /up that returns 200 if the app boots with no exceptions, otherwise 500.
@@ -21,8 +23,8 @@ Rails.application.routes.draw do
     # Otras rutas que tengas
     #login
  
-    devise_scope :users do
-      get 'acceso', to: 'usuarios/sessions#custom_login', as: :custom_login
+    devise_scope :user do
+      get '/acceso', to: 'usuarios/sessions#new', as: :custom_login
     end
       
   

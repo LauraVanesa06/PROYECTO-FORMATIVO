@@ -2,18 +2,13 @@
 
 class Usuarios::SessionsController < Devise::SessionsController
   # before_action :configure_sign_in_params, only: [:create]
+layout 'custom_login'
 
-  def custom_login
-    render :new
-  end
-
-  private
-
-  def resolve_layout
-    action_name == "custom_login" ? "login" : "application"
-  end
-
- 
+def custom_login
+  self.resource = resource_class.new(sign_in_params)
+  clean_up_passwords(resource)
+  respond_with(resource, serialize_options(resource))
+end
   # POST /resource/sign_in
   # def create
   #   super
