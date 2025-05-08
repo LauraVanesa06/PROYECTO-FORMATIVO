@@ -6,6 +6,8 @@
   <title>Dashboard Ferretería</title>
   <%= stylesheet_link_tag "dashboard", media: "all" %>
   <%= stylesheet_link_tag "inventario", media: "all" %>
+  
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 </head>
 <body>
 
@@ -35,8 +37,66 @@
     </div>
   </nav>
   <section class="section-container">
-  <aside class="categorias">hola</aside>
-  <section class="section-product">mundo</section>
+  <aside class="categorias">
+    <div class="div-categ">Categorias:</div>
+    <ul>
+      <li class="li-categ"><a href="#">Herramientas</a></li>
+      <li class="li-categ"><a href="#">Tornillería y Fijaciones</a></li>
+      <li class="li-categ"><a href="#">Plomería</a></li>
+      <li class="li-categ"><a href="#">Electricidad</a></li>
+      <li class="li-categ"><a href="#">Construcción y Materiales</a></li>
+      <li class="li-categ"><a href="#">Pinturas y Acabados</a></li>
+      <li class="li-categ"><a href="#">Ferretería para el hogar</a></li>
+      <li class="li-categ"><a href="#">Seguridad Industrial</a></li>
+      <li class="li-categ"><a href="#">Limpieza y Mantenimiento</a></li>
+      <li class="li-categ"><a href="#">Adhesivos y Selladores</a></li>
+      <li class="li-categ" id="li-end"><a href="#">Jardinería</a></li>
+    </ul>
+</nav>
+
+  </aside>
+  <section class="section-product">
+    <nav class="nav-filtros">
+    <p class=p>Filtros</p>
+      <ul>
+        <li>
+          <label for="nombre">Nombre:</label>
+          <input type="text" name="nombre" id="nombre-pro" placeholder="Eje: Martillo">
+        </li>
+        <li class="li-marca"><a class="a-marca" href="">marca</a>
+          <ul class="ul-marca">
+            <li><a href="">DeWalt</a></li>
+            <li><a href="">Makita</a></li>
+            <li><a href="">Bosch</a></li>
+            <li><a href="">Milwaukee</a></li>
+            <li><a href="">Hilti</a></li>
+            <li><a href="">Metabo</a></li>
+            <li><a href="">Ridgid</a></li>
+            <li><a href="">Festool</a></li>
+          </ul>
+        </li>
+        <li class="li-precio"><a class="a-precio" href="">rango de precio</a>
+          <ul class="ul-precio">
+            <li>
+              <label for="minimo">Minimo:</label>
+              <input type="integer" placeholder="  $0" style="width: 80px; border-radius:10px; border: grey">
+            </li>
+            <li>
+              <label for="maximo">Maximo:</label>
+              <input type="integer" placeholder="  $0" style="width: 80px; border-radius:10px; border: grey">
+            </li>
+          </ul>
+        </li>
+        <li>
+          <input type="checkbox" name="disponible">  Disponible para venta
+        </li>
+        <li>
+          <button class="lupa"><i class="fas fa-search"></i></button>
+        </li>
+      </ul>
+    </nav>
+    <section class="section-models">modelos de productos</section>
+  </section>
   </section>
   <footer>
     &copy; 2025 Ferremateriales el Maestro - Todos los derechos reservados

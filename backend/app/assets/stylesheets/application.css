@@ -44,7 +44,7 @@ main {
   footer {
     /* max-width: 100; */
     width: 100%;   
-    background-color: #F5E1C3; /* Beige, igual al fondo de la página */
+    background-color: 6; /* Beige, igual al fondo de la página */
     color: #A6271E; /* Texto en rojo oscuro */
     padding: 20px;
     text-align: center;
