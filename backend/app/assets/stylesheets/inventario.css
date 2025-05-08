@@ -99,8 +99,6 @@ ul{
     color: #f19544;
 }
 /*MARCA*/
-.a-marca:hover{
-}
 .ul-marca{
     border: 1px solid rgb(232, 177, 133);
     border-radius: 15px;
@@ -135,8 +133,6 @@ ul{
     border:1px solid rgb(232, 177, 133);
 }
 /*PRECIO*/
-.a-marca:hover{
-}
 .ul-precio{
     width: 100px;
     border: 1px solid rgb(232, 177, 133);
@@ -179,6 +175,9 @@ ul{
 input[type="checkbox"] {
     accent-color: #ff734c;
     cursor: pointer;
+} 
+input::placeholder {
+    color: #d2d2d2;
 }  
 .lupa{
     background-color: transparent;
@@ -188,4 +187,8 @@ input[type="checkbox"] {
 .lupa, i{
     color:#ff734c;
     font-size: 17px;
+}
+.ul-precio, .ul-marca{
+    position: absolute;
+    z-index: 10;
 }
