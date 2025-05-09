@@ -11,7 +11,6 @@
     <%= csp_meta_tag %>
 
     <%= yield :head %>
-
     <%# Enable PWA manifest for installable apps (make sure to enable in config/routes.rb too!) %>
     <%#= tag.link rel: "manifest", href: pwa_manifest_path(format: :json) %>
 
@@ -21,6 +20,7 @@
 
     <%# Includes all stylesheet files in app/assets/stylesheets %>
     <%= stylesheet_link_tag :abootstrap, "data-turbo-track": "reload" %>
+    <%= stylesheet_link_tag :category, "data-turbo-track": "reload" %>
     <%= stylesheet_link_tag :application, "data-turbo-track": "reload" %>
     <%= stylesheet_link_tag :login, "data-turbo-track": "reload" %>
     <%= javascript_importmap_tags %>

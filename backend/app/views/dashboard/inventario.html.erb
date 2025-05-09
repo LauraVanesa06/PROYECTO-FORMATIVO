@@ -95,7 +95,10 @@
         </li>
       </ul>
     </nav>
-    <section class="section-models">Modelos de productos</section>
+    <section class="section-models">
+      <%= yield %>
+      <%= link_to "Back to categories", categories_path %>
+    </section>
   </section>
   </section>
   <footer>
