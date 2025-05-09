@@ -55,16 +55,18 @@
             Bienvenido, <%= current_user.email %> |
             <%= button_to "Cerrar sesión", destroy_user_session_path, method: :delete, form: { data: { turbo: true } }, id: "cerrar", class: "btn btn-outline-danger btn-sm" %>
           <% else %>
-            <%= link_to new_user_session_path do %>
-              <%= image_tag("nav-icon.png", alt: "Iniciar sesión", class: "login-icon") %>
-            <% end %>
+          <%= link_to custom_login_path do %>
+            <%= image_tag("nav-icon.png", alt: "Iniciar sesión", class: "login-icon") %>
+          <% end %>
+          
+          
           <% end %>
         </div>
       </nav>
       <section id="main">
        
         <section id="content">
-            <%= yield %>         
+          <%= yield %>  
         </section>
       </section>
       

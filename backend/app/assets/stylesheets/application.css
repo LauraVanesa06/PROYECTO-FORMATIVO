@@ -52,71 +52,81 @@ main {
   }
 
   /* LOGIN */
-  .base {
-   /* background-color: #314559; */
-    background-color: #e1a464;
-    border-radius: 8px;
-    width: 700px;
-    height: 600px;
-    margin: 100px auto;
-    padding-left: 40px;
-    box-shadow: 0 6px 12px rgba(0,0,0,0.3);
-  }
-  .base2{
-    margin-left: 80px;
-  }
-  
-  .login-container {
-    background-color: #ffe374; 
-    padding: 2rem;
-    border-radius: 8px;
-    width: 300px;
-    color: white;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.4);
-  }
-  
-  .form-control {
-    width: 100%;
-    padding: 10px;
-    border: none;
-    border-radius: 5px;
-    background-color: #ecf0f1;
-  }
-  
-  .btn-login {
-    background-color: #bdc3c7;
-    color: #2c3e50;
-    padding: 10px 20px;
-    border: none;
-    border-radius: 5px;
-    width: 100%;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-  }
-  
-  .btn-login:hover {
-    background-color: #95a5a6;
-  }
-  
-  #link {
-    color: white;
-  }
-  
-  .field {
-    margin-bottom: 10px;
-  }
-  
-hr{
-        border: none;
-        border-top: 1px solid #ff8000; 
-        width: 100%;
-    }
+.base {
+  background-color: #FFF7F0;
+  border-radius: 8px;
+  width: 700px;
+  height: auto;
+  margin: 200px auto;
+  padding-left: 40px;
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+  display: flex;
+  gap: 2rem;
+}
 
+.login-container {
+  background-color: #FFF0E5;
+  padding: 2rem;
+  border-radius: 8px;
+  display: flex;
+  color: #B63C2D;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+}
 
-    h3{
-        color: white;
-    }
+.form-control {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #E16B44;
+  border-radius: 5px;
+  background-color: #FFF7F0;
+  color: #333;
+}
 
+.btn-login {
+  background-color: #E16B44;
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  width: 100%;
+  cursor: pointer;
+  font-weight: bold;
+  transition: background-color 0.3s ease;
+}
+
+.btn-login:hover {
+  background-color: #B63C2D;
+}
+
+#link {
+  color: #B63C2D;
+  text-decoration: none;
+}
+
+#link:hover {
+  text-decoration: underline;
+}
+
+h3, h4, h5 {
+  color: #B63C2D;
+  font-weight: bold;
+}
+
+.base2 {
+  margin-left: 80px;
+  padding-top: 30px;
+}
+.base2 h3{
+  color: #B63C2D;
+  font-weight: bold;
+}
+
+hr {
+  border: none;
+  border-top: 1px solid #E16B44;
+  width: 100%;
+}
+  
     /* RESPONSIVE */
 @media (max-width: 768px) {
   .base {
@@ -129,6 +139,7 @@ hr{
   .login-container {
     width: 100%;
     max-width: 350px;
+    
   }
 
   .base2 {
