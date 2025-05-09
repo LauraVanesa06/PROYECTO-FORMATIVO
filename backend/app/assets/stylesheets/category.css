@@ -16,6 +16,10 @@
     margin-bottom: 7px;
     margin-left: 15px;
     padding: 0;
+    width: 95%;
+}
+.ul-nombre:hover{
+    width: 100%;
 }
 .li-nombre{
     font-size: 15px;
@@ -32,6 +36,14 @@
     height: 100%;
     width: 100%;
 }
+.li-nombre:hover{
+    background-color: #ffd9a1;
+}
+.li-nombre a:hover{
+    color:#ff734c;
+    text-decoration: none;
+    font-size: 16px;
+}
 .li-nombre, .li-nombre a, .new-categ, .btn-categ{
     margin: 0;
     padding: 0;
@@ -46,10 +58,21 @@
     text-decoration: none;
     background-color: #ec8429;
     color: white;
+    font-family: 'inconsolata';
     font-size: 25px;
     font-weight: bold;
+    margin-top: 5px;
+    margin-bottom: 20px;
     padding: 0;
     border-radius: 50%;
     width: 30px;
     height: 30px;
 }
+.new-categ:hover{
+    text-decoration: none;
+    background-color: #ec8429;
+    color: white;
+    width: 35px;
+    height: 35px;
+}
+
