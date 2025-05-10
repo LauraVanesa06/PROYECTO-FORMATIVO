@@ -1,32 +1,24 @@
-<div id="<%= dom_id product %>">
-  <p>
-    <strong>Nombre:</strong>
-    <%= product.nombre %>
-  </p>
+<ul class="ul-prod">
+  <div id="<%= dom_id product %>"></div>
+  <div id="foto"><%= link_to image_tag("martillo-dewalt.png")%></div>
+  <div class="texto">
+    <li class="li-start">
+      <strong  class="titulo">Nombre:</strong>
+      <%= product.nombre %>
+    </li>
+    <li>
+      <strong class="titulo">Descripcion:</strong>
+      <%= product.descripcion %>
+    </li>
+    <li>
+      <strong class="titulo">Precio:</strong>
+      <%= product.precio %>
+    </li>
+    <li>
+      <strong class="titulo">Stock:</strong>
+      <%= product.stock %>
+    </li>
+    <div class="ver"><%= link_to "ver", product%></div>
+  </div>
+</ul>
 
-  <p>
-    <strong>Descripcion:</strong>
-    <%= product.descripcion %>
-  </p>
-
-  <p>
-    <strong>Precio:</strong>
-    <%= product.precio %>
-  </p>
-
-  <p>
-    <strong>Stock:</strong>
-    <%= product.stock %>
-  </p>
-
-  <p>
-    <strong>Category:</strong>
-    <%= product.category_id_id %>
-  </p>
-
-  <p>
-    <strong>Supplier:</strong>
-    <%= product.supplier_id_id %>
-  </p>
-
-</div>

@@ -5,13 +5,9 @@ one:
   descripcion: MyString
   precio: 9.99
   stock: 1
-  category_id: one
-  supplier_id: one
 
 two:
   nombre: MyString
   descripcion: MyString
   precio: 9.99
   stock: 1
-  category_id: two
-  supplier_id: two

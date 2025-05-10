@@ -20,7 +20,7 @@
 
     <%# Includes all stylesheet files in app/assets/stylesheets %>
     <%= stylesheet_link_tag :abootstrap, "data-turbo-track": "reload" %>
-    <%= stylesheet_link_tag :category, "data-turbo-track": "reload" %>
+    <%= stylesheet_link_tag :inventario, "data-turbo-track": "reload" %>
     <%= stylesheet_link_tag :application, "data-turbo-track": "reload" %>
     <%= stylesheet_link_tag :login, "data-turbo-track": "reload" %>
     <%= javascript_importmap_tags %>
@@ -63,9 +63,9 @@
       </nav>
       <section id="main">
        
-        <section id="content">
-            <%= yield %>         
-        </section>
+        <aside id="content">
+        </aside>
+        <section class="content2"><%= yield %></section>
       </section>
       
       <footer class="bg-dark text-white text-center p-3 mt-auto" id="footer">

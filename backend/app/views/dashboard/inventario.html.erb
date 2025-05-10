@@ -39,21 +39,10 @@
   <section class="section-container">
   <aside class="categorias">
     <div class="div-categ">Categorias:</div>
-    <ul>
-      <li class="li-categ"><a href="#">Herramientas</a></li>
-      <li class="li-categ"><a href="#">Tornillería y Fijaciones</a></li>
-      <li class="li-categ"><a href="#">Plomería</a></li>
-      <li class="li-categ"><a href="#">Electricidad</a></li>
-      <li class="li-categ"><a href="#">Construcción y Materiales</a></li>
-      <li class="li-categ"><a href="#">Pinturas y Acabados</a></li>
-      <li class="li-categ"><a href="#">Ferretería para el hogar</a></li>
-      <li class="li-categ"><a href="#">Seguridad Industrial</a></li>
-      <li class="li-categ"><a href="#">Limpieza y Mantenimiento</a></li>
-      <li class="li-categ"><a href="#">Adhesivos y Selladores</a></li>
-      <li class="li-categ" id="li-end"><a href="#">Jardinería</a></li>
-    </ul>
-</nav>
-
+      <% @categories.each do |category| %>
+        <%= render category %>
+      <% end %>
+    <div class="btn-categ"><%= link_to "+", new_category_path, class:"new-categ"%></div>
   </aside>
   <section class="section-product">
     <nav class="nav-filtros">
@@ -96,8 +85,10 @@
       </ul>
     </nav>
     <section class="section-models">
-      <%= yield %>
-      <%= link_to "Back to categories", categories_path %>
+        <% @products.each do |product| %>
+          <%= render product %>
+        <% end %>
+        <%= link_to "+", new_product_path, class:"new-prod"%>
     </section>
   </section>
   </section>

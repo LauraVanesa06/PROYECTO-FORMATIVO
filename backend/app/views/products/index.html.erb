@@ -4,12 +4,10 @@
 
 <h1>Products</h1>
 
-<div id="products">
+<div id="productos">
   <% @products.each do |product| %>
     <%= render product %>
-    <p>
       <%= link_to "Show this product", product %>
-    </p>
   <% end %>
 </div>
 

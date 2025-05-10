@@ -1,5 +1,10 @@
 class DashboardController < ApplicationController
+  layout false
   def index
   end
-  layout false
+
+  def inventario
+    @categories = Category.all
+    @products = Product.all
+  end
 end

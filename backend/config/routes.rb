@@ -9,7 +9,7 @@ Rails.application.routes.draw do
   get "dashboard" => "dashboard#index"
 
   get "inventario" => "dashboard#inventario"
-  get "categoria" => "dashboard#categoria"
+  get 'categorias' => 'dashboard#inventario'
 
   resources :categories
   resources :products

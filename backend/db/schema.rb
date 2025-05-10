@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_05_07_204544) do
+ActiveRecord::Schema[8.0].define(version: 2025_05_10_022632) do
   create_table "categories", force: :cascade do |t|
     t.string "nombre"
     t.datetime "created_at", null: false
@@ -22,12 +22,12 @@ ActiveRecord::Schema[8.0].define(version: 2025_05_07_204544) do
     t.string "descripcion"
     t.decimal "precio"
     t.integer "stock"
-    t.integer "category_id_id", null: false
-    t.integer "supplier_id_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["category_id_id"], name: "index_products_on_category_id_id"
-    t.index ["supplier_id_id"], name: "index_products_on_supplier_id_id"
+    t.integer "category_id", null: false
+    t.integer "supplier_id", null: false
+    t.index ["category_id"], name: "index_products_on_category_id"
+    t.index ["supplier_id"], name: "index_products_on_supplier_id"
   end
 
   create_table "suppliers", force: :cascade do |t|
@@ -49,6 +49,6 @@ ActiveRecord::Schema[8.0].define(version: 2025_05_07_204544) do
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
   end
 
-  add_foreign_key "products", "category_ids"
-  add_foreign_key "products", "supplier_ids"
+  add_foreign_key "products", "categories"
+  add_foreign_key "products", "suppliers"
 end
