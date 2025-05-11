@@ -57,6 +57,16 @@ class SuppliersController < ApplicationController
     end
   end
 
+  def products
+    @supplier = Supplier.find(params[:id])
+    @products = @supplier.products
+  end
+
+  def products
+    @supplier = Supplier.find(params[:id])
+    @products = @supplier.products
+  end
+
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_supplier

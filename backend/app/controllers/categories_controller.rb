@@ -57,6 +57,11 @@ class CategoriesController < ApplicationController
     end
   end
 
+  def products
+    @category = Category.find(params[:id])
+    @products = @category.products
+  end
+
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_category
@@ -67,4 +72,5 @@ class CategoriesController < ApplicationController
     def category_params
       params.expect(category: [ :nombre ])
     end
+    
 end

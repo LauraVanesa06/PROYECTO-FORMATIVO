@@ -6,5 +6,6 @@ class DashboardController < ApplicationController
   def inventario
     @categories = Category.all
     @products = Product.all
+    @suppliers = Supplier.all
   end
 end

@@ -1,9 +1,16 @@
-<div id="<%= dom_id supplier %>">
-  <p>
-    <strong>Nombre:</strong>
+<!--
+<ul class="ul-marca">
+  <li>
+    <div id="<%= dom_id supplier %>">
     <%= supplier.nombre %>
-  </p>
+  </li>
+</ul>
 
+<%= dom_id supplier %>
+-->
+  <li class="li-marca"><%= link_to supplier.nombre, supplier_path(supplier), class:"aa-marca" %></li>
+
+<!--
   <p>
     <strong>Contacto:</strong>
     <%= supplier.contacto %>

@@ -47,22 +47,18 @@
   <section class="section-product">
     <nav class="nav-filtros">
     <p class=p><i class="fas fa-filter"></i> Filtros</p>
+    
       <ul>
         <li>
           <label for="nombre">Nombre:</label>
           <input type="text" name="nombre" id="nombre-pro" placeholder="  Ejem: Martillo" style="border-radius:10px; border:1px solid grey;">
         </li>
-        <li class="li-marca"><a class="a-marca" href="">Marca</a>
-          <ul class="ul-marca">
-            <li><a href="">DeWalt</a></li>
-            <li><a href="">Makita</a></li>
-            <li><a href="">Bosch</a></li>
-            <li><a href="">Milwaukee</a></li>
-            <li><a href="">Hilti</a></li>
-            <li><a href="">Metabo</a></li>
-            <li><a href="">Ridgid</a></li>
-            <li><a href="">Festool</a></li>
-          </ul>
+        <li class="li-marca"><a class="a-marca" href="">Proveedor</a>
+        <ul class="ul-marca">
+          <% @suppliers.each do |supplier| %>
+            <%= render supplier %>
+          <% end %>
+        </ul>
         </li>
         <li class="li-precio"><a class="a-precio" href="">Rango de Precio</a>
           <ul class="ul-precio">
@@ -80,7 +76,9 @@
           <input type="checkbox" name="disponible">  Disponible para venta
         </li>
         <li>
-          <button class="lupa"><i class="fas fa-search"></i></button>
+          <%= button_tag type: 'submit', class:"lupa" do%>
+            <i class="fas fa-search"></i>
+          <% end %>
         </li>
       </ul>
     </nav>

@@ -133,13 +133,16 @@
 }
 /*MARCA*/
 .ul-marca{
-    border: 1px solid rgb(232, 177, 133);
+    border: 1px solid #ffddc5;
     border-radius: 15px;
+    display: none;
     flex-direction: column;
+    gap: 0;
+    border:1px solid rgb(232, 177, 133);
+    width: 110px;
     background-color: #ffe7c3;
     color: #f19544;
-    width: 110px;
-    display: none;
+    text-decoration: none;
 }
 .li-marca:hover > .ul-marca{
     display: block;
@@ -148,22 +151,24 @@
     display: flex;
     justify-content: center;
 }
-.ul-marca li a{
+.aa-marca{
+    border-radius: 35px;
+    background-color: #fff3e0;
+    border:1px solid rgb(232, 177, 133);
     color: #f19544;
-    font-family: Arial, sans-serif;
-    font-weight: normal;
-    height: 100%;
     width: 100%;
+    height: 25px;
     display: flex;
     justify-content: center;
-    margin: 5px;
-    border-radius: 35px;
+    align-items: center;
     font-size: 15px;
+    font-family: Arial, sans-serif;
+    font-weight: normal;
+    margin: 5px;
 }
-.ul-marca li a:hover{
-    background-color: #ffd9a1;
-    color:#ff734c;
-    border:1px solid rgb(232, 177, 133);
+.aa-marca:hover{
+    color: #ff8820;
+    background-color: #f9e4c3;
 }
 /*PRECIO*/
 .ul-precio{

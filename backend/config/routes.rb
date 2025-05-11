@@ -11,7 +11,12 @@ Rails.application.routes.draw do
   get "inventario" => "dashboard#inventario"
   get 'categorias' => 'dashboard#inventario'
 
-  resources :categories
+  resources :categories, :suppliers do
+    member do
+      get :products
+    end
+  end
+
   resources :products
 
   get "ventas" => "dashboard#ventas"
