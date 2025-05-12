@@ -4,23 +4,6 @@ class ProductsController < ApplicationController
   # GET /products or /products.json
   def index
     @products = Product.all
-
-    # Filtro de precio min y max 
-    if params[:query].present?
-      @products = @products.where("nombre LIKE ?", "%#{params[:query]}%")
-    end
-
-    if params[:min_price].present?
-      @products = @products.where("precio >= ?", params[:min_price])
-    end
-
-    if params[:max_price].present?
-      @products = @products.where("precio <= ?", params[:max_price])
-    end
-
-    if params[:proveedor_id].present?
-      @products = @products.where(supplier_id: params[:proveedor_id])
-    end
   end
 
   # GET /products/1 or /products/1.json

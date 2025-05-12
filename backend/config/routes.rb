@@ -8,7 +8,7 @@ Rails.application.routes.draw do
   get "up" => "rails/health#show", as: :rails_health_check
   get "dashboard" => "dashboard#index"
 
-  get "inventario" => "dashboard#inventario"
+  get 'inventario', to: 'dashboard#inventario', as: 'inventario'
 
   resources :categories, :suppliers do
     member do

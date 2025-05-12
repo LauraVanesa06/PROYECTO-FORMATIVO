@@ -15,9 +15,14 @@
     margin-top: 10px;
     font-weight: bold;
     font-family: 'Segoe UI', sans-serif;
-    color: #f19544;
+    color: #ff8b3e;
     margin-left: 10px;
     padding: 0;
+}
+.div-div{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
 }
 .ul-nombre{
     text-decoration: none;
@@ -65,13 +70,13 @@
 .new-categ{
     margin-top: 5px;
     margin-bottom: 20px;
-    width: 30px;
-    height: 35px;
+    width: 20px;
+    height: 37px;
     padding: 12px 20px;
     border-radius: 50%;
     text-decoration: none;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
-    background-color: #f58a2d;
+    box-shadow: 0 0 10px #ffe0c1;
+    background-color: #ff8b3e;
     color: white;
     font-family: 'inconsolata';
     font-size: 25px;
@@ -316,8 +321,8 @@ input::placeholder {
     padding: 12px 20px;
     border-radius: 50%;
     text-decoration: none;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
-    background-color: #ec8429;
+    box-shadow: 0 0px 10px rgba(0, 0, 0, 0.3);
+    background-color:  #ff8b3e;
     color: white;
     font-family: 'inconsolata';
     font-size: 25px;
@@ -325,5 +330,73 @@ input::placeholder {
 }
 
 .new-prod:hover {
-  background-color: #ffa352;
+    background-color: #ffa352;
+}
+
+/*VENTANA FLOTANTE DE PRODUCTO ID*/
+.modal {
+    display: none;
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background: rgba(0, 0, 0, 0.6);
+    z-index: 9999;
+}
+
+.modal:target {
+    display: block;
+}
+
+.modal-content {
+    border: 1px transparent;
+    box-shadow: 0 0px 10px rgba(0, 0, 0, 0.3);
+    background: white;
+    padding: 20px;
+    padding-top: 30px;
+    margin: 100px auto;
+    width: 470px;
+    border-radius: 25px;
+    position: relative;
+    display: flex;
+    flex-direction: row;
+}
+
+.close {
+    position: absolute;
+    top: 5px; right: 5px;
+    text-decoration: none;
+    font-size: 25px;
+    font-weight: bold;
+    color: #424242;
+    width: 30px;
+    height: 30px;
+    font-family: 'inconsolata';
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.close:hover{
+    background-color: rgb(252, 102, 102);
+    border-radius: 50px;
+    color: white;
+}
+.div-foto-model{
+    margin-left: 20px;
+    margin-right: 5px;
+    width: auto;
+    height: auto;
+}
+#foto-model a img, #foto-model{
+    width: 95px;
+    height: 250px;
+}
+.texto-model{
+    list-style: none;
+    margin: 20px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+.texto-model li{
+    font-size: 20px;
 }

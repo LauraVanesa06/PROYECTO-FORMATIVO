@@ -27,5 +27,7 @@
       <%= product.category.nombre %>
     </li>
   </div>
-  <div class="ver"><%= link_to "Ver", product%></div>
+  <div class="ver">
+    <%= link_to "Ver", "#modal-#{product.id}" %>
+  </div>
 </ul>
