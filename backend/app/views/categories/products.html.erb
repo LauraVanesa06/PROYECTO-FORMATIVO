@@ -1,14 +1,37 @@
 
 <ul>
   <% @products.each do |product| %>
-    <li><%= product.id %></li>
-    <li><%= product.nombre %></li>
-    <li><%= product.descripcion %></li>
-    <li><%= product.precio %></li>
-    <li><%= product.stock %></li>
-    <li><%= product.category_id %></li>
-    <li><%= product.supplier_id %></li>
-    <br>
+    <ul class="ul-prod">
+      <div id="<%= dom_id product %>"></div>
+      <div class="div-foto"><div id="foto"><%= link_to image_tag("martillo-dewalt.png")%></div></div>
+      <div class="texto">
+        <li class="li-start">
+          <strong  class="titulo">Nombre:</strong>
+          <%= product.nombre %>
+        </li>
+        <li>
+          <strong class="titulo">Descripcion:</strong>
+          <%= product.descripcion %>
+        </li>
+        <li>
+          <strong class="titulo">Precio:</strong>
+          <%= product.precio %>
+        </li>
+        <li>
+          <strong class="titulo">Stock:</strong>
+          <%= product.stock %>
+        </li>
+        <li>
+          <strong class="titulo">Proveedor:</strong>
+          <%= product.supplier.nombre %>
+        </li>
+        <li>
+          <strong class="titulo">Categoria:</strong>
+          <%= product.category.nombre %>
+        </li>
+      </div>
+      <div class="ver"><%= link_to "Ver", product%></div>
+    </ul>
   <% end %>
 </ul>
 <%= link_to "Back to inventario", inventario_path %>

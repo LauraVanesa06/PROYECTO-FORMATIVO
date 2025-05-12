@@ -9,7 +9,6 @@ Rails.application.routes.draw do
   get "dashboard" => "dashboard#index"
 
   get "inventario" => "dashboard#inventario"
-  get 'categorias' => 'dashboard#inventario'
 
   resources :categories, :suppliers do
     member do

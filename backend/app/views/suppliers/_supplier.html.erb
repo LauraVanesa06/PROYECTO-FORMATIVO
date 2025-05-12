@@ -7,8 +7,14 @@
 </ul>
 
 <%= dom_id supplier %>
+
+  <li class="li-marca"><%= link_to supplier.nombre, products_supplier_path(supplier), class:"aa-marca" %></li>
+
 -->
-  <li class="li-marca"><%= link_to supplier.nombre, supplier_path(supplier), class:"aa-marca" %></li>
+    <li class="li-marca">
+      <%= check_box_tag "proveedor_id[]", supplier.id, params[:proveedor_id]&.include?(supplier.id.to_s), class:"aa-check" %>
+      <%= label_tag "proveedor_id_#{supplier.id}", supplier.nombre, class: "aa-marca" %>
+    </li>
 
 <!--
   <p>

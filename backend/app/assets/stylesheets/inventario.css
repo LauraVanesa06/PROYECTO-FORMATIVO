@@ -115,7 +115,7 @@
     margin: 10px;
     height: 40px;
     display: flex;
-    justify-content: space-around;
+    justify-content: space-between;
     align-items: center;
     padding: 0;
 }
@@ -126,10 +126,14 @@
     font-weight: normal;
 }
 .p{
+    margin-left: 20px;
     font-size: 17px;
     font-weight: bold;
     font-family: 'Segoe UI', sans-serif;
     color: #f19544;
+}
+.form-filtros{
+    margin-right: 20px;
 }
 /*MARCA*/
 .ul-marca{
@@ -150,11 +154,11 @@
 .ul-marca li{
     display: flex;
     justify-content: center;
+    align-items: center;
 }
 .aa-marca{
     border-radius: 35px;
     background-color: #fff3e0;
-    border:1px solid rgb(232, 177, 133);
     color: #f19544;
     width: 100%;
     height: 25px;
@@ -166,9 +170,24 @@
     font-weight: normal;
     margin: 5px;
 }
-.aa-marca:hover{
-    color: #ff8820;
-    background-color: #f9e4c3;
+.aa-check{
+    width: 30px;
+    height: 20px;
+    margin-left: 10px;
+    border-radius: 50%;
+    accent-color: #ff734c;
+    border:#f7ecde;
+    background-color: white;
+    cursor: pointer;
+    appearance: none !important;
+}
+.aa-check:checked{
+    background-color: #ff734c;
+}
+.aa-check:checked::after{
+    content: "✔";
+    color: white;
+    margin-left: 4px;
 }
 /*PRECIO*/
 .ul-precio{
@@ -208,12 +227,15 @@
     color:#ff734c;
     border:1px solid rgb(232, 177, 133);
 }
-
-
+/*
 input[type="checkbox"] {
+    margin-left: 10px;
+    border-radius: 50%;
     accent-color: #ff734c;
     cursor: pointer;
+    appearance: none;
 } 
+*/
 input::placeholder {
     color: #d2d2d2;
 }  
@@ -237,17 +259,26 @@ input::placeholder {
     border: 1px solid transparent;
     box-shadow: 0 0 10px #ffc285;
     border-radius: 25px;
-    width: 280px;
-    height: 160px;
+    width: 300px;
+    height: 200px;
     display: flex;
     flex-direction: row;
     margin: 20px;
+    padding: 0;
     list-style: none;
+    position: relative;
 }
 #foto a img, #foto{
     width: 60px;
     height: 145px;
     margin: 5px;
+}
+#foto{
+    margin-top: 15px;
+}
+#foto a, .ver a{
+    margin: 0;
+    padding: 0;
 }
 .li-start{
     margin-top: 15px;
@@ -258,13 +289,22 @@ input::placeholder {
     margin-right: 5px;
 }
 .ver a{
-    font-size: 20px;
+    font-size: 18px;
     margin-right: 25px;
+    line-height: 0;
+    display: flex;
+    align-items: center;
+    text-decoration: none;
+    position: absolute;
+    bottom: 15px;
 }
 .ver{
-    height: 20px;
     display: flex;
     justify-content: flex-end;
+}
+.texto{
+    width: 229px;
+    height: 199;
 }
 
 /*NEW PRODUCT BOTTON*/

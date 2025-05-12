@@ -1,14 +1,11 @@
-<p style="color: green"><%= notice %></p>
+<!--<p style="color: green"><%= notice %></p>-->
 
 <% content_for :title, "Products" %>
-
-<h1>Products</h1>
 
 <div id="productos">
   <% @products.each do |product| %>
     <%= render product %>
-      <%= link_to "Show this product", product %>
   <% end %>
 </div>
-
-<%= link_to "New product", new_product_path %>
+<%= link_to "Back to inventario", inventario_path %>
+<!--<%= link_to "New product", new_product_path %>-->

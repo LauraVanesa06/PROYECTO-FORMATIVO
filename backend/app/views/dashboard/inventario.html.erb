@@ -47,11 +47,23 @@
   <section class="section-product">
     <nav class="nav-filtros">
     <p class=p><i class="fas fa-filter"></i> Filtros</p>
-    
+    <%= form_with url: products_path, method: :get, local: true, class:"form-filtros" do %>
       <ul>
         <li>
-          <label for="nombre">Nombre:</label>
-          <input type="text" name="nombre" id="nombre-pro" placeholder="  Ejem: Martillo" style="border-radius:10px; border:1px solid grey;">
+          <%= label_tag :query, "Nombre:" %>
+          <%= text_field_tag :query, params[:query], placeholder: "  Ej: Martillo", style:"border-radius:10px; border:1px solid grey;"%> 
+        </li>
+        <li class="li-precio"><a class="a-precio" href="">Rango de Precio</a>
+          <ul class="ul-precio">
+            <li>
+              <%= label_tag :min_price, "Mínimo:  " %>
+              <%= number_field_tag :min_price, params[:min_price], step: 0.01, style:"width: 80px; border-radius:10px; border: grey"%>
+            </li>
+            <li>
+              <%= label_tag :max_price, "Máximo:  " %>
+              <%= number_field_tag :max_price, params[:max_price], step: 0.01, style:"width: 80px; border-radius:10px; border: grey"%>
+            </li>
+          </ul>
         </li>
         <li class="li-marca"><a class="a-marca" href="">Proveedor</a>
         <ul class="ul-marca">
@@ -60,27 +72,13 @@
           <% end %>
         </ul>
         </li>
-        <li class="li-precio"><a class="a-precio" href="">Rango de Precio</a>
-          <ul class="ul-precio">
-            <li>
-              <label for="minimo">Minimo:</label>
-              <input type="integer" placeholder="  $0" style="width: 80px; border-radius:10px; border: grey">
-            </li>
-            <li>
-              <label for="maximo">Maximo:</label>
-              <input type="integer" placeholder="  $0" style="width: 80px; border-radius:10px; border: grey">
-            </li>
-          </ul>
-        </li>
         <li>
-          <input type="checkbox" name="disponible">  Disponible para venta
-        </li>
-        <li>
-          <%= button_tag type: 'submit', class:"lupa" do%>
+          <%= button_tag type: 'submit', class: 'lupa' do %>
             <i class="fas fa-search"></i>
           <% end %>
         </li>
       </ul>
+    <% end %>
     </nav>
     <section class="section-models">
         <% @products.each do |product| %>
