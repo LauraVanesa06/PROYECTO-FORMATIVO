@@ -39,7 +39,6 @@ class DashboardController < ApplicationController
       @products = @category.products
     end
   end
-end
   layout false
 
   before_action :authenticate_user!
@@ -49,4 +48,3 @@ end
     redirect_to authenticated_root_path, alert: "No autorizado" unless current_user&.admin?
   end
 end
-
