@@ -1,6 +1,8 @@
 Rails.application.routes.draw do
   
-  devise_for :users
+  devise_for :users, controllers: {
+    sessions: 'usuarios/sessions'
+  }
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
 
   # Reveal health status on /up that returns 200 if the app boots with no exceptions, otherwise 500.
@@ -23,11 +25,19 @@ Rails.application.routes.draw do
   get "clientes" => "dashboard#clientes"
 
 
+
   root "home#index", as: :authenticated_root
-  get 'productos', to: 'productos#productos'
-  get 'contactos', to: 'contactos#contacto'
+  get 'productos', to: 'home#producto'
+  get 'contactos', to: 'home#contacto'
 
     # Otras rutas que tengas
+    #login
+ 
+    devise_scope :user do
+      get '/acceso', to: 'usuarios/sessions#new', as: :custom_login
+    end
+      
+  
 
   # Render dynamic PWA files from app/views/pwa/* (remember to link manifest in application.html.erb)
   # get "manifest" => "rails/pwa#manifest", as: :pwa_manifest
