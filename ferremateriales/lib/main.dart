@@ -1,4 +1,4 @@
- /*import 'package:flutter/material.dart';
+/*import 'package:flutter/material.dart';
 
 void main() {
   runApp(FerreteriaApp());
@@ -112,6 +112,10 @@ class HomePage extends StatelessWidget {
     );
   }
 } */
+
+/* BOTON INCREMENTAR 
+
+ 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';  // Importar flutter_bloc
 import 'counter_cubit.dart';  // Importar el archivo donde definimos el Cubit
@@ -175,4 +179,88 @@ class HomeScreen extends StatelessWidget {
       ),
     );
   }
-} 
+}  
+*/
+
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'valor.dart';
+
+void main() {
+  runApp(MyApp());
+}
+
+class MyApp extends StatelessWidget {
+  @override
+  Widget build(BuildContext context){
+    return MaterialApp(
+      home: BlocProvider(
+        create: (_) => Valor(),
+        child: PrecioPage(),
+    ),
+    );
+  }
+}
+
+class PrecioPage extends StatefulWidget {
+  const PrecioPage({Key? key}) : super(key: key); 
+  @override
+  _PrecioPageState createState() => _PrecioPageState();
+}
+  
+
+class _PrecioPageState extends State<PrecioPage> {
+  final TextEditingController _controller = TextEditingController();
+
+  void _guardarPrecio() {
+    final texto = _controller.text;
+    final precio = double.tryParse(texto);  
+    if (precio != null) {
+      context.read<Valor>().establecerValor(precio);
+    }
+  }    
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: Text('Precio del producto')),
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          children: [
+            TextField(
+              controller: _controller,
+              keyboardType: TextInputType.number,
+              decoration: InputDecoration(labelText: 'Ingrese el precio'),
+            ),
+            SizedBox(height: 20),
+            ElevatedButton(
+              onPressed: _guardarPrecio,
+              child: Text('Guardar'),
+            ),
+            SizedBox(height: 20),
+            ElevatedButton(
+              onPressed: () => context.read<Valor>().descuento1(),
+              child: Text('Aplicar descuento 50%'),
+            ),
+            SizedBox(height: 20),
+            ElevatedButton(
+              
+              onPressed: () => context.read<Valor>().descuento2(),
+              child: Text('Aplicar descuento 75%'),
+            ),
+            SizedBox(height: 20),
+            BlocBuilder<Valor, double?>(
+              builder: (context, precio) {
+                if (precio == null) {
+                  return Text('Aún no hay precio ingresado');
+                }
+                return Text('Precio guardado: \$${precio.toStringAsFixed(2)}');
+              },
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
