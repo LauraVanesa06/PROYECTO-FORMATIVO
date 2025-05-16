@@ -11,7 +11,6 @@
     <%= csp_meta_tag %>
 
     <%= yield :head %>
-
     <%# Enable PWA manifest for installable apps (make sure to enable in config/routes.rb too!) %>
     <%#= tag.link rel: "manifest", href: pwa_manifest_path(format: :json) %>
 
@@ -21,6 +20,7 @@
 
     <%# Includes all stylesheet files in app/assets/stylesheets %>
     <%= stylesheet_link_tag :abootstrap, "data-turbo-track": "reload" %>
+    <%= stylesheet_link_tag :application, "data-turbo-track": "reload" %>
     <%= stylesheet_link_tag :login, "data-turbo-track": "reload" %>
 
     <%= javascript_importmap_tags %>
@@ -39,7 +39,6 @@
   <main>
     <header class="custom-header">
 
-<<<<<<< HEAD
       <%= image_tag("header-icon.png", alt: "llave", class: "h-icon" ) %>
 
       <div class="header-text">
@@ -70,7 +69,7 @@
         <% end %>
       </div>
     </nav>
-=======
+
         <div class="header-icon"><%= image_tag("header-icon.png", alt: "llave", class: "h-icon" ) %></div>
         <div class="header-text">
           <div class="text1-header">ERREMATERIALES</div>
@@ -101,25 +100,13 @@
       <section id="main">
        
         <section id="content">
-          <%= yield %>  
+            <%= yield %>         
         </section>
       </section>
       
       <footer class="bg-dark text-white text-center p-3 mt-auto" id="footer">
         &copy; 2025 Ferremateriales. 3456674556y.
       </footer>
->>>>>>> 414ce1369db468da6e741f7066290ebd2823d0c2
-
-    <section id="content">
-      
-      <%= yield %>    
-      <%= javascript_include_tag 'application2', 'data-turbo-track': 'reload' %>
-
-    </section>
-    
-    <footer class="bg-dark text-white text-center p-3 mt-auto" id="footer">
-      &copy; 2025 Ferremateriales. 3456674556y.
-    </footer>
 
   </main>
 </body>
