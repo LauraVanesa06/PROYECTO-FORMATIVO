@@ -1,0 +1,11 @@
+<% content_for :title, "New buy" %>
+
+<h1>New buy</h1>
+
+<%= render "form", buy: @buy %>
+
+<br>
+
+<div>
+  <%= link_to "Back to buys", buys_path %>
+</div>

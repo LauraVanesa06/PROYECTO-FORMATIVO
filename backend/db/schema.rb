@@ -10,10 +10,24 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
+ActiveRecord::Schema[8.0].define(version: 2025_05_16_203836) do
+  create_table "buys", force: :cascade do |t|
+    t.integer "customer_id", null: false
+    t.datetime "fecha"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["customer_id"], name: "index_buys_on_customer_id"
+  end
 
-ActiveRecord::Schema[8.0].define(version: 2025_05_10_022632) do
   create_table "categories", force: :cascade do |t|
     t.string "nombre"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "customers", force: :cascade do |t|
+    t.string "nombre"
+    t.string "telefono"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
@@ -31,14 +45,23 @@ ActiveRecord::Schema[8.0].define(version: 2025_05_10_022632) do
     t.index ["supplier_id"], name: "index_products_on_supplier_id"
   end
 
+  create_table "purchasedetails", force: :cascade do |t|
+    t.integer "buy_id", null: false
+    t.integer "supplier_id", null: false
+    t.integer "cantidad"
+    t.decimal "preciounidad"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["buy_id"], name: "index_purchasedetails_on_buy_id"
+    t.index ["supplier_id"], name: "index_purchasedetails_on_supplier_id"
+  end
+
   create_table "suppliers", force: :cascade do |t|
     t.string "nombre"
     t.string "contacto"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
-
-ActiveRecord::Schema[8.0].define(version: 2025_05_13_052149) do
 
   create_table "users", force: :cascade do |t|
     t.string "email", default: "", null: false
@@ -53,6 +76,9 @@ ActiveRecord::Schema[8.0].define(version: 2025_05_13_052149) do
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
   end
 
+  add_foreign_key "buys", "customers"
   add_foreign_key "products", "categories"
   add_foreign_key "products", "suppliers"
+  add_foreign_key "purchasedetails", "buys"
+  add_foreign_key "purchasedetails", "suppliers"
 end
