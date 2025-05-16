@@ -353,6 +353,84 @@ textarea {
   .custom-header img{height: 80px;}
   .h-icon2{display: none;}
 
+  /* LOGIN */
+.base {
+  background-color: #FFF7F0;
+  border-radius: 8px;
+  width: 700px;
+  height: auto;
+  margin: 200px auto;
+  padding-left: 40px;
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+  display: flex;
+  gap: 2rem;
+}
+
+.login-container {
+  background-color: #FFF0E5;
+  padding: 2rem;
+  border-radius: 8px;
+  display: flex;
+  color: #B63C2D;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+}
+
+.form-control {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #E16B44;
+  border-radius: 5px;
+  background-color: #FFF7F0;
+  color: #333;
+}
+
+.btn-login {
+  background-color: #E16B44;
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  width: 100%;
+  cursor: pointer;
+  font-weight: bold;
+  transition: background-color 0.3s ease;
+}
+
+.btn-login:hover {
+  background-color: #B63C2D;
+}
+
+#link {
+  color: #B63C2D;
+  text-decoration: none;
+}
+
+#link:hover {
+  text-decoration: underline;
+}
+
+h3, h4, h5 {
+  color: #B63C2D;
+  font-weight: bold;
+}
+
+.base2 {
+  margin-left: 80px;
+  padding-top: 30px;
+}
+.base2 h3{
+  color: #B63C2D;
+  font-weight: bold;
+}
+
+hr {
+  border: none;
+  border-top: 1px solid #E16B44;
+  width: 100%;
+}
+  
+    /* RESPONSIVE */
+@media (max-width: 768px) {
   .base {
     width: 90%;
     height: auto;
@@ -362,6 +440,7 @@ textarea {
   .login-container {
     width: 100%;
     max-width: 350px;
+    
   }
 
   .base2 {
@@ -428,4 +507,5 @@ textarea {
     border-left: none;
     border-top: 3px solid #8b0000;
   }
+}
 }
