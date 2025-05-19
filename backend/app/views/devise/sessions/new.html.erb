@@ -1,12 +1,15 @@
 
+<div class="login">  
 <div class="base d-flex flex-row align-items-center justify-content-start flex-wrap">
-
 <div class="login-container">
 <% resource = User.new %>
 <% resource_name = :user %>
 <% devise_mapping = Devise.mappings[:user] %>
 
+
   <div class="login-container1">
+  <div class="login-container">
+
     <%= form_for(resource, as: resource_name, url: session_path(resource_name)) do |f| %>
         
     <div class="field" >
@@ -34,7 +37,7 @@
     <% end %>
   </div>
   
-  <div class="base2 text-center mt-3">
+  <div class="base2 text-center">
     <h3> BIENVENIDO </h3>
     <hr> </hr>
     

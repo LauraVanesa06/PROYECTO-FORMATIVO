@@ -1,8 +1,4 @@
-<h1>Bienvenidos</h1>
-<p>Bienvenido a nuestra aplicación.</p>
-
-<% if user_signed_in? %>
-   
-    <h1>Bienvenido <%= current_user.email %></h1>
-    <%= link_to "Salir", destroy_user_session_path, method: :delete, class: "btn btn-primary" %>
-<% end %>
+<div class="home-container">
+    <h1>Bienvenido a Ferremateriales</h1>
+    <p>Encuentra los mejores productos con nosotros</p>
+</div>

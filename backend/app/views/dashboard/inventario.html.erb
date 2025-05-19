@@ -5,6 +5,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Dashboard Ferretería</title>
   <%= stylesheet_link_tag "dashboard", media: "all" %>
+  <%= stylesheet_link_tag "inventario", media: "all" %>
+  
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 </head>
 <body>
 
@@ -33,19 +36,103 @@
         </div>
     </div>
   </nav>
-
-  <section>
-    <div class="welcome">
-        <p>Hola, bienvenidos a nuestro Inventario sobre el negocio de Ferremateriales el Maestro</p>
+  <section class="section-container">
+  <aside class="categorias">
+    <div class="div-div">
+      <a href="/inventario" class="div-categ" style="text-decoration:none;"><i class="fas fa-arrow-left"></i></a>
+      <div class="div-categ">Categorias:</div>
     </div>
-    
+      <% @categories.each do |category| %>
+        <%= render category %>
+      <% end %>
+    <div class="btn-categ"><%= link_to "+", new_category_path, class:"new-categ"%></div>
+  </aside>
+  <section class="section-product">
+    <nav class="nav-filtros">
+    <p class=p><i class="fas fa-filter"></i> Filtros</p>
+    <%= form_with url: inventario_path, method: :get, local: true, class:"form-filtros" do %>
+      <ul>
+        <li>
+          <%= label_tag :query, "Nombre:" %>
+          <%= text_field_tag :query, params[:query], placeholder: "  Ej: Martillo", style:"border-radius:10px; border:1px solid grey;"%> 
+        </li>
+        <li class="li-precio"><a class="a-precio" href="">Rango de Precio</a>
+          <ul class="ul-precio">
+            <li>
+              <%= label_tag :min_price, "Mínimo:  " %>
+              <%= number_field_tag :min_price, params[:min_price], step: 0.01, style:"width: 80px; border-radius:10px; border: grey"%>
+            </li>
+            <li>
+              <%= label_tag :max_price, "Máximo:  " %>
+              <%= number_field_tag :max_price, params[:max_price], step: 0.01, style:"width: 80px; border-radius:10px; border: grey"%>
+            </li>
+          </ul>
+        </li>
+        <li class="li-marca"><a class="a-marca" href="">Proveedor</a>
+        <ul class="ul-marca">
+          <% @suppliers.each do |supplier| %>
+            <%= render supplier %>
+          <% end %>
+        </ul>
+        </li>
+        <li>
+          <%= button_tag type: 'submit', class: 'lupa' do %>
+            <i class="fas fa-search"></i>
+          <% end %>
+        </li>
+      </ul>
+    <% end %>
+    </nav>
+    <section class="section-models">
+      <% if @products.present? %>
+        <% @products.each do |product| %>
+          <%= render product %>
+
+          <div id="modal-<%= product.id %>" class="modal">
+            <div class="modal-content">
+              <a href="#" class="close">&times;</a>
+              <div class="div-foto-model"><div id="foto-model"><%= link_to image_tag("martillo-dewalt.png")%></div></div>
+              <div class="texto-model">
+                <li class="li-start-model">
+                  <strong  class="titulo">Id:</strong>
+                  <%= product.id %>
+                </li>
+                <li>
+                  <strong  class="titulo">Nombre:</strong>
+                  <%= product.nombre %>
+                </li>
+                <li>
+                  <strong class="titulo">Descripcion:</strong>
+                  <%= product.descripcion %>
+                </li>
+                <li>
+                  <strong class="titulo">Precio:</strong>
+                  <%= product.precio %>
+                </li>
+                <li>
+                  <strong class="titulo">Stock:</strong>
+                  <%= product.stock %>
+                </li>
+                <li>
+                  <strong class="titulo">Proveedor:</strong>
+                  <%= product.supplier.nombre %>
+                </li>
+                <li>
+                  <strong class="titulo">Categoria:</strong>
+                  <%= product.category.nombre %>
+                </li>
+              </div>
+            </div>
+          </div>
+          
+        <% end %>
+      <% else %>
+        <p>No se encontraron productos.</p>
+      <% end %>
+      <%= link_to "+", new_product_path, class: "new-prod" %>
+    </section>
   </section>
-
-  <section>
-
-
   </section>
-
   <footer>
     &copy; 2025 Ferremateriales el Maestro - Todos los derechos reservados
   </footer>
