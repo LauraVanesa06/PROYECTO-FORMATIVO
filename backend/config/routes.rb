@@ -26,7 +26,6 @@ Rails.application.routes.draw do
 
 
 
-
   root "home#index", as: :authenticated_root
   get 'productos', to: 'home#producto'
   get 'contactos', to: 'home#contacto'

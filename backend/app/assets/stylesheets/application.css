@@ -387,6 +387,10 @@ textarea {
 
   /* LOGIN */
 .base {
+  background-color: #e1a464;
+  border-radius: 8px;
+  width: 700px;
+  height: 400px;
   background-color: #FFF7F0;
   border-radius: 8px;
   width: 700px;
@@ -399,12 +403,28 @@ textarea {
 }
 
 .login-container {
+  background-color: #ffe374;
   background-color: #FFF0E5;
+
   padding: 2rem;
   border-radius: 8px;
   display: flex;
   color: #B63C2D;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+  height: 300px;
+  align-self: anchor-center; 
+
+}
+
+.login-container1 {
+  background-color: #ffe374;
+  padding: 2rem;
+  border-radius: 8px;
+  display: flex;
+  color: #B63C2D;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+  height: 250px;
+  
 }
 
 .form-control {
@@ -415,6 +435,18 @@ textarea {
   background-color: #FFF7F0;
   color: #333;
 }
+
+}
+
+.form-control {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #E16B44;
+  border-radius: 5px;
+  background-color: #FFF7F0;
+  color: #333;
+}
+
 
 .btn-login {
   background-color: #E16B44;
@@ -539,5 +571,4 @@ hr {
     border-left: none;
     border-top: 3px solid #8b0000;
   }
-}
 }
