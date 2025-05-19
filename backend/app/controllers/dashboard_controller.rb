@@ -39,7 +39,6 @@ class DashboardController < ApplicationController
       @products = @category.products
     end
   end
-end
   layout false
 
   before_action :authenticate_user!
