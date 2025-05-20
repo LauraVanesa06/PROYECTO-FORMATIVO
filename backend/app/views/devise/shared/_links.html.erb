@@ -8,7 +8,7 @@
 <% end %>
 
 <%- if devise_mapping.recoverable? && controller_name != 'passwords' && controller_name != 'registrations' %>
-  <%= link_to "¿Olvidaste tu contraseña?", new_password_path(resource_name), id: "link" %><br />
+  <%= link_to "¿Olvidaste tu contraseña?", custom_new_password_path, id: "link" %><br />
 <% end %>
 
 <%- if devise_mapping.confirmable? && controller_name != 'confirmations' %>
