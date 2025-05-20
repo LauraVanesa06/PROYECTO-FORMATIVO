@@ -27,7 +27,7 @@ class DashboardController < ApplicationController
       @products = @products.where("precio <= ?", params[:max_price])
     end
 
-    # Filtro por proveedores (si existe un parámetro de `supplier_ids`)
+    # Filtro por proveedores (si existe un parámetro de supplier_ids)
     if params[:proveedor_id].present?
       @products = @products.where(supplier_id: params[:proveedor_id])
     end
@@ -48,4 +48,3 @@ class DashboardController < ApplicationController
     redirect_to authenticated_root_path, alert: "No autorizado" unless current_user&.admin?
   end
 end
-
