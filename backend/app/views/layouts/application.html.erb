@@ -39,32 +39,6 @@
   <main>
     <header class="custom-header">
 
-
-        <div class="header-icon"><%= image_tag("header-icon.png", alt: "llave", class: "h-icon" ) %></div>
-        <div class="header-text">
-          <div class="text1-header">ERREMATERIALES</div>
-          <div class="text2-header">EL MAESTRO</div>
-        </div>
-        <div class="header-icon2"><%= image_tag("header-icon2.png", alt: "llave", class: "h-icon2" ) %></div>
-      </header>
-      
-      <nav class="d-flex justify-content-between align-items-center px-3 py4">
-        <div>
-          <%= link_to "Inicio", authenticated_root_path, class: "text-danger me-4" %>
-          <%= link_to 'Productos', productos_path, class: "text-danger me-4" %>
-          <%= link_to 'Contactos', contactos_path, class: "text-danger" %>
-        </div>
-        <div>
-          <% if user_signed_in? %>
-            Bienvenido, <%= current_user.email %> |
-            <%= button_to "Cerrar sesión", destroy_user_session_path, method: :delete, form: { data: { turbo: true } }, id: "cerrar", class: "btn btn-outline-danger btn-sm" %>
-          <% else %>
-          <%= link_to custom_login_path do %>
-            <%= image_tag("nav-icon.png", alt: "Iniciar sesión", class: "login-icon") %>
-          <% end %>
-          
-          
-
       <%= image_tag("header-icon.png", alt: "llave", class: "h-icon" ) %>
 
       <div class="header-text">
@@ -91,14 +65,13 @@
         <% else %>
           <%= link_to new_user_session_path do %>
             <%= image_tag("nav-icon.png", alt: "Iniciar sesión", class: "login-icon") %>
-
           <% end %>
         <% end %>
       </div>
     </nav>
       <section id="main">
         <section id="content">
-          <%= yield %>  
+            <%= yield %>         
         </section>
       </section>
       
