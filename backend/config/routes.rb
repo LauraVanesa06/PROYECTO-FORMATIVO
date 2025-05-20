@@ -1,7 +1,8 @@
 Rails.application.routes.draw do
   
   devise_for :users, controllers: {
-    sessions: 'usuarios/sessions'
+    sessions: 'usuarios/sessions',
+    registrations: 'usuarios/registrations'
   }
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
 
@@ -36,6 +37,7 @@ Rails.application.routes.draw do
  
     devise_scope :user do
       get '/acceso', to: 'usuarios/sessions#new', as: :custom_login
+      get '/registro', to: 'usuarios/registrations#new', as: :custom_signup
     end
       
   
