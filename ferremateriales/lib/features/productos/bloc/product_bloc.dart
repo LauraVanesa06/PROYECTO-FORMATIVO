@@ -16,5 +16,8 @@ class ProductBloc extends Bloc<ProductEvent, ProductState> {
           emit(ProductLoadFailure());
       }
     });
+    on<ProductRegresarPressed>((event, emit) async {
+      emit(ProductInitial());
+    });
   }
 }

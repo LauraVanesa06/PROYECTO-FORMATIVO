@@ -17,7 +17,7 @@ class InitialView extends StatelessWidget {
               onPressed: () {
                 context.read<ProductBloc>().add(ProductEntrarPressed());
               },
-              child: const Text('Presióname'),
+              child: const Text('ver productos'),
             ),
           ],
         ),

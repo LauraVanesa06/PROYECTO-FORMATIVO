@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-class BalanceWidget extends StatelessWidget {
-  const BalanceWidget({super.key});
+class ListaWidget extends StatelessWidget {
+  const ListaWidget({super.key});
 
   @override
   Widget build(BuildContext context) {

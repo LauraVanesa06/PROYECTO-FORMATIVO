@@ -25,7 +25,9 @@ class Ferreteria extends StatelessWidget {
             } else if (state is ProductLoadFailure) {
               return FailureView();
             } else if (state is ProductLoadSuccess) {
-              return SuccessView();
+              return ProductsView();
+            } else if (state is ProductInitial) {
+              return InitialView();
             }
             return InitialView();
           },
