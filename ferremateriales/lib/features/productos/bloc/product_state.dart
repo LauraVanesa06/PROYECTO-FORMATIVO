@@ -10,6 +10,15 @@ final class ProductInitial extends ProductState{}
 
 final class ProductLoadInProgress extends ProductState {}
 
-final class ProductLoadFailure extends ProductState {}
+final class ProductLoadFailure extends ProductState {
+  get message => null;
+}
 
-final class ProductLoadSuccess extends ProductState {}
+final class ProductLoadSuccess extends ProductState {
+  final List<ProductModel> productos;
+
+  ProductLoadSuccess(this.productos);
+
+  get products => null;
+}
+
