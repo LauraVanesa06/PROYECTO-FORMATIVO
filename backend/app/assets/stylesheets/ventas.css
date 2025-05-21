@@ -1,0 +1,22 @@
+.container{
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    padding: 0;
+    gap: 0;
+}
+#sect1{
+    width: 40%;
+    border: 1px solid red;
+    padding: 0;
+}
+#sect2{
+    width: 60%;
+    border: 1px solid green;
+    padding: 0;
+}
+.grafica{
+    height: 370px;
+    width: 100%;
+
+}

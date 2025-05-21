@@ -5,6 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Dashboard Ferretería</title>
   <%= stylesheet_link_tag "dashboard", media: "all" %>
+  <%= stylesheet_link_tag "ventas"%>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
 
@@ -34,17 +36,69 @@
     </div>
   </nav>
 
-  <section>
-    <div class="welcome">
-        <p>Hola, bienvenidos a nuestras Ventas sobre el negocio de Ferremateriales el Maestro</p>
-    </div>
-    
+  <section class="container">
+    <section id=sect1>
+      <canvas id="grafica"></canvas>
+      <script>
+        new Chart(document.getElementById('grafica'), {
+          type: 'line',
+          data: {
+            labels: ['Hoy', 'Semana', 'Mes', 'Año'],
+            datasets: [
+              {
+                label: 'hoy',
+                data: [10, 20, 15, 25],
+                borderColor: 'pink',
+                backgroundColor: 'red',
+                tension: 0.3
+              },
+              {
+                label: 'semana',
+                data: [20, 30, 25, 35],
+                borderColor: 'violet',
+                backgroundColor: 'darkviolet',
+                tension: 0.3
+              },
+              {
+                label: 'mes',
+                data: [5, 15, 10, 18],
+                borderColor: 'lightgreen',
+                backgroundColor: 'green',
+                tension: 0.3
+              },
+              {
+                label: 'año',
+                data: [2, 17, 40, 60],
+                borderColor: 'lightblue',
+                backgroundColor: 'blue',
+                tension: 0.3
+              }
+            ]
+          },
+          options: {
+            responsive: true,
+            plugins: {
+              title: {
+                display: true,
+                text: 'Comparativa por período'
+              }
+            },
+            scales: {
+              y: {
+                beginAtZero: true
+              }
+            }
+          }
+        });
+</script>
+    </section>
+    <section id=sect2>
+      mundo
+
+    </section>
   </section>
 
-  <section>
-
-
-  </section>
+  
 
   <footer>
     &copy; 2025 Ferremateriales el Maestro - Todos los derechos reservados
