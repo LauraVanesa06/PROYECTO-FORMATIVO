@@ -20,6 +20,8 @@ Rails.application.routes.draw do
 
   resources :products
   resources :buys
+  resources :purchasedetails
+  resources :customers
 
   get "ventas" => "dashboard#ventas"
   get "proveedores" => "dashboard#proveedores"

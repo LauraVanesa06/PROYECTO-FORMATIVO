@@ -38,6 +38,9 @@
   </nav>
 
   <section class="container">
+    <div class="cont-volver">
+      <a href="/inventario" class="a-volver" style="text-decoration:none;"><i class="fas fa-arrow-left"></i></a>
+    </div>
     <section id=sect1>
       <div class="degradado">
         <p class= "titulo-cant">Cantidad total de Ventas:</p>
@@ -179,6 +182,7 @@
             <%= render purchasedetail %>
           <% end %>
         </div>
+        <%= link_to "+", new_purchasedetail_path, class: "new-purcha" %>
       </section>
     </section>
   </section>
