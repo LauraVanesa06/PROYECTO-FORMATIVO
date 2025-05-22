@@ -1,22 +1,41 @@
-<div id="<%= dom_id purchasedetail %>">
-  <p>
-    <strong>Buy:</strong>
-    <%= purchasedetail.buy_id %>
-  </p>
+<div id="<%= dom_id purchasedetail %>" class="div-purchase">
+  <div>
+    <p>
+      <strong>Id de compra:</strong>
+      <%= purchasedetail.buy_id %>
+    </p>
+    
+    <p>
+      <strong>Fecha de compra:</strong>
+      <%= purchasedetail.buy.fecha%>
+    </p>
 
-  <p>
-    <strong>Supplier:</strong>
-    <%= purchasedetail.supplier_id %>
-  </p>
+    <p>
+      <strong>Nombre del cliente:</strong>
+      <%= purchasedetail.buy.customer.nombre%>
+    </p>
 
-  <p>
-    <strong>Cantidad:</strong>
-    <%= purchasedetail.cantidad %>
-  </p>
+    <p>
+      <strong>Cantidad:</strong>
+      <%= purchasedetail.cantidad %>
+    </p>
 
-  <p>
-    <strong>Preciounidad:</strong>
-    <%= purchasedetail.preciounidad %>
-  </p>
+    <p>
+      <strong>PrecioXunidad:</strong>
+      <%= purchasedetail.preciounidad %>
+    </p>
 
+    <p>
+      <strong>Nombre del producto:</strong>
+      <%= purchasedetail.product.nombre %>
+    </p>
+
+    <p>
+      <strong>Categoria del producto:</strong>
+      <%= purchasedetail.product.category.nombre%>
+    </p>
+  </div>
+  <div>
+  </div>
 </div>
+

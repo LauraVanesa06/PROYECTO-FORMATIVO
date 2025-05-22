@@ -21,6 +21,9 @@ Rails.application.routes.draw do
   end
 
   resources :products
+  resources :buys
+  resources :purchasedetails
+  resources :customers
 
   get "ventas" => "dashboard#ventas"
   get "proveedores" => "dashboard#proveedores"

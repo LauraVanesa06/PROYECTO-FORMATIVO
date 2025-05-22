@@ -40,21 +40,17 @@
     padding: 0;
     height: 40px;
     font-family: 'roboto', sans-serif;
-    border:1px solid rgb(232, 177, 133);
-    background-color: #ffe7c3;
+    background-color: #ffd9a1;
 }
-.li-nombre a{
-    color: #ec8429;
+.li-nombre a{   
+    color:#f08f35;
+    font-weight: bold;
+    font-size: 14px;
     text-decoration: none;
     height: 100%;
     width: 100%;
 }
-.li-nombre:hover{
-    background-color: #ffd9a1;
-}
 .li-nombre a:hover{
-    color:#ff734c;
-    text-decoration: none;
     font-size: 16px;
 }
 .li-nombre, .li-nombre a, .new-categ, .btn-categ{
@@ -90,6 +86,9 @@
 
 .categorias{
     width: 20%;
+    box-shadow:
+    -3px 0 10px -1px rgb(255, 203, 160),
+     3px 0 10px -1px rgb(255, 203, 160);
 }
 .section-product{
     width: 80%;
