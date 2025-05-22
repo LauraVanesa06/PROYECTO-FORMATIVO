@@ -1,12 +1,24 @@
 <div id="<%= dom_id buy %>">
-  <p>
-    <strong>Customer:</strong>
-    <%= buy.customer_id %>
-  </p>
+  <div>
+      <p>
+      <strong>Id de venta:</strong>
+      <%= buy.id %>
+    </p>
 
-  <p>
-    <strong>Fecha:</strong>
-    <%= buy.fecha %>
-  </p>
+    <p>
+      <strong>Id del cliente:</strong>
+      <%= buy.customer_id %>
+    </p>
 
+    <p>
+      <strong>Fecha:</strong>
+      <%= buy.fecha %>
+    </p>
+
+  </div>
+  <div>
+    <p>
+      <%= link_to "Show this buy", buy %>
+    </p>
+  </div>
 </div>

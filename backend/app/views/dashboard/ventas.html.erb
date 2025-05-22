@@ -7,6 +7,7 @@
   <%= stylesheet_link_tag "dashboard", media: "all" %>
   <%= stylesheet_link_tag "ventas"%>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 </head>
 <body>
 
@@ -38,63 +39,147 @@
 
   <section class="container">
     <section id=sect1>
-      <canvas id="grafica"></canvas>
-      <script>
-        new Chart(document.getElementById('grafica'), {
-          type: 'line',
-          data: {
-            labels: ['Hoy', 'Semana', 'Mes', 'Año'],
-            datasets: [
-              {
-                label: 'hoy',
-                data: [10, 20, 15, 25],
-                borderColor: 'pink',
-                backgroundColor: 'red',
-                tension: 0.3
-              },
-              {
-                label: 'semana',
-                data: [20, 30, 25, 35],
-                borderColor: 'violet',
-                backgroundColor: 'darkviolet',
-                tension: 0.3
-              },
-              {
-                label: 'mes',
-                data: [5, 15, 10, 18],
-                borderColor: 'lightgreen',
-                backgroundColor: 'green',
-                tension: 0.3
-              },
-              {
-                label: 'año',
-                data: [2, 17, 40, 60],
-                borderColor: 'lightblue',
-                backgroundColor: 'blue',
-                tension: 0.3
-              }
-            ]
-          },
-          options: {
-            responsive: true,
-            plugins: {
-              title: {
-                display: true,
-                text: 'Comparativa por período'
-              }
+      <div class="degradado">
+        <p class= "titulo-cant">Cantidad total de Ventas:</p>
+        <div class="conten">
+          <div class="info3"><a class="info2">10</a><a class="info">Hoy</a></div>
+          <div class="info3"><a class="info2">20</a><a class="info">Semana</a></div>
+          <div class="info3"><a class="info2">15</a><a class="info">Mes</a></div>
+          <div class="info3"><a class="info2">40</a><a class="info">Año</a></div>
+        </div>
+        <canvas id="grafica"></canvas>
+        <script>
+          new Chart(document.getElementById('grafica'), {
+            type: 'bar',
+            data: {
+              labels: ['Hoy', 'Semana', 'Mes', 'Año'],
+              datasets: [
+                {
+                  label: 'Minorista',
+                  data: [10, 20, 15, 25],
+                  backgroundColor: '#e2714d',
+                  tension: 0.2,
+                },
+                {
+                  label: 'Mayorista',
+                  data: [20, 30, 25, 35],
+                  backgroundColor: '#f55c7a',
+                  tension: 0.2
+                },
+                {
+                  label: 'Contratista/Empresa',
+                  data: [5, 15, 10, 18],
+                  backgroundColor: '#f08080',
+                  tension: 0.2
+                },
+                {
+                  label: 'Online',
+                  data: [2, 17, 40, 60],
+                  backgroundColor: '#b84030',
+                  tension: 0.2
+                }
+              ]
             },
-            scales: {
-              y: {
-                beginAtZero: true
+            options: {
+              responsive: true,
+              maintainAspectRatio: false,
+              plugins: {
+                legend: {
+                  labels: {
+                    usePointStyle: true,
+                    pointStyle: 'circle',
+                    color: 'black',
+                    font: {
+                      family: 'inconsolata',
+                      size: 10,
+                      weight: 'bold'
+                    }
+                  },
+                  onClick: function (e, legendItem, legend) {
+    const chart = legend.chart;
+    const index = legendItem.datasetIndex;
+
+    // Verificamos si ese es el único visible
+    const isOnlyVisible = chart.data.datasets.every((ds, i) => {
+      const meta = chart.getDatasetMeta(i);
+      return i === index ? !meta.hidden : meta.hidden;
+    });
+
+    // Si ya era el único visible, mostramos todos
+    if (isOnlyVisible) {
+      chart.data.datasets.forEach((ds, i) => {
+        chart.getDatasetMeta(i).hidden = false;
+      });
+    } else {
+      // Ocultamos todos excepto el seleccionado
+      chart.data.datasets.forEach((ds, i) => {
+        chart.getDatasetMeta(i).hidden = i !== index;
+      });
+    }
+
+    chart.update();
+  }
+                }
+              },
+              scales: {
+                y: {
+                  beginAtZero: true,
+                  ticks: {
+                    color: 'black',
+                    font: {
+                      family: 'inconsolata',
+                      size: 10,
+                      weight: 'bold'
+                    }
+                  }
+                },
+                x: {
+                  ticks: {
+                    color: 'black',
+                    font: {
+                      family: 'inconsolata',
+                      size: 10,
+                      weight: 'bold'
+                    }
+                  }
+                }
               }
             }
-          }
-        });
-</script>
+          });
+        </script>
+      </div>
+      <div class="div-white"></div>
     </section>
     <section id=sect2>
-      mundo
-
+      <nav class="nav-filtros">
+        <p class=p><i class="fas fa-filter"></i> Filtros</p>
+        <div class="div">
+          <%= form_tag ventas_path, class:"filtros", method: :get do %>
+            <div class="filtro-id">
+              <%= label_tag :id, "ID:" %>
+              <%= text_field_tag :id, params[:id], placeholder: "Ej: 1", size: 10, style:"border-radius:10px; padding-left: 10px; border:1px solid grey;" %>
+            </div>
+            <div class="filtro-fecha">
+              <%= label_tag :fecha, "Fecha:" %>
+              <%= text_field_tag :year, params[:year], placeholder: "AAAA", size: 4, style:"border-radius:10px; padding-left: 10px; border:1px solid grey;" %>
+              <%= text_field_tag :month, params[:month], placeholder: "MM", size: 2, style:"border-radius:10px; padding-left: 10px; border:1px solid grey;" %>
+              <%= text_field_tag :day, params[:day], placeholder: "DD", size: 2, style:"border-radius:10px; padding-left: 10px; border:1px solid grey;" %>
+            </div>
+            <div>
+              <%= button_tag type: 'submit', class: 'btn-save' do %>
+                <i class="fas fa-search"></i>
+              <% end %>
+            </div>
+          <% end %>
+        </div>
+      </nav>
+      <section class="cont-ventas">
+        <div id="buys">
+          <% @purchasedetails.each do |purchasedetail| %>
+            <%= render purchasedetail %>
+          <% end %>
+        </div>
+      </section>
     </section>
   </section>
 

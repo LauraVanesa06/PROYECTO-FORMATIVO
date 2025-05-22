@@ -19,6 +19,7 @@ Rails.application.routes.draw do
   end
 
   resources :products
+  resources :buys
 
   get "ventas" => "dashboard#ventas"
   get "proveedores" => "dashboard#proveedores"
