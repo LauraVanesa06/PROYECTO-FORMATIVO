@@ -12,7 +12,8 @@ class ProductsPageView extends StatelessWidget {
   Widget build(BuildContext context) {
   return Scaffold(
     appBar: AppBar(
-      title: const Text('Productos'),
+      backgroundColor: Color(0xFFE2714D),
+      title: const Text('FerreMaterial', style: TextStyle(color: Colors.white),),
       automaticallyImplyLeading: false, // Quita la flechita de regreso
       actions: [
         ElevatedButton(
@@ -28,7 +29,7 @@ class ProductsPageView extends StatelessWidget {
         if (state is ProductLoadInProgress) {
           return const Center(child: LoadingView());
         } else if (state is ProductLoadSuccess) {
-          return ProductsList(products: state.products);
+          return ProductsList(products: state.productos);
         } else if (state is ProductLoadFailure) {
           return const Center(child: FailureView());
         } else {

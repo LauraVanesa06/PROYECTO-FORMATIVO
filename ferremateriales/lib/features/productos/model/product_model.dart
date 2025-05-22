@@ -17,15 +17,15 @@ class ProductModel extends Equatable {
     this.stock,
     this.imagenUrl,
   });
-
+  
   factory ProductModel.fromJson(Map<String, dynamic> json) => ProductModel(
-        id: json['id'],
-        nombre: json['nombre'],
-        descripcion: json['descripcion'],
-        precio: (json['precio'] as num).toDouble(),
-        stock: json['stock'],
-        imagenUrl: json['imagenUrl'],
-      );
+      id: json['id'] ?? 0,
+      nombre: json['nombre'] ?? '',
+      descripcion: json['descripcion'] ?? '',
+      precio: (json['precio'] as num?)?.toDouble() ?? 0.0,
+      stock: json['stock'] ?? 0,
+      imagenUrl: json['imagenUrl'] ?? '',
+    );
 
   @override
   List<Object?> get props => [id, nombre, descripcion, precio, stock, imagenUrl];

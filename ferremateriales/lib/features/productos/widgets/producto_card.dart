@@ -16,25 +16,69 @@ class ProductsList extends StatelessWidget {
 
         return Card(
           margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+          
           elevation: 3,
-          child: ListTile(
-            contentPadding: const EdgeInsets.all(12),
-            leading: p.imagenUrl != null
-                ? Image.network(
-                    p.imagenUrl!,
-                    width: 60,
-                    height: 60,
-                    fit: BoxFit.cover,
-                  )
-                : const Icon(Icons.image_not_supported),
-            title: Text(
-              p.nombre ?? 'Sin nombre',
-              style: const TextStyle(fontWeight: FontWeight.bold),
-            ),
-            subtitle: Text(p.descripcion ?? 'Sin descripción'),
-            trailing: Text(
-              '\$${p.precio?.toStringAsFixed(2) ?? '0.00'}',
-              style: const TextStyle(color: Colors.red),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadiusGeometry.circular(12)),
+          child: Container(
+            padding: const EdgeInsets.all(12),
+            constraints: const BoxConstraints(minHeight: 150),
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                // Imagen a la izquierda
+                ClipRRect(
+                  borderRadius: BorderRadius.circular(8),
+                  child: SizedBox(
+                    width: 100,
+                    height: 150,
+                    child:
+                        (p.imagenUrl != null && p.imagenUrl!.isNotEmpty)
+                            ? Image.network(
+                              p.imagenUrl!,
+                              fit: BoxFit.none,
+                              alignment: Alignment.center,
+                              errorBuilder: (context, error, stackTrace) {
+                                return Image.asset('assets/images/Default_not_img.png',);
+                              },
+                            )
+                            : Image.asset(
+                              'assets/images/Default_not_img.png',
+                              fit: BoxFit.cover,
+                            ),
+                  ),
+                ),
+                const SizedBox(width: 16),
+
+                // Texto a la derecha
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        p.nombre ?? 'Sin nombre',
+                        style: const TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 16,
+                        ),
+                      ),
+                      const SizedBox(height: 4),
+                      Text(
+                        p.descripcion ?? 'Sin descripción',
+                        style: const TextStyle(fontSize: 14),
+                      ),
+                      const SizedBox(height: 8),
+                      Text(
+                        '\$${p.precio?.toStringAsFixed(2) ?? '0.00'}',
+                        style: const TextStyle(
+                          color: Colors.red,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 14,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
             ),
           ),
         );

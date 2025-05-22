@@ -10,7 +10,8 @@ class LoadingView extends StatelessWidget {
     return Scaffold(
       body: Center(
         child: Column(
-          children: [CircularProgressIndicator(), Text('Cargando...')],
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [CircularProgressIndicator(),Text(''),Text('Cargando...')],
         ),
       ),
     );
