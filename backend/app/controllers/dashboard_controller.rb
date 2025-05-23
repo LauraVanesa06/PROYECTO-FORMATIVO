@@ -27,7 +27,7 @@ class DashboardController < ApplicationController
       @products = @products.where("precio <= ?", params[:max_price])
     end
 
-    # Filtro por proveedores (si existe un parámetro de `supplier_ids`)
+    # Filtro por proveedores (si existe un parámetro de supplier_ids)
     if params[:proveedor_id].present?
       @products = @products.where(supplier_id: params[:proveedor_id])
     end
@@ -48,3 +48,36 @@ class DashboardController < ApplicationController
     redirect_to authenticated_root_path, alert: "No autorizado" unless current_user&.admin?
   end
 end
+  
+  def ventas
+    @purchasedetails = Purchasedetail.all
+    @purchasedetails = Purchasedetail.joins("INNER JOIN buys ON buys.id = purchasedetails.buy_id")
+
+    if params[:id].present?
+      @purchasedetails = @purchasedetails.where("buys.id = ?", params[:id])
+    end
+
+    if params[:year].present? || params[:month].present? || params[:day].present?
+      conditions = []
+      values = []
+
+      if params[:year].present?
+        conditions << "strftime('%Y', buys.fecha) = ?"
+        values << params[:year]
+      end
+
+      if params[:month].present?
+        conditions << "strftime('%m', buys.fecha) = ?"
+        values << params[:month].rjust(2, '0')
+      end
+
+      if params[:day].present?
+        conditions << "strftime('%d', buys.fecha) = ?"
+        values << params[:day].rjust(2, '0')
+      end
+
+      @purchasedetails = @purchasedetails.where(conditions.join(" AND "), *values)
+    end
+  end
+end
+

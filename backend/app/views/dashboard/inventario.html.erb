@@ -54,17 +54,17 @@
       <ul>
         <li>
           <%= label_tag :query, "Nombre:" %>
-          <%= text_field_tag :query, params[:query], placeholder: "  Ej: Martillo", style:"border-radius:10px; border:1px solid grey;"%> 
+          <%= text_field_tag :query, params[:query], placeholder: "Ej: Martillo", style:"border-radius:10px; padding-left: 10px; border:1px solid grey;"%> 
         </li>
         <li class="li-precio"><a class="a-precio" href="">Rango de Precio</a>
           <ul class="ul-precio">
             <li>
               <%= label_tag :min_price, "Mínimo:  " %>
-              <%= number_field_tag :min_price, params[:min_price], step: 0.01, style:"width: 80px; border-radius:10px; border: grey"%>
+              <%= number_field_tag :min_price, params[:min_price], step: 0.01, style:"width: 80px; border-radius:10px; padding-left: 10px; border: grey"%>
             </li>
             <li>
               <%= label_tag :max_price, "Máximo:  " %>
-              <%= number_field_tag :max_price, params[:max_price], step: 0.01, style:"width: 80px; border-radius:10px; border: grey"%>
+              <%= number_field_tag :max_price, params[:max_price], step: 0.01, style:"width: 80px; border-radius:10px; padding-left: 10px; border: grey"%>
             </li>
           </ul>
         </li>

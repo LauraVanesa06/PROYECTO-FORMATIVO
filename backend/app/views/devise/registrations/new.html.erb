@@ -1,29 +1,50 @@
-<h2>Sign up</h2>
+
+<div class="login">
+  
+
+<div class="base d-flex flex-row align-items-center justify-content-start flex-wrap">
+
+<div class="login-container">
+<% resource = User.new %>
+<% resource_name = :user %>
+<% devise_mapping = Devise.mappings[:user] %>
 
 <%= form_for(resource, as: resource_name, url: registration_path(resource_name)) do |f| %>
   <%= render "devise/shared/error_messages", resource: resource %>
 
+<div class="sign-container">
   <div class="field">
     <%= f.label :email %><br />
-    <%= f.email_field :email, autofocus: true, autocomplete: "email" %>
+    <%= f.email_field :email, autofocus: true, autocomplete: "email" , class: "form-control"%>
   </div>
 
   <div class="field">
     <%= f.label :password %>
     <% if @minimum_password_length %>
-    <em>(<%= @minimum_password_length %> characters minimum)</em>
+    <em class= "text-sign-up">(<%= @minimum_password_length %> Caracteres minimos)</em>
     <% end %><br />
-    <%= f.password_field :password, autocomplete: "new-password" %>
+    <%= f.password_field :password, autocomplete: "new-password" , class: "form-control"%>
   </div>
 
   <div class="field">
     <%= f.label :password_confirmation %><br />
-    <%= f.password_field :password_confirmation, autocomplete: "new-password" %>
+    <%= f.password_field :password_confirmation, autocomplete: "new-password" , class: "form-control"%>
   </div>
 
   <div class="actions">
-    <%= f.submit "Sign up" %>
+    <%= f.submit "Sign up" , class:"btn-login"%>
   </div>
+</div>
 <% end %>
 
-<%= render "devise/shared/links" %>
+<div class="base2 text-center">
+    <h3> BIENVENIDO </h3>
+    <hr> </hr>
+    
+    <div class="text-center mt-3">
+      <%= render "devise/shared/links" %>
+    </div>
+    
+    <hr> </hr> 
+    <%= link_to "Regresar", authenticated_root_path, class:"btn btn-outline-light" ,id: "link" %>
+  </div>  

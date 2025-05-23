@@ -131,7 +131,7 @@ main {
   background-color: #e1a464;
   border-radius: 8px;
   width: 700px;
-  height: 600px;
+  height: 45;
   margin: 100px auto;
   padding-left: 40px;
   box-shadow: 0 6px 12px rgba(0,0,0,0.3);
@@ -151,11 +151,25 @@ main {
   background-color: #ffe374; 
   padding: 2rem;
   border-radius: 8px;
-  width: 300px;
   color: white;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.4);
+  display: flex;
 }
 
+.sign-container {
+  background-color: #ffe374; 
+  padding: 2rem;
+  border-radius: 8px;
+  color: white;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.4);
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.text-sign-up{
+  color: #000;
+}
 
 .form-control {
   width: 100%;
