@@ -4,7 +4,10 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Dashboard Ferretería</title>
+  <%= favicon_link_tag 'header-icon.png' %>
   <%= stylesheet_link_tag "dashboard", media: "all" %>
+  <%= stylesheet_link_tag "clientes" %>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 </head>
 <body>
 
@@ -33,19 +36,65 @@
         </div>
     </div>
   </nav>
-
-  <section>
-    <div class="welcome">
-        <p>Bienvenidos, a nuestros Clientes del negocio de Ferremateriales el Maestro</p>
+  <section class="madre">
+    <div class="filt">
+      <div class="cont-volver">
+        <a href="/clientes" class="a-volver" style="text-decoration:none;"><i class="fas fa-arrow-left"></i></a>
+      </div>
+      <div class="filtro">
+        <p class=p><i class="fas fa-filter"></i> Filtros</p>
+        <div class="div">
+          <%= form_tag clientes_path, class:"filtros", method: :get do %>
+            <div class="filtro-id">
+              <%= label_tag :id, "ID:" %>
+              <%= text_field_tag :id, params[:id], placeholder: "Ej: 1", size: 2, style:"border-radius:10px; padding-left: 10px; border:1px solid grey;" %>
+            </div>
+            <div class="filtro-id">
+              <%= label_tag :name, "Nombre:" %>
+              <%= text_field_tag :name, params[:name], placeholder: "Ej: Juanito", size: 12, style:"border-radius:10px; padding-left: 10px; border:1px solid grey;" %>
+            </div>
+            <div>
+              <%= button_tag type: 'submit', class: 'btn' do %>
+                <i class="fas fa-search"></i>
+              <% end %>
+            </div>
+          <% end %>
+        </div>
+      </div>
     </div>
-    
+    <section class="contenedor">
+      <aside class="clientes">
+        <div class="div-customer">Todos Los Clientes:</div>
+        </div>
+          <% @customers.each do |customer| %>
+            <%= render customer %>
+          <% end %>
+        <div class="btn-customer"><%= link_to "+", new_customer_path, class:"new-customer"%></div>
+      </aside>
+      <section class="cont-facturas">
+        <div id="purcha">
+          <% if @purchasedetails.present? %>
+            <% @purchasedetails.each do |purchasedetail| %>
+              <div id="<%= dom_id purchasedetail %>" class="div-purchase">
+                <div>
+                  <p><strong>Id de compra:</strong> <%= purchasedetail.buy_id %></p>
+                  <p><strong>Fecha de compra:</strong> <%= purchasedetail.buy.fecha %></p>
+                  <p><strong>Nombre del cliente:</strong> <%= purchasedetail.buy.customer.nombre %></p>
+                  <p><strong>Cantidad:</strong> <%= purchasedetail.cantidad %></p>
+                  <p><strong>PrecioXunidad:</strong> <%= purchasedetail.preciounidad %></p>
+                  <p><strong>Nombre del producto:</strong> <%= purchasedetail.product.nombre %></p>
+                  <p><strong>Categoria del producto:</strong> <%= purchasedetail.product.category.nombre %></p>
+                </div>
+              </div>
+            <% end %>
+          <% else %>
+            <p>No se encontraron productos.</p>
+          <% end %>
+        </div>
+        <%= link_to "+", new_purchasedetail_path, class: "new-pur" %>
+      </section>
+    </section>
   </section>
-
-  <section>
-
-
-  </section>
-
   <footer>
     &copy; 2025 Ferremateriales el Maestro - Todos los derechos reservados
   </footer>

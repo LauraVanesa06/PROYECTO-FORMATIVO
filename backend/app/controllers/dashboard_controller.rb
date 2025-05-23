@@ -78,4 +78,30 @@ class DashboardController < ApplicationController
       @purchasedetails = @purchasedetails.where(conditions.join(" AND "), *values)
     end
   end
+
+  def proveedores
+
+  end
+
+  def clientes
+    @customers = Customer.all
+    @purchasedetails = Purchasedetail.all
+
+    if params[:customer_id].present?
+      @customer = Customer.find(params[:customer_id])
+      @purchasedetails = @customer.purchasedetails
+    end
+
+    @customers = Customer.joins(:buys).distinct
+
+  if params[:id].present?
+    @customers = @customers.where(id: params[:id])
+  end
+
+  if params[:name].present?
+    @customers = @customers.where("nombre LIKE ?", "%#{params[:name]}%")
+  end
+
+  @customers = @customers.includes(:buys)
+  end
 end

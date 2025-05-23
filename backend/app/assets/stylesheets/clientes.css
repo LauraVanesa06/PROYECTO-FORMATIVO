@@ -1,0 +1,222 @@
+.madre{
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    height: auto;
+}
+.filt{
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+}
+.cont-volver{
+    display: flex;
+    align-items: center;
+}
+.a-volver{
+    display: flex;
+    justify-content: flex-start !important;
+    font-size: 20px;
+    margin-left: 7px;
+    margin-bottom: 10px;
+    margin-top: 10px;
+    font-weight: bold;
+    font-family: 'Segoe UI', sans-serif;
+    color: #ffc768;
+    margin-left: 10px;
+    padding: 0;
+}
+.filtro{
+    background-color: white;
+    border: solid 1px rgb(255, 179, 38);
+    border-radius: 20px;
+    margin: 10px;
+    margin-right: 20px;
+    height: 40px;
+    display: flex;
+    justify-content: space-between;
+    flex-direction: row;
+    align-items: center;
+    padding: 0;
+    width: 70%;
+}
+.filtros{
+    display: flex;
+    justify-content: space-between;
+    flex-direction: row;
+    align-items: center;
+    width: 370px;
+}
+.p{
+    margin-left: 20px;
+    font-size: 17px;
+    font-weight: bold;
+    font-family: 'Segoe UI', sans-serif;
+    color: #ffc768;
+}
+.btn{
+    background-color: transparent;
+    border: none !important;
+    cursor: pointer;
+    margin-right: 20px;
+}
+.btn, i{
+    color:#ffc768;
+    font-size: 17px;
+}
+.contenedor{
+    height: auto;
+    min-height: 500px;
+    display: flex;
+    flex-direction: row;
+    margin: 0;
+    padding: 0 !important;
+    gap: 0px !important;
+}
+.clientes{
+    width: 20%;
+    height: auto;
+    padding: 0;
+}
+.div-customer{
+    display: flex;
+    justify-content: flex-start !important;
+    font-size: 17px;
+    margin-left: 7px;
+    margin-bottom: 10px;
+    margin-top: -10px;
+    font-weight: bold;
+    font-family: 'Segoe UI', sans-serif;
+    color: #ffc768;
+    margin-left: 10px;
+    padding: 0;
+}
+.cli{
+    display: flex;
+    flex-direction: row;
+    border-radius: 0 13px 13px 0;
+    border: solid 1px rgb(232, 158, 20);
+    width: 90%;
+    background-color: rgb(254, 232, 191);
+    margin-bottom: -1px;
+}
+.cli:hover{
+    border-radius: 0 25px 25px 0;
+}
+.cli p{
+    height: 50px;
+    display: flex;
+    align-items: center;
+}
+.p-id{
+    width: 65px;
+    height: 50px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: rgb(255, 213, 136);
+    font-weight: bold;
+    color: white;
+}
+.p-name{
+    display: flex;
+    align-items: center;
+    width: 100%;
+}
+.p-name a{
+    width: 100%;
+    font-size: 17px;
+    border-radius: 0 13px 13px 0;
+    margin-left: 10px;
+    color:#ffa148;
+    font-weight: bold;
+    text-decoration: none;
+}
+.p-name:hover{   
+    border-radius: 0 25px 25px 0;
+    background-color: rgb(255, 225, 169);
+}
+.btn-customer{
+    width: 100%;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.new-customer{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 10px;
+    margin-bottom: 20px;
+    width: 20px;
+    height: 37px;
+    padding: 12px 20px;
+    border-radius: 50%;
+    text-decoration: none;
+    box-shadow: 0 0 10px #ffe0c1;
+    background-color: #ffd284;
+    color: white;
+    font-family: 'inconsolata';
+    font-size: 25px;
+    font-weight: bold;
+}
+.new-customer:hover{
+    background-color: #ffc768;
+    color: white;
+}
+.cont-facturas{
+    width: 80%;
+    height: auto;
+    background-color: #f7ecde;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    border-radius: 20px;
+}
+.div-purchase{
+    width: 47%;
+    padding: 15px;
+    color:rgba(0, 0, 0, 0.874);
+    background-color: #ffffff;
+    margin: 10px;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    border-radius: 10px;
+    border: 1px solid transparent;
+    box-shadow: 0 0 10px #ffc285;
+}
+#purcha{
+    display: flex;
+    flex-wrap: wrap;
+    width: 100%;
+    gap: 6px;
+    padding: 20px;
+}
+.cont-purcha{
+    padding: 30px;
+}
+.new-pur {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    z-index: 9999;
+    padding: 12px 20px;
+    border-radius: 50%;
+    text-decoration: none;
+    box-shadow: 0 0px 10px rgba(0, 0, 0, 0.3);
+    background-color: #ffc768;
+    color: white;
+    font-family: 'inconsolata';
+    font-size: 25px;
+    font-weight: bold;
+}
+
+.new-pur:hover {
+    background-color: #f9b94b;
+    color: white;
+}

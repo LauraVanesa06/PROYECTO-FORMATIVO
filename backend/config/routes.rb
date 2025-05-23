@@ -13,6 +13,7 @@ Rails.application.routes.draw do
   get "dashboard" => "dashboard#index"
 
   get 'inventario', to: 'dashboard#inventario', as: 'inventario'
+  get 'clientes', to: 'dashboard#clientes', as: 'clientes'
 
   resources :categories, :suppliers do
     member do
@@ -20,14 +21,18 @@ Rails.application.routes.draw do
     end
   end
 
+  resources :customers do
+    member do
+      get :purchasedetails
+    end
+  end
+
   resources :products
   resources :buys
   resources :purchasedetails
-  resources :customers
 
   get "ventas" => "dashboard#ventas"
   get "proveedores" => "dashboard#proveedores"
-  get "clientes" => "dashboard#clientes"
 
 
 
