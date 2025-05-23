@@ -27,6 +27,13 @@
 
   }
 
+
+  .nav-bg{
+    background-image: url(texture-dashboard2.png);
+    background-size: 15%;
+    background-position: center;
+  }
+
   nav ul {
     list-style: none;
     display: flex;
@@ -54,6 +61,16 @@
     gap: 25px;
   }
 
+  .chart-container{
+    background: #fff4ec;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    text-align: center;
+    transition: transform 0.2s;
+
+  }
+
   .welcome{
     padding-top: 90px;
     text-align: center;
@@ -63,6 +80,7 @@
   .container-header{
     margin: auto;
     color: white;
+
   }
 
   .container-nav {
@@ -70,6 +88,7 @@
     justify-content: space-between;
     align-items: center;
     padding: 0 40px;
+
   }
 
   .img-empresa{
@@ -103,8 +122,14 @@
     box-shadow: 0 2px 6px rgba(0,0,0,0.1);
     text-align: center;
     transition: transform 0.2s;
+    background-image: url(background.png);
+    background-size: 100%;
+    
   }
-
+  .card-link{
+  text-decoration: none;
+  color: inherit;
+  }
   .card:hover {
     transform: translateY(-4px);
   }
