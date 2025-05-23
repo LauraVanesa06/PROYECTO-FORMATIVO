@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';  // Importar flutter_bloc
 import 'counter_cubit.dart';  // Importar el archivo donde definimos el Cubit
 
@@ -11,6 +12,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       home: BlocProvider(
+        
         create: (_) => CounterCubit(),  // Crear y proveer el Cubit
         child: HomeScreen(),
       ),
@@ -29,6 +31,7 @@ class HomeScreen extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
+            
             // Mostrar el estado actual del contador
             BlocBuilder<CounterCubit, int>(
               builder: (context, state) {

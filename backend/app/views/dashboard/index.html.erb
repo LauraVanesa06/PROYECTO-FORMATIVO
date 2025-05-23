@@ -4,20 +4,18 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Dashboard Ferretería</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <%= stylesheet_link_tag "dashboard", media: "all" %>
 </head>
 <body>
 
   <header>
     <div class="container-header">
-      <div class="img-empresa">
-        <img src="img/test.png" alt="" width="60px">
-      </div>
       <p>Ferremateriales el Maestro - Dashboard</p>
     </div>
   </header>
 
-  <nav>
+  <nav class="nav-bg">
     <div class="container-nav">
       <ul class="menu">
         <li><a href="dashboard">Inicio</a></li>
@@ -26,42 +24,161 @@
         <li><a href="proveedores">Proveedores</a></li>
         <li><a href="clientes">Clientes</a></li>
       </ul>
-          <% if user_signed_in? %>
-            <%= button_to "Cerrar sesión", destroy_user_session_path, method: :delete, form: { data: { turbo: true } }, id: "cerrar", class: "logout"%>
-          <% end %>
+      <% if user_signed_in? %>
+        <%= button_to "Cerrar sesión", destroy_user_session_path, method: :delete, form: { data: { turbo: true } }, id: "cerrar", class: "logout"%>
+      <% end %>
     </div>
   </nav>
 
   <section>
     <div class="welcome">
-        <p>Hola, bienvenidos a nuestro Dashboard sobre el negocio de Ferremateriales el Maestro</p>
+      <p>¡Bienvenido a nuestro Dashboard, de Ferremateriales!</p>
     </div>
-    
   </section>
+
+  <section style="display: flex; justify-content: space-around; gap: 20px; flex-wrap: wrap; padding: 1px;">
+    <div class="chart-container" style="width: 30%; min-width: 300px; padding: 30px; padding-top: 4%">
+      <canvas id="ventasChart" style></canvas>
+    </div>
+
+    <div class="chart-container" style="width: 20%; min-width: 300px; padding: 20px">
+      <canvas id="tortaChart"></canvas>
+    </div>
+
+    <div class="chart-container" style="width: 30%; min-width: 300px; padding: 20px; padding-top: 4%">
+      <canvas id="lineChart"></canvas>
+    </div>
+  </section>
+
+  
 
   <section>
+    <%= link_to inventario_path, class: "card-link" do %>
+      <div class="card">
+        <h3>Productos en Stock</h3>
+        <p>320</p>
+      </div>
+    <% end %>
 
-    <div class="card">
-      <h3>Productos en Stock</h3>
-      <p>320</p>
-    </div>
-    <div class="card">
-      <h3>Ventas Hoy</h3>
-      <p>$1,850</p>
-    </div>
-    <div class="card">
-      <h3>Pedidos Pendientes</h3>
-      <p>7</p>
-    </div>
-    <div class="card">
-      <h3>Clientes Registrados</h3>
-      <p>120</p>
-    </div>
+    <%= link_to ventas_path, class: "card-link" do %>
+      <div class="card">
+        <h3>Ventas Hoy</h3>
+        <p>$1,850</p>
+      </div>
+    <% end %>
+
+    <%= link_to proveedores_path, class: "card-link" do %>
+      <div class="card">
+        <h3>Pedidos Pendientes</h3>
+        <p>7</p>
+      </div>
+    <% end %>
+
+    <%= link_to clientes_path, class: "card-link" do %>
+      <div class="card">
+        <h3>Clientes Registrados</h3>
+        <p>120</p>
+      </div>
+    <% end %>
   </section>
+
+  
 
   <footer>
     &copy; 2025 Ferremateriales el Maestro - Todos los derechos reservados
   </footer>
+
+
+  
+  <script>
+    const ctx = document.getElementById('ventasChart').getContext('2d');
+    const ventasChart = new Chart(ctx, {
+      type: 'bar',
+      data: {
+        labels: ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes'],
+        datasets: [{
+          label: 'Ventas por día',
+          data: [500, 700, 1200, 900, 1850],
+          backgroundColor: 'rgb(226,113,77)',
+          borderColor: 'rgb(226,113,77)',
+          borderWidth: 1,
+          borderRadius: 5
+        }]
+      },
+      options: {
+        scales: {
+          y: {
+            beginAtZero: true,
+            ticks: {
+              callback: function(value) {
+                return '$' + value;
+              }
+            }
+          }
+        }
+      }
+    });
+
+    const ctx2 = document.getElementById('tortaChart').getContext('2d');
+    new Chart(ctx2, {
+      type: 'pie',
+      data: {
+        labels: ['Herramientas', 'Materiales', 'Accesorios', 'Pinturas'],
+        datasets: [{
+          label: 'Distribución de Inventario',
+          data: [120, 80, 70, 50],
+          backgroundColor: [
+            '#E2714D',
+            '#E29178',
+            '#E2B5A7',
+            '#E2AF88'
+          ],
+          borderColor: '#fff',
+          borderWidth: 2
+        }]
+      },
+      options: {
+        responsive: true,
+        plugins: {
+          legend: {
+            position: 'bottom'
+          }
+        }
+      }
+    });
+
+    const ctx3 = document.getElementById('lineChart').getContext('2d');
+    new Chart(ctx3, {
+      type: 'line',
+      data: {
+        labels: ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio'],
+        datasets: [{
+          label: 'Ventas Mensuales',
+          data: [1200, 1500, 1800, 1600, 2000, 2400],
+          fill: false,
+          borderColor: 'rgb(226,113,77)',
+          backgroundColor: 'rgb(226,113,77)',
+          tension: 0.3,
+          pointBackgroundColor: '#fff',
+          pointBorderColor: 'rgb(226,113,77)'
+        }]
+      },
+      options: {
+        responsive: true,
+        plugins: {
+          legend: {
+            position: 'top'
+          }
+        },
+        scales: {
+          y: {
+            beginAtZero: true
+          }
+        }
+      }
+    });
+
+  </script>
 
 </body>
 </html>

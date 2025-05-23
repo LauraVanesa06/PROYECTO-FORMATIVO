@@ -12,16 +12,26 @@
   header {
     background-color: #b84030;
     color: white;
-    padding: 20px;
+    padding: 30px;
     text-align: center;
     font-size: 30px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    background-image: url(texture-dashboard.png);
+    background-size: 15%;
+    background-position: center;
   }
 
   nav {
     background-color: #e2714d;
     padding: 15px 0px;
     padding-left: 90px;
+
+  }
+
+
+  .nav-bg{
+    background-image: url(texture-dashboard2.png);
+    background-size: 15%;
+    background-position: center;
   }
 
   nav ul {
@@ -51,20 +61,30 @@
     gap: 25px;
   }
 
-  .welcome{
-    padding-top: 90px;
+  .chart-container{
+    background: #fff4ec;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.1);
     text-align: center;
-    font-size: 30px;
+    transition: transform 0.2s;
+    background-image: url(background.png);
+    background-size: 100%;
+  }
+
+  .welcome{
+    padding-top: 50px;
+    border-radius: 10px;
+    text-align: center;
+    font-size: 40px;
+    background-image: url(background.png);
+    background-size: 100%;
   }
 
   .container-header{
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    position: relative;
-    padding: 10px;
-    background-color: #b84030;
+    margin: auto;
     color: white;
+
   }
 
   .container-nav {
@@ -72,6 +92,7 @@
     justify-content: space-between;
     align-items: center;
     padding: 0 40px;
+
   }
 
   .img-empresa{
@@ -105,8 +126,14 @@
     box-shadow: 0 2px 6px rgba(0,0,0,0.1);
     text-align: center;
     transition: transform 0.2s;
+    background-image: url(background.png);
+    background-size: 100%;
+    
   }
-
+  .card-link{
+  text-decoration: none;
+  color: inherit;
+  }
   .card:hover {
     transform: translateY(-4px);
   }

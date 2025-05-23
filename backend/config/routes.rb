@@ -1,7 +1,9 @@
 Rails.application.routes.draw do
   
   devise_for :users, controllers: {
-    sessions: 'usuarios/sessions'
+    sessions: 'usuarios/sessions',
+    registrations: 'usuarios/registrations',
+    passwords: 'usuarios/passwords'
   }
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
 
@@ -19,10 +21,14 @@ Rails.application.routes.draw do
   end
 
   resources :products
+  resources :buys
+  resources :purchasedetails
+  resources :customers
 
   get "ventas" => "dashboard#ventas"
   get "proveedores" => "dashboard#proveedores"
   get "clientes" => "dashboard#clientes"
+
 
 
 
@@ -35,6 +41,8 @@ Rails.application.routes.draw do
  
     devise_scope :user do
       get '/acceso', to: 'usuarios/sessions#new', as: :custom_login
+      get '/registro', to: 'usuarios/registrations#new', as: :custom_signup
+      get '/olvide-contrasena', to: 'usuarios/passwords#new', as: :custom_new_password
     end
       
   
