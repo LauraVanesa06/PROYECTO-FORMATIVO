@@ -10,7 +10,7 @@ class InitialView extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
-        title: Text("FerreMateriales", style: TextStyle(color: Colors.white)),
+        title: Text("Ferremateriales el Maestro", style: TextStyle(color: Colors.white)),
         backgroundColor: Color(0xFFB84030),
       ),
       backgroundColor: Color(0xFFE2714D),
@@ -18,8 +18,8 @@ class InitialView extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Text('Bienvenido', style: TextStyle(color: Colors.white)),
-            Text('Henry Guzman', style: TextStyle(color: Colors.white )),
+            Text('Bienvenido a', style: TextStyle(color: Colors.white)),
+            Text('Ferremateriales el Maestro', style: TextStyle(color: Colors.white )),
             Text(''),
             ElevatedButton(
               onPressed: () {

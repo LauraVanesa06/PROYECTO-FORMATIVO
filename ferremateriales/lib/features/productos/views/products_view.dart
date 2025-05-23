@@ -13,14 +13,14 @@ class ProductsPageView extends StatelessWidget {
   return Scaffold(
     appBar: AppBar(
       backgroundColor: Color(0xFFE2714D),
-      title: const Text('FerreMaterial', style: TextStyle(color: Colors.white),),
+      title: const Text('Productos', style: TextStyle(color: Colors.white),),
       automaticallyImplyLeading: false, // Quita la flechita de regreso
       actions: [
         ElevatedButton(
           onPressed: () {
             context.read<ProductBloc>().add(ProductRegresarPressed());
           },
-          child: const Text('Regresar al Inicio 😎'),
+          child: const Text('Regresar al Inicio'),
         ),
       ],
     ),
