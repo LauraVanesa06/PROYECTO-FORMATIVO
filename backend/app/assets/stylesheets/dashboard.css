@@ -12,16 +12,19 @@
   header {
     background-color: #b84030;
     color: white;
-    padding: 20px;
+    padding: 30px;
     text-align: center;
     font-size: 30px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    background-image: url(texture-dashboard.png);
+    background-size: 15%;
+    background-position: center;
   }
 
   nav {
     background-color: #e2714d;
     padding: 15px 0px;
     padding-left: 90px;
+
   }
 
   nav ul {
@@ -58,12 +61,7 @@
   }
 
   .container-header{
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    position: relative;
-    padding: 10px;
-    background-color: #b84030;
+    margin: auto;
     color: white;
   }
 
