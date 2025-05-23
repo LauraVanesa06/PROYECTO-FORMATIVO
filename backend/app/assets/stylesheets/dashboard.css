@@ -68,13 +68,17 @@
     box-shadow: 0 2px 6px rgba(0,0,0,0.1);
     text-align: center;
     transition: transform 0.2s;
-
+    background-image: url(background.png);
+    background-size: 100%;
   }
 
   .welcome{
-    padding-top: 90px;
+    padding-top: 50px;
+    border-radius: 10px;
     text-align: center;
-    font-size: 30px;
+    font-size: 40px;
+    background-image: url(background.png);
+    background-size: 100%;
   }
 
   .container-header{
