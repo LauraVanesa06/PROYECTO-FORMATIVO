@@ -48,6 +48,7 @@ class DashboardController < ApplicationController
     redirect_to authenticated_root_path, alert: "No autorizado" unless current_user&.admin?
   end
 end
+
   
   def ventas
     @purchasedetails = Purchasedetail.all
@@ -80,4 +81,5 @@ end
     end
   end
 end
+
 
