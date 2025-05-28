@@ -47,7 +47,6 @@ class DashboardController < ApplicationController
   def only_admins
     redirect_to authenticated_root_path, alert: "No autorizado" unless current_user&.admin?
   end
-end
 
   
   def ventas
