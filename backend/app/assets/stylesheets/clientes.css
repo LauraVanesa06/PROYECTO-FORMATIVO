@@ -197,6 +197,12 @@
     gap: 6px;
     padding: 20px;
 }
+#p1{
+    color: red;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+}
 .cont-purcha{
     padding: 30px;
 }

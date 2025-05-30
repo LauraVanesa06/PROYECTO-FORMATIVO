@@ -84,24 +84,34 @@ class DashboardController < ApplicationController
   end
 
   def clientes
-    @customers = Customer.all
+    @customers = Customer.all 
     @purchasedetails = Purchasedetail.all
 
     if params[:customer_id].present?
-      @customer = Customer.find(params[:customer_id])
-      @purchasedetails = @customer.purchasedetails
+      @customer = Customer.find_by(id: params[:customer_id])
+      if @customer
+        @purchasedetails = @customer.purchasedetails.includes(:product, buy: :customer)
+      end
     end
 
-    @customers = Customer.joins(:buys).distinct
+    @customers = Customer.left_outer_joins(:buys).distinct.includes(:buys)
+    @customer = nil
+    @purchasedetails = []
 
-  if params[:id].present?
-    @customers = @customers.where(id: params[:id])
-  end
+    if params[:id].present?
+      @customers = @customers.where(id: params[:id])
+    end
 
-  if params[:name].present?
-    @customers = @customers.where("nombre LIKE ?", "%#{params[:name]}%")
-  end
+    if params[:name].present?
+      @customers = @customers.where("nombre LIKE ?", "%#{params[:name]}%")
+    end
+    
+    if @customers.size == 1
+      @customer = @customers.first
+      @purchasedetails = @customer.purchasedetails.includes(:product, buy: :customer)
+    end
 
-  @customers = @customers.includes(:buys)
-  end
+    @filter_result_empty = @customers.blank?  
+
+  end  
 end
