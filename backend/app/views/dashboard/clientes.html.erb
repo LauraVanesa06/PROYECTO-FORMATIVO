@@ -72,7 +72,7 @@
       </aside>
       <section class="cont-facturas">
         <div id="purcha">
-          <% if @customer.present? && @purchasedetails.present? && @purchasedetails.any? %>
+          <% if @purchasedetails.present? && @purchasedetails.any? %>
             <% @purchasedetails.each do |purchasedetail| %>
               <div id="<%= dom_id purchasedetail %>" class="div-purchase">
                 <div>
