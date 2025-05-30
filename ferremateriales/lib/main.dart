@@ -1,3 +1,79 @@
+
+  import 'package:flutter/material.dart';
+  import 'package:flutter_bloc/flutter_bloc.dart';
+  import 'features/productos/bloc/product_bloc.dart';
+  import 'features/productos/views/initial_view.dart';
+  import 'features/productos/views/products_view.dart';
+  import 'views/failure_view.dart';
+  import 'views/loading_view.dart';
+
+  void main() {
+    runApp(Ferreteria());
+  }
+
+  class Ferreteria extends StatelessWidget {
+    const Ferreteria({super.key});
+
+    @override
+    Widget build(BuildContext context) {
+      return BlocProvider(
+        create: (context) => ProductBloc(),
+        child: MaterialApp(
+          
+          home: BlocBuilder<ProductBloc, ProductState>(
+            builder: (context, state) {
+              if (state is ProductLoadInProgress) {
+                return LoadingView();
+              } else if (state is ProductLoadFailure) {
+                return FailureView();
+              } else if (state is ProductLoadSuccess) {
+                return ProductsPageView();
+              } else if (state is ProductInitial) {
+                return InitialView();
+              }
+              return InitialView();
+            },
+          ),
+        ),
+      );
+    }
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/* import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'features/productos/views/products_view.dart';
 /*import 'package:flutter/material.dart';
 
 void main() {
@@ -32,11 +108,11 @@ class HomePage extends StatelessWidget {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Image.asset('assets/header-icon.png', width: 40), // ícono izquierda
+                Image.asset('assets/header-icon.png', width: 40),
                 SizedBox(width: 10),
                 Column(
                   children: [
-                    Text('ERREMATERIALES',
+                    Text('FERREMATERIALES',
                         style: TextStyle(
                             fontSize: 20,
                             fontWeight: FontWeight.bold,
@@ -49,7 +125,7 @@ class HomePage extends StatelessWidget {
                   ],
                 ),
                 SizedBox(width: 10),
-                Image.asset('assets/header-icon2.png', width: 40), // ícono derecha
+                Image.asset('assets/header-icon2.png', width: 40),
               ],
             ),
           ),
@@ -63,9 +139,9 @@ class HomePage extends StatelessWidget {
               children: [
                 Row(
                   children: [
-                    _navLink('Inicio'),
-                    _navLink('Productos'),
-                    _navLink('Contactos'),
+                    _navLink(context, 'Inicio'),
+                    _navLink(context, 'Productos'),
+                    _navLink(context, 'Contactos'),
                   ],
                 ),
                 Icon(Icons.login, color: Colors.red[800]),
@@ -99,18 +175,29 @@ class HomePage extends StatelessWidget {
     );
   }
 
-  Widget _navLink(String text) {
-    return Padding(
-      padding: EdgeInsets.only(right: 16),
-      child: Text(
-        text,
-        style: TextStyle(
-          color: Colors.red[800],
-          fontWeight: FontWeight.bold,
+  Widget _navLink(BuildContext context, String text) {
+    return InkWell(
+      onTap: () {
+        if (text == 'Productos') {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => ProductsView()),
+          );
+        }
+      },
+      child: Padding(
+        padding: EdgeInsets.only(right: 16),
+        child: Text(
+          text,
+          style: TextStyle(
+            color: Colors.red[800],
+            fontWeight: FontWeight.bold,
+          ),
         ),
       ),
     );
   }
+
 } */
 
 /* BOTON INCREMENTAR 
@@ -122,7 +209,11 @@ import 'counter_cubit.dart';  // Importar el archivo donde definimos el Cubit
 
 void main() {
   runApp(MyApp());
+
 }
+ */
+
+
 
 class MyApp extends StatelessWidget {
   @override
@@ -182,7 +273,7 @@ class HomeScreen extends StatelessWidget {
 }  
 */
 
-import 'package:flutter/material.dart';
+/*import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'valor.dart';
 
@@ -263,4 +354,5 @@ class _PrecioPageState extends State<PrecioPage> {
     );
   }
 }
+*/
 

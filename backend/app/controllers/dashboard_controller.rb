@@ -47,6 +47,7 @@ class DashboardController < ApplicationController
   def only_admins
     redirect_to authenticated_root_path, alert: "No autorizado" unless current_user&.admin?
   end
+
   
   def ventas
     @purchasedetails = Purchasedetail.all
@@ -110,5 +111,7 @@ class DashboardController < ApplicationController
 
     @filter_result_empty = @customers.blank?
   end
+
+end
 
 end
