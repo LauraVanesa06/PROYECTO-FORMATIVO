@@ -55,11 +55,13 @@
 
   section {
     height: 280px;
-    padding: 50px 20px;
-    display: grid;
+    /*padding: 50px 20px;*/
+    display: flex;
     grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-    gap: 25px;
+    /*gap: 25px;*/
   }
+  .welcome{
+    padding-top: 90px;}
 
   .chart-container{
     background: #fff4ec;
