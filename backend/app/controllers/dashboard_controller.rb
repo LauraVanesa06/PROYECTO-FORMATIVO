@@ -50,11 +50,12 @@ class DashboardController < ApplicationController
 
   
   def ventas
+    @buys = Buy.all
     @purchasedetails = Purchasedetail.all
     @purchasedetails = Purchasedetail.joins("INNER JOIN buys ON buys.id = purchasedetails.buy_id")
 
     if params[:id].present?
-      @purchasedetails = @purchasedetails.where("buys.id = ?", params[:id])
+      @buys = @buys.where("buys.id = ?", params[:id])
     end
 
     if params[:year].present? || params[:month].present? || params[:day].present?
@@ -76,7 +77,7 @@ class DashboardController < ApplicationController
         values << params[:day].rjust(2, '0')
       end
 
-      @purchasedetails = @purchasedetails.where(conditions.join(" AND "), *values)
+      @buys = @buys.where(conditions.join(" AND "), *values)
     end
   end
 

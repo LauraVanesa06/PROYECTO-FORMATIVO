@@ -135,10 +135,9 @@ input::placeholder {
     font-size: 17px;
 }
 .cont-ventas{
-    height: 250px;
+    display: flex;
+    justify-content: center;
     width: 90%;
-    padding: 0;
-    height: auto;
 }
 .div-purchase{
     width: 48%;
@@ -158,11 +157,42 @@ input::placeholder {
 }
 #buys{
     display: flex;
-    flex-wrap: wrap;
+    flex-direction: column;
     width: 100%;
 }
-
-.new-purcha {
+.buy-id{
+    width: 100%;
+    color:white;
+    border: solid 2px #dd5948d7;
+    background-color: #dd5948a6;
+    border-radius: 10px;
+    margin-bottom: 10px;
+    display: flex;
+    flex-direction: row;
+    align-items: center;  
+    justify-content: space-between;
+    padding-block: 5px;
+    padding-inline: 20px;
+}
+.boton-ver{
+    display: flex;
+    justify-content: center;
+    align-items: center;  
+    border: solid 1px #c23e2dd7;
+    border-radius: 5px;
+    height: 25px;
+    width: 96px;
+    background-color: #d97568d7;
+}
+.show-buy{
+    text-decoration: none;
+    color: #b03524d7;
+}
+.show-buy:hover, .boton-ver:hover{
+    background-color: #e67b6d;
+    color: #af4537d7;
+}
+.new-buy {
     position: fixed;
     bottom: 20px;
     right: 20px;
@@ -193,4 +223,76 @@ input::placeholder {
     color: #ff8b3e;
     margin-left: 10px;
     padding: 0;
+}
+
+.modal {
+    display: none;
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background: rgba(0, 0, 0, 0.6);
+    z-index: 9999;
+}
+
+.modal:target {
+    display: block;
+}
+
+.modal-content {
+    border: 1px transparent;
+    box-shadow: 0 0px 10px rgba(0, 0, 0, 0.3);
+    background: white;
+    padding: 20px;
+    padding-top: 30px;
+    margin: 100px auto;
+    width: 600px;
+    border-radius: 25px;
+    position: relative;
+    display: flex;
+    flex-direction: row;
+}
+
+.close {
+    position: absolute;
+    top: 5px; right: 5px;
+    text-decoration: none;
+    font-size: 25px;
+    font-weight: bold;
+    color: #424242;
+    width: 30px;
+    height: 30px;
+    font-family: 'inconsolata';
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.close:hover{
+    background-color: rgb(252, 102, 102);
+    border-radius: 50px;
+    color: white;
+}
+.div-foto-model{
+    margin-left: 20px;
+    margin-right: 5px;
+    width: auto;
+    height: auto;
+}
+#foto-model a img, #foto-model{
+    width: 230px;
+    height: 250px;
+    opacity: 0.7;
+}
+#foto-model{
+    margin-top: 12px;
+}
+.texto-model{
+    list-style: none;
+    margin: 20px;
+    margin-top: 5px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+.texto-model li{
+    font-size: 20px;
 }
