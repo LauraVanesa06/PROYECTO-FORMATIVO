@@ -60,8 +60,15 @@
     grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
     /*gap: 25px;*/
   }
-  .welcome{
-    padding-top: 90px;}
+
+  .section-card{
+    height: 280px;
+    padding: 3% 9%;
+    display: flex;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 25px;
+  }
+
 
   .chart-container{
     background: #fff4ec;
@@ -75,10 +82,11 @@
   }
 
   .welcome{
-    padding-top: 50px;
+    padding-top: 100px;
     border-radius: 10px;
     text-align: center;
     font-size: 40px;
+    width: 100%;
     background-image: url(background.png);
     background-size: 100%;
   }

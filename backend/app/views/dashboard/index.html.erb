@@ -35,7 +35,7 @@
       <p>¡Bienvenido a nuestro Dashboard, de Ferremateriales!</p>
     </div>
   </section>
-
+  </br>
   <section style="display: flex; justify-content: space-around; gap: 20px; flex-wrap: wrap; padding: 1px;">
     <div class="chart-container" style="width: 30%; min-width: 300px; padding: 30px; padding-top: 4%">
       <canvas id="ventasChart" style></canvas>
@@ -50,9 +50,10 @@
     </div>
   </section>
 
-  
+  <br>
+  <br>
 
-  <section>
+  <section class="section-card">
     <%= link_to inventario_path, class: "card-link" do %>
       <div class="card">
         <h3>Productos en Stock</h3>
