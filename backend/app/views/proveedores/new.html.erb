@@ -1,2 +1,12 @@
 <h1>Proveedores#proveedor</h1>
-<p>Find me in app/views/proveedores/proveedor.html.erb</p>
+<% content_for :title, "Nuevo proovedor" %>
+
+<h1>Nuevo proovedor</h1>
+
+<%= render "form", proveedor: @proveedor %>
+
+<br>
+
+<div>
+  <%= link_to "Devolver a la lista general", proveedores_path %>
+</div>

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_05_30_035039) do
+ActiveRecord::Schema[8.0].define(version: 2025_06_04_211803) do
   create_table "buys", force: :cascade do |t|
     t.integer "customer_id", null: false
     t.datetime "fecha"
@@ -43,6 +43,16 @@ ActiveRecord::Schema[8.0].define(version: 2025_05_30_035039) do
     t.integer "supplier_id", null: false
     t.index ["category_id"], name: "index_products_on_category_id"
     t.index ["supplier_id"], name: "index_products_on_supplier_id"
+  end
+
+  create_table "proveedores", force: :cascade do |t|
+    t.string "nombre"
+    t.string "tipoProducto"
+    t.string "direccion"
+    t.integer "telefono"
+    t.string "correo"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
   create_table "proveedors", force: :cascade do |t|
