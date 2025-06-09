@@ -13,7 +13,9 @@
 # Ignore all logfiles and tempfiles.
 /log/*
 /tmp/*
-!/log/.keep
+!/log/.keep# Ignorar base de datos de desarrollo
+/db/development.sqlite3
+/db/development.sqlite3-*
 !/tmp/.keep
 
 # Ignore pidfiles, but keep the directory.
@@ -32,6 +34,5 @@
 
 # Ignore master key for decrypting credentials and more.
 /config/master.key
-
 
 /backend/db/development.sqlite3
