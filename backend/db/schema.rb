@@ -55,16 +55,6 @@ ActiveRecord::Schema[8.0].define(version: 2025_06_04_211803) do
     t.datetime "updated_at", null: false
   end
 
-  create_table "proveedors", force: :cascade do |t|
-    t.string "nombre"
-    t.string "tipoProducto"
-    t.string "direccion"
-    t.integer "telefono"
-    t.string "correo"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-  end
-
   create_table "purchasedetails", force: :cascade do |t|
     t.integer "cantidad"
     t.decimal "preciounidad"
