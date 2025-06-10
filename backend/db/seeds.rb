@@ -8,6 +8,12 @@
 #     MovieGenre.find_or_create_by!(name: genre_name)
 #   end
 
+def reset_sqlite_sequences(*tables)
+  tables.each do |table|
+    ActiveRecord::Base.connection.execute("DELETE FROM sqlite_sequence WHERE name='#{table}'")
+  end
+end
+
 Purchasedetail.delete_all
 Buy.delete_all
 Product.delete_all
@@ -16,6 +22,17 @@ Supplier.delete_all
 Customer.delete_all
 Proveedor.delete_all
 User.delete_all
+
+reset_sqlite_sequences(
+  'purchasedetails',
+  'buys',
+  'products',
+  'categories',
+  'suppliers',
+  'customers',
+  'proveedores',
+  'users'
+)
 
 User.create!(
   email: "user@gmail.com",
