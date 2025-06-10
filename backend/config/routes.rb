@@ -13,6 +13,7 @@ Rails.application.routes.draw do
   get "dashboard" => "dashboard#index"
 
   get 'inventario', to: 'dashboard#inventario', as: 'inventario'
+  get 'clientes', to: 'dashboard#clientes', as: 'clientes'
 
   resources :categories, :suppliers do
     member do
@@ -20,14 +21,18 @@ Rails.application.routes.draw do
     end
   end
 
+  resources :customers, :buys do
+    member do
+      get :purchasedetails
+    end
+  end
+
   resources :products
   resources :buys
   resources :purchasedetails
-  resources :customers
 
   get "ventas" => "dashboard#ventas"
   get "proveedores" => "dashboard#proveedores"
-  get "clientes" => "dashboard#clientes"
 
 
 
@@ -36,6 +41,8 @@ Rails.application.routes.draw do
   get 'productos', to: 'home#producto'
   get 'contactos', to: 'home#contacto'
 
+  
+  resources :proveedores
     # Otras rutas que tengas
     #login
  
@@ -46,7 +53,6 @@ Rails.application.routes.draw do
     end
       
   
-
   # Render dynamic PWA files from app/views/pwa/* (remember to link manifest in application.html.erb)
   # get "manifest" => "rails/pwa#manifest", as: :pwa_manifest
   # get "service-worker" => "rails/pwa#service_worker", as: :pwa_service_worker

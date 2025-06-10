@@ -1,0 +1,7 @@
+<h2>Detalles de la compra</h2>
+
+<% @purchasedetails.each do |purchasedetail| %>
+  <%= render partial: "purchasedetails/purchasedetail", locals: { purchasedetail: purchasedetail } %>
+<% end %>
+
+

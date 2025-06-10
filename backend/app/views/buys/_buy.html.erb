@@ -1,4 +1,4 @@
-<div id="<%= dom_id buy %>">
+<div id="<%= dom_id buy %>" class="buy-id">
   <div>
       <p>
       <strong>Id de venta:</strong>
@@ -6,19 +6,20 @@
     </p>
 
     <p>
-      <strong>Id del cliente:</strong>
-      <%= buy.customer_id %>
+      <strong>Nombre del cliente:</strong>
+      <%= buy.customer.nombre %>
     </p>
 
     <p>
-      <strong>Fecha:</strong>
+      <strong>Fecha de la compra:</strong>
       <%= buy.fecha %>
     </p>
 
   </div>
-  <div>
+  <div class="boton-ver">
     <p>
-      <%= link_to "Show this buy", buy %>
+      <!--<%= link_to "ver detalles", purchasedetails_buy_path(buy), class:"show-buy"%>-->
+      <%= link_to "Ver detalles", "#modal-#{buy.id}", class:"show-buy"%>
     </p>
   </div>
 </div>

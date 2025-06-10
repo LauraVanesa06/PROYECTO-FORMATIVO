@@ -1,12 +1,8 @@
-<div id="<%= dom_id customer %>">
-  <p>
-    <strong>Name:</strong>
-    <%= customer.name %>
+<div id="<%= dom_id customer %>" class="cli">
+  <p class="p-id">
+    <%= customer.id %>
   </p>
-
-  <p>
-    <strong>Telephone:</strong>
-    <%= customer.telephone %>
+  <p class="p-name">
+    <%= link_to customer.nombre, clientes_path(customer_id: customer.id) %>
   </p>
-
 </div>
