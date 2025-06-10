@@ -8,7 +8,6 @@
 #     MovieGenre.find_or_create_by!(name: genre_name)
 #   end
 
-# Limpia las tablas en orden inverso para evitar errores por dependencias
 Purchasedetail.delete_all
 Buy.delete_all
 Product.delete_all
@@ -18,14 +17,12 @@ Customer.delete_all
 Proveedor.delete_all
 User.delete_all
 
-# Crear usuarios
 User.create!(
   email: "user@gmail.com",
   password: "123456",
   role: "admin"
 )
 
-# Crear categorías
 categories = Category.create!([
   { nombre: "Martillos" },
   { nombre: "Clavos" },
@@ -34,7 +31,6 @@ categories = Category.create!([
   { nombre: "Herramientas" }
 ])
 
-# Crear proveedores (en inglés y español, como aparecen ambos en tu schema)
 suppliers = Supplier.create!([
   { nombre: "Ferretería Industrial Martínez S.A. de C.V.", contacto: "Carlos Pérez" },
   { nombre: "Suministros y Herramientas del Norte", contacto: "Ana Gómez" },
@@ -48,7 +44,6 @@ proveedores = Proveedor.create!([
   { nombre: "Distribuidor B", tipoProducto: "Materiales", direccion: "Calle Norte 45", telefono: 5555678, correo: "b@correo.com" }
 ])
 
-# Crear productos
 products = Product.create!([
   {
     nombre: "Martillo",
@@ -252,7 +247,6 @@ products = Product.create!([
   }
 ])
 
-# Crear clientes
 customers = Customer.create!([
   { nombre: "Juan Pérez", telefono: "555-0101" },
   { nombre: "Laura Torres", telefono: "555-0202" },
@@ -261,7 +255,6 @@ customers = Customer.create!([
   { nombre: "Falcao Torres", telefono: "555-0121" }
 ])
 
-# Crear compras
 buys = Buy.create!([
   { customer: customers[0], fecha: Time.current },
   { customer: customers[1], fecha: Time.current },
@@ -270,18 +263,35 @@ buys = Buy.create!([
   { customer: customers[4], fecha: Time.current },
 ])
 
-# Crear detalles de compra
 Purchasedetail.create!([
   {
     buy: buys[0],
     product: products[0],
     cantidad: 2,
-    preciounidad: 45.99
+    preciounidad: 25.99
   },
   {
     buy: buys[1],
     product: products[1],
+    cantidad: 5,
+    preciounidad: 9.50
+  },
+  {
+    buy: buys[2],
+    product: products[2],
     cantidad: 1,
-    preciounidad: 19.50
+    preciounidad: 30.50
+  },
+  {
+    buy: buys[3],
+    product: products[3],
+    cantidad: 4,
+    preciounidad: 12.50
+  },
+  {
+    buy: buys[4],
+    product: products[4],
+    cantidad: 1,
+    preciounidad: 17.50
   }
 ])
