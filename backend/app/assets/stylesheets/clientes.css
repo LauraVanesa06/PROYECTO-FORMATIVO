@@ -226,3 +226,108 @@
     background-color: #f9b94b;
     color: white;
 }
+@media (max-width: 900px) {
+  .contenedor {
+    flex-direction: column;
+    gap: 20px !important;
+  }
+  .clientes, .cont-facturas {
+    width: 100%;
+    min-width: 0;
+    padding: 0 10px;
+  }
+  .cont-facturas {
+    margin-top: 20px;
+  }
+  #purcha {
+    flex-direction: column;
+    flex-wrap: nowrap;
+    padding: 10px;
+    gap: 10px;
+  }
+  .div-purchase {
+    width: 98%;
+    margin: 8px auto;
+    flex-direction: column;
+    align-items: flex-start;
+    font-size: 15px;
+  }
+  .cont-purcha {
+    padding: 15px;
+  }
+}
+
+@media (max-width: 600px) {
+  .madre {
+    padding: 0 2px;
+  }
+  .filt {
+    flex-direction: column;
+    gap: 8px;
+    align-items: stretch;
+  }
+  .filtro {
+    width: 98%;
+    min-width: 0;
+    margin: 5px 0;
+    flex-direction: column;
+    height: auto;
+    padding: 5px 2px;
+    gap: 5px;
+  }
+  .filtros {
+    flex-direction: column;
+    width: 100%;
+    gap: 5px;
+    align-items: stretch;
+  }
+  .p {
+    font-size: 15px;
+    margin-left: 5px;
+  }
+  .contenedor {
+    flex-direction: column;
+    gap: 10px !important;
+    padding: 0 2px !important;
+  }
+  .clientes, .cont-facturas {
+    width: 100%;
+    min-width: 0;
+    padding: 0 2px;
+  }
+  .cli {
+    width: 100%;
+    font-size: 14px;
+  }
+  .p-id {
+    width: 50px;
+    font-size: 13px;
+  }
+  .p-name a {
+    font-size: 14px;
+    margin-left: 5px;
+  }
+  .div-purchase {
+    width: 100%;
+    margin: 6px 0;
+    flex-direction: column;
+    align-items: flex-start;
+    font-size: 13px;
+    padding: 10px 4px;
+  }
+  #purcha {
+    flex-direction: column;
+    flex-wrap: nowrap;
+    padding: 6px 2px;
+    gap: 6px;
+  }
+  .cont-purcha {
+    padding: 8px;
+  }
+  .new-customer, .new-pur {
+    font-size: 18px;
+    padding: 10px 14px;
+    bottom: 10px;
+    right: 10px;
+  }
+}
