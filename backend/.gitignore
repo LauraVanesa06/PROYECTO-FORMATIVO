@@ -35,3 +35,4 @@
 
 
 /backend/db/development.sqlite3
+/backend/db/*.sqlite3
