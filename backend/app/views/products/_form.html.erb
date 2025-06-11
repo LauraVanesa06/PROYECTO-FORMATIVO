@@ -37,12 +37,12 @@
     :id, :nombre, prompt: "Seleccione una categoría" %> 
   </div>
    <div>
-    <%= form.label : provider_id, "Proveedor" %> 
+    <%= form.label :provider_id, "Proveedor" %> 
     <%= form.collection_select :supplier_id, Supplier.all,
      :id, :nombre, prompt: "Seleccione un proveedor" %>  
   </div> 
 
-  
+
 
   <div>
     <%= form.submit %>
