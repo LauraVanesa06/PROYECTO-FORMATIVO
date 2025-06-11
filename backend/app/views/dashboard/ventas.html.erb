@@ -39,7 +39,7 @@
 
   <section class="container">
     <div class="cont-volver">
-      <a href="/inventario" class="a-volver" style="text-decoration:none;"><i class="fas fa-arrow-left"></i></a>
+      <a href="/ventas" class="a-volver" style="text-decoration:none;"><i class="fas fa-arrow-left"></i></a>
     </div>
     <section id=sect1>
       <div class="degradado">
@@ -176,14 +176,58 @@
           <% end %>
         </div>
       </nav>
-      <section class="cont-ventas">
+      <div class="cont-ventas">
         <div id="buys">
-          <% @purchasedetails.each do |purchasedetail| %>
-            <%= render purchasedetail %>
+          <% if @buys.present? %>
+            <% @buys.each do |buy| %>
+              <%= render buy %>
+
+              <% buy.purchasedetails.each do |purchasedetail| %>
+                <div id="modal-<%= purchasedetail.id %>" class="modal">
+                  <div class="modal-content">
+                    <a href="#" class="close">&times;</a>
+                    <div class="div-foto-model"><div id="foto-model"><%= link_to image_tag("detalles_compra.png")%></div></div>
+                    <div class="texto-model">
+                      <li class="li-start-model">
+                        <strong  class="titulo">Id de compra:</strong>
+                        <%= purchasedetail.buy_id %>
+                      </li>
+                      <li>
+                        <strong  class="titulo">Fecha de compra:</strong>
+                        <%= purchasedetail.buy.fecha%>
+                      </li>
+                      <li>
+                        <strong  class="titulo">Nombre del cliente:</strong>
+                        <%= purchasedetail.buy.customer.nombre%>
+                      </li>
+                      <li>
+                        <strong class="titulo">Cantidad:</strong>
+                        <%= purchasedetail.cantidad %>
+                      </li>
+                      <li>
+                        <strong class="titulo">PrecioXunidad:</strong>
+                        <%= purchasedetail.preciounidad %>
+                      </li>
+                      <li>
+                        <strong class="titulo">Nombre del producto:</strong>
+                        <%= purchasedetail.product.nombre %>
+                      </li>
+                      <li>
+                        <strong class="titulo">Categoria del producto:</strong>
+                        <%= purchasedetail.product.category.nombre%>
+                      </li>
+                    </div>
+                  </div>
+                </div>
+              <%end%>
+              
+            <% end %>
+          <% else %>
+            <p>No se encontraron compras.</p>
           <% end %>
+          <%= link_to "+", new_buy_path, class: "new-buy" %>
         </div>
-        <%= link_to "+", new_purchasedetail_path, class: "new-purcha" %>
-      </section>
+      </div>
     </section>
   </section>
 

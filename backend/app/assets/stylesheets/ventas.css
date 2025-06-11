@@ -45,17 +45,19 @@
     margin-bottom: 45px;
     margin-top: 25px;
 }
-.info3{
+.info3 {
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
     padding: 5px;
     border-radius: 25px;
-    width: 70px;
+    width: 120px;      /* Más ancho que antes */
     height: 70px;
     border:1px solid #e2714d;
     background-color: #ffead8;
+    transition: width 0.2s;
+    margin: 0 auto; /* Centrado horizontal */
 }
 .titulo-cant{
     margin-top: 40px;
@@ -135,10 +137,9 @@ input::placeholder {
     font-size: 17px;
 }
 .cont-ventas{
-    height: 250px;
+    display: flex;
+    justify-content: center;
     width: 90%;
-    padding: 0;
-    height: auto;
 }
 .div-purchase{
     width: 48%;
@@ -158,11 +159,42 @@ input::placeholder {
 }
 #buys{
     display: flex;
-    flex-wrap: wrap;
+    flex-direction: column;
     width: 100%;
 }
-
-.new-purcha {
+.buy-id{
+    width: 100%;
+    color:white;
+    border: solid 2px #dd5948d7;
+    background-color: #dd5948a6;
+    border-radius: 10px;
+    margin-bottom: 10px;
+    display: flex;
+    flex-direction: row;
+    align-items: center;  
+    justify-content: space-between;
+    padding-block: 5px;
+    padding-inline: 20px;
+}
+.boton-ver{
+    display: flex;
+    justify-content: center;
+    align-items: center;  
+    border: solid 1px #c23e2dd7;
+    border-radius: 5px;
+    height: 25px;
+    width: 96px;
+    background-color: #d97568d7;
+}
+.show-buy{
+    text-decoration: none;
+    color: #b03524d7;
+}
+.show-buy:hover, .boton-ver:hover{
+    background-color: #e67b6d;
+    color: #af4537d7;
+}
+.new-buy {
     position: fixed;
     bottom: 20px;
     right: 20px;
@@ -193,4 +225,238 @@ input::placeholder {
     color: #ff8b3e;
     margin-left: 10px;
     padding: 0;
+}
+
+.modal {
+    display: none;
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background: rgba(0, 0, 0, 0.6);
+    z-index: 9999;
+}
+
+.modal:target {
+    display: block;
+}
+
+.modal-content {
+    border: 1px transparent;
+    box-shadow: 0 0px 10px rgba(0, 0, 0, 0.3);
+    background: white;
+    padding: 20px;
+    padding-top: 30px;
+    margin: 100px auto;
+    width: 600px;
+    border-radius: 25px;
+    position: relative;
+    display: flex;
+    flex-direction: row;
+}
+
+.close {
+    position: absolute;
+    top: 5px; right: 5px;
+    text-decoration: none;
+    font-size: 25px;
+    font-weight: bold;
+    color: #424242;
+    width: 30px;
+    height: 30px;
+    font-family: 'inconsolata';
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.close:hover{
+    background-color: rgb(252, 102, 102);
+    border-radius: 50px;
+    color: white;
+}
+.div-foto-model{
+    margin-left: 20px;
+    margin-right: 5px;
+    width: auto;
+    height: auto;
+}
+#foto-model a img, #foto-model{
+    width: 230px;
+    height: 250px;
+    opacity: 0.7;
+}
+#foto-model{
+    margin-top: 12px;
+}
+.texto-model{
+    list-style: none;
+    margin: 20px;
+    margin-top: 5px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+.texto-model li{
+    font-size: 20px;
+}
+
+@media (max-width: 900px) {
+  .container {
+    flex-direction: column;
+    padding: 0 10px;
+    gap: 16px;
+  }
+  #sect1, #sect2 {
+    width: 100%;
+    max-width: 100%;
+    margin-left: 0;
+    box-shadow: none;
+    padding: 0 2px;
+  }
+  .conten {
+    flex-direction: column;
+    gap: 12px;
+    align-items: stretch;
+  }
+  .div-purchase, .buy-id {
+    width: 100%;
+    margin-right: 0;
+    flex-direction: column;
+    align-items: flex-start;
+    padding-inline: 10px;
+  }
+  .nav-filtros {
+    flex-direction: column;
+    height: auto;
+    gap: 8px;
+    padding: 8px 2px;
+    width: 100%;
+    margin-right: 0;
+  }
+  .new-buy {
+    font-size: 20px;
+    padding: 10px 14px;
+    bottom: 10px;
+    right: 10px;
+  }
+  .a-volver {
+    font-size: 15px;
+    margin-left: 0;
+    margin-bottom: 8px;
+    margin-top: 8px;
+  }
+  .modal-content {
+    width: 95vw;
+    min-width: 0;
+    padding: 10px 2px;
+    flex-direction: column;
+    margin: 30px auto;
+  }
+  #foto-model a img, #foto-model {
+    width: 120px;
+    height: 140px;
+  }
+  .texto-model li {
+    font-size: 15px;
+  }
+  .logout {
+    font-size: 0.9rem;
+    padding: 6px 16px;
+    margin: 10px 0 0 0;
+    background: #e2714d;      /* Fondo fuerte */
+    color: #fff;              /* Texto blanco */
+    border-radius: 8px;
+    box-shadow: 0 1px 4px #ffe0c1;
+    align-self: flex-end;
+    width: auto;
+    min-width: unset;
+    max-width: unset;
+    display: block;
+    border: none;
+  }
+  .info3 {
+    width: 100px;    /* Más ancho en tablet/mobile */
+    margin: 10px auto; /* Centrado horizontal y separación */
+  }
+}
+
+@media (max-width: 600px) {
+  .container {
+    flex-direction: column;
+    padding: 0 2px;
+    gap: 8px;
+  }
+  #sect1, #sect2 {
+    width: 100%;
+    font-size: 14px;
+    margin-left: 0;
+    box-shadow: none;
+    min-width: 0;
+    padding: 0 1px;
+  }
+  .conten {
+    flex-direction: column;
+    gap: 8px;
+    align-items: stretch;
+  }
+  .div-purchase, .buy-id {
+    width: 100%;
+    margin-right: 0;
+    flex-direction: column;
+    align-items: flex-start;
+    padding-inline: 6px;
+  }
+  .nav-filtros {
+    flex-direction: column;
+    gap: 4px;
+    padding: 4px 1px;
+    width: 100%;
+    margin-right: 0;
+    height: auto;
+  }
+  .new-buy {
+    font-size: 16px;
+    padding: 8px 10px;
+    bottom: 6px;
+    right: 6px;
+  }
+  .a-volver {
+    font-size: 13px;
+    margin-left: 0;
+    margin-bottom: 6px;
+    margin-top: 6px;
+  }
+  .modal-content {
+    width: 98vw;
+    min-width: 0;
+    padding: 6px 1px;
+    flex-direction: column;
+    margin: 10px auto;
+  }
+  #foto-model a img, #foto-model {
+    width: 80px;
+    height: 100px;
+  }
+  .texto-model li {
+    font-size: 11px;
+  }
+  .logout {
+    font-size: 0.8rem;
+    padding: 5px 12px;
+    margin-top: 8px;
+    background: #e2714d;      /* Fondo fuerte */
+    color: #fff;              /* Texto blanco */
+    border-radius: 8px;
+    box-shadow: 0 1px 3px #ffe0c1;
+    width: auto;
+    min-width: unset;
+    max-width: unset;
+    display: block;
+    border: none;
+  }
+  .info3 {
+    width: 90vw;     /* Ocupa casi todo el ancho en móvil */
+    max-width: 300px;
+    min-width: 120px;
+    margin: 8px auto; /* Centrado horizontal y separación */
+  }
 }

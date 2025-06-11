@@ -5,6 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Dashboard Ferretería</title>
   <%= stylesheet_link_tag "dashboard", media: "all" %>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+
 </head>
 <body>
 
@@ -35,14 +37,27 @@
   </nav>
 
   <section>
-    <div class="welcome">
-        <p>Hola, bienvenidos a nuestros Proveedores sobre el negocio de Ferremateriales el Maestro</p>
-    </div>
+
+
+<div class="card" style="width: 18rem;">
+  <div class="card-body">
+    <h5 class="card-title"> NOMBRE PROOVEDOR </h5>
+    <p class="card-text">Ubicacion </p>
+    <p class="card-text">Tipo producto </p>
+    <p class="card-text">Numero </p>
+    <p class="card-text"> Correo electronico <p/>
+    <a href="#" class="card-link">Editar info </a>
+    <a href="#" class="card-link">Ver </a>
+  </div>
+</div>
     
   </section>
 
   <section>
 
+<%= link_to  new_proveedor_path, class: "btn btn-primary btn-lg rounded-circle position-fixed", style: "bottom: 30px; right: 30px; z-index: 1000;" do %>
+  <i class="bi bi-plus-lg"></i>
+<% end %>
 
   </section>
 

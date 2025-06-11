@@ -50,11 +50,12 @@ class DashboardController < ApplicationController
 
   
   def ventas
+    @buys = Buy.all
     @purchasedetails = Purchasedetail.all
     @purchasedetails = Purchasedetail.joins("INNER JOIN buys ON buys.id = purchasedetails.buy_id")
 
     if params[:id].present?
-      @purchasedetails = @purchasedetails.where("buys.id = ?", params[:id])
+      @buys = @buys.where("buys.id = ?", params[:id])
     end
 
     if params[:year].present? || params[:month].present? || params[:day].present?
@@ -76,9 +77,40 @@ class DashboardController < ApplicationController
         values << params[:day].rjust(2, '0')
       end
 
-      @purchasedetails = @purchasedetails.where(conditions.join(" AND "), *values)
+      @buys = @buys.where(conditions.join(" AND "), *values)
     end
   end
+
+  def proveedores
+
+  end
+
+  def clientes
+    @customers = Customer.left_outer_joins(:buys).distinct.includes(:buys)
+    @customer = nil
+    @purchasedetails = []
+
+    if params[:id].present?
+      @customers = @customers.where(id: params[:id])
+    end
+
+    if params[:name].present?
+      @customers = @customers.where("nombre LIKE ?", "%#{params[:name]}%")
+    end
+
+    if params[:customer_id].present?
+      @customer = Customer.find_by(id: params[:customer_id])
+      @purchasedetails = @customer&.purchasedetails&.includes(:product, buy: :customer) || []
+
+    elsif params[:id].blank? && params[:name].blank?
+      @purchasedetails = Purchasedetail.includes(:product, buy: :customer).all
+
+    elsif @customers.size == 1
+      @customer = @customers.first
+      @purchasedetails = @customer.purchasedetails.includes(:product, buy: :customer)
+    end
+
+    @filter_result_empty = @customers.blank?
+  end
+
 end
-
-
