@@ -79,15 +79,43 @@
   }
 
 
-.chart-container {
-  width: 100%;
-  max-width: 400px; /* Ajusta según tu diseño */
-  min-width: 250px;
+.chart-container1 {
+  width: 30%; 
+  min-width: 300px; 
+  padding: 30px; 
+  padding-top: 4%;
   height: auto;
   overflow: hidden;
   display: flex;
   align-items: center;
-    background-image: url(background.png);
+  background-image: url(background.png);
+  justify-content: center;
+  flex-direction: column;
+}
+
+.chart-container2 {
+  width: 20%; 
+  min-width: 300px; 
+  padding: 20px;
+  height: auto;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  background-image: url(background.png);
+  justify-content: center;
+  flex-direction: column;
+}
+
+.chart-container3 {
+  width: 30%; 
+  min-width: 300px; 
+  padding: 20px; 
+  padding-top: 4%;
+  height: auto;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  background-image: url(background.png);
   justify-content: center;
   flex-direction: column;
 }
@@ -203,6 +231,18 @@
 
   @media (max-width: 900px) {
 
+  .link-menu{
+     display: block;
+      width: 500px; /* Ajusta este valor al ancho del botón 'Cerrar sesión' */
+      padding: 10px;
+      border: none;
+      background-color: #b84030;
+      color: white;
+      font-weight: bold;
+      border-radius: 5px;
+      cursor: pointer;
+  }
+
   .container-header{
     display: flex;
     justify-content: space-between;
@@ -251,11 +291,14 @@
     padding-bottom: 3%;
   }
 
+.chart-container-base{
+    display: flex;
+    align-content: space-around;
+    flex-direction: column;
+}
 
-
-  .chart-container {
-    width: 150%;
-    height: auto;
+  .chart-container1, .chart-container2, .chart-container3{
+    width: 80%;
   }
 
 
@@ -305,14 +348,18 @@
   transition: background-color 0.3s;
   }
 
-  .section-card {
-    flex-wrap: wrap;
-    padding: auto;
+ .section-card{
     height: auto;
+    padding: 3% 9%;
+    display: flex;
+    align-content: space-around;
+    flex-direction: column;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 25px;
   }
 
   .chart-container {
-    width: 100%;
+    width: 400px
   }
 
   .welcome {
