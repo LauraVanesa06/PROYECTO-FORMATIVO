@@ -179,6 +179,10 @@
   display: flex;
 }
   
+  .logout2{
+    display: none;
+  }
+
   .logout {
     color: #fffaf4;
     font-weight: bold;
@@ -301,6 +305,11 @@
     width: 80%;
   }
 
+  #tortaChart {
+  width: 80% !important;
+  height: 80% !important;
+}
+
 
   nav ul li a {
     color: #fffaf4;
@@ -346,6 +355,10 @@
   font-size: 100%;
   cursor: pointer;
   transition: background-color 0.3s;
+  }
+
+ .logout2{
+    display: block;
   }
 
  .section-card{

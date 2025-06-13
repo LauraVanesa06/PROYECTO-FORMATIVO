@@ -13,6 +13,9 @@
     <div class="container-header">
       <button class="hamburger" id="hamburger">&#9776;</button>
       <p>Ferremateriales el Maestro - Dashboard</p>
+      <% if user_signed_in? %>
+        <%= button_to "Cerrar sesión", destroy_user_session_path, method: :delete, form: { data: { turbo: true } }, id: "cerrar", class: "logout2"%>
+      <% end %>
     </div>
   </header>
 
