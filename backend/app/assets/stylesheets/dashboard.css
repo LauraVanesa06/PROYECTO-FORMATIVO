@@ -70,16 +70,25 @@
   }
 
 
-  .chart-container{
-    background: #fff4ec;
-    padding: 20px;
-    border-radius: 10px;
-    box-shadow: 0 2px 6px rgba(0,0,0,0.1);
-    text-align: center;
-    transition: transform 0.2s;
+.chart-container {
+  width: 100%;
+  max-width: 400px; /* Ajusta según tu diseño */
+  min-width: 250px;
+  height: auto;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
     background-image: url(background.png);
-    background-size: 100%;
-  }
+  justify-content: center;
+  flex-direction: column;
+}
+
+.chart-container canvas,
+.chart-container svg {
+  width: 100% !important;
+  height: auto !important;
+  max-width: 100%;
+}
 
   .welcome{
     padding-top: 100px;
