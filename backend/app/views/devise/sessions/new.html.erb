@@ -1,53 +1,50 @@
+<div class="login d-flex justify-content-center align-items-center vh-100">
 
-<div class="login">
-  
+  <div class="hex-container position-relative">
 
-<div class="base d-flex flex-row align-items-center justify-content-start flex-wrap">
+    <!-- Imagen de usuario arriba del hexágono -->
+    <div class="user-icon position-absolute top-0 start-50 translate-middle">
+      <img src="/assets/user.png" alt="Usuario" class="rounded-circle user-img">
+    </div>
 
-<div class="login-container">
-<% resource = User.new %>
-<% resource_name = :user %>
-<% devise_mapping = Devise.mappings[:user] %>
+    <!-- Contenido del login dentro del hexágono -->
+    <div class="hex-content text-center">
 
+      <% resource = User.new %>
+      <% resource_name = :user %>
+      <% devise_mapping = Devise.mappings[:user] %>
 
-  <div class="login-container">
-    <%= form_for(resource, as: resource_name, url: session_path(resource_name)) do |f| %>
+      <%= form_for(resource, as: resource_name, url: session_path(resource_name)) do |f| %>
         
-    <div class="field" >
-      <%= f.label :Usuario  %><br />
-      <%= f.email_field :email, autofocus: true, autocomplete: "email", class: "form-control" %>
-    </div>
+        <div class="field mb-3">
+          <%= f.label :email, "Usuario" %><br />
+          <%= f.email_field :email, autofocus: true, autocomplete: "email", class: "form-control" %>
+        </div>
 
-    <div class="field mt-3">
-      <%= f.label :Contraseña %><br />
-      <%= f.password_field :password, autocomplete: "current-password", class: "form-control" %>
-    </div>
+        <div class="field mb-3">
+          <%= f.label :password, "Contraseña" %><br />
+          <%= f.password_field :password, autocomplete: "current-password", class: "form-control" %>
+        </div>
 
-    <% if devise_mapping.rememberable? %>
-  
-      <div class="field mt-3">
-        <%= f.check_box :remember_me %>
-        <%= f.label :remember_me, "Recordarme" %>
+        <% if devise_mapping.rememberable? %>
+          <div class="field mb-3 form-check text-start">
+            <%= f.check_box :remember_me, class: "form-check-input" %>
+            <%= f.label :remember_me, "Recordarme", class: "form-check-label" %>
+          </div>
+        <% end %>
+
+        <div class="actions mb-3">
+          <%= f.submit "Iniciar sesión", class:"btn btn-primary w-100" %>
+        </div>
+
+      <% end %>
+
+      <div class="text-center">
+        <%= render "devise/shared/links" %>
+        <br />
+        <%= link_to "Regresar", authenticated_root_path, class:"btn btn-outline-secondary mt-2" %>
       </div>
-    <% end %>
 
-    <div class="actions mt-4">
-      <%= f.submit "Log in", class:"btn-login" %>
     </div>
-  
-    <% end %>
   </div>
-  
-  <div class="base2 text-center">
-    <h3> BIENVENIDO </h3>
-    <hr> </hr>
-    
-    <div class="text-center mt-3">
-      <%= render "devise/shared/links" %>
-    </div>
-    
-    <hr> </hr> 
-    <%= link_to "Regresar", authenticated_root_path, class:"btn btn-outline-light" , id: "link"%>
-  </div>  
-
 </div>
