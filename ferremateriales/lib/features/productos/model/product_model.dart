@@ -13,7 +13,7 @@ class ProductModel extends Equatable {
     this.id,
     this.nombre,
     this.descripcion,
-    this.precio,
+    this.precio, 
     this.stock,
     this.imagenUrl,
   });
