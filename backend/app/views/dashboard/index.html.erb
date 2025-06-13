@@ -11,13 +11,14 @@
 
   <header>
     <div class="container-header">
+      <button class="hamburger" id="hamburger">&#9776;</button>
       <p>Ferremateriales el Maestro - Dashboard</p>
     </div>
   </header>
 
   <nav class="nav-bg">
     <div class="container-nav">
-      <ul class="menu">
+      <ul class="menu" id="menu">
         <li><a href="dashboard">Inicio</a></li>
         <li><a href="inventario">Inventario</a></li>
         <li><a href="ventas">Ventas</a></li>
@@ -88,8 +89,6 @@
   <footer>
     &copy; 2025 Ferremateriales el Maestro - Todos los derechos reservados
   </footer>
-
-
   
   <script>
     const ctx = document.getElementById('ventasChart').getContext('2d');
@@ -177,6 +176,13 @@
           }
         }
       }
+    });
+
+    const btn = document.getElementById("hamburger");
+    const menu = document.getElementById("menu");
+
+    btn.addEventListener("click", () => {
+      menu.classList.toggle("active");
     });
 
   </script>
