@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_06_11_210148) do
+ActiveRecord::Schema[8.0].define(version: 2025_06_16_224301) do
   create_table "active_storage_attachments", force: :cascade do |t|
     t.string "name", null: false
     t.string "record_type", null: false
@@ -84,12 +84,12 @@ ActiveRecord::Schema[8.0].define(version: 2025_06_11_210148) do
   end
 
   create_table "purchasedetails", force: :cascade do |t|
-    t.integer "cantidad"
-    t.decimal "preciounidad"
+    t.integer "buy_id", null: false
+    t.integer "product_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.integer "product_id", null: false
-    t.integer "buy_id", null: false
+    t.integer "cantidad"
+    t.decimal "preciounidad"
     t.index ["buy_id"], name: "index_purchasedetails_on_buy_id"
     t.index ["product_id"], name: "index_purchasedetails_on_product_id"
   end
@@ -119,6 +119,6 @@ ActiveRecord::Schema[8.0].define(version: 2025_06_11_210148) do
   add_foreign_key "buys", "customers"
   add_foreign_key "products", "categories"
   add_foreign_key "products", "suppliers"
-  add_foreign_key "purchasedetails", "buys"
-  add_foreign_key "purchasedetails", "products"
+  add_foreign_key "purchasedetails", "buys", on_delete: :cascade
+  add_foreign_key "purchasedetails", "products", on_delete: :cascade
 end
