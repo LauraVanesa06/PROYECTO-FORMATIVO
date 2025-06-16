@@ -300,6 +300,8 @@ input::placeholder {
 }
 
 @media (max-width: 900px) {
+
+  
   .container {
     flex-direction: column;
     padding: 0 10px;
@@ -313,7 +315,7 @@ input::placeholder {
     padding: 0 2px;
   }
   .conten {
-    flex-direction: column;
+    flex-direction: row;
     gap: 12px;
     align-items: stretch;
   }
@@ -370,7 +372,7 @@ input::placeholder {
     width: auto;
     min-width: unset;
     max-width: unset;
-    display: block;
+    display: none;
     border: none;
   }
   .info3 {
