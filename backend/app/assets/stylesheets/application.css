@@ -365,17 +365,22 @@ textarea {
 }
 
 .hex-content {
-  width: 80%;
+  width: 100%;
+  max-width: 250px;
   position: absolute;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  z-index: 2;
-  padding: 0.5rem;  
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
 }
+
 .hex-content .form-control {
   width: 100%;
-  max-width: 190px; /* o el valor que mejor se ajuste */
+  max-width: 160px; /* o el valor que mejor se ajuste */
   margin: 0 auto;
 }
 
