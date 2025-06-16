@@ -14,6 +14,12 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       } else {
         emit(state.copyWith(status: AuthStatus.failure, error: 'Credenciales incorrectas'));
       }
+      on<LogoutRequested>((event, emit) async {
+  // Aquí puedes limpiar tokens, etc., si es necesario
+  emit(AuthState(status: AuthStatus.initial));
+});
+  
+
     });
   }
 }
