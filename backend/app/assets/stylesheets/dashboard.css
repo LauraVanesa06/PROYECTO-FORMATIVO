@@ -235,9 +235,24 @@
 
   @media (max-width: 900px) {
 
+  .nav-bg {
+    position: fixed;
+    top: 9%;
+    left: 0;
+    width: 100%;
+    background-color: #fff;
+    z-index: 999;
+  }
+
+
+
+  body {
+    padding-top: 15%;
+  }
+
   .link-menu{
      display: block;
-      width: 500px; /* Ajusta este valor al ancho del botón 'Cerrar sesión' */
+      width: 500px;
       padding: 10px;
       border: none;
       background-color: #b84030;
@@ -251,7 +266,7 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding-right: 12%;
+    padding-right: 2%;
   }
 
   .hamburger {
@@ -285,9 +300,190 @@
     margin: 10px 0;
   }
   
+  header {
+    font-size: 200%;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 1000; 
+  }
+
+  nav {
+    padding: 0%;
+    padding-bottom: 3%;
+  }
+
+.chart-container-base{
+    display: flex;
+    align-content: space-around;
+    flex-direction: column;
+}
+
+  .chart-container1, .chart-container2, .chart-container3{
+    width: 80%;
+  }
+
+  #tortaChart {
+  width: 70% !important;
+  height: 70% !important;
+}
+
+
+  nav ul li a {
+    color: #fffaf4;
+    text-decoration: none;
+    font-weight: bold;
+    font-size: 100%;
+  }
+
+  .welcome{
+    padding-bottom: 10%;
+    border-radius: 10px;
+    font-size: 100px;
+  }
+
+  .container-nav {
+    flex-direction: column;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 40px;
+  }
+
+.menu {
+  display: none;
+  flex-direction: column;
+  align-items: center;
+  padding: 10px 0;
+  background-color: #E2714D;
+}
+
+
+  .menu li {
+    text-align: center;
+    margin: 10px 0;
+  }
+
+  .logout {
+  margin-top: 20px;
+  background-color: #b84030;
+  padding: 10px 200px;
+  border-radius: 6px;
+  border: none;
+  font-size: 100%;
+  cursor: pointer;
+  transition: background-color 0.3s;
+  display: none;
+  }
+
+ .logout2{
+    display: block;
+    background-color: transparent;
+    border: solid 0px;
+    color: white;
+    font-size: 70%;
+  }
+
+
+ .section-card{
+    height: auto;
+    padding: 3% 9%;
+    display: flex;
+    align-content: space-around;
+    flex-direction: column;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 25px;
+  }
+
+  .chart-container {
+    width: 400px
+  }
+
+  .welcome {
+    font-size: 28px;
+    padding-top: 40px;
+  }
+}
+
+@media (max-width: 600px) {
+
+  .nav-bg {
+    position: fixed;
+    top: 7%;
+    left: 0;
+    width: 100%;
+    background-color: #fff;
+    z-index: 999;
+  }
+
+
+
+  body {
+    padding-top: 20%;
+  }
+
+  .link-menu{
+     display: block;
+      width: 300px;
+      height: auto;
+      padding: 10px;
+      border: none;
+      background-color: #b84030;
+      color: white;
+      font-weight: bold;
+      border-radius: 5px;
+      cursor: pointer;
+  }
+
+  .container-header{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-right: 2%;
+    font-size: 50%;
+  }
+
+  .hamburger {
+    display: block;
+    padding-left: 2%;
+    font-size: 100%;
+  }
+
+
+  .menu-container {
+    display: none;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .menu-container.active {
+    display: flex;
+  }
+
+  .menu.active{
+    background-color: transparent;
+
+  }
+
+  .menu-container ul {
+    flex-direction: column;
+    width: 100%;
+    text-align: center;
+  }
+
+  .menu li {
+    margin: 10px 0;
+  }
+  
 
   header {
     font-size: 200%;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 1000; 
   }
 
   nav {
@@ -355,11 +551,17 @@
   font-size: 100%;
   cursor: pointer;
   transition: background-color 0.3s;
+  display: none;
   }
 
  .logout2{
     display: block;
+    background-color: transparent;
+    border: solid 0px;
+    color: white;
+    font-size: 70%;
   }
+
 
  .section-card{
     height: auto;
@@ -376,46 +578,7 @@
   }
 
   .welcome {
-    font-size: 28px;
+    font-size: 100%;
     padding-top: 40px;
-  }
-}
-
-@media (max-width: 600px) {
-  .container-nav {
-    padding: 0 6px;
-  }
-
-/* Cuando está activa */
-.menu.active {
-  display: flex;
-}
-
-  .logout {
-    font-size: 0.85rem;
-    padding: 8px;
-  }
-
-  .section-card {
-    padding: 6% 1%;
-    gap: 12px;
-  }
-
-  .welcome {
-    font-size: 20px;
-    padding-top: 20px;
-  }
-
-  .chart-container {
-    padding: 8px 1px;
-  }
-
-  footer {
-    font-size: 0.8rem;
-    padding: 10px;
-  }
-
-  .card {
-    padding: 20px;
   }
 }
