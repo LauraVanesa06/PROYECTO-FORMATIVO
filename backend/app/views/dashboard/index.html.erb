@@ -6,23 +6,31 @@
   <title>Dashboard Ferretería</title>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <%= stylesheet_link_tag "dashboard", media: "all" %>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
 </head>
 <body>
 
   <header>
     <div class="container-header">
+      <button class="hamburger" id="hamburger">&#9776;</button>
       <p>Ferremateriales el Maestro - Dashboard</p>
+      <% if user_signed_in? %>
+        <%= button_to destroy_user_session_path, method: :delete, form: { data: { turbo: true } }, id: "cerrar", class: "logout2" do %>
+          <span><i class="fas fa-sign-out-alt"></i></span>
+        <% end %>
+      <% end %>
     </div>
   </header>
 
   <nav class="nav-bg">
     <div class="container-nav">
-      <ul class="menu">
-        <li><a href="dashboard">Inicio</a></li>
-        <li><a href="inventario">Inventario</a></li>
-        <li><a href="ventas">Ventas</a></li>
-        <li><a href="proveedores">Proveedores</a></li>
-        <li><a href="clientes">Clientes</a></li>
+      <ul class="menu" id="menu">
+        <li><a href="dashboard"class="link-menu">Inicio</a></li>
+        <li><a href="inventario"class="link-menu">Inventario</a></li>
+        <li><a href="ventas"class="link-menu">Ventas</a></li>
+        <li><a href="proveedores"class="link-menu">Proveedores</a></li>
+        <li><a href="clientes"class="link-menu">Clientes</a></li>
       </ul>
       <% if user_signed_in? %>
         <%= button_to "Cerrar sesión", destroy_user_session_path, method: :delete, form: { data: { turbo: true } }, id: "cerrar", class: "logout"%>
@@ -36,16 +44,16 @@
     </div>
   </section>
   </br>
-  <section style="display: flex; justify-content: space-around; gap: 20px; flex-wrap: wrap; padding: 1px;">
-    <div class="chart-container" style="width: 30%; min-width: 300px; padding: 30px; padding-top: 4%">
+  <section class="chart-container-base" style="display: flex; justify-content: space-around; gap: 20px; flex-wrap: wrap; padding: 1px;">
+    <div class="chart-container1" >
       <canvas id="ventasChart" style></canvas>
     </div>
 
-    <div class="chart-container" style="width: 20%; min-width: 300px; padding: 20px">
+    <div class="chart-container2" >
       <canvas id="tortaChart"></canvas>
     </div>
 
-    <div class="chart-container" style="width: 30%; min-width: 300px; padding: 20px; padding-top: 4%">
+    <div class="chart-container3" >
       <canvas id="lineChart"></canvas>
     </div>
   </section>
@@ -88,8 +96,6 @@
   <footer>
     &copy; 2025 Ferremateriales el Maestro - Todos los derechos reservados
   </footer>
-
-
   
   <script>
     const ctx = document.getElementById('ventasChart').getContext('2d');
@@ -177,6 +183,13 @@
           }
         }
       }
+    });
+
+    const btn = document.getElementById("hamburger");
+    const menu = document.getElementById("menu");
+
+    btn.addEventListener("click", () => {
+      menu.classList.toggle("active");
     });
 
   </script>
