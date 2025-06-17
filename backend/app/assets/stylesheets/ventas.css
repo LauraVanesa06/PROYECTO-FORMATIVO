@@ -301,7 +301,20 @@ input::placeholder {
 
 @media (max-width: 900px) {
 
-  
+  .filtro-id{
+    display: flex;
+    padding: 2%;
+  }
+
+  .filtros{
+    flex-direction: row;
+    padding: 5%;
+    flex-wrap: wrap;
+  }
+  .filtro-fecha{
+    display: flex;
+    padding: 2%;
+  }
   .container {
     flex-direction: column;
     padding: 0 10px;
@@ -327,10 +340,10 @@ input::placeholder {
     padding-inline: 10px;
   }
   .nav-filtros {
-    flex-direction: column;
+    flex-direction: row;
     height: auto;
     gap: 8px;
-    padding: 8px 2px;
+    padding: 2%;
     width: 100%;
     margin-right: 0;
   }
@@ -396,7 +409,8 @@ input::placeholder {
     padding: 0 1px;
   }
   .conten {
-    flex-direction: column;
+    flex-direction: row;
+    flex-wrap: wrap;
     gap: 8px;
     align-items: stretch;
   }
@@ -425,7 +439,7 @@ input::placeholder {
     font-size: 13px;
     margin-left: 0;
     margin-bottom: 6px;
-    margin-top: 6px;
+    margin-top: 5%;
   }
   .modal-content {
     width: 98vw;
@@ -456,7 +470,90 @@ input::placeholder {
     border: none;
   }
   .info3 {
-    width: 90vw;     /* Ocupa casi todo el ancho en móvil */
+    width: 40%;     /* Ocupa casi todo el ancho en móvil */
+    max-width: 300px;
+    min-width: 120px;
+    margin: 8px auto; /* Centrado horizontal y separación */
+  }
+}
+
+@media (max-width: 375px) {
+  .container {
+    flex-direction: column;
+    padding: 0 2px;
+    gap: 8px;
+  }
+  #sect1, #sect2 {
+    width: 100%;
+    font-size: 14px;
+    margin-left: 0;
+    box-shadow: none;
+    min-width: 0;
+    padding: 0 1px;
+  }
+  .conten {
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 8px;
+    align-items: stretch;
+  }
+  .div-purchase, .buy-id {
+    width: 100%;
+    margin-right: 0;
+    flex-direction: column;
+    align-items: flex-start;
+    padding-inline: 6px;
+  }
+  .nav-filtros {
+    flex-direction: column;
+    gap: 4px;
+    padding: 4px 1px;
+    width: 100%;
+    margin-right: 0;
+    height: auto;
+  }
+  .new-buy {
+    font-size: 16px;
+    padding: 8px 10px;
+    bottom: 6px;
+    right: 6px;
+  }
+  .a-volver {
+    font-size: 13px;
+    margin-left: 0;
+    margin-bottom: 6px;
+    margin-top: 10%;
+  }
+  .modal-content {
+    width: 98vw;
+    min-width: 0;
+    padding: 6px 1px;
+    flex-direction: column;
+    margin: 10px auto;
+  }
+  #foto-model a img, #foto-model {
+    width: 80px;
+    height: 100px;
+  }
+  .texto-model li {
+    font-size: 11px;
+  }
+  .logout {
+    font-size: 0.8rem;
+    padding: 5px 12px;
+    margin-top: 8px;
+    background: #e2714d;      /* Fondo fuerte */
+    color: #fff;              /* Texto blanco */
+    border-radius: 8px;
+    box-shadow: 0 1px 3px #ffe0c1;
+    width: auto;
+    min-width: unset;
+    max-width: unset;
+    display: block;
+    border: none;
+  }
+  .info3 {
+    width: 40%;     /* Ocupa casi todo el ancho en móvil */
     max-width: 300px;
     min-width: 120px;
     margin: 8px auto; /* Centrado horizontal y separación */
