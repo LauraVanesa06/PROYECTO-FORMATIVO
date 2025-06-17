@@ -261,13 +261,12 @@ input::placeholder {
 .ul-prod{
     background-color: #ffffff;
     border: 1px solid transparent;
-    box-shadow: 0 0 10px #ffc285;
-    border-radius: 25px;
-    width: 250px;
-    height: 420px;
+    box-shadow: 0 0 8px #989898;
+    width: 210px;
+    height: auto;
     display: flex;
     flex-direction: column;
-    margin: 20px;
+    margin: 5px;
     padding: 0;
     list-style: none;
     position: relative;
@@ -299,8 +298,8 @@ input::placeholder {
     margin-top: 15px;
 }
 .ul-prod li{
-    font-size: 15px;
-    margin-left: 15px;
+    font-size: 12px;
+    margin-left: 5px;
     margin-right: 5px;
 }
 .ver a{
@@ -318,8 +317,21 @@ input::placeholder {
     justify-content: flex-end;
 }
 .texto{
-    width: 229px;
-    height: 199;
+    width: 100%;
+    height: 75px;
+    overflow: hidden;
+    margin-bottom: 10px;
+}
+.opciones{
+    width: 100%;
+    height: 30px;
+    display: flex;
+    justify-content: space-around;
+}
+.editar, .ver{
+    height: 25px;
+    width: 90px;
+    border: solid 1px black;
 }
 
 /*NEW PRODUCT BOTTON*/
