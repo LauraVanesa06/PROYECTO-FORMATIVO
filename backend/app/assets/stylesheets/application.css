@@ -117,6 +117,14 @@ main {
   margin: 0;
 }
 
+.titulo{
+  font-size: 3.75vh;
+  color: white;
+  background-color: #000;
+  margin: 0;
+  padding: 25px 5px;
+}
+
 .header-text{
   display: flex;
   flex-direction: column;
@@ -339,6 +347,7 @@ main {
   transition: all 0.3s ease;
   align-items: center;
   justify-content: center;
+  padding: 5px;
 }
 
 .cart-category:hover{
@@ -432,22 +441,21 @@ main {
   align-items: stretch;
   gap: 15px;
   padding: 40px 20px;
-  background-color: #fef3c7;
   box-sizing: border-box;
 }
-.contact-image,
+
 .contact-info,
 .form-container {
-  flex: 1 1 0;
   display: flex;
   flex-direction: column;
   box-sizing: border-box;
 }
 
 .contact-info {
-  background-color: #f3d7a1;
-  color: #8b0000;
+  background-color: #ffd255;
+  color: #000;
   padding: 30px;
+  width: 60%;
   border-radius: 10px;
   box-shadow: 4px 4px 6px rgba(0, 0, 0, 0.2);
   justify-content: center;
@@ -466,44 +474,45 @@ main {
 .form-container {
   background-color: #ffffff;
   padding: 30px;
+  width: 40%;
   border-radius: 10px;
-  border: 2px solid #8b0000;
+  border: 2px solid #ffd255;
   box-shadow: 4px 4px 6px rgba(0, 0, 0, 0.2);
 }
 
 .form-container h2 {
-  color: #8b0000;
+  color: #ffd255;
   margin-top: 0;
 }
 
-form {
+.form-container form {
   display: flex;
   flex-direction: column;
 }
 
-label {
+.form-container label {
   margin-top: 10px;
   font-weight: bold;
   color: #000;
 }
 
-input,
+.form-container input,
 textarea {
   padding: 10px;
   margin-top: 5px;
   border-radius: 5px;
-  border: 1px solid #8b0000;
+  border: 1px solid #ffd255;
   background-color: #fffdf5;
   font-family: inherit;
 }
 
-textarea {
+.form-container textarea {
   resize: vertical;
 }
 
 .submit-btn {
-  background-color: #8b0000;
-  color: #f3d7a1;
+  background-color: #ffd255;
+  color: #664b16;
   border: none;
   padding: 10px;
   margin-top: 20px;
@@ -516,19 +525,6 @@ textarea {
 
 .submit-btn:hover {
   background-color: #a30000;
-}
-
-.contact-image {
-  text-align: center;
-  
-}
-
-.contact-image img {
-  max-width: 100%;
-  height: auto;
-  border: 2px solid #8b0000;
-  border-radius: 10px;
-  box-shadow: 4px 4px 6px rgba(0, 0, 0, 0.2);
 }
 
 .home-container{
