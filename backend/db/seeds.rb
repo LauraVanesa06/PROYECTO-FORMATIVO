@@ -120,6 +120,42 @@ products = Product.create!([
     stock: 150,
     category: categories[6],
     supplier: suppliers[1]
+  },
+  {
+    nombre: "Llave combinada",
+    descripcion: "Llave combinada de acero cromado con boca fija y estrella,
+    ideal para ajustar o aflojar tuercas y pernos de forma segura y eficiente.",
+    precio: 6.000,
+    stock: 80,
+    category: categories[2],
+    supplier: suppliers[0]
+  },
+  {
+    nombre: "Pinza de presión",
+    descripcion: "Pinza de presión de acero con mecanismo de bloqueo ajustable,
+    ideal para sujetar firmemente piezas sin esfuerzo continuo.",
+    precio: 15.000,
+    stock: 10,
+    category: categories[3],
+    supplier: suppliers[3]
+  },
+  {
+    nombre: "Taladro atornillador inalámbrico",
+    descripcion: "Taladro atornillador inalámbrico compacto Milwaukee,
+    ideal para perforar y atornillar con potencia y precisión sin necesidad de cables.",
+    precio: 900.000,
+    stock: 8,
+    category: categories[4],
+    supplier: suppliers[4]
+  },
+  {
+    nombre: "Esmeriladora angular inalámbrica",
+    descripcion: "Esmeriladora angular inalámbrica ideal para cortar,
+    desbastar y pulir materiales como metal, piedra o cerámica, sin depender de cables.",
+    precio: 350.000,
+    stock: 34,
+    category: categories[1],
+    supplier: suppliers[2]
   }
 ])
 
