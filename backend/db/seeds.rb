@@ -63,8 +63,8 @@ proveedores = Proveedor.create!([
 
 products = Product.create!([
   {
-    nombre: "Martillo",
-    descripcion: "Martillo de alta calidad",
+    nombre: "tijera de hojalatero",
+    descripcion: "carton",
     precio: 25.99,
     stock: 20,
     category: categories[0],
