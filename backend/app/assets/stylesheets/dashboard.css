@@ -401,7 +401,7 @@
     background-color: transparent;
     border: solid 0px;
     color: white;
-    font-size: 70%;
+    font-size: 100%;
   }
 
 
@@ -593,7 +593,7 @@
     background-color: transparent;
     border: solid 0px;
     color: white;
-    font-size: 70%;
+    font-size: 100%;
   }
 
 
@@ -690,7 +690,7 @@
   }
   
   header {
-    font-size: 100%;
+    font-size: 90%;
     position: fixed;
     top: 0;
     left: 0;
@@ -781,7 +781,7 @@
     background-color: transparent;
     border: solid 0px;
     color: white;
-    font-size: 70%;
+    font-size: 100%;
   }
 
 
@@ -969,7 +969,7 @@
     background-color: transparent;
     border: solid 0px;
     color: white;
-    font-size: 70%;
+    font-size: 100%;
   }
 
 
