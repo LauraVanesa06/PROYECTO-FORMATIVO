@@ -335,9 +335,20 @@ main {
   padding: 10px 40px;
 }
 
-.botones-compra{
-  border: none;
-  background-color: gray ;
+.botones-compra a{
+  background-color: gray;
+  padding: 10px;
+  width: fit-content;
+  text-decoration: none;
+  font-weight: bold;
+  color: black;
+  border-radius: 10px;
+  transition: all 0.3s ease;
+}
+
+.botones-compra a:hover{
+  transform: scale(1.1);
+  background-color: rgb(166, 166, 166);
 }
 
 .cart-category{
@@ -439,8 +450,8 @@ main {
 
 .carta img {
   object-fit: cover;
-  width: 300px;
-  height: 200px;
+  width: 200px;
+  image-resolution: 3 / 2;
   border-radius: 5px;
 }
 
