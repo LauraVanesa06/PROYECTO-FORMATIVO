@@ -263,16 +263,27 @@ input::placeholder {
     border: 1px solid transparent;
     box-shadow: 0 0 10px #ffc285;
     border-radius: 25px;
-    width: 300px;
-    height: 200px;
+    width: 250px;
+    height: 420px;
     display: flex;
-    flex-direction: row;
+    flex-direction: column;
     margin: 20px;
     padding: 0;
     list-style: none;
     position: relative;
 }
-#foto a img, #foto{
+.div-foto{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 10px;
+}
+.div-foto img{
+    max-width: 90%;
+    height: 200px;
+    object-fit: contain;
+}
+#foto img, #foto{
     width: 60px;
     height: 145px;
     margin: 5px;

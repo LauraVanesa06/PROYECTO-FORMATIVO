@@ -1,7 +1,6 @@
 <ul class="ul-prod">
   <div id="<%= dom_id product %>"></div>
   <div class="div-foto">
-  <div id="foto">
     <% if product.imagen.attached? %>
       <%= image_tag url_for(product.imagen), alt: "Imagen del producto" %>
     <% else %>
