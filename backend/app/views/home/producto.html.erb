@@ -1,68 +1,34 @@
-<div class="product-container">
-    <div class="grupo">
-    <h2>Producto1</h2>
-    <div class="slider-wrapper">
-        <button class="botonL" onclick="moverSlider('slider-Prod1', -1)">←</button>
-        <div class="slider-container" id="slider-Prod1">
-            <div class="carta">
-                <%= image_tag "", alt: "Producto1" %>
-                <h4>Prod1</h4>
-            </div>
-            <div class="carta">
-                <%= image_tag "", alt: "Producto2" %>
-                <h4>Prod2</h4>
-            </div>
-            <div class="carta">
-                <%= image_tag "", alt: "Producto3" %>
-                <h4>Prod3</h4>
-            </div>
-            <div class="carta">
-                <%= image_tag "", alt: "Producto4" %>
-                <h4>Prod4</h4>
-            </div>
-            <div class="carta">
-                <%= image_tag "", alt: "Producto5" %>
-                <h4>Prod5</h4>
-            </div>
-            <div class="carta">
-                <%= image_tag "", alt: "Producto6" %>
-                <h4>Prod6</h4>
-            </div>
-            </div>
-        <button class="botonR" onclick="moverSlider('slider-Prod1', 1)">→</button>
-    </div>
-    </div>
-    <div class="grupo">
-    <h2>Producto2</h2>
-    <div class="slider-wrapper">
-        <button class="botonL" onclick="moverSlider('slider-Prod2', -1)">←</button>
-        <div class="slider-container" id="slider-Prod2">
-            <div class="carta">
-                <%= image_tag "", alt: "Producto1" %>
-                <h4>Prod1</h4>
-            </div>
-            <div class="carta">
-                <%= image_tag "", alt: "Producto2" %>
-                <h4>Prod2</h4>
-            </div>
-            <div class="carta">
-                <%= image_tag "", alt: "Producto3" %>
-                <h4>Prod3</h4>
-            </div>
-            <div class="carta">
-                <%= image_tag "", alt: "Producto4" %>
-                <h4>Prod4</h4>
-            </div>
-            <div class="carta">
-                <%= image_tag "", alt: "Producto5" %>
-                <h4>Prod5</h4>
-            </div>
-            <div class="carta">
-                <%= image_tag "", alt: "Producto6" %>
-                <h4>Prod6</h4>
-            </div>
-            </div>
-        <button class="botonR" onclick="moverSlider('slider-Prod2', 1)">→</button>
-    </div>
-    </div>
-</div>
+<% if @categories.present? %>
+  <% @categories.each do |categoria| %>
+    <% productos = categoria.products.order(:id) %>
+    <% if productos.any? %>
+      <div class="categoria">
+        <h2><%= categoria.nombre %></h2>
+
+        <div class="slider-wrapper">
+          <button class="botonL" onclick="moverSlider('slider-<%= categoria.id %>', -1)">←</button>
+
+          <div class="slider-container" id="slider-<%= categoria.id %>">
+            <% productos.each do |producto| %>
+              <div class="carta">
+                <%= image_tag("header-icon2.png", alt: "logo")%>
+                <h4><%= producto.nombre %></h4> 
+                <p><strong><%= number_to_currency(producto.precio, unit: "COP ", separator: ",", delimiter: ".", precision: 0) %> $</strong></p>
+                <div class="botones-compra">
+                  <%= link_to "Comprar ahora", class: 'boton-compra' %>
+                </div>
+              </div>
+            <% end %>
+          </div>
+
+          <button class="botonR" onclick="moverSlider('slider-<%= categoria.id %>', 1)">→</button>
+        </div>
+      </div>
+    <% end %>
+  <% end %>
+<% else %>
+  <div class="sin-productos">
+    <%= image_tag "ProductoNoDisponible.png", alt: "Producto No Disponible" %>
+    <h2>No hay productos disponibles por ahora.</h2>
+  </div>
+<% end %>

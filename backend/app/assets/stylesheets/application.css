@@ -316,7 +316,7 @@ main {
 
 .cartaa button{
   border: none;
-  background-color: green;
+  background-color: gray;
   padding: 10px;
   font-weight: bold;
   border-radius: 15px;
@@ -325,7 +325,7 @@ main {
 
 .cartaa button:hover{
   transform: scale(1.1);
-  background-color: rgb(4, 196, 4);
+  background-color: rgb(166, 166, 166);
 }
 
 .categorias{
@@ -335,13 +335,18 @@ main {
   padding: 10px 40px;
 }
 
+.botones-compra{
+  border: none;
+  background-color: gray ;
+}
+
 .cart-category{
   display: flex;
   height: 40vh;
   width: 100%;
   box-shadow: 0 0 2px;
   cursor: pointer;
-  background-color: orangered;
+  background-color: #ffd255;
   color: white;
   text-decoration: none;
   transition: all 0.3s ease;
@@ -394,6 +399,10 @@ main {
 }
 .slider-container::-webkit-scrollbar {
   display: none;
+}
+
+#content{
+  padding: 20px 0;
 }
 
 .botonL, .botonR {
@@ -535,13 +544,57 @@ textarea {
   text-align: center;
 }
 
-.footer{
+.footer {
   display: flex;
   flex-direction: column;
   align-items: center;
   background-color: #ffba00;
+  padding: 30px 20px;
 }
 
+.footer p{
+  margin: 0;
+}
+
+.footer p, .footer i {
+  color: #000;
+}
+
+.footer-contact {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%; /* <-- Importante para que las líneas se expandan */
+  max-width: 80%;
+  gap: 20px;
+  margin-bottom: 10px;
+}
+
+.line {
+  flex: 1;
+  height: 2px;
+  width: 100%;
+  background-color: #000;
+}
+
+.footer-icons {
+  display: flex;
+  gap: 20px;
+  font-size: 24px;
+  z-index: 1;
+}
+
+/* Estilo individual de los íconos */
+.footer-icons a {
+  color: black;
+  text-decoration: none;
+  transition: transform 0.2s ease;
+}
+
+.footer-icons a:hover {
+  transform: scale(1.2);
+  color: #555;
+}
 
 /* Tablet */
 @media (min-width: 376px) and (max-width:1023px){

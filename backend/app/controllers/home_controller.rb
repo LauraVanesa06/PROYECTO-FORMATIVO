@@ -5,6 +5,7 @@ class HomeController < ApplicationController
   end
 
   def producto
+    @categories = Category.includes(:products)
   end
 
   def contacto
