@@ -15,14 +15,30 @@
       <% resource = User.new %>
       <% resource_name = :user %>
       <% devise_mapping = Devise.mappings[:user] %>
+      
 
       <%= form_for(resource, as: resource_name, url: session_path(resource_name)) do |f| %>
-        <div class="field mb-3">
-          <%= f.email_field :email, placeholder: "Usuario", autofocus: true, autocomplete: "email", class: "form-control" %>
+        <div class=" text-sg">
+            <%= "Sign In" %>
+          </div>
+        
+        <div class="input-wrapper">
+          <%= image_tag "avatar.png", class: "icon-img", alt: "Usuario" %>
+          <div class="divider"></div>
+          <%= f.email_field :email, placeholder: "Usuario", class: "", autocomplete: "email" %>
         </div>
 
-        <div class="field mb-3">
-          <%= f.password_field :password, placeholder: "Contraseña", autocomplete: "current-password", class: "form-control" %>
+        <div class="input-wrapper">
+          <%= image_tag "candado.png", class: "icon-img", alt: "Contraseña" %>
+          <div class="divider"></div>
+          <%= f.password_field :password, placeholder: "Contraseña", class: "", autocomplete: "current-password", id: "password" %>
+          <%= image_tag "ojo.png", id: "eye-icon", class: "toggle-password", onclick: "togglePassword()", alt: "Ver contraseña" %>
+        </div>
+
+
+
+        <div class="actions mb-3">
+          <%= f.submit "Iniciar sesión", class:"btn btn-primary w-100" %>
         </div>
 
         <% if devise_mapping.rememberable? %>
@@ -31,17 +47,26 @@
             <%= f.label :remember_me, "Recordarme", class: "form-check-label" %>
           </div>
         <% end %>
-
-        <div class="actions mb-3">
-          <%= f.submit "Iniciar sesión", class:"btn btn-primary w-100" %>
-        </div>
       <% end %>
 
-      <div class="text-center">
-        <%= render "devise/shared/links" %><br />
-        <%= link_to "Regresar", authenticated_root_path, class:"btn btn-outline-secondary mt-2" %>
-      </div>
     </div>
   </div>
 
 </div>
+
+<script>
+  function togglePassword() {
+    const field = document.getElementById("password");
+    const icon = document.getElementById("eye-icon");
+
+    if (field.type === "password") {
+      field.type = "text";
+      icon.src = "/assets/ojo-abierto.png"; // Rails gestionará esto
+    } else {
+      field.type = "password";
+      icon.src = "/assets/ojo.png";
+    }
+  }
+</script>
+
+
