@@ -238,7 +238,9 @@
 
   .nav-bg {
     position: fixed;
-    top: 12%;
+    top: 3%;
+    padding-top: 10%;
+    padding-bottom: 1%;
     left: 0;
     width: 100%;
     background-color: #fff;
@@ -253,8 +255,10 @@
 
   .link-menu{
      display: block;
-      width: 500px;
+      width: 100%;
       padding: 10px;
+      padding-left: 20px;
+      padding-right: 20px;
       border: none;
       background-color: #b84030;
       color: white;
@@ -288,11 +292,11 @@
 
   .menu.active{
     background-color: transparent;
-
+    flex-direction: row;
   }
 
   .menu-container ul {
-    flex-direction: column;
+    flex-direction: row;
     width: 100%;
     text-align: center;
   }
