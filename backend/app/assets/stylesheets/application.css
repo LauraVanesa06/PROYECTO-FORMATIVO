@@ -153,7 +153,7 @@ main {
 .navbar{
   display: flex;
   align-items: center;
-  background-color: #ffeda7;
+  background-color: #ffba00;
   flex-direction: row;
   padding: 5px 15px;
   position: sticky;
@@ -170,6 +170,7 @@ main {
   text-decoration: none;
   margin: 0 5px;
   font-size: 20px;
+  color: black;
 }
 
 .login{

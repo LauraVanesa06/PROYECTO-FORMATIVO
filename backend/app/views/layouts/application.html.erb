@@ -19,8 +19,8 @@
 
     <%# Includes all stylesheet files in app/assets/stylesheets %>
     <%= stylesheet_link_tag :abootstrap, "data-turbo-track": "reload" %>
-    <%= stylesheet_link_tag :application, "data-turbo-track": "reload" %>
     <%= stylesheet_link_tag :login, "data-turbo-track": "reload" %>
+    <%= stylesheet_link_tag :application, "data-turbo-track": "reload" %>
 
     <%= javascript_importmap_tags %>
     
@@ -64,9 +64,9 @@
 
           <%= image_tag("header-icon2.png", alt: "llave", class: "h-icon2" ) %>
         </div>
-        <%= link_to "Inicio", authenticated_root_path, class: "text-danger" %>
-        <%= link_to 'Productos', productos_path, class: "text-danger" %>
-        <%= link_to 'Contactos', contactos_path, class: "text-danger" %>
+        <%= link_to "Inicio", authenticated_root_path %>
+        <%= link_to 'Productos', productos_path  %>
+        <%= link_to 'Contactos', contactos_path  %>
       </div>
 
       <div class='login-iconn'>
