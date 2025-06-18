@@ -472,13 +472,14 @@ input::placeholder {
     padding: 20px;
     padding-top: 30px;
     margin: 32px auto;
-    width: 580px;
+    width: 510px;
     height: 520px;
     border-radius: 25px;
     position: relative;
     display: flex;
     flex-direction: column;
     align-items: center;
+    position: absolute;
 }
 .titulo2{
     color: #fca123;
@@ -493,7 +494,7 @@ input::placeholder {
     font-size: 17px;
 }
 .form-editar{
-    width: 80%;
+    width: 90%;
     height: auto;
     display: flex;
     align-items: center;
@@ -528,15 +529,17 @@ input::placeholder {
 }
 .btn5{
     color:white;
-    border: 1px solid #939393;
+    border: 1px solid #312e2e;
     background-color: #afafaf;
     border-radius: 5px;
     cursor: pointer;
 }
+
 .texto2 input, .texto2 select{
     padding-inline: 5px;
     border: solid 1px grey;
     width: 250px;
+    border-radius: 5px;
 }
 .descripcion{
     height: 100px;
@@ -545,6 +548,35 @@ input::placeholder {
     overflow-wrap: break-word;
     white-space: pre-wrap;
     border: 1px solid #939393;
+}
+.editar2{
+    height: 25px;
+    width: 90px;
+    border-radius: 10px;
+    color: white;
+    display: flex;
+    justify-content: center;
+    align-items: flex-end;
+    position: relative;
+    font-weight: bold;
+    margin-top: 250px;
+    margin-right: 20%;
+}
+.editar2 a{
+    color: white;
+    width: 90px;
+    height: 25px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-decoration: none;
+}
+.editar2{
+    border: solid 1px #f5a226;
+    background-color: #ffb950;
+}
+.editar2:hover{
+    background-color: #f4a735;
 }
 
 @media (max-width: 900px) {
