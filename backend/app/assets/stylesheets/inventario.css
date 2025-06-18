@@ -116,6 +116,7 @@
 /*FILTROS*/
 .nav-filtros{
     background-color: white;
+    border: solid 1px grey;
     border-radius: 15px;
     margin: 10px;
     height: 40px;
@@ -351,8 +352,8 @@ input::placeholder {
     background-color: #f4a735;
 }
 .ver{
-    border: solid 1px #1888ff;
-    background-color: #409afb;
+    border: solid 1px #4482c5;
+    background-color: #5d8aba;
 }
 .ver:hover{
     background-color: #2f8ef4;

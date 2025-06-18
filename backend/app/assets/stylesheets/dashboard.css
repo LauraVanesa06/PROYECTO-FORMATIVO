@@ -6,20 +6,30 @@
   }
 
   body {
-    background-color: #fff8f2;
+    background-color: #e9cfae;
   }
-
+.fondo{
+  width: 100%;
+  height: 500px;
+  background-image: url('/images/ferremateriales.png');
+  background-size: cover;
+  background-position: center;
+  display: flex;
+  flex-direction: column;
+}
   header {
-    background-color: #b84030;
+    background-color: #eca123;
     color: white;
     padding: 30px;
     text-align: center;
     font-size: 30px;
-    background-image: url(texture-dashboard.png);
     background-size: 15%;
     background-position: center;
   }
-
+.pricipal{
+  font-family: 'Eczar';
+  font-size: 35px;
+}
 .hamburger {
   font-size: 28px;
   background: none;
@@ -38,7 +48,7 @@
 
 
   .nav-bg{
-    background-image: url(texture-dashboard2.png);
+    background-color: black;
     background-size: 15%;
     background-position: center;
   }
@@ -59,7 +69,7 @@
   }
 
   nav ul li a:hover {
-    color: #ffcc9c;
+    color: #eca123;
   }
 
   section {
@@ -72,11 +82,14 @@
 
   .section-card{
     height: 280px;
-    padding: 3% 9%;
     display: flex;
     justify-content: center;
     grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
     gap: 25px;
+    background-image: url('/images/ferremateriales.png');
+    background-size: cover;
+    background-position: center;
+    margin-bottom: -20px;
   }
 
 
@@ -89,9 +102,11 @@
   overflow: hidden;
   display: flex;
   align-items: center;
-  background-image: url(background.png);
   justify-content: center;
   flex-direction: column;
+  background-color: #fff4ec;
+  background-image: url(/assets/background-81084c25.png);
+  border-radius: 10px;
 }
 
 .chart-container2 {
@@ -102,9 +117,11 @@
   overflow: hidden;
   display: flex;
   align-items: center;
-  background-image: url(background.png);
   justify-content: center;
   flex-direction: column;
+  background-color: #fff4ec;
+  background-image: url(/assets/background-81084c25.png);
+  border-radius: 10px;
 }
 
 .chart-container3 {
@@ -116,9 +133,11 @@
   overflow: hidden;
   display: flex;
   align-items: center;
-  background-image: url(background.png);
   justify-content: center;
   flex-direction: column;
+  background-color: #fff4ec;
+  background-image: url(/assets/background-81084c25.png);
+  border-radius: 10px;
 }
 
 .chart-container canvas,
@@ -129,15 +148,38 @@
 }
 
   .welcome{
-    padding: 5%;
-    border-radius: 10px;
     text-align: center;
-    font-size: 40px;
+    font-weight: bold;
     width: 100%;
     height: 100%;
-    background-image: url(background.png);
     background-size: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    flex-direction: column ;
+    box-shadow:
+    inset 0 40px 40px -20px black;
+  
   }
+  
+  .welcome p{
+    color: rgba(47, 177, 38, 0.896);
+    font-style: italic;
+    -webkit-text-stroke: 2px rgb(96, 213, 50);
+    margin-top: 30px;
+    font-size: 60px;
+    width: auto;
+  }
+
+  .welcome div{
+    color: rgb(6, 81, 6);
+    -webkit-text-stroke: 1px rgb(71, 129, 48);
+  }
+
+.chart-container-base{
+  position: relative;
+  top: -80px;
+}
 
   .container-header{
     margin: auto;
@@ -194,7 +236,7 @@
   }
   
   .logout:hover {
-    color: #ffcc9c;
+    color: rgb(230, 25, 25);
   }
 
   .card {
@@ -209,26 +251,29 @@
     
   }
   .card-link{
-  text-decoration: none;
-  color: inherit;
+    text-decoration: none;
+    color: inherit;
+    display: flex;
+    align-items: start;
+    margin-top: -40px;
   }
   .card:hover {
     transform: translateY(-4px);
   }
 
   .card h3 {
-    color: #b84030;
+    color: black;
     margin-bottom: 10px;
   }
 
   .card p {
     font-size: 1.4rem;
-    color: #8e3e2d;
+    color: #424242;
   }
 
   footer {
-    background-color: #b84030;
-    color: white;
+    background-color: black;
+    color: grey;
     text-align: center;
     padding: 15px;
     font-size: 0.95rem;

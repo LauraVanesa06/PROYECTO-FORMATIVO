@@ -7,14 +7,14 @@
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <%= stylesheet_link_tag "dashboard", media: "all" %>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-
+  <link href="https://fonts.googleapis.com/css2?family=Eczar:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 </head>
 <body>
 
   <header>
     <div class="container-header">
       <button class="hamburger" id="hamburger">&#9776;</button>
-      <p>Ferremateriales el Maestro - Dashboard</p>
+      <p class="pricipal">Ferremateriales el Maestro - Dashboard</p>
       <% if user_signed_in? %>
         <%= button_to destroy_user_session_path, method: :delete, form: { data: { turbo: true } }, id: "cerrar", class: "logout2" do %>
           <span><i class="fas fa-sign-out-alt"></i></span>
@@ -38,161 +38,154 @@
     </div>
   </nav>
 
-  <section>
-    <div class="welcome">
-      <p>¡Bienvenido a nuestro Dashboard, de Ferremateriales!</p>
-    </div>
-  </section>
-  </br>
-  <section class="chart-container-base" style="display: flex; justify-content: space-around; gap: 20px; flex-wrap: wrap; padding: 1px;">
-    <div class="chart-container1" >
-      <canvas id="ventasChart" style></canvas>
-    </div>
-
-    <div class="chart-container2" >
-      <canvas id="tortaChart"></canvas>
-    </div>
-
-    <div class="chart-container3" >
-      <canvas id="lineChart"></canvas>
-    </div>
-  </section>
-
-  <br>
-  <br>
-
-  <section class="section-card">
-    <%= link_to inventario_path, class: "card-link" do %>
-      <div class="card">
-        <h3>Productos en Stock</h3>
-        <p>320</p>
+    <section class="fondo">
+      <div class="welcome">
+        <p>¡Bienvenido!</p>
+        <div>Desde aquí podrás gestionar tus ventas, inventario y estadísticas de manera eficiente.</div>
       </div>
-    <% end %>
-
-    <%= link_to ventas_path, class: "card-link" do %>
-      <div class="card">
-        <h3>Ventas Hoy</h3>
-        <p>$1,850</p>
+    </section>
+    <section class="chart-container-base" style="display: flex; justify-content: space-around; gap: 20px; flex-wrap: wrap; padding: 1px;">
+      <div class="chart-container1" >
+        <canvas id="ventasChart" style></canvas>
       </div>
-    <% end %>
 
-    <%= link_to proveedores_path, class: "card-link" do %>
-      <div class="card">
-        <h3>Pedidos Pendientes</h3>
-        <p>7</p>
+      <div class="chart-container2" >
+        <canvas id="tortaChart"></canvas>
       </div>
-    <% end %>
 
-    <%= link_to clientes_path, class: "card-link" do %>
-      <div class="card">
-        <h3>Clientes Registrados</h3>
-        <p>120</p>
+      <div class="chart-container3" >
+        <canvas id="lineChart"></canvas>
       </div>
-    <% end %>
-  </section>
+    </section>
+    <section class="section-card">
+      <%= link_to inventario_path, class: "card-link" do %>
+        <div class="card">
+          <h3>Productos en Stock</h3>
+          <p>320</p>
+        </div>
+      <% end %>
 
-  
+      <%= link_to ventas_path, class: "card-link" do %>
+        <div class="card">
+          <h3>Ventas Hoy</h3>
+          <p>$1,850</p>
+        </div>
+      <% end %>
 
+      <%= link_to proveedores_path, class: "card-link" do %>
+        <div class="card">
+          <h3>Pedidos Pendientes</h3>
+          <p>7</p>
+        </div>
+      <% end %>
+
+      <%= link_to clientes_path, class: "card-link" do %>
+        <div class="card">
+          <h3>Clientes Registrados</h3>
+          <p>120</p>
+        </div>
+      <% end %>
+    </section>}
   <footer>
     &copy; 2025 Ferremateriales el Maestro - Todos los derechos reservados
   </footer>
   
-  <script>
-    const ctx = document.getElementById('ventasChart').getContext('2d');
-    const ventasChart = new Chart(ctx, {
-      type: 'bar',
-      data: {
-        labels: ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes'],
-        datasets: [{
-          label: 'Ventas por día',
-          data: [500, 700, 1200, 900, 1850],
-          backgroundColor: 'rgb(226,113,77)',
-          borderColor: 'rgb(226,113,77)',
-          borderWidth: 1,
-          borderRadius: 5
-        }]
-      },
-      options: {
-        scales: {
-          y: {
-            beginAtZero: true,
-            ticks: {
-              callback: function(value) {
-                return '$' + value;
-              }
+<script>
+  const ctx = document.getElementById('ventasChart').getContext('2d');
+  const ventasChart = new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels: ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes'],
+      datasets: [{
+        label: 'Ventas por día',
+        data: [500, 700, 1200, 900, 1850],
+        backgroundColor: 'rgb(70, 130, 180)',
+        borderColor: 'rgb(70, 130, 180)',
+        borderWidth: 1,
+        borderRadius: 5
+      }]
+    },
+    options: {
+      scales: {
+        y: {
+          beginAtZero: true,
+          ticks: {
+            callback: function (value) {
+              return '$' + value;
             }
           }
         }
       }
-    });
+    }
+  });
 
-    const ctx2 = document.getElementById('tortaChart').getContext('2d');
-    new Chart(ctx2, {
-      type: 'pie',
-      data: {
-        labels: ['Herramientas', 'Materiales', 'Accesorios', 'Pinturas'],
-        datasets: [{
-          label: 'Distribución de Inventario',
-          data: [120, 80, 70, 50],
-          backgroundColor: [
-            '#E2714D',
-            '#E29178',
-            '#E2B5A7',
-            '#E2AF88'
-          ],
-          borderColor: '#fff',
-          borderWidth: 2
-        }]
-      },
-      options: {
-        responsive: true,
-        plugins: {
-          legend: {
-            position: 'bottom'
-          }
+  const ctx2 = document.getElementById('tortaChart').getContext('2d');
+  new Chart(ctx2, {
+    type: 'pie',
+    data: {
+      labels: ['Herramientas', 'Materiales', 'Accesorios', 'Pinturas'],
+      datasets: [{
+        label: 'Distribución de Inventario',
+        data: [120, 80, 70, 50],
+        backgroundColor: [
+          '#4A90E2',
+          '#5DADE2',
+          '#85C1E9', 
+          '#AED6F1' 
+        ],
+        borderColor: '#fff',
+        borderWidth: 2
+      }]
+    },
+    options: {
+      responsive: true,
+      plugins: {
+        legend: {
+          position: 'bottom'
         }
       }
-    });
+    }
+  });
 
-    const ctx3 = document.getElementById('lineChart').getContext('2d');
-    new Chart(ctx3, {
-      type: 'line',
-      data: {
-        labels: ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio'],
-        datasets: [{
-          label: 'Ventas Mensuales',
-          data: [1200, 1500, 1800, 1600, 2000, 2400],
-          fill: false,
-          borderColor: 'rgb(226,113,77)',
-          backgroundColor: 'rgb(226,113,77)',
-          tension: 0.3,
-          pointBackgroundColor: '#fff',
-          pointBorderColor: 'rgb(226,113,77)'
-        }]
+  const ctx3 = document.getElementById('lineChart').getContext('2d');
+  new Chart(ctx3, {
+    type: 'line',
+    data: {
+      labels: ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio'],
+      datasets: [{
+        label: 'Ventas Mensuales',
+        data: [1200, 1500, 1800, 1600, 2000, 2400],
+        fill: false,
+        borderColor: '#3498DB',
+        backgroundColor: '#3498DB',
+        tension: 0.3,
+        pointBackgroundColor: '#fff',
+        pointBorderColor: '#3498DB'
+      }]
+    },
+    options: {
+      responsive: true,
+      plugins: {
+        legend: {
+          position: 'top'
+        }
       },
-      options: {
-        responsive: true,
-        plugins: {
-          legend: {
-            position: 'top'
-          }
-        },
-        scales: {
-          y: {
-            beginAtZero: true
-          }
+      scales: {
+        y: {
+          beginAtZero: true
         }
       }
-    });
+    }
+  });
 
-    const btn = document.getElementById("hamburger");
-    const menu = document.getElementById("menu");
+  const btn = document.getElementById("hamburger");
+  const menu = document.getElementById("menu");
 
-    btn.addEventListener("click", () => {
-      menu.classList.toggle("active");
-    });
+  btn.addEventListener("click", () => {
+    menu.classList.toggle("active");
+  });
+</script>
 
-  </script>
 
 </body>
 </html>
