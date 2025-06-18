@@ -1,7 +1,7 @@
 <div class="login d-flex justify-content-center align-items-center vh-100">
 
   <div class="hex-wrapper position-relative">
-    
+
     <!-- Imagen del hexágono como fondo -->
     <%= image_tag "hexagono.png", alt: "Hexágono", class: "hex-bg" %>
 
@@ -15,43 +15,49 @@
       <% resource = User.new %>
       <% resource_name = :user %>
       <% devise_mapping = Devise.mappings[:user] %>
-      
+
+      <!-- Mensajes de error -->
+      <%= render "devise/shared/error_messages", resource: resource %>
 
       <%= form_for(resource, as: resource_name, url: session_path(resource_name)) do |f| %>
-        <div class=" text-sg">
-            <%= "Sign In" %>
-          </div>
-        
+        <div class="text-sg">
+          <%= "Sign In" %>
+        </div>
+
         <div class="input-wrapper">
           <%= image_tag "avatar.png", class: "icon-img", alt: "Usuario" %>
           <div class="divider"></div>
-          <%= f.email_field :email, placeholder: "Usuario", class: "", autocomplete: "email" %>
+          <%= f.email_field :email, placeholder: "Usuario", autocomplete: "email" %>
         </div>
 
         <div class="input-wrapper">
           <%= image_tag "candado.png", class: "icon-img", alt: "Contraseña" %>
           <div class="divider"></div>
-          <%= f.password_field :password, placeholder: "Contraseña", class: "", autocomplete: "current-password", id: "password" %>
-          <%= image_tag "ojo.png", id: "eye-icon", class: "toggle-password", onclick: "togglePassword()", alt: "Ver contraseña" %>
+          <%= f.password_field :password, placeholder: "Contraseña", autocomplete: "current-password", id: "password" %>
+          <%= image_tag "ojo.png", id: "eye-icon", class: "toggle-password eye-img", onclick: "togglePassword()", alt: "Ver contraseña" %>
         </div>
 
-
-
-        <div class="actions mb-3">
-          <%= f.submit "Iniciar sesión", class:"btn btn-primary w-100" %>
+        <div class="hex-button-wrapper mb-3">
+          <%= f.submit "Iniciar sesión", class: "hex-button" %>
         </div>
 
         <% if devise_mapping.rememberable? %>
-          <div class="field mb-3 form-check text-start">
+          <div class="field mb-1 form-check text-start">
             <%= f.check_box :remember_me, class: "form-check-input" %>
             <%= f.label :remember_me, "Recordarme", class: "form-check-label" %>
           </div>
         <% end %>
       <% end %>
 
+      <!-- Links al fondo -->
+      <div class="bottom-links">
+        <%= render "devise/shared/links" %>
+      </div>
+
+
+
     </div>
   </div>
-
 </div>
 
 <script>
@@ -61,12 +67,11 @@
 
     if (field.type === "password") {
       field.type = "text";
-      icon.src = "/assets/ojo-abierto.png"; // Rails gestionará esto
+      icon.src = "<%= asset_path('ojo-abierto.png') %>";
     } else {
       field.type = "password";
-      icon.src = "/assets/ojo.png";
+      icon.src = "<%= asset_path('ojo.png') %>";
     }
   }
 </script>
-
 
