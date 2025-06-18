@@ -39,7 +39,7 @@
   <section class="section-container">
   <aside class="categorias">
     <div class="div-div">
-      <a href="/inventario" class="div-categ" style="text-decoration:none;"><i class="fas fa-arrow-left"></i></a>
+      <a href="/inventario" class="div-categ" style="text-decoration:none;"><i class="fas fa-arrow-left" id="vol"></i></a>
       <div class="div-categ">Categorias:</div>
     </div>
       <% @categories.each do |category| %>
@@ -91,7 +91,13 @@
           <div id="modal-<%= product.id %>" class="modal">
             <div class="modal-content">
               <a href="#" class="close">&times;</a>
-              <div class="div-foto-model"><div id="foto-model"><%= link_to image_tag("martillo-dewalt.png")%></div></div>
+              <div class="div-foto-model">
+                  <% if product.imagen.attached? %>
+                    <%= image_tag url_for(product.imagen), alt: "Imagen del producto" %>
+                  <% else %>
+                    <p>No hay imagen</p>
+                  <% end %>
+              </div>
               <div class="texto-model">
                 <li class="li-start-model">
                   <strong  class="titulo">Id:</strong>
