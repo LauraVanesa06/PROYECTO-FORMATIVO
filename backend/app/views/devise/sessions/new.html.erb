@@ -1,7 +1,7 @@
 <div class="login d-flex justify-content-center align-items-center vh-100">
 
   <div class="hex-wrapper position-relative">
-
+  
     <!-- Imagen del hexágono como fondo -->
     <%= image_tag "hexagono.png", alt: "Hexágono", class: "hex-bg" %>
 
@@ -21,7 +21,7 @@
 
       <%= form_for(resource, as: resource_name, url: session_path(resource_name)) do |f| %>
         <div class="text-sg">
-          <%= "Sign In" %>
+          <%= "Iniciar Sesión" %>
         </div>
 
         <div class="input-wrapper">
@@ -34,11 +34,7 @@
           <%= image_tag "candado.png", class: "icon-img", alt: "Contraseña" %>
           <div class="divider"></div>
           <%= f.password_field :password, placeholder: "Contraseña", autocomplete: "current-password", id: "password" %>
-          <%= image_tag "ojo.png", id: "eye-icon", class: "toggle-password eye-img", onclick: "togglePassword()", alt: "Ver contraseña" %>
-        </div>
-
-        <div class="hex-button-wrapper mb-3">
-          <%= f.submit "Iniciar sesión", class: "hex-button" %>
+          <%= image_tag "ojo.png", id: "eye-icon", class: "toggle-password eye-img", onclick: "togglePassword()", alt: "Ver contraseña" %> 
         </div>
 
         <% if devise_mapping.rememberable? %>
@@ -47,6 +43,12 @@
             <%= f.label :remember_me, "Recordarme", class: "form-check-label" %>
           </div>
         <% end %>
+
+        <div class="hex-button-wrapper mb-3">
+          <%= f.submit "Iniciar sesión", class: "hex-button" %>
+        </div>
+
+        
       <% end %>
 
       <!-- Links al fondo -->

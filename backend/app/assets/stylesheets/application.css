@@ -611,7 +611,7 @@ textarea {
   width: 70px;
   height: 70px;
   object-fit: cover;
-  border: 3px solid white;
+  border: 2px solid white;
   background-color: white;
   border-radius: 50%;
 }
@@ -699,11 +699,12 @@ textarea {
   align-items: center;
   justify-content: center;
   padding: 0;
-  margin-top: -10px;
+  margin-top: -5px;
 }
 
 .hex-button:hover {
-  background-color: #5a95d6;
+  background-color: #fca123;
+  color: white;
 }
 
 /* Links inferiores */
@@ -733,7 +734,43 @@ textarea {
   transform: translateX(-50%);
 }
 
+.form-check-label{
+  color: white;
+  font-size: 10px;
 }
+
+/* Estilo personalizado para el checkbox */
+.form-check-input {
+  width: 15px;         /* Tamaño más pequeño */
+  height: 15px;
+  border: 2px solid #fca123;
+  background-color: white;
+  appearance: none;
+  -webkit-appearance: none;
+  outline: none;
+  cursor: pointer;
+  border-radius: 4px; /* Opcional: bordes redondeados */
+  position: relative;
+  margin-bottom: -4px;
+}
+
+/* Color del "check" al estar marcado */
+.form-check-input:checked {
+  background-color: #fca123;
+  border-color: #fca123;
+}
+
+/* Opcional: estilo de la palomita interna (pseudoelemento) */
+.form-check-input:checked::before {
+  content: "✓";
+  color: white;
+  font-size: 12px;
+  position: absolute;
+  left: 2px;
+  top: -1px;
+}
+
+
 
 @keyframes fadeIn {
   from {
