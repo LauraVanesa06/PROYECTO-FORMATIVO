@@ -200,8 +200,8 @@
 .color{
   height: 100%;
   width: 5px;
-  border: solid 1px #f5a226;
-  background-color: #ffb950;
+  border: solid 1px rgb(26, 131, 18);
+  background-color:#19e76f;
   margin-right: 10px;
   border-radius: 50%;
 }
