@@ -15,9 +15,12 @@
     margin-top: 10px;
     font-weight: bold;
     font-family: 'Segoe UI', sans-serif;
-    color: #ff8b3e;
+    color: white;
     margin-left: 10px;
     padding: 0;
+}
+#vol{
+    color:white;
 }
 .div-div{
     display: flex;
@@ -40,10 +43,10 @@
     padding: 0;
     height: 40px;
     font-family: 'roboto', sans-serif;
-    background-color: #ffd9a1;
+    background-color: grey;
 }
 .li-nombre a{   
-    color:#f08f35;
+    color:white;
     font-weight: bold;
     font-size: 14px;
     text-decoration: none;
@@ -71,29 +74,27 @@
     padding: 12px 20px;
     border-radius: 50%;
     text-decoration: none;
-    box-shadow: 0 0 10px #ffe0c1;
-    background-color: #ff8b3e;
-    color: white;
+    box-shadow: 0 0 10px #3d3d3d;
+    background-color: white;
+    color: black;
     font-family: 'inconsolata';
     font-size: 25px;
     font-weight: bold;
 }
 .new-categ:hover{
     text-decoration: none;
-    background-color: #ffa352;
+    background-color: #cfcfcf;
     color: white;
 }
 
 .categorias{
     width: 20%;
-    box-shadow:
-    -3px 0 10px -1px rgb(255, 203, 160),
-     3px 0 10px -1px rgb(255, 203, 160);
+    background-color: #424242;
 }
 .section-product{
     width: 80%;
     height: auto;
-    background-color: #f7ecde;
+    background-color: #e9cfae;
     padding: 0;
     margin: 0;
     display: flex;
@@ -134,22 +135,22 @@
     font-size: 17px;
     font-weight: bold;
     font-family: 'Segoe UI', sans-serif;
-    color: #f19544;
+    color: #424242;
 }
 .form-filtros{
     margin-right: 20px;
 }
 /*MARCA*/
 .ul-marca{
-    border: 1px solid #ffddc5;
+    border: 1px solid #f5f5f5;
     border-radius: 15px;
     display: none;
     flex-direction: column;
     gap: 0;
-    border:1px solid rgb(232, 177, 133);
-    width: 110px;
-    background-color: #ffe7c3;
-    color: #f19544;
+    border:1px solid rgb(50, 50, 50);
+    width: 200px;
+    background-color: grey;
+    color: white;
     text-decoration: none;
 }
 .li-marca:hover > .ul-marca{
@@ -159,15 +160,18 @@
     display: flex;
     justify-content: center;
     align-items: center;
+    border-bottom: 1px solid #ccc;
+}
+.ul-marca li:last-child {
+    border-bottom: none;
 }
 .aa-marca{
-    border-radius: 35px;
-    background-color: #fff3e0;
-    color: #f19544;
+    border-radius: 15pxpx;
+    background-color: grey;
+    color: white;
     width: 100%;
-    height: 25px;
+    height: auto;
     display: flex;
-    justify-content: center;
     align-items: center;
     font-size: 15px;
     font-family: Arial, sans-serif;
@@ -179,14 +183,13 @@
     height: 20px;
     margin-left: 10px;
     border-radius: 50%;
-    accent-color: #ff734c;
-    border:#f7ecde;
+    accent-color: black;
     background-color: white;
     cursor: pointer;
     appearance: none !important;
 }
 .aa-check:checked{
-    background-color: #ff734c;
+    background-color: black;
 }
 .aa-check:checked::after{
     content: "✔";
@@ -196,10 +199,10 @@
 /*PRECIO*/
 .ul-precio{
     width: 100px;
-    border: 1px solid rgb(232, 177, 133);
+    border: 1px solid rgb(81, 80, 80);
     border-radius: 15px;
-    background-color: #ffe7c3;
-    color: #f19544;
+    background-color: grey;
+    color: white;
     width: 180px;
     height: 66px;
     display: none;
@@ -208,6 +211,7 @@
 }
 .li-precio:hover > .ul-precio{
     display: block;
+    color: none !important;
 }
 .ul-precio li{
     display: flex;
@@ -227,7 +231,7 @@
     font-size: 15px;
 }
 .ul-precio li a:hover{
-    background-color: #ffd9a1;
+    background-color: grey;
     color:#ff734c;
     border:1px solid rgb(232, 177, 133);
 }
@@ -249,7 +253,7 @@ input::placeholder {
     cursor: pointer;
 }
 .lupa, i{
-    color:#ff734c;
+    color: #424242;
     font-size: 17px;
 }
 .ul-precio, .ul-marca{
@@ -263,8 +267,8 @@ input::placeholder {
     border: 1px solid transparent;
     box-shadow: 0 0 8px #989898;
     border-radius: 8px;
-    width: 210px;
-    height: auto;
+    width: 200px;
+    height: 323.16px;
     display: flex;
     flex-direction: column;
     margin: 5px;
@@ -343,11 +347,16 @@ input::placeholder {
     border: solid 1px #f5a226;
     background-color: #ffb950;
 }
+.editar:hover{
+    background-color: #f4a735;
+}
 .ver{
     border: solid 1px #1888ff;
     background-color: #409afb;
 }
-
+.ver:hover{
+    background-color: #2f8ef4;
+}
 /*NEW PRODUCT BOTTON*/
 .new-prod {
     position: fixed;
@@ -358,7 +367,7 @@ input::placeholder {
     border-radius: 50%;
     text-decoration: none;
     box-shadow: 0 0px 10px rgba(0, 0, 0, 0.3);
-    background-color:  #ff8b3e;
+    background-color: black;
     color: white;
     font-family: 'inconsolata';
     font-size: 25px;
@@ -366,7 +375,7 @@ input::placeholder {
 }
 
 .new-prod:hover {
-    background-color: #ffa352;
+    background-color: #313131;
 }
 
 /*VENTANA FLOTANTE DE PRODUCTO ID*/
@@ -390,7 +399,7 @@ input::placeholder {
     padding: 20px;
     padding-top: 30px;
     margin: 100px auto;
-    width: 470px;
+    width: 800px;
     border-radius: 25px;
     position: relative;
     display: flex;
@@ -419,14 +428,18 @@ input::placeholder {
 .div-foto-model{
     margin-left: 20px;
     margin-right: 5px;
-    width: auto;
-    height: auto;
+    width: 40%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
 }
-#foto-model a img, #foto-model{
-    width: 95px;
-    height: 250px;
+.div-foto-model img{
+    max-width: 100%;
+    height: 400px;
+    object-fit: contain;
 }
 .texto-model{
+    width: 60%;
     list-style: none;
     margin: 20px;
     display: flex;
