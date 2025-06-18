@@ -116,6 +116,7 @@
 /*FILTROS*/
 .nav-filtros{
     background-color: white;
+    border: solid 1px grey;
     border-radius: 15px;
     margin: 10px;
     height: 40px;
@@ -351,8 +352,8 @@ input::placeholder {
     background-color: #f4a735;
 }
 .ver{
-    border: solid 1px #1888ff;
-    background-color: #409afb;
+    border: solid 1px #4482c5;
+    background-color: #5d8aba;
 }
 .ver:hover{
     background-color: #2f8ef4;
@@ -451,6 +452,13 @@ input::placeholder {
 }
 
 @media (max-width: 900px) {
+    nav ul{
+        flex-direction: row;
+    }
+
+    .ul-nombre{
+        width: 95%;
+    }
   .section-container {
     flex-direction: column;
     padding: 0 10px;
@@ -462,6 +470,9 @@ input::placeholder {
     box-shadow: none;
     margin-bottom: 12px;
     padding: 0 2px;
+  }
+  .categorias{
+    margin-top: 2%;
   }
   .section-models {
     flex-direction: column;
@@ -541,6 +552,14 @@ input::placeholder {
 }
 
 @media (max-width: 600px) {
+
+        nav ul{
+        flex-direction: column;
+    }
+
+    .ul-nombre{
+        width: 95%;
+    }
   .section-container {
     flex-direction: column;
     padding: 0 2px;
@@ -553,6 +572,9 @@ input::placeholder {
     box-shadow: none;
     min-width: 0;
     padding: 0 1px;
+  }
+    .categorias{
+    margin-top: 4%;
   }
   .section-models {
     flex-direction: column;

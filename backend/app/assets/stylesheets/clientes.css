@@ -3,6 +3,7 @@
     flex-direction: column;
     width: 100%;
     height: auto;
+    background-color: #5b5b5b;
 }
 .filt{
     display: flex;
@@ -22,13 +23,13 @@
     margin-top: 10px;
     font-weight: bold;
     font-family: 'Segoe UI', sans-serif;
-    color: #ffc768;
+    color: #424242;
     margin-left: 10px;
     padding: 0;
 }
 .filtro{
     background-color: white;
-    border: solid 1px rgb(255, 179, 38);
+    border: solid 1px grey;
     border-radius: 20px;
     margin: 10px;
     margin-right: 20px;
@@ -52,7 +53,7 @@
     font-size: 17px;
     font-weight: bold;
     font-family: 'Segoe UI', sans-serif;
-    color: #ffc768;
+    color: #424242;
 }
 .btn{
     background-color: transparent;
@@ -61,8 +62,11 @@
     margin-right: 20px;
 }
 .btn, i{
-    color:#ffc768;
+    color:#424242;
     font-size: 17px;
+}
+#vol{
+  color:white;
 }
 .contenedor{
     height: auto;
@@ -87,7 +91,7 @@
     margin-top: -10px;
     font-weight: bold;
     font-family: 'Segoe UI', sans-serif;
-    color: #ffc768;
+    color: white;
     margin-left: 10px;
     padding: 0;
 }
@@ -95,26 +99,26 @@
     display: flex;
     flex-direction: row;
     border-radius: 0 13px 13px 0;
-    border: solid 1px rgb(232, 158, 20);
+    border: solid 1px grey;
     width: 90%;
-    background-color: rgb(254, 232, 191);
+    height: 40px;
+    background-color:rgb(238, 238, 238);
     margin-bottom: -1px;
 }
 .cli:hover{
     border-radius: 0 25px 25px 0;
 }
 .cli p{
-    height: 50px;
     display: flex;
     align-items: center;
 }
 .p-id{
     width: 65px;
-    height: 50px;
+    height: 37.5px;
     display: flex;
     justify-content: center;
     align-items: center;
-    background-color: rgb(255, 213, 136);
+    background-color: #5d8aba;
     font-weight: bold;
     color: white;
 }
@@ -125,10 +129,10 @@
 }
 .p-name a{
     width: 100%;
-    font-size: 17px;
+    font-size: 15px;
     border-radius: 0 13px 13px 0;
     margin-left: 10px;
-    color:#ffa148;
+    color:rgb(32, 32, 32);
     font-weight: bold;
     text-decoration: none;
 }
@@ -155,21 +159,22 @@
     padding: 12px 20px;
     border-radius: 50%;
     text-decoration: none;
-    box-shadow: 0 0 10px #ffe0c1;
-    background-color: #ffd284;
-    color: white;
+    box-shadow: 0 0 10px #3d3d3d;
+    background-color: white;
+    color: black;
     font-family: 'inconsolata';
     font-size: 25px;
     font-weight: bold;
 }
 .new-customer:hover{
-    background-color: #ffc768;
+    text-decoration: none;
+    background-color: #cfcfcf;
     color: white;
 }
 .cont-facturas{
     width: 80%;
     height: auto;
-    background-color: #f7ecde;
+    background-color: #e9cfae;
     padding: 0;
     margin: 0;
     display: flex;
@@ -178,24 +183,34 @@
     border-radius: 20px;
 }
 .div-purchase{
-    width: 47%;
+    font-size: 13px;
+    width: 342px;
+    padding-left: 8px !important;
     padding: 15px;
     color:rgba(0, 0, 0, 0.874);
     background-color: #ffffff;
-    margin: 10px;
+    margin: 5px;
     display: flex;
     flex-direction: row;
-    justify-content: space-between;
+    align-items: center;
     border-radius: 10px;
     border: 1px solid transparent;
-    box-shadow: 0 0 10px #ffc285;
+    box-shadow: 0 0 8px #989898;
+}
+.color{
+  height: 100%;
+  width: 5px;
+  border: solid 1px rgb(26, 131, 18);
+  background-color:#19e76f;
+  margin-right: 10px;
+  border-radius: 50%;
 }
 #purcha{
     display: flex;
     flex-wrap: wrap;
     width: 100%;
     gap: 6px;
-    padding: 20px;
+    padding: 8px;
 }
 #p1{
     color: red;
@@ -215,7 +230,7 @@
     border-radius: 50%;
     text-decoration: none;
     box-shadow: 0 0px 10px rgba(0, 0, 0, 0.3);
-    background-color: #ffc768;
+    background-color: black;
     color: white;
     font-family: 'inconsolata';
     font-size: 25px;
@@ -223,8 +238,7 @@
 }
 
 .new-pur:hover {
-    background-color: #f9b94b;
-    color: white;
+    background-color: #313131;
 }
 @media (max-width: 900px) {
   .contenedor {
