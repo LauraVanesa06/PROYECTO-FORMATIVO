@@ -1,43 +1,58 @@
-<h2>Edit <%= resource_name.to_s.humanize %></h2>
+<div class="login d-flex justify-content-center align-items-center vh-100">
+  <div class="hex-wrapper position-relative">
+    <%= image_tag "hexagono.png", alt: "Hexágono", class: "hex-bg" %>
 
-<%= form_for(resource, as: resource_name, url: registration_path(resource_name), html: { method: :put }) do |f| %>
-  <%= render "devise/shared/error_messages", resource: resource %>
+    <div class="user-icon position-absolute top-0 start-50 translate-middle">
+      <%= image_tag "user.png", alt: "Usuario", class: "rounded-circle user-img" %>
+    </div>
 
-  <div class="field">
-    <%= f.label :email %><br />
-    <%= f.email_field :email, autofocus: true, autocomplete: "email" %>
+    <div class="hex-content position-absolute top-50 start-50 translate-middle text-center">
+      <% resource_name = :user %>
+
+      <%= form_for(resource, as: resource_name, url: registration_path(resource_name), html: { method: :put }) do |f| %>
+        <div class="text-sg">
+          Editar Perfil
+        </div>
+
+        <%= render "devise/shared/error_messages", resource: resource %>
+
+        <div class="input-wrapper">
+          <%= image_tag "avatar.png", class: "icon-img", alt: "Correo" %>
+          <div class="divider"></div>
+          <%= f.email_field :email, placeholder: "Correo", autocomplete: "email" %>
+        </div>
+
+        <% if devise_mapping.confirmable? && resource.pending_reconfirmation? %>
+          <div class="text-white mb-2">Esperando confirmación de: <%= resource.unconfirmed_email %></div>
+        <% end %>
+
+        <div class="input-wrapper">
+          <%= image_tag "candado.png", class: "icon-img", alt: "Nueva contraseña" %>
+          <div class="divider"></div>
+          <%= f.password_field :password, placeholder: "Nueva contraseña", autocomplete: "new-password" %>
+        </div>
+
+        <div class="input-wrapper">
+          <%= image_tag "candado.png", class: "icon-img", alt: "Confirmar nueva contraseña" %>
+          <div class="divider"></div>
+          <%= f.password_field :password_confirmation, placeholder: "Confirmar contraseña", autocomplete: "new-password" %>
+        </div>
+
+        <div class="input-wrapper">
+          <%= image_tag "candado.png", class: "icon-img", alt: "Contraseña actual" %>
+          <div class="divider"></div>
+          <%= f.password_field :current_password, placeholder: "Contraseña actual", autocomplete: "current-password" %>
+        </div>
+
+        <div class="hex-button-wrapper mb-3">
+          <%= f.submit "Actualizar", class: "hex-button" %>
+        </div>
+      <% end %>
+
+      <%= button_to "Cancelar mi cuenta", registration_path(resource_name), method: :delete, data: { confirm: "¿Estás seguro?" }, class: "hex-button mt-2" %>
+      <div class="bottom-links mt-2">
+        <%= link_to "Volver", authenticated_root_path, id: "link" %>
+      </div>
+    </div>
   </div>
-
-  <% if devise_mapping.confirmable? && resource.pending_reconfirmation? %>
-    <div>Currently waiting confirmation for: <%= resource.unconfirmed_email %></div>
-  <% end %>
-
-  <div class="field">
-    <%= f.label :password %> <i>(leave blank if you don't want to change it)</i><br />
-    <%= f.password_field :password, autocomplete: "new-password" %>
-    <% if @minimum_password_length %>
-      <br />
-      <em><%= @minimum_password_length %> characters minimum</em>
-    <% end %>
-  </div>
-
-  <div class="field">
-    <%= f.label :password_confirmation %><br />
-    <%= f.password_field :password_confirmation, autocomplete: "new-password" %>
-  </div>
-
-  <div class="field">
-    <%= f.label :current_password %> <i>(we need your current password to confirm your changes)</i><br />
-    <%= f.password_field :current_password, autocomplete: "current-password" %>
-  </div>
-
-  <div class="actions">
-    <%= f.submit "Update" %>
-  </div>
-<% end %>
-
-<h3>Cancel my account</h3>
-
-<div>Unhappy? <%= button_to "Cancel my account", registration_path(resource_name), data: { confirm: "Are you sure?", turbo_confirm: "Are you sure?" }, method: :delete %></div>
-
-<%= link_to "Back", :back %>
+</div>

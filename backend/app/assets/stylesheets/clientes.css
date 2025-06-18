@@ -257,7 +257,7 @@
   }
 }
 
-@media (max-width: 600px) {
+@media (max-width: 700px) {
   .madre {
     padding: 0 2px;
   }
@@ -265,18 +265,19 @@
     flex-direction: column;
     gap: 8px;
     align-items: stretch;
+    padding-bottom: 10%;
   }
   .filtro {
     width: 98%;
     min-width: 0;
     margin: 5px 0;
     flex-direction: column;
+    padding: 5%;
     height: auto;
-    padding: 5px 2px;
     gap: 5px;
   }
   .filtros {
-    flex-direction: column;
+    flex-direction: row;
     width: 100%;
     gap: 5px;
     align-items: stretch;
