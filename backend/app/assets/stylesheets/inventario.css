@@ -380,7 +380,7 @@ input::placeholder {
 }
 
 /*VENTANA FLOTANTE DE PRODUCTO ID*/
-.modal {
+.modal-ver {
     display: none;
     position: fixed;
     top: 0; left: 0;
@@ -389,7 +389,7 @@ input::placeholder {
     z-index: 9999;
 }
 
-.modal:target {
+.modal-ver:target {
     display: block;
 }
 
@@ -449,6 +449,102 @@ input::placeholder {
 }
 .texto-model li{
     font-size: 20px;
+}
+
+/*editar*/
+.modal-editar {
+    display: none;
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background: rgba(0, 0, 0, 0.6);
+    z-index: 9999;
+}
+
+.modal-editar:target {
+    display: block;
+}
+.modal-content2 {
+    border: 1px transparent;
+    box-shadow: 0 0px 10px rgba(0, 0, 0, 0.3);
+    background: white;
+    padding-top: 0px;
+    padding: 20px;
+    padding-top: 30px;
+    margin: 32px auto;
+    width: 580px;
+    height: 520px;
+    border-radius: 25px;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+.titulo2{
+    color: #fca123;
+    font-size: 30px;
+    margin-bottom: 35px;
+    font-weight: bold;
+    font-style: italic;
+}
+.texto2 label{
+    color:#424242;
+    font-weight: bold;
+    font-size: 17px;
+}
+.form-editar{
+    width: 80%;
+    height: auto;
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    justify-content: center;
+}
+.texto2{
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    margin-bottom: 15px;
+}
+.btn3{
+    margin-top: 15px;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.btn4{
+    color:white;
+    font-weight: bold;
+    border-radius: 15px;
+    height: 30px;
+    width: 110px;
+    border: solid 1px #f5a226;
+    background-color: #ffb950;
+}
+.btn4:hover{
+    background-color: #f4a735;
+}
+.btn5{
+    color:white;
+    border: 1px solid #939393;
+    background-color: #afafaf;
+    border-radius: 5px;
+    cursor: pointer;
+}
+.texto2 input, .texto2 select{
+    padding-inline: 5px;
+    border: solid 1px grey;
+    width: 250px;
+}
+.descripcion{
+    height: 100px;
+    width: 250px;
+    padding-inline: 5px;
+    overflow-wrap: break-word;
+    white-space: pre-wrap;
+    border: 1px solid #939393;
 }
 
 @media (max-width: 900px) {
