@@ -1,50 +1,49 @@
+<div class="login d-flex justify-content-center align-items-center vh-100">
+  <div class="hex-wrapper position-relative">
+    <%= image_tag "hexagono.png", alt: "Hexágono", class: "hex-bg" %>
 
-<div class="login">
-  
+    <div class="user-icon position-absolute top-0 start-50 translate-middle">
+      <%= image_tag "user.png", alt: "Usuario", class: "rounded-circle user-img" %>
+    </div>
 
-<div class="base d-flex flex-row align-items-center justify-content-start flex-wrap">
+    <div class="hex-content position-absolute top-50 start-50 translate-middle text-center">
+      <% resource = User.new %>
+      <% resource_name = :user %>
+      <% devise_mapping = Devise.mappings[:user] %>
 
-<div class="login-container">
-<% resource = User.new %>
-<% resource_name = :user %>
-<% devise_mapping = Devise.mappings[:user] %>
+      <%= render "devise/shared/error_messages", resource: resource %>
 
-<%= form_for(resource, as: resource_name, url: registration_path(resource_name)) do |f| %>
-  <%= render "devise/shared/error_messages", resource: resource %>
+      <%= form_for(resource, as: resource_name, url: registration_path(resource_name)) do |f| %>
+        <div class="text-sg">
+          Regístrate
+        </div>
 
-<div class="sign-container">
-  <div class="field">
-    <%= f.label :email %><br />
-    <%= f.email_field :email, autofocus: true, autocomplete: "email" , class: "form-control"%>
-  </div>
+        <div class="input-wrapper">
+          <%= image_tag "avatar.png", class: "icon-img", alt: "Usuario" %>
+          <div class="divider"></div>
+          <%= f.email_field :email, placeholder: "Correo", autocomplete: "email" %>
+        </div>
 
-  <div class="field">
-    <%= f.label :password %>
-    <% if @minimum_password_length %>
-    <em class= "text-sign-up">(<%= @minimum_password_length %> Caracteres minimos)</em>
-    <% end %><br />
-    <%= f.password_field :password, autocomplete: "new-password" , class: "form-control"%>
-  </div>
+        <div class="input-wrapper">
+          <%= image_tag "candado.png", class: "icon-img", alt: "Contraseña" %>
+          <div class="divider"></div>
+          <%= f.password_field :password, placeholder: "Contraseña", autocomplete: "new-password" %>
+        </div>
 
-  <div class="field">
-    <%= f.label :password_confirmation %><br />
-    <%= f.password_field :password_confirmation, autocomplete: "new-password" , class: "form-control"%>
-  </div>
+        <div class="input-wrapper">
+          <%= image_tag "candado.png", class: "icon-img", alt: "Confirmar Contraseña" %>
+          <div class="divider"></div>
+          <%= f.password_field :password_confirmation, placeholder: "Confirmar Contraseña", autocomplete: "new-password" %>
+        </div>
 
-  <div class="actions">
-    <%= f.submit "Sign up" , class:"btn-login"%>
+        <div class="hex-button-wrapper mb-3">
+          <%= f.submit "Registrarse", class: "hex-button" %>
+        </div>
+      <% end %>
+
+      <div class="bottom-links">
+        <%= render "devise/shared/links" %>
+      </div>
+    </div>
   </div>
 </div>
-<% end %>
-
-<div class="base2 text-center">
-    <h3> BIENVENIDO </h3>
-    <hr> </hr>
-    
-    <div class="text-center mt-3">
-      <%= render "devise/shared/links" %>
-    </div>
-    
-    <hr> </hr> 
-    <%= link_to "Regresar", authenticated_root_path, class:"btn btn-outline-light" ,id: "link" %>
-  </div>  

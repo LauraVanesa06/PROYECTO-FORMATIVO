@@ -1,87 +1,52 @@
-<div class="home-container">
-  <!-- Google Fonts y estilo base -->
-<head>
-  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;500;700&display=swap" rel="stylesheet">
-  <style>
-    body {
-      font-family: 'Roboto', sans-serif;
-      background-color: #f0f8ff;
-      color: #1a237e;
-    }
 
-    h2 {
-      color: #0d47a1;
-      border-bottom: 2px solid #64b5f6;
-      padding-bottom: 5px;
-    }
-
-    section {
-      padding: 2rem 1rem;
-      background-color: #e3f2fd;
-      border-radius: 8px;
-      margin-bottom: 2rem;
-      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
-    }
-
-    .section-title {
-      font-size: 2rem;
-      margin-bottom: 1rem;
-    }
-
-    .container {
-      max-width: 1000px;
-      margin: 0 auto;
-    }
-  </style>
-</head>
-
-<body>
-  <div class="container">
-    <!-- Sección existente: Bienvenida o similar -->
-    <section>
-      <h2 class="section-title">Bienvenidos a Ferremateriales El Maestro</h2>
-      <p>
-        Tu ferretería de confianza en Campeche. Ofrecemos todo lo que necesitas para tus proyectos de construcción, reparación y mejora del hogar.
-      </p>
-    </section>
-
-    <!-- NUEVA SECCIÓN: Nuestra Trayectoria -->
-    <section>
-      <h2 class="section-title">Nuestra Trayectoria</h2>
-      <p>
-        Ferremateriales El Maestro fue fundado en el año 2007 en el hermoso pueblo de Campeche, con la visión de convertirse en el principal apoyo para quienes construyen, reparan y transforman espacios en la comunidad.
-        La empresa nació del esfuerzo y la visión de Ediltrudis Ahumada Pineda, una mujer emprendedora, trabajadora y comprometida con su gente.
-        Con mucho empeño y el apoyo de su familia, abrió un pequeño local con lo esencial para atender las necesidades del pueblo: cemento, varilla, herramientas y, sobre todo, un trato amable y honesto.
-      </p>
-      <p>
-        Gracias al respaldo de los vecinos y la confianza que poco a poco se fue ganando, Ferremateriales El Maestro fue creciendo.
-        En 2012, se amplió el establecimiento y se incorporaron más productos, incluyendo pinturas, plomería, electricidad y artículos para el hogar.
-        Además, se empezó a ofrecer servicio de entrega a domicilio dentro del municipio, algo que marcó la diferencia para muchos clientes.
-      </p>
-      <p>
-        Hoy, después de más de 15 años de trabajo continuo, somos una ferretería con raíces fuertes en Campeche, reconocida por su calidez, responsabilidad y por apoyar siempre al cliente con buenos consejos y los mejores materiales.
-        Nos sentimos orgullosos de ser parte del progreso de muchas familias campechanas y seguimos con el mismo compromiso con el que comenzamos: servir con calidad y corazón.
-      </p>
-    </section>
-
-    <!-- MISIÓN -->
-    <section>
-      <h2 class="section-title">Misión</h2>
-      <p>
-        En Ferremateriales El Maestro, ofrecemos soluciones confiables y de calidad en materiales de construcción y ferretería, brindando atención experta, productos duraderos y precios competitivos.
-        Nos comprometemos a ser el aliado preferido de profesionales y particulares, contribuyendo al desarrollo de proyectos sólidos y seguros, con un servicio personalizado que supera expectativas.
-      </p>
-    </section>
-
-    <!-- VISIÓN -->
-    <section>
-      <h2 class="section-title">Visión</h2>
-      <p>
-        Ser la ferretería líder en la región, reconocida por su excelencia en servicio, innovación en su oferta de productos y compromiso con el crecimiento sostenible del sector de la construcción.
-        Aspiramos a expandir nuestra presencia, manteniendo siempre la confianza y preferencia de nuestros clientes como nuestro principal motor de éxito.
-      </p>
-    </section>
+<section>
+  <div class="banner-wrapper">
+    <%= image_tag 'banner.png', alt: 'logo', class: 'banner-image' %>
   </div>
-</body>
 
-</div>
+  <h2 class="titulo"> 🔥 Promociones 🔥</h2>
+
+  <div class="cartas">
+    <div class="cartaa">
+      <%= image_tag "martillo-dewalt.png", alt: 'herramienta' %>
+      <h2>Promo1</h2>
+      <p>precio: 44.900 COP</p>
+      <button>Comprar</button>
+    </div>
+    <div class="cartaa">
+      <%= image_tag "martillo-dewalt.png", alt: 'herramienta' %>
+      <h2>Promo1</h2>
+      <p>precio: 44.900 COP</p>
+      <button>Comprar</button>
+    </div>
+    <div class="cartaa">
+      <%= image_tag "martillo-dewalt.png", alt: 'herramienta' %>
+      <h2>Promo1</h2>
+      <p>precio: 44.900 COP</p>
+      <button>Comprar</button>
+    </div>
+    <div class="cartaa">
+      <%= image_tag "martillo-dewalt.png", alt: 'herramienta' %>
+      <h2>Promo1</h2>
+      <p>precio: 44.900 COP</p>
+      <button>Comprar</button>
+    </div>
+  </div>
+
+  <h2 class="titulo"> Busca tu producto </h2>
+  <div class="categorias">
+    <% @category.each do |categorias| %>
+      <a class="cart-category" src="#"><%= categorias.nombre %></a>
+    <% end %>
+  </div>
+  <h2 class="titulo">Contactanos</h2>
+  <div class = "contacto">
+    <a src="#" target="_blank"><%= image_tag "icons/whatsapp-brands.svg"%> <h3>whatsapp</h3> <p>+57 3012956202</p></a>
+    <a src="#" target="_blank"><%= image_tag "icons/location-dot-solid.svg"%> <h3>Ubicanos</h3> <p>Cl. 6A, Campeche, Baranoa, Atlántico</p></a>
+    <a src="#" target="_blank"><%= image_tag "icons/envelope-solid.svg"%> <h3>Correo</h3> <p>pepito@gmail.com</p></a>
+  </div>
+  
+  <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d550.0248621197248!2d-74.91476192364354!3d10.724326685333724!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x8ef5d91f4b7de201%3A0xe3b0c0db16adab6e!2sCl.%206A%2C%20Baranoa%2C%20Atl%C3%A1ntico!5e0!3m2!1ses!2sco!4v1750135913790!5m2!1ses!2sco" width="60%" height="400" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+
+</section>
+
