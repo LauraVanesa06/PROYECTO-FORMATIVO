@@ -41,11 +41,16 @@ User.create!(
 )
 
 categories = Category.create!([
-  { nombre: "Martillos" },
-  { nombre: "Clavos" },
-  { nombre: "Sierras" },
-  { nombre: "Materiales" },
-  { nombre: "Herramientas" }
+  { nombre: "Herramientas" },
+  { nombre: "Tornilleria y Fijaciones" },
+  { nombre: "Plomeria" },
+  { nombre: "Electricidad" },
+  { nombre: "Construccion y Materiales" },
+  { nombre: "Pintura y Acabados" },
+  { nombre: "Ferreteria para el hogar" },
+  { nombre: "Limpieza y Mantenimiento" },
+  { nombre: "Adhesivos y Selladores" },
+  { nombre: "Jardineria" },
 ])
 
 suppliers = Supplier.create!([
@@ -64,205 +69,119 @@ proveedores = Proveedor.create!([
 products = Product.create!([
   {
     nombre: "Martillo",
-    descripcion: "Martillo de alta calidad",
-    precio: 25.99,
-    stock: 20,
-    category: categories[0],
-    supplier: suppliers[0]
-  },
-  {
-    nombre: "Martillo2",
-    descripcion: "Martillo de alta calidad",
-    precio: 25.99,
-    stock: 20,
-    category: categories[0],
-    supplier: suppliers[0]
-  },
-  {
-    nombre: "Martillo3",
-    descripcion: "Martillo de alta calidad",
-    precio: 25.99,
-    stock: 20,
-    category: categories[0],
-    supplier: suppliers[0]
-  },
-  {
-    nombre: "Martillo4",
-    descripcion: "Martillo de alta calidad",
-    precio: 25.99,
-    stock: 20,
-    category: categories[0],
-    supplier: suppliers[0]
-  },
-  {
-    nombre: "Martillo5",
-    descripcion: "Martillo de alta calidad",
-    precio: 25.99,
-    stock: 20,
-    category: categories[0],
-    supplier: suppliers[0]
-  },
-  {
-    nombre: "Caja de clavos",
-    descripcion: "Caja de clavos en gran cantidad y de buena calidad",
-    precio: 9.50,
+    descripcion: "Martillo de alta resistencia con mango ergonómico y cabeza de acero forjado,
+    ideal para trabajos de carpintería, construcción y reparaciones generales.",
+    precio: 25.000,
     stock: 50,
     category: categories[1],
     supplier: suppliers[1]
   },
   {
-    nombre: "Caja de clavos2",
-    descripcion: "Caja de clavos en gran cantidad y de buena calidad",
-    precio: 9.50,
-    stock: 50,
+    nombre: "Llave stilson",
+    descripcion: "Llave Stilson de acero forjado con mango antideslizante y mordazas ajustables,
+    ideal para sujetar y girar tuberías metálicas con firmeza y seguridad.",
+    precio: 40.000,
+    stock: 30,
     category: categories[1],
-    supplier: suppliers[1]
-  },
-  {
-    nombre: "Caja de clavos3",
-    descripcion: "Caja de clavos en gran cantidad y de buena calidad",
-    precio: 9.50,
-    stock: 50,
-    category: categories[1],
-    supplier: suppliers[1]
-  },
-  {
-    nombre: "Caja de clavos4",
-    descripcion: "Caja de clavos en gran cantidad y de buena calidad",
-    precio: 9.50,
-    stock: 50,
-    category: categories[1],
-    supplier: suppliers[1]
-  },
-  {
-    nombre: "Caja de clavos5",
-    descripcion: "Caja de clavos en gran cantidad y de buena calidad",
-    precio: 9.50,
-    stock: 50,
-    category: categories[1],
-    supplier: suppliers[1]
+    supplier: suppliers[2]
   },
   {
     nombre: "Sierra",
-    descripcion: "Sierra para usar en todo lo que necesite",
-    precio: 30.50,
-    stock: 50,
-    category: categories[2],
-    supplier: suppliers[2]
-  },
-  {
-    nombre: "Sierra2",
-    descripcion: "Sierra para usar en todo lo que necesite",
-    precio: 30.50,
-    stock: 50,
-    category: categories[2],
-    supplier: suppliers[2]
-  },
-  {
-    nombre: "Sierra3",
-    descripcion: "Sierra para usar en todo lo que necesite",
-    precio: 30.50,
-    stock: 50,
-    category: categories[2],
-    supplier: suppliers[2]
-  },
-  {
-    nombre: "Sierra4",
-    descripcion: "Sierra para usar en todo lo que necesite",
-    precio: 30.50,
-    stock: 50,
-    category: categories[2],
-    supplier: suppliers[2]
-  },
-  {
-    nombre: "Sierra5",
-    descripcion: "Sierra para usar en todo lo que necesite",
-    precio: 30.50,
-    stock: 50,
-    category: categories[2],
-    supplier: suppliers[2]
-  },
-  {
-    nombre: "Madera",
-    descripcion: "Tablas de madera para lo que necesite hacer",
-    precio: 12.50,
-    stock: 50,
+    descripcion: "Sierra manual con hoja de acero templado y mango ergonómico,
+    ideal para cortes precisos en madera, plástico o metal.",
+    precio: 19.900,
+    stock: 25,
     category: categories[3],
     supplier: suppliers[3]
   },
   {
-    nombre: "Madera2",
-    descripcion: "Tablas de madera para lo que necesite hacer",
-    precio: 12.50,
+    nombre: "Tijera para lamina",
+    descripcion: "Tijera corta hojalata con hojas de acero endurecido y mangos ergonómicos,
+    ideal para cortar láminas de metal, aluminio y otros materiales delgados.",
+    precio: 35.000,
+    stock: 12,
+    category: categories[5],
+    supplier: suppliers[4]
+  },
+  {
+    nombre: "Pala de punta",
+    descripcion: "Pala de punta con hoja de acero resistente y mango corto de madera con agarradera en “D”,
+    ideal para cavar, remover tierra y trabajos de jardinería o construcción.",
+    precio: 25.000,
     stock: 50,
+    category: categories[2],
+    supplier: suppliers[0]
+  },
+  {
+    nombre: "Lima plana manual",
+    descripcion: "Lima plana de acero templado con mango ergonómico,
+    ideal para desbastar y dar forma a superficies metálicas o de madera.",
+    precio: 8.000,
+    stock: 150,
+    category: categories[6],
+    supplier: suppliers[1]
+  },
+  {
+    nombre: "Llave combinada",
+    descripcion: "Llave combinada de acero cromado con boca fija y estrella,
+    ideal para ajustar o aflojar tuercas y pernos de forma segura y eficiente.",
+    precio: 6.000,
+    stock: 80,
+    category: categories[2],
+    supplier: suppliers[0]
+  },
+  {
+    nombre: "Pinza de presión",
+    descripcion: "Pinza de presión de acero con mecanismo de bloqueo ajustable,
+    ideal para sujetar firmemente piezas sin esfuerzo continuo.",
+    precio: 15.000,
+    stock: 10,
     category: categories[3],
     supplier: suppliers[3]
   },
   {
-    nombre: "Madera3",
-    descripcion: "Tablas de madera para lo que necesite hacer",
-    precio: 12.50,
-    stock: 50,
-    category: categories[3],
-    supplier: suppliers[3]
-  },
-  {
-    nombre: "Madera4",
-    descripcion: "Tablas de madera para lo que necesite hacer",
-    precio: 12.50,
-    stock: 50,
-    category: categories[3],
-    supplier: suppliers[3]
-  },
-  {
-    nombre: "Madera5",
-    descripcion: "Tablas de madera para lo que necesite hacer",
-    precio: 12.50,
-    stock: 50,
-    category: categories[3],
-    supplier: suppliers[3]
-  },
-  {
-    nombre: "Cinta metrica",
-    descripcion: "Una herramienta util que no debe faltar",
-    precio: 17.50,
-    stock: 50,
+    nombre: "Taladro atornillador inalámbrico",
+    descripcion: "Taladro atornillador inalámbrico compacto Milwaukee,
+    ideal para perforar y atornillar con potencia y precisión sin necesidad de cables.",
+    precio: 900.000,
+    stock: 8,
     category: categories[4],
     supplier: suppliers[4]
   },
   {
-    nombre: "Cinta metrica2",
-    descripcion: "Una herramienta util que no debe faltar",
-    precio: 17.50,
-    stock: 50,
-    category: categories[4],
-    supplier: suppliers[4]
-  },
-  {
-    nombre: "Cinta metrica3",
-    descripcion: "Una herramienta util que no debe faltar",
-    precio: 17.50,
-    stock: 50,
-    category: categories[4],
-    supplier: suppliers[4]
-  },
-  {
-    nombre: "Cinta metrica4",
-    descripcion: "Una herramienta util que no debe faltar",
-    precio: 17.50,
-    stock: 50,
-    category: categories[4],
-    supplier: suppliers[4]
-  },
-  {
-    nombre: "Cinta metrica5",
-    descripcion: "Una herramienta util que no debe faltar",
-    precio: 17.50,
-    stock: 50,
-    category: categories[4],
-    supplier: suppliers[4]
+    nombre: "Esmeriladora angular inalámbrica",
+    descripcion: "Esmeriladora angular inalámbrica ideal para cortar,
+    desbastar y pulir materiales como metal, piedra o cerámica, sin depender de cables.",
+    precio: 350.000,
+    stock: 34,
+    category: categories[1],
+    supplier: suppliers[2]
   }
 ])
+
+products.each do |product|
+  # Lista de extensiones posibles
+  extensiones = [".jpg", ".jpeg", ".png", ".webp", "avif"]
+
+  imagen_encontrada = false
+
+  extensiones.each do |ext|
+    nombre_archivo = "#{product.nombre}#{ext}"
+    ruta_imagen = Rails.root.join("db/seeds-img", nombre_archivo)
+
+    if File.exist?(ruta_imagen)
+      product.imagen.attach(
+        io: File.open(ruta_imagen),
+        filename: nombre_archivo,
+        content_type: Marcel::MimeType.for(ruta_imagen)
+      )
+      puts "✅ Imagen cargada para #{product.nombre} (#{ext})"
+      imagen_encontrada = true
+      break
+    end
+  end
+  puts "⚠️  Imagen no encontrada para #{product.nombre}" unless imagen_encontrada
+end
 
 customers = Customer.create!([
   { nombre: "Juan Pérez", telefono: "555-0101" },
@@ -284,31 +203,31 @@ Purchasedetail.create!([
   {
     buy: buys[0],
     product: products[0],
-    cantidad: 2,
+    cantidad: 20,
     preciounidad: 25.99
   },
   {
     buy: buys[1],
     product: products[1],
-    cantidad: 5,
+    cantidad: 50,
     preciounidad: 9.50
   },
   {
     buy: buys[2],
     product: products[2],
-    cantidad: 1,
+    cantidad: 10,
     preciounidad: 30.50
   },
   {
     buy: buys[3],
     product: products[3],
-    cantidad: 4,
+    cantidad: 40,
     preciounidad: 12.50
   },
   {
     buy: buys[4],
     product: products[4],
-    cantidad: 1,
+    cantidad: 10,
     preciounidad: 17.50
   }
 ])

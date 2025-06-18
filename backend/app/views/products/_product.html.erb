@@ -1,33 +1,25 @@
 <ul class="ul-prod">
   <div id="<%= dom_id product %>"></div>
-  <div class="div-foto"><div id="foto"><%= link_to image_tag("martillo-dewalt.png")%></div></div>
+  <div class="div-foto">
+    <% if product.imagen.attached? %>
+      <%= image_tag url_for(product.imagen), alt: "Imagen del producto" %>
+    <% else %>
+      <p>No hay imagen</p>
+    <% end %>
+  </div>
   <div class="texto">
     <li class="li-start">
-      <strong  class="titulo">Nombre:</strong>
-      <%= product.nombre %>
+      <strong  class="titulo"><%= product.nombre %></strong>
     </li>
     <li>
-      <strong class="titulo">Descripcion:</strong>
+      Descripcion:
       <%= product.descripcion %>
     </li>
-    <li>
-      <strong class="titulo">Precio:</strong>
-      <%= product.precio %>
-    </li>
-    <li>
-      <strong class="titulo">Stock:</strong>
-      <%= product.stock %>
-    </li>
-    <li>
-      <strong class="titulo">Proveedor:</strong>
-      <%= product.supplier.nombre %>
-    </li>
-    <li>
-      <strong class="titulo">Categoria:</strong>
-      <%= product.category.nombre %>
-    </li>
   </div>
-  <div class="ver">
-    <%= link_to "Ver", "#modal-#{product.id}" %>
+  <div class="opciones">
+    <button class="editar"><%= link_to "Editar", edit_product_path(product) %> </button>
+    <button class="ver">
+      <%= link_to "Ver", "#modal-#{product.id}" %>
+    </button>
   </div>
 </ul>
