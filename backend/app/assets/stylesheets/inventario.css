@@ -451,6 +451,10 @@ input::placeholder {
 }
 
 @media (max-width: 900px) {
+    nav ul{
+        flex-direction: row;
+    }
+
     .ul-nombre{
         width: 95%;
     }
@@ -547,6 +551,14 @@ input::placeholder {
 }
 
 @media (max-width: 600px) {
+
+        nav ul{
+        flex-direction: column;
+    }
+
+    .ul-nombre{
+        width: 95%;
+    }
   .section-container {
     flex-direction: column;
     padding: 0 2px;
@@ -559,6 +571,9 @@ input::placeholder {
     box-shadow: none;
     min-width: 0;
     padding: 0 1px;
+  }
+    .categorias{
+    margin-top: 4%;
   }
   .section-models {
     flex-direction: column;
