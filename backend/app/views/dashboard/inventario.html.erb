@@ -4,8 +4,9 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Dashboard Ferretería</title>
-  <%= stylesheet_link_tag "dashboard", media: "all" %>
   <%= stylesheet_link_tag "inventario", media: "all" %>
+  <%= stylesheet_link_tag "dashboard", media: "all" %>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 </head>
@@ -13,29 +14,31 @@
 
   <header>
     <div class="container-header">
-      <div class="img-empresa">
-        <img src="img/test.png" alt="" width="60px">
-      </div>
+      <button class="hamburger" id="hamburger">&#9776;</button>
       <p>Ferremateriales el Maestro - Dashboard</p>
+      <% if user_signed_in? %>
+        <%= button_to destroy_user_session_path, method: :delete, form: { data: { turbo: true } }, id: "cerrar", class: "logout2" do %>
+          <span><i class="fas fa-sign-out-alt"></i></span>
+        <% end %>
+      <% end %>
     </div>
   </header>
 
   <nav class="nav-bg">
     <div class="container-nav">
-      <ul class="menu">
-        <li><a href="dashboard">Inicio</a></li>
-        <li><a href="inventario">Inventario</a></li>
-        <li><a href="ventas">Ventas</a></li>
-        <li><a href="proveedores">Proveedores</a></li>
-        <li><a href="clientes">Clientes</a></li>
+      <ul class="menu" id="menu">
+        <li><a href="dashboard"class="link-menu">Inicio</a></li>
+        <li><a href="inventario"class="link-menu">Inventario</a></li>
+        <li><a href="ventas"class="link-menu">Ventas</a></li>
+        <li><a href="proveedores"class="link-menu">Proveedores</a></li>
+        <li><a href="clientes"class="link-menu">Clientes</a></li>
       </ul>
-      <div>
-          <% if user_signed_in? %>
-            <%= button_to "Cerrar sesión", destroy_user_session_path, method: :delete, form: { data: { turbo: true } }, id: "cerrar", class: "logout"%>
-          <% end %>
-        </div>
+      <% if user_signed_in? %>
+        <%= button_to "Cerrar sesión", destroy_user_session_path, method: :delete, form: { data: { turbo: true } }, id: "cerrar", class: "logout"%>
+      <% end %>
     </div>
   </nav>
+
   <section class="section-container">
   <aside class="categorias">
     <div class="div-div">
@@ -142,6 +145,15 @@
   <footer>
     &copy; 2025 Ferremateriales el Maestro - Todos los derechos reservados
   </footer>
+
+  <script>
+    const btn = document.getElementById("hamburger");
+    const menu = document.getElementById("menu");
+
+    btn.addEventListener("click", () => {
+      menu.classList.toggle("active");
+    });
+  </script>
 
 </body>
 </html>
