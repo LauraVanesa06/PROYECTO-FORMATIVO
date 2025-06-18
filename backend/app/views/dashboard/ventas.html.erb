@@ -8,13 +8,14 @@
   <%= stylesheet_link_tag "dashboard", media: "all" %>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Eczar:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 </head>
 <body>
 
   <header>
     <div class="container-header">
       <button class="hamburger" id="hamburger">&#9776;</button>
-      <p>Ferremateriales el Maestro - Dashboard</p>
+      <p class="pricipal">Ferremateriales el Maestro - Dashboard</p>
       <% if user_signed_in? %>
         <%= button_to destroy_user_session_path, method: :delete, form: { data: { turbo: true } }, id: "cerrar", class: "logout2" do %>
           <span><i class="fas fa-sign-out-alt"style="color: white"></i></span>
@@ -70,25 +71,25 @@
                 {
                   label: 'Minorista',
                   data: [10, 20, 15, 25],
-                  backgroundColor: '#e2714d',
+                  backgroundColor: '#00b4d8',
                   tension: 0.2,
                 },
                 {
                   label: 'Mayorista',
                   data: [20, 30, 25, 35],
-                  backgroundColor: '#f55c7a',
+                  backgroundColor: '#0077b6',
                   tension: 0.2
                 },
                 {
                   label: 'Contratista/Empresa',
                   data: [5, 15, 10, 18],
-                  backgroundColor: '#f08080',
+                  backgroundColor: '#023e8a',
                   tension: 0.2
                 },
                 {
                   label: 'Online',
                   data: [2, 17, 40, 60],
-                  backgroundColor: '#b84030',
+                  backgroundColor: '#03045e',
                   tension: 0.2
                 }
               ]

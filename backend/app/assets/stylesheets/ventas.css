@@ -5,6 +5,7 @@
     padding: 0;
     gap: 0;
     height: auto;
+    background-color: #e9cfae;
 }
 #sect1{
     display:flex;
@@ -14,8 +15,8 @@
     max-width: 100%;
     height: auto !important;
     box-shadow:
-    -5px 0 10px -1px rgb(189, 187, 185),
-     5px 0 10px -1px rgb(189, 187, 185);
+    -5px 0 10px -1px rgb(99 93 86),
+    5px 0 10px -1px rgb(99 93 86);
     padding: 0;
     margin-left: 10px;
     gap: 0;
@@ -30,7 +31,7 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    background: linear-gradient(#ffd8b5, white);
+    background: linear-gradient(#4a82be, white);
 }
 .div-white{
     width: 100%;
@@ -52,32 +53,31 @@
     align-items: center;
     padding: 5px;
     border-radius: 25px;
-    width: 120px;      /* Más ancho que antes */
+    width: 75px;
     height: 70px;
-    border:1px solid #e2714d;
-    background-color: #ffead8;
+    border:1px solid rgb(82, 82, 82);
+    background-color: #efefef;
     transition: width 0.2s;
-    margin: 0 auto; /* Centrado horizontal */
 }
 .titulo-cant{
     margin-top: 40px;
     margin-bottom: 5px;
     font-weight: bold;
     font-family: 'Segoe UI', sans-serif;
-    font-size: 15px;
-    color: #e2714d;
+    font-size: 19px;
+    color: white;
 }
 .info{
     font-family: 'roboto', sans-serif;
-    color: #e2714d;
+    color: rgb(40, 40, 40);
     font-size: 10px;
     margin-bottom: 5px;
 }
 .info2{
     font-weight: bold;
     font-family: 'Segoe UI', sans-serif;
+    color: rgb(48, 48, 48);
     font-size: 20px;
-    color: #e2714d;
     margin-top: 5px;
 }
 /*filtros*/
@@ -94,7 +94,7 @@
 }
 .nav-filtros{
     background-color: white;
-    border: solid 1px #ffd8b5;
+    border: solid 1px grey;
     border-radius: 15px;
     margin: 10px;
     margin-right: 20px;
@@ -111,7 +111,7 @@
     font-size: 17px;
     font-weight: bold;
     font-family: 'Segoe UI', sans-serif;
-    color: #dd5a48;
+    color: #424242;
 }
 .filtros{
     display: flex;
@@ -133,7 +133,7 @@ input::placeholder {
     margin-right: 20px;
 }
 .btn-save, i{
-    color:#dd5a48;
+    color:#424242;
     font-size: 17px;
 }
 .cont-ventas{
@@ -152,7 +152,7 @@ input::placeholder {
     display: flex;
     flex-direction: row;
     justify-content: space-between;
-    border-radius: 10px;
+    border-radius: 7px;
 }
 .div-purchase div{
     margin-left: 8px;
@@ -164,31 +164,31 @@ input::placeholder {
 }
 .buy-id{
     width: 100%;
-    color:white;
-    border: solid 2px #dd5948d7;
-    background-color: #dd5948a6;
+    color:rgb(225, 225, 225);
+    border: solid 2px #222222;
+    background-color: #424242;
     border-radius: 10px;
     margin-bottom: 10px;
     display: flex;
     flex-direction: row;
     align-items: center;  
     justify-content: space-between;
-    padding-block: 5px;
+    padding-block: 10px;
     padding-inline: 20px;
 }
 .boton-ver{
     display: flex;
     justify-content: center;
     align-items: center;  
-    border: solid 1px #c23e2dd7;
+    border: solid 1px #0c0c0c;
     border-radius: 5px;
     height: 25px;
     width: 96px;
-    background-color: #d97568d7;
+    background-color: #222222;
 }
 .show-buy{
     text-decoration: none;
-    color: #b03524d7;
+    color: grey;
 }
 .show-buy:hover, .boton-ver:hover{
     background-color: #e67b6d;
@@ -203,15 +203,17 @@ input::placeholder {
     border-radius: 50%;
     text-decoration: none;
     box-shadow: 0 0px 10px rgba(0, 0, 0, 0.3);
-    background-color:  #dd5948;
+    background-color: black;
     color: white;
     font-family: 'inconsolata';
     font-size: 25px;
     font-weight: bold;
 }
-
+.new-buy:hover {
+    background-color: #313131;
+}
 .new-purcha:hover {
-    background-color: #d54633;
+    background-color: grey;
 }
 .a-volver{
     display: flex;
@@ -377,8 +379,8 @@ input::placeholder {
     font-size: 0.9rem;
     padding: 6px 16px;
     margin: 10px 0 0 0;
-    background: #e2714d;      /* Fondo fuerte */
-    color: #fff;              /* Texto blanco */
+    background: #e2714d; 
+    color: #fff;           
     border-radius: 8px;
     box-shadow: 0 1px 4px #ffe0c1;
     align-self: flex-end;

@@ -8,13 +8,14 @@
   <%= stylesheet_link_tag "dashboard", media: "all" %>
   <%= stylesheet_link_tag "clientes" %>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Eczar:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 </head>
 <body>
 
   <header>
     <div class="container-header">
       <button class="hamburger" id="hamburger">&#9776;</button>
-      <p>Ferremateriales el Maestro - Dashboard</p>
+      <p class="pricipal">Ferremateriales el Maestro - Dashboard</p>
       <% if user_signed_in? %>
         <%= button_to destroy_user_session_path, method: :delete, form: { data: { turbo: true } }, id: "cerrar", class: "logout2" do %>
           <span><i class="fas fa-sign-out-alt" style="color: white"></i></span>
@@ -42,7 +43,7 @@
   <section class="madre">
     <div class="filt">
       <div class="cont-volver">
-        <a href="/clientes" class="a-volver" style="text-decoration:none;"><i class="fas fa-arrow-left"></i></a>
+        <a href="/clientes" class="a-volver" style="text-decoration:none;"><i class="fas fa-arrow-left" id="vol"></i></a>
       </div>
       <div class="filtro">
         <p class=p><i class="fas fa-filter"></i> Filtros</p>
@@ -78,6 +79,7 @@
           <% if @purchasedetails.present? && @purchasedetails.any? %>
             <% @purchasedetails.each do |purchasedetail| %>
               <div id="<%= dom_id purchasedetail %>" class="div-purchase">
+                <div class="color"></div>
                 <div>
                   <p><strong>Id de compra:</strong> <%= purchasedetail.buy_id %></p>
                   <p><strong>Fecha de compra:</strong> <%= purchasedetail.buy.fecha %></p>
