@@ -1,53 +1,77 @@
+<div class="login d-flex justify-content-center align-items-center vh-100">
 
-<div class="login">
-  
+  <div class="hex-wrapper position-relative">
 
-<div class="base d-flex flex-row align-items-center justify-content-start flex-wrap">
+    <!-- Imagen del hexágono como fondo -->
+    <%= image_tag "hexagono.png", alt: "Hexágono", class: "hex-bg" %>
 
-<div class="login-container">
-<% resource = User.new %>
-<% resource_name = :user %>
-<% devise_mapping = Devise.mappings[:user] %>
-
-
-  <div class="login-container">
-    <%= form_for(resource, as: resource_name, url: session_path(resource_name)) do |f| %>
-        
-    <div class="field" >
-      <%= f.label :Usuario  %><br />
-      <%= f.email_field :email, autofocus: true, autocomplete: "email", class: "form-control" %>
+    <!-- Icono del usuario superpuesto -->
+    <div class="user-icon position-absolute top-0 start-50 translate-middle">
+      <%= image_tag "user.png", alt: "Usuario", class: "rounded-circle user-img" %>
     </div>
 
-    <div class="field mt-3">
-      <%= f.label :Contraseña %><br />
-      <%= f.password_field :password, autocomplete: "current-password", class: "form-control" %>
-    </div>
+    <!-- Contenido del login sobre el hexágono -->
+    <div class="hex-content position-absolute top-50 start-50 translate-middle text-center">
+      <% resource = User.new %>
+      <% resource_name = :user %>
+      <% devise_mapping = Devise.mappings[:user] %>
 
-    <% if devise_mapping.rememberable? %>
-  
-      <div class="field mt-3">
-        <%= f.check_box :remember_me %>
-        <%= f.label :remember_me, "Recordarme" %>
+      <!-- Mensajes de error -->
+      <%= render "devise/shared/error_messages", resource: resource %>
+
+      <%= form_for(resource, as: resource_name, url: session_path(resource_name)) do |f| %>
+        <div class="text-sg">
+          <%= "Sign In" %>
+        </div>
+
+        <div class="input-wrapper">
+          <%= image_tag "avatar.png", class: "icon-img", alt: "Usuario" %>
+          <div class="divider"></div>
+          <%= f.email_field :email, placeholder: "Usuario", autocomplete: "email" %>
+        </div>
+
+        <div class="input-wrapper">
+          <%= image_tag "candado.png", class: "icon-img", alt: "Contraseña" %>
+          <div class="divider"></div>
+          <%= f.password_field :password, placeholder: "Contraseña", autocomplete: "current-password", id: "password" %>
+          <%= image_tag "ojo.png", id: "eye-icon", class: "toggle-password eye-img", onclick: "togglePassword()", alt: "Ver contraseña" %>
+        </div>
+
+        <div class="hex-button-wrapper mb-3">
+          <%= f.submit "Iniciar sesión", class: "hex-button" %>
+        </div>
+
+        <% if devise_mapping.rememberable? %>
+          <div class="field mb-1 form-check text-start">
+            <%= f.check_box :remember_me, class: "form-check-input" %>
+            <%= f.label :remember_me, "Recordarme", class: "form-check-label" %>
+          </div>
+        <% end %>
+      <% end %>
+
+      <!-- Links al fondo -->
+      <div class="bottom-links">
+        <%= render "devise/shared/links" %>
       </div>
-    <% end %>
 
-    <div class="actions mt-4">
-      <%= f.submit "Log in", class:"btn-login" %>
+
+
     </div>
-  
-    <% end %>
   </div>
-  
-  <div class="base2 text-center">
-    <h3> BIENVENIDO </h3>
-    <hr> </hr>
-    
-    <div class="text-center mt-3">
-      <%= render "devise/shared/links" %>
-    </div>
-    
-    <hr> </hr> 
-    <%= link_to "Regresar", authenticated_root_path, class:"btn btn-outline-light" , id: "link"%>
-  </div>  
-
 </div>
+
+<script>
+  function togglePassword() {
+    const field = document.getElementById("password");
+    const icon = document.getElementById("eye-icon");
+
+    if (field.type === "password") {
+      field.type = "text";
+      icon.src = "<%= asset_path('ojo-abierto.png') %>";
+    } else {
+      field.type = "password";
+      icon.src = "<%= asset_path('ojo.png') %>";
+    }
+  }
+</script>
+
