@@ -451,6 +451,9 @@ input::placeholder {
 }
 
 @media (max-width: 900px) {
+    .ul-nombre{
+        width: 95%;
+    }
   .section-container {
     flex-direction: column;
     padding: 0 10px;
