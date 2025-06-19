@@ -31,7 +31,7 @@
   }
 .pricipal{
   font-family: 'Eczar';
-  font-size: 35px;
+  font-size: 120%;
 }
 .hamburger {
   font-size: 28px;
@@ -106,7 +106,7 @@
   align-items: center;
   justify-content: center;
   flex-direction: column;
-  background-color: #fff4ec;
+  background-color: rgba(0, 0, 0, 0.4);
   border-radius: 10px;
 }
 
@@ -120,7 +120,7 @@
   align-items: center;
   justify-content: center;
   flex-direction: column;
-  background-color: #fff4ec;
+  background-color: rgba(0, 0, 0, 0.4);
   border-radius: 10px;
 }
 
@@ -135,7 +135,7 @@
   align-items: center;
   justify-content: center;
   flex-direction: column;
-  background-color: #fff4ec;
+  background-color: rgba(0, 0, 0, 0.4);
   border-radius: 10px;
 }
 
@@ -162,9 +162,9 @@
   }
   
   .welcome p{
-    color: rgba(62, 178, 53, 0.896);
+    color: rgba(255, 255, 255, 0.896);
     font-style: italic;
-    -webkit-text-stroke: 1.5px rgb(42, 94, 21);
+    -webkit-text-stroke: 1.5px rgb(0, 0, 0);
     margin-top: 20px;
     font-size: 40px;
     width: auto;
@@ -239,10 +239,10 @@
   }
 
   .card {
-    background: #fff4ec;
     padding: 50px;
     border-radius: 10px;
     box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    background-color: rgba(0, 0, 0, 0.4);
     text-align: center;
     transition: transform 0.2s;
     background-size: 100%;
@@ -260,13 +260,13 @@
   }
 
   .card h3 {
-    color: black;
+    color: white;
     margin-bottom: 10px;
   }
 
   .card p {
     font-size: 1.4rem;
-    color: #424242;
+    color: #dddddd;
   }
 
   footer {

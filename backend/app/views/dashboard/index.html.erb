@@ -99,7 +99,7 @@
         label: 'Ventas por día',
         data: [500, 700, 1200, 900, 1850],
         backgroundColor: 'rgb(70, 130, 180)',
-        borderColor: 'rgb(70, 130, 180)',
+        borderColor: 'black',
         borderWidth: 1,
         borderRadius: 5
       }]
@@ -109,14 +109,27 @@
         y: {
           beginAtZero: true,
           ticks: {
+            color: 'white' ,
             callback: function (value) {
               return '$' + value;
-            }
           }
+        }
+      },
+      x: {
+        ticks: {
+          color: "#ffffff" // color eje X
+        }
+      }
+    },
+    plugins: {
+      legend: {
+        labels: {
+          color: "#ffffff" // color leyenda
         }
       }
     }
-  });
+  }
+});
 
   const ctx2 = document.getElementById('tortaChart').getContext('2d');
   new Chart(ctx2, {
@@ -132,7 +145,7 @@
           '#85C1E9', 
           '#AED6F1' 
         ],
-        borderColor: '#fff',
+        borderColor: 'black',
         borderWidth: 2
       }]
     },
@@ -140,7 +153,10 @@
       responsive: true,
       plugins: {
         legend: {
-          position: 'bottom'
+          position: 'bottom',
+          labels: {
+            color: "#ffffff"
+          }
         }
       }
     }
@@ -155,7 +171,7 @@
         label: 'Ventas Mensuales',
         data: [1200, 1500, 1800, 1600, 2000, 2400],
         fill: false,
-        borderColor: '#3498DB',
+        borderColor: 'black',
         backgroundColor: '#3498DB',
         tension: 0.3,
         pointBackgroundColor: '#fff',
@@ -166,16 +182,27 @@
       responsive: true,
       plugins: {
         legend: {
-          position: 'top'
+          position: 'top',
+          labels: {
+            color: 'white'
+          }
         }
       },
       scales: {
-        y: {
-          beginAtZero: true
+      x: {
+        ticks: {
+          color: '#ffffff'               // Texto del eje X
+        }
+      },
+      y: {
+        beginAtZero: true,
+        ticks: {
+          color: '#ffffff'               // Texto del eje Y
         }
       }
     }
-  });
+  }
+});
 
   const btn = document.getElementById("hamburger");
   const menu = document.getElementById("menu");
