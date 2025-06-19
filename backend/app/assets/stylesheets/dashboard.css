@@ -279,8 +279,15 @@
 
   @media (max-width: 900px){
 
+    .card-link{
+      margin: 0;
+    }
+
   .card {
     font-size: 120%;
+    width: 100%;
+    margin-left: 10%;
+    margin-right: 10%;
   }
 
   .nav-bg {
@@ -290,7 +297,7 @@
     padding-bottom: 1%;
     left: 0;
     width: 100%;
-    background-color: #fff;
+    background-color: rgba(0, 0, 0, 0.4);
     z-index: 999;
   }
 
@@ -307,7 +314,7 @@
       padding-left: 20px;
       padding-right: 20px;
       border: none;
-      background-color: #b84030;
+      background-color: rgba(0, 0, 0, 0.7);
       color: white;
       font-weight: bold;
       border-radius: 5px;
@@ -377,8 +384,8 @@
   }
 
   #tortaChart {
-  width: 70% !important;
-  height: 70% !important;
+  width: 60% !important;
+  height: 60% !important;
 }
 
 #ventasChart {
@@ -403,6 +410,7 @@
     padding-bottom: 10%;
     border-radius: 10px;
     font-size: 100px;
+    box-shadow: none
   }
 
   .container-nav {
@@ -450,8 +458,8 @@
 
  .section-card{
     height: auto;
-    padding: 3% 9%;
     display: flex;
+    margin-bottom: 10%;
     align-content: space-around;
     flex-direction: column;
     grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
@@ -470,8 +478,15 @@
 
 @media (max-width: 700px) {
 
-    .card {
-    font-size: 100%;
+    .card-link{
+      margin: 0;
+    }
+
+  .card {
+    font-size: 120%;
+    width: 100%;
+    margin-left: 10%;
+    margin-right: 10%;
   }
 
   .nav-bg {
@@ -481,7 +496,7 @@
     padding-bottom: 1%;
     left: 0;
     width: 100%;
-    background-color: #fff;
+    background-color: rgba(0, 0, 0, 0.4);
     z-index: 999;
   }
 
@@ -498,9 +513,10 @@
       padding-left: 10px;
       padding-right: 10px;
       border: none;
-      background-color: #b84030;
+      background-color: rgba(0, 0, 0, 0.7);
       color: white;
       font-weight: bold;
+      font-size: 80%;
       border-radius: 5px;
       cursor: pointer;
   }
@@ -514,7 +530,6 @@
 
   .hamburger {
     display: block;
-    font-size: 100%;
     padding-left: 2%;
   }
 
@@ -569,8 +584,8 @@
   }
 
   #tortaChart {
-  width: 70% !important;
-  height: 70% !important;
+  width: 60% !important;
+  height: 60% !important;
 }
 
 #ventasChart {
@@ -582,6 +597,8 @@
   width: 70% !important;
   height: 70% !important;
 }
+
+
   nav ul li a {
     color: #fffaf4;
     text-decoration: none;
@@ -592,8 +609,8 @@
   .welcome{
     padding-bottom: 10%;
     border-radius: 10px;
-    font-size: 120%;
-    padding-top: 40px;
+    font-size: 100px;
+    box-shadow: none
   }
 
   .container-nav {
@@ -601,7 +618,6 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    font-size: 70%;
     padding: 0 40px;
   }
 
@@ -642,8 +658,8 @@
 
  .section-card{
     height: auto;
-    padding: 3% 9%;
     display: flex;
+    margin-bottom: 10%;
     align-content: space-around;
     flex-direction: column;
     grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
@@ -654,6 +670,10 @@
     width: 400px
   }
 
+  .welcome {
+    font-size: 28px;
+    padding-top: 40px;
+  }
 }
 
 @media (max-width: 500px) {
