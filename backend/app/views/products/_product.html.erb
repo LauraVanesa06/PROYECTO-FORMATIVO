@@ -17,9 +17,9 @@
     </li>
   </div>
   <div class="opciones">
-    <button class="editar"><%= link_to "Editar", edit_product_path(product) %> </button>
+    <button class="editar"><%= link_to "Editar", "#modal-edit-#{product.id}" %></button>
     <button class="ver">
-      <%= link_to "Ver", "#modal-#{product.id}" %>
+      <%= link_to "Ver", "#modal-ver-#{product.id}" %>
     </button>
   </div>
 </ul>
