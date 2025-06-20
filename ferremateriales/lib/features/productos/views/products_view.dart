@@ -37,8 +37,9 @@ class _ProductsPageViewState extends State<ProductsPageView> {
         actions: [
           ElevatedButton(
             onPressed: () {
-              context.read<ProductBloc>().add(ProductRegresarPressed());
-            },
+  context.read<ProductBloc>().add(ProductRegresarPressed());
+  Navigator.of(context).pop(); // Esto te regresa a la vista anterior
+},
             child: const Text('Regresar al Inicio'),
           ),
         ],
