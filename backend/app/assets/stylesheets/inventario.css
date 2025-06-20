@@ -471,7 +471,8 @@ input::placeholder {
     padding-top: 0px;
     padding: 20px;
     padding-top: 30px;
-    margin: 32px auto;
+    margin-top: 40px;
+    margin-inline: 35%;
     width: 510px;
     height: 520px;
     border-radius: 25px;
