@@ -12,7 +12,7 @@ class ProductBloc extends Bloc<ProductEvent, ProductState> {
     on<ProductEntrarPressed>((event, emit) async {
       emit(ProductLoadInProgress());
 
-      final url = Uri.parse('https://run.mocky.io/v3/c79226c9-874b-429b-bfe5-c38593d2776c');
+      final url = Uri.parse('https://run.mocky.io/v3/048b3829-e630-45e7-8c65-2d2f7f260731');
 
       try {
         final response = await http.get(url);
