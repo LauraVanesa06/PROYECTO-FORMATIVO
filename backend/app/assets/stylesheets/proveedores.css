@@ -8,6 +8,22 @@
     background-color: #e9cfae;
 }
 
+#minisection1{
+    display:flex;
+    align-items: center;
+    flex-direction: column ;
+    width: 35%;
+    max-width: 100%;
+    height: auto !important;
+    box-shadow:
+    -5px 0 10px -1px rgb(99 93 86),
+    5px 0 10px -1px rgb(99 93 86);
+    padding: 0;
+    margin-left: 10px;
+    gap: 0;
+}
+
+
 .floating-button {
   position: fixed;
   bottom: 30px;
