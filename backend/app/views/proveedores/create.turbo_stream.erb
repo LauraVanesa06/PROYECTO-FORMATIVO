@@ -1,0 +1,6 @@
+<turbo-stream action="append" target="contenedor-proveedores">
+  <template>
+    <%= render partial: 'proveedor', locals: { proveedor: @proveedor } %>
+  </template>
+</turbo-stream>
+<turbo-stream action="remove" target="modalProveedor"></turbo-stream>

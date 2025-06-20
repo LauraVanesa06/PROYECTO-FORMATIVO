@@ -4,7 +4,10 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Dashboard Ferretería</title>
-  <%= stylesheet_link_tag "dashboard", media: "all" %>
+  <%= stylesheet_link_tag "proveedores", media: "all" %>
+    <%= stylesheet_link_tag "dashboard", media: "all" %>
+
+
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
   <link href="https://fonts.googleapis.com/css2?family=Eczar:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 </head>
@@ -35,31 +38,98 @@
         </div>
     </div>
   </nav>
+<section class="section">
+    <h2>Proveedores</h2>
 
-  <section>
-
-
-<div class="card" style="width: 18rem;">
-  <div class="card-body">
-    <h5 class="card-title"> NOMBRE PROOVEDOR </h5>
-    <p class="card-text">Ubicacion </p>
-    <p class="card-text">Tipo producto </p>
-    <p class="card-text">Numero </p>
-    <p class="card-text"> Correo electronico <p/>
-    <a href="#" class="card-link">Editar info </a>
-    <a href="#" class="card-link">Ver </a>
+  <!-- Contenedor de tarjetas de proveedores -->
+  <div id="contenedor-proveedores">
+    <%= render partial: 'proveedores/proveedor', collection: @proveedores %>
   </div>
-</div>
-    
-  </section>
 
-  <section>
+  <!-- Plantilla oculta para JS -->
+  <div id="card-template" style="display: none;">
+    <div class="tarjeta-proveedor">
+      <h5 class="nombre">NOMBRE PROVEEDOR</h5>
+      <p class="ubicacion">Ubicación</p>
+      <p class="tipo">Tipo producto</p>
+      <p class="numero">Número</p>
+      <p class="correo">Correo electrónico</p>
+      <a href="#">Editar info Ver</a>
+    </div>
+  </div>
 
-<%= link_to  new_proveedor_path, class: "btn btn-primary btn-lg rounded-circle position-fixed", style: "bottom: 30px; right: 30px; z-index: 1000;" do %>
-  <i class="bi bi-plus-lg"></i>
-<% end %>
 
-  </section>
+  <div id="contenedor-proveedores">
+  <%= render partial: 'proveedores/proveedor', collection: @proveedores %>
+
+  </div>
+
+  <button type="button" class="floating-button" data-bs-toggle="modal" data-bs-target="#modalProveedor">+</button>
+  <div class="modal fade" id="modalProveedor" tabindex="-1" aria-labelledby="modalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="modalLabel">Nuevo Proveedor</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body">
+          <%= form_with(model: Proveedor.new, url: proveedores_path, method: :post, remote: true, html: { id: "form-proveedor" }) do |f| %>
+            <div class="mb-3">
+              <%= f.label :nombre, class: "form-label" %>
+              <%= f.text_field :nombre, class: "form-control" %>
+            </div>
+            <div class="mb-3">
+              <%= f.label :direccion, "Ubicación", class: "form-label" %>
+              <%= f.text_field :direccion, class: "form-control" %>
+            </div>
+            <div class="mb-3">
+              <%= f.label :tipoProducto, class: "form-label" %>
+              <%= f.text_field :tipoProducto, class: "form-control" %>
+            </div>
+            <div class="mb-3">
+              <%= f.label :telefono, "Número", class: "form-label" %>
+              <%= f.text_field :telefono, class: "form-control" %>
+            </div>
+            <div class="mb-3">
+              <%= f.label :correo, "Correo electrónico", class: "form-label" %>
+              <%= f.email_field :correo, class: "form-control" %>
+            </div>
+            <div class="modal-footer">
+              <%= f.submit "Agregar", class: "btn btn-primary" %>
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+            </div>
+          <% end %>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      const form = document.getElementById("form-proveedor");
+      const contenedor = document.getElementById("contenedor-proveedores");
+      const plantilla = document.getElementById("card-template").firstElementChild;
+
+      form.addEventListener("submit", (e) => {
+        e.preventDefault();
+        const data = new FormData(form);
+
+        const nueva = plantilla.cloneNode(true);
+        nueva.querySelector(".nombre").textContent = data.get("nombre");
+        nueva.querySelector(".ubicacion").textContent = data.get("ubicacion");
+        nueva.querySelector(".tipo").textContent = data.get("tipo");
+        nueva.querySelector(".numero").textContent = data.get("numero");
+        nueva.querySelector(".correo").textContent = data.get("correo");
+
+        contenedor.appendChild(nueva);
+        form.reset();
+        bootstrap.Modal.getInstance(document.getElementById("modalProveedor")).hide();
+      });
+    });
+  </script>
+
+</section>
 
   <footer>
     &copy; 2025 Ferremateriales el Maestro - Todos los derechos reservados

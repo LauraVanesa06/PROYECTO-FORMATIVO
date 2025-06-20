@@ -28,12 +28,14 @@ end
 
 def create
   @proveedor = Proveedor.new(proveedor_params)
+
   if @proveedor.save
-    redirect_to proveedores_path, notice: "Proveedor creado exitosamente."
- #   redirect_to @producto
- 
+    respond_to do |format|
+      format.turbo_stream
+      format.html { redirect_to proveedores_path, notice: 'Proveedor creado correctamente.' }
+    end
   else
-    render :new
+    render :new, status: :unprocessable_entity
   end
 end
 def edit
@@ -59,7 +61,8 @@ def edit
 private
 
 def proveedor_params
-  params.require(:proveedor).permit(:nombre, :ubicacion, :tipo_producto, :numero, :correo_electronico)
+    params.require(:proveedor).permit(:nombre, :direccion, :tipoProducto, :telefono)
+
 end
 
 end
