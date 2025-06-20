@@ -1,3 +1,13 @@
+.section{
+      display: flex;
+    flex-direction: row;
+    width: 100%;
+    padding: 0;
+    gap: 0;
+    height: auto;
+    background-color: #e9cfae;
+}
+
 .floating-button {
   position: fixed;
   bottom: 30px;
