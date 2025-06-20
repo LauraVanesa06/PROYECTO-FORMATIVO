@@ -516,7 +516,7 @@
       background-color: rgba(0, 0, 0, 0.7);
       color: white;
       font-weight: bold;
-      font-size: 80%;
+      font-size: 70%;
       border-radius: 5px;
       cursor: pointer;
   }
@@ -531,6 +531,7 @@
   .hamburger {
     display: block;
     padding-left: 2%;
+    font-size: 100%;
   }
 
 
@@ -560,7 +561,7 @@
   }
   
   header {
-    font-size: 120%;
+    font-size: 110%;
     position: fixed;
     top: 0;
     left: 0;
@@ -678,8 +679,15 @@
 
 @media (max-width: 500px) {
 
+    .card-link{
+      margin: 0;
+    }
+
   .card {
-    font-size: 80%;
+    font-size: 120%;
+    width: 100%;
+    margin-left: 10%;
+    margin-right: 10%;
   }
 
   .nav-bg {
@@ -689,7 +697,7 @@
     padding-bottom: 1%;
     left: 0;
     width: 100%;
-    background-color: #fff;
+    background-color: rgba(0, 0, 0, 0.4);
     z-index: 999;
   }
 
@@ -706,9 +714,10 @@
       padding-left: 5px;
       padding-right: 5px;
       border: none;
-      background-color: #b84030;
+      background-color: rgba(0, 0, 0, 0.7);
       color: white;
       font-weight: bold;
+      font-size: 60%;
       border-radius: 5px;
       cursor: pointer;
   }
@@ -722,8 +731,8 @@
 
   .hamburger {
     display: block;
-    font-size: 100%;
     padding-left: 2%;
+    font-size: 80%;
   }
 
 
@@ -759,6 +768,7 @@
     left: 0;
     width: 100%;
     z-index: 1000; 
+    padding-bottom: 5%;
   }
 
   nav {
@@ -777,19 +787,21 @@
   }
 
   #tortaChart {
-  width: 80% !important;
-  height: 80% !important;
+  width: 70% !important;
+  height: 70% !important;
 }
 
 #ventasChart {
-  width: 80% !important;
-  height: 80% !important;
+  width: 90% !important;
+  height: 90% !important;
 }
 
 #lineChart {
-  width: 80% !important;
-  height: 80% !important;
+  width: 90% !important;
+  height: 90% !important;
 }
+
+
   nav ul li a {
     color: #fffaf4;
     text-decoration: none;
@@ -800,8 +812,8 @@
   .welcome{
     padding-bottom: 10%;
     border-radius: 10px;
-    font-size: 100%;
-    padding-top: 40px;
+    font-size: 100px;
+    box-shadow: none
   }
 
   .container-nav {
@@ -809,7 +821,6 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    font-size: 50%;
     padding: 0 40px;
   }
 
@@ -844,14 +855,14 @@
     background-color: transparent;
     border: solid 0px;
     color: white;
-    font-size: 100%;
+    font-size: 80%;
   }
 
 
  .section-card{
     height: auto;
-    padding: 3% 9%;
     display: flex;
+    margin-bottom: 10%;
     align-content: space-around;
     flex-direction: column;
     grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
@@ -860,6 +871,11 @@
 
   .chart-container {
     width: 400px
+  }
+
+  .welcome {
+    font-size: 28px;
+    padding-top: 40px;
   }
 
 }
