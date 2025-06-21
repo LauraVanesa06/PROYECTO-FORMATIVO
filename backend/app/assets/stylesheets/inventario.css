@@ -578,7 +578,35 @@ input::placeholder {
     background-color: #f4a735;
 }
 
+.hamburger-categorias{
+    display: none;
+}
+
 @media (max-width: 900px) {
+
+#menu-categorias {
+  display: none;
+}
+
+#menu-categorias.active {
+  display: block;
+}
+
+.hamburger-categorias {
+  display: block;
+  background-color: rgb(255, 177, 0, 0.9);
+  border: none;
+  font-size: 120%;
+  padding: 10px 15px;
+  cursor: pointer;
+  color: white;
+  border-radius: 5px;
+  margin-top: 20px;
+  margin-bottom: 0px;
+  width: 100%;
+}
+
+
     nav ul{
         flex-direction: row;
     }
@@ -679,6 +707,28 @@ input::placeholder {
 }
 
 @media (max-width: 600px) {
+
+#menu-categorias {
+  display: none;
+}
+
+#menu-categorias.active {
+  display: block;
+}
+
+.hamburger-categorias {
+  display: block;
+  background-color: rgb(255, 177, 0, 0.9);
+  border: none;
+  font-size: 100%;
+  padding: 10px 15px;
+  cursor: pointer;
+  color: white;
+  border-radius: 5px;
+  margin-top: 7%;
+  margin-bottom: 0px;
+  width: 100%;
+}
 
         nav ul{
         flex-direction: column;
