@@ -32,7 +32,6 @@ Rails.application.routes.draw do
   resources :purchasedetails
 
   get "ventas" => "dashboard#ventas"
-  get "proveedores" => "dashboard#proveedores"
 
 
 
@@ -41,10 +40,14 @@ Rails.application.routes.draw do
   get 'productos', to: 'home#producto'
   get 'contactos', to: 'home#contacto'
 
-  
+  get "proveedores" => "dashboard#proveedores"
+
   resources :proveedores
     # Otras rutas que tengas
     #login
+  get  'dashboard/proveedores',        to: 'dashboard#proveedores',      as: 'dashboard_proveedores'
+  post 'dashboard/crear_proveedor',    to: 'dashboard#crear_proveedor',  as: 'crear_proveedor'
+
  
     devise_scope :user do
       get '/acceso', to: 'usuarios/sessions#new', as: :custom_login

@@ -12,8 +12,9 @@ def only_admins
 end
 
 
-  def index
-    @productos = Producto.all
+ def index
+    @proveedores = Proveedor.all
+    @proveedor = Proveedor.new
   end
 
   def show
@@ -25,19 +26,15 @@ def new
   @proveedor = Proveedor.new
 end
 
-
 def create
-  @proveedor = Proveedor.new(proveedor_params)
-
-  if @proveedor.save
-    respond_to do |format|
-      format.turbo_stream
-      format.html { redirect_to proveedores_path, notice: 'Proveedor creado correctamente.' }
+    @proveedor = Proveedor.new(proveedor_params)
+    if @proveedor.save
+      redirect_to proveedores_path, notice: 'Proveedor creado con éxito'
+    else
+      @proveedores = Proveedor.all
+      render :index
     end
-  else
-    render :new, status: :unprocessable_entity
   end
-end
 def edit
     @producto = Producto.find(params[:id])
   end
@@ -60,9 +57,10 @@ def edit
 
 private
 
-def proveedor_params
-    params.require(:proveedor).permit(:nombre, :direccion, :tipoProducto, :telefono)
+ private
 
-end
+  def proveedor_params
+    params.require(:proveedor).permit(:nombre, :direccion, :tipoProducto, :telefono, :correo)
+  end
 
 end
