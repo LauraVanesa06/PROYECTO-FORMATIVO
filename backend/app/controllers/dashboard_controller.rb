@@ -109,10 +109,37 @@ class DashboardController < ApplicationController
     @filter_result_empty = @customers.blank?
   end
 
+
   def proveedores
-    @proveedores = Proveedor.all
-    @proveedor = Proveedor.new
+    @proveedores ||= Proveedor.all
+@proveedores = Proveedor.left_outer_joins(:productos).distinct.includes(:productos)
+  @proveedor = Proveedor.new  # ← Esto es lo que falta o está mal
+  @productos_proveedor = []
+
+  if params[:id].present?
+    @proveedores = @proveedores.where(id: params[:id])
   end
+
+  if params[:name].present?
+    @proveedores = @proveedores.where("nombre LIKE ?", "%#{params[:name]}%")
+  end
+
+  if params[:proveedor_id].present?
+    @proveedor = Proveedor.find_by(id: params[:proveedor_id])
+    @productos_proveedor = @proveedor&.productos || []
+  elsif params[:id].blank? && params[:name].blank?
+    @productos_proveedor = Product.includes(:proveedor).all
+  elsif @proveedores.size == 1
+    @proveedor = @proveedores.first
+    @productos_proveedor = @proveedor.productos
+  end
+
+  @filter_result_empty = @proveedores.blank?
+end
+  # Para el formulario de nuevo proveedor (modal)
+  @proveedor_form = Proveedor.new
+end
+
   def crear_proveedor
     @proveedor = Proveedor.new(proveedor_params)
     if @proveedor.save
@@ -128,5 +155,5 @@ class DashboardController < ApplicationController
   def proveedor_params
     params.require(:proveedor).permit(:nombre, :direccion, :tipoProducto, :telefono, :correo)
   end
-end
+
 
