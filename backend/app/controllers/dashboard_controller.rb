@@ -81,27 +81,6 @@ class DashboardController < ApplicationController
     end
   end
 
-  def proveedores
-    @proveedores = Proveedor.all
-    @proveedor = Proveedor.new
-  end
-  def crear_proveedor
-    @proveedor = Proveedor.new(proveedor_params)
-    if @proveedor.save
-      redirect_to dashboard_proveedores_path, notice: "Proveedor creado con éxito"
-    else
-      @proveedores = Proveedor.all
-      render :proveedores
-    end
-  end
-
-  private
-
-  def proveedor_params
-    params.require(:proveedor).permit(:nombre, :direccion, :tipoProducto, :telefono, :correo)
-  end
-end
-
   def clientes
     @customers = Customer.left_outer_joins(:buys).distinct.includes(:buys)
     @customer = nil
@@ -129,3 +108,25 @@ end
 
     @filter_result_empty = @customers.blank?
   end
+
+  def proveedores
+    @proveedores = Proveedor.all
+    @proveedor = Proveedor.new
+  end
+  def crear_proveedor
+    @proveedor = Proveedor.new(proveedor_params)
+    if @proveedor.save
+      redirect_to dashboard_proveedores_path, notice: "Proveedor creado con éxito"
+    else
+      @proveedores = Proveedor.all
+      render :proveedores
+    end
+  end
+
+  private
+
+  def proveedor_params
+    params.require(:proveedor).permit(:nombre, :direccion, :tipoProducto, :telefono, :correo)
+  end
+end
+

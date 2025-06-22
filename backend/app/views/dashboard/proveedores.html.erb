@@ -52,56 +52,42 @@
         </div>
     </div>
   </nav>
- 
-<section class="section-container">
-  <section class="section-container">
-    <button class="hamburger-categorias" id="hamburger-categorias">&#9776; Lista de provedores</button>
- 
-    <aside class="categorias" id="menu-categorias">
-      <div class="div-div">
-        <a href="/inventario" class="div-categ" style="text-decoration:none;"><i class="fas fa-arrow-left" id="vol"></i></a>
-        <div class="div-categ">Lista de provedores:</div>
+ <section class="principal">
+    <div class="filt">
+      <div class="cont-volver">
+        <a href="/clientes" class="a-volver" style="text-decoration:none;"><i class="fas fa-arrow-left" id="vol"></i></a>
       </div>
-      <div class="btn-categ"><%= link_to "+", new_category_path, class:"new-categ"%></div>
-    </aside>
-
-  <section class="section-product">
-    <nav class="nav-filtros">
-      <p class=p><i class="fas fa-filter"></i> Filtros</p>
-      <%= form_with url: proveedores_path, method: :get, local: true, class:"form-filtros" do %>
-        <ul>
-        <li>
-          <%= label_tag :query, "Nombre:" %>
-          <%= text_field_tag :query, params[:query], placeholder: "Ej: Martillo", style:"border-radius:10px; padding-left: 10px; border:1px solid grey;"%> 
-        </li>
-        <li class="li-precio"><a class="a-precio" href="">Rango de Precio</a>
-          <ul class="ul-precio">
-            <li>
-              <%= label_tag :min_price, "Mínimo:  " %>
-              <%= number_field_tag :min_price, params[:min_price], step: 0.01, style:"width: 80px; border-radius:10px; padding-left: 10px; border: grey"%>
-            </li>
-            <li>
-              <%= label_tag :max_price, "Máximo:  " %>
-              <%= number_field_tag :max_price, params[:max_price], step: 0.01, style:"width: 80px; border-radius:10px; padding-left: 10px; border: grey"%>
-            </li>
-          </ul>
-        </li>
-        <li class="li-marca"><a class="a-marca" href="">Proveedor</a>
-        <ul class="ul-marca">
-          <% @suppliers.each do |supplier| %>
-            <%= render supplier %>
+      <div class="filtro">
+        <p class=p><i class="fas fa-filter"></i> Filtros</p>
+        <div class="div">
+          <%= form_tag proveedores_path, class:"filtros", method: :get do %>
+            <div class="filtro-id">
+              <%= label_tag :id, "ID:" %>
+              <%= text_field_tag :id, params[:id], placeholder: "Ej: 1", size: 2, style:"border-radius:10px; padding-left: 10px; border:1px solid grey;" %>
+            </div>
+            <div class="filtro-id">
+              <%= label_tag :name, "Nombre:" %>
+              <%= text_field_tag :name, params[:name], placeholder: "Ej: nombreprovedor", size: 12, style:"border-radius:10px; padding-left: 10px; border:1px solid grey;" %>
+            </div>
+            <div>
+              <%= button_tag type: 'submit', class: 'btn' do %>
+                <i class="fas fa-search"></i>
+              <% end %>
+            </div>
           <% end %>
-        </ul>
-        </li>
-        <li>
-          <%= button_tag type: 'submit', class: 'lupa' do %>
-            <i class="fas fa-search"></i>
+        </div>
+      </div>
+    </div>
+  
+<section class="contenedor">
+      <aside class="clientes">
+        <div class="div-customer">Todos Los Clientes:</div>
+          <% @proveedores.each do |proveedor| %>
+            <%= render proveedor %>
           <% end %>
-        </li>
-      </ul>
-    <% end %>
-    </nav>
-
+        <div class="btn-customer"><%= link_to "+", class:"new-customer"%></div>
+      </aside>
+    
     <div class="row">
   <% @proveedores.each do |proveedor| %>
     <div class="col-md-4 mb-3">
