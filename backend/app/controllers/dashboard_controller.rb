@@ -111,49 +111,57 @@ class DashboardController < ApplicationController
 
 
   def proveedores
-    @proveedores ||= Proveedor.all
-@proveedores = Proveedor.left_outer_joins(:productos).distinct.includes(:productos)
-  @proveedor = Proveedor.new  # ← Esto es lo que falta o está mal
-  @productos_proveedor = []
+    @proveedores = Proveedor.all.includes(:productos)
+    @proveedores = Proveedor.left_outer_joins(:productos).distinct.includes(:productos)
+    @proveedor = Proveedor.new
+    @productos_proveedor = []
+      
+    if params[:id].present?
+      @proveedores = @proveedores.where(id: params[:id])
+    end
 
-  if params[:id].present?
-    @proveedores = @proveedores.where(id: params[:id])
+    if params[:name].present?
+      @proveedores = @proveedores.where("proveedores.nombre LIKE ?", "%#{params[:name]}%")
+    end
+
+    if params[:proveedor_id].present?
+      @proveedor = Proveedor.find_by(id: params[:proveedor_id])
+      @productos_proveedor = @proveedor&.productos || []
+    elsif params[:id].blank? && params[:name].blank?
+      @productos_proveedor = Product.includes(:proveedor).all
+    elsif @proveedores.size == 1
+      @proveedor = @proveedores.first
+      @productos_proveedor = @proveedor.productos
+    end
+
+    @filter_result_empty = @proveedores.blank?
+    @proveedor_form = Proveedor.new
   end
-
-  if params[:name].present?
-    @proveedores = @proveedores.where("nombre LIKE ?", "%#{params[:name]}%")
-  end
-
-  if params[:proveedor_id].present?
-    @proveedor = Proveedor.find_by(id: params[:proveedor_id])
-    @productos_proveedor = @proveedor&.productos || []
-  elsif params[:id].blank? && params[:name].blank?
-    @productos_proveedor = Product.includes(:proveedor).all
-  elsif @proveedores.size == 1
-    @proveedor = @proveedores.first
-    @productos_proveedor = @proveedor.productos
-  end
-
-  @filter_result_empty = @proveedores.blank?
-end
-  # Para el formulario de nuevo proveedor (modal)
-  @proveedor_form = Proveedor.new
-end
 
   def crear_proveedor
     @proveedor = Proveedor.new(proveedor_params)
+
     if @proveedor.save
-      redirect_to dashboard_proveedores_path, notice: "Proveedor creado con éxito"
+      product = Product.find_by(nombre: params[:nombre_product])
+
+      if product
+        product.increment!(:stock, params[:stock].to_i)
+      else
+        flash[:alert] = "Producto no encontrado."
+      end
+
+      redirect_to dashboard_proveedores_path, notice: "Compra registrada y stock actualizado"
     else
       @proveedores = Proveedor.all
       render :proveedores
     end
-  end
 
-  private
+    end
+    private
 
-  def proveedor_params
-    params.require(:proveedor).permit(:nombre, :direccion, :tipoProducto, :telefono, :correo)
-  end
+    def proveedor_params
+      params.require(:proveedor).permit(:nombre, :direccion, :tipoProducto, :telefono, :correo)
+    end
 
+end
 

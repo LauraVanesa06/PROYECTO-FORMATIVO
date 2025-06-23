@@ -86,53 +86,22 @@
     <p>No se encontraron proveedores.</p>
   <% end %>
 
-  <div class="btn-customer">
-    <%= link_to "+", new_proveedor_path, class: "new-customer" %>
-  </div>
+  
 </aside>
 
         <section class="cont-facturas"> 
-  <!-- 🔍 FORMULARIO DE FILTRO -->
-  <%= form_tag dashboard_proveedores_path, method: :get, class: "filtros mb-4" do %>
-    <div class="row">
-      <div class="col-md-3">
-        <%= label_tag :id, "ID del proveedor:" %>
-        <%= text_field_tag :id, params[:id], class: "form-control" %>
-      </div>
-      <div class="col-md-5">
-        <%= label_tag :name, "Nombre del proveedor:" %>
-        <%= text_field_tag :name, params[:name], class: "form-control" %>
-      </div>
-      <div class="col-md-2 d-flex align-items-end">
-        <%= submit_tag "Buscar", class: "btn btn-primary w-100" %>
-      </div>
-    </div>
-  <% end %>
+  
 
   <div id="purcha" class="mt-4">
-    <% if @productos_proveedor.present? && @productos_proveedor.any? %>
-      <h3 class="mb-3">Productos del proveedor</h3>
-      <div class="row">
-        <% @productos_proveedor.each do |producto| %>
-          <div class="col-md-4 mb-3">
-            <div class="card">
-              <div class="card-body">
-                <h5 class="card-title"><%= producto.nombre %></h5>
-                <p class="card-text">
-                  <strong>Precio:</strong> $<%= number_to_currency(producto.precio, unit: "", delimiter: ",") %>
-                </p>
-              </div>
-            </div>
-          </div>
-        <% end %>
-      </div>
 
-    <% elsif @proveedores.present? && @proveedores.any? %>
+
+
+      <div id="purcha" class="mt-4">
       <h3 class="mb-3">Proveedores encontrados</h3>
       <div class="row">
         <% @proveedores.each do |proveedor| %>
-          <div class="col-md-4 mb-3">
-            <div class="card">
+          <div class="col-md-4">
+             <div class="card mb-4 shadow-sm">
               <div class="card-body">
                 <h5 class="card-title"><%= proveedor.nombre %></h5>
                 <p class="card-text">
@@ -147,14 +116,8 @@
         <% end %>
       </div>
 
-    <% elsif @proveedor.present? %>
-      <p class="alert alert-warning">¡No se encontraron productos asociados a <%= @proveedor.nombre %>!</p>
-
-    <% elsif @filter_result_empty %>
-      <p class="alert alert-danger">¡No se encontró ningún proveedor con los filtros aplicados!</p>
-    <% end %>
-
-    <!-- BOTÓN "+" para agregar proveedor -->
+   
+    
     <div class="text-end mt-4">
       <button type="button" class="btn btn-danger rounded-circle" data-bs-toggle="modal" data-bs-target="#modalNuevoProveedor" title="Agregar proveedor" style="width: 50px; height: 50px; font-size: 24px;">
         +
@@ -175,7 +138,7 @@
       </div>
 
       <div class="modal-body">
-        <%= form_with model: @proveedor, url: crear_proveedor_path, local: true do |form| %>
+        <%= form_with model: @proveedor, url: dashboard_proveedores_path, method: :post, local: true do |form| %>
           <div class="mb-3">
             <%= form.label :nombre %>
             <%= form.text_field :nombre, class: "form-control" %>
@@ -196,8 +159,18 @@
             <%= form.label :correo %>
             <%= form.email_field :correo, class: "form-control" %>
           </div>
+          <div class="texto2">
+            <%= form.label :nombre_product %>
+            <%= text_field_tag :nombre_product%>
+          </div>
+
+          <div class="texto2">
+            <%= form.label :stock %>
+            <%= number_field_tag :stock, class: "form-control"  %>
+          </div>
           <div class="modal-footer">
             <%= form.submit "Agregar", class: "btn btn-primary" %>
+            
             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
           </div>
         <% end %>

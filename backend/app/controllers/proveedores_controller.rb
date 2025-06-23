@@ -27,14 +27,26 @@ def new
 end
 
 def create
-    @proveedor = Proveedor.new(proveedor_params)
-    if @proveedor.save
-      redirect_to proveedores_path, notice: 'Proveedor creado con éxito'
-    else
-      @proveedores = Proveedor.all
-      render :index
-    end
+  existing_product = Product.find_by(nombre: params[:product][:nombre])
+
+  if existing_product
+    # Ya existe → solo actualizar stock
+    existing_product.increment!(:stock, params[:product][:stock].to_i)
+    flash[:notice] = "Producto existente, se actualizó el stock."
+  else
+    # No existe → crear nuevo producto
+    Product.create(product_params)
+    flash[:notice] = "Producto creado correctamente."
   end
+
+  redirect_to dashboard_proveedores_path
+end
+
+private
+
+def product_params
+  params.require(:product).permit(:nombre, :descripcion, :stock, :proveedor_id, ...)
+end
 def edit
     @producto = Producto.find(params[:id])
   end

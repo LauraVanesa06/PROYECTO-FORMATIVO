@@ -13,6 +13,7 @@ Rails.application.routes.draw do
   get "dashboard" => "dashboard#index"
 
   get 'inventario', to: 'dashboard#inventario', as: 'inventario'
+  get "/dashboard/inventario", to: "dashboard#inventario"
   get 'clientes', to: 'dashboard#clientes', as: 'clientes'
 
   resources :categories, :suppliers do
@@ -42,13 +43,14 @@ Rails.application.routes.draw do
 
   get "proveedores" => "dashboard#proveedores"
 
-  resources :proveedores
+
     # Otras rutas que tengas
     #login
-  get  'dashboard/proveedores',        to: 'dashboard#proveedores',      as: 'dashboard_proveedores'
-  post 'dashboard/crear_proveedor',    to: 'dashboard#crear_proveedor',  as: 'crear_proveedor'
 
- 
+
+  get 'dashboard/proveedores', to: 'dashboard#proveedores',  as: 'dashboard_proveedores'
+  post 'dashboard/proveedores', to: 'dashboard#crear_proveedor'
+  
     devise_scope :user do
       get '/acceso', to: 'usuarios/sessions#new', as: :custom_login
       get '/registro', to: 'usuarios/registrations#new', as: :custom_signup
