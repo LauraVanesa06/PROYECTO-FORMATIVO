@@ -76,18 +76,14 @@
   
       <section class="contenedor">
         <aside class="clientes">
-  <div class="div-customer">Todos los proveedores:</div>
-
-  <% if @proveedores.present? %>
-    <% @proveedores.each do |proveedor| %>
-      <%= render proveedor %>
-    <% end %>
-  <% else %>
-    <p>No se encontraron proveedores.</p>
-  <% end %>
-
+          <div class="div-customer">Todos los proveedores:</div>
+            <% @proveedores.uniq { |p| p.nombre }&.each do |proveedor| %>
+            <div class="proveedor-item">
+              <%= link_to proveedor.nombre, proveedores_path(proveedor_id: proveedor.id), class: "btn btn-outline-dark mb-2 w-100" %>
+            </div>
+          <% end %>
   
-</aside>
+        </aside>
 
         <section class="cont-facturas"> 
   
@@ -97,8 +93,18 @@
 
 
       <div id="purcha" class="mt-4">
-      <h3 class="mb-3">Proveedores encontrados</h3>
-      <div class="row">
+        <h3 class="mb-3">Proveedores encontrados</h3>
+          <% if @proveedor.present? %>
+             <%= @proveedor.nombre %>
+          <% else %>
+            Compras de todos los proveedores
+          <% end %>
+        
+
+
+        <div class="row">
+          <% productos = @proveedor.present? ? @productos_proveedor : Product.includes(:proveedor).all %>
+
         <% @proveedores.each do |proveedor| %>
           <div class="col-md-4">
              <div class="card mb-4 shadow-sm">
@@ -109,6 +115,11 @@
                   <strong>Producto:</strong> <%= proveedor.tipoProducto %><br>
                   <strong>Teléfono:</strong> <%= proveedor.telefono %><br>
                   <strong>Correo:</strong> <%= proveedor.correo %>
+                  %><br>
+                  <strong>Producto:</strong>
+                  <% proveedor.productos.each do |producto| %>
+                  < %= producto.nombre %> - Stock: <%= producto.stock %><br>
+                  <% end %>
                 </p>
               </div>
             </div>

@@ -96,14 +96,14 @@ class DashboardController < ApplicationController
 
     if params[:customer_id].present?
       @customer = Customer.find_by(id: params[:customer_id])
-      @purchasedetails = @customer&.purchasedetails&.includes(:product, buy: :customer) || []
+      @purchasedetails = @customer&.purchasedetails&.includes(:productos, buy: :customer) || []
 
     elsif params[:id].blank? && params[:name].blank?
-      @purchasedetails = Purchasedetail.includes(:product, buy: :customer).all
+      @purchasedetails = Purchasedetail.includes(:productos, buy: :customer).all
 
     elsif @customers.size == 1
       @customer = @customers.first
-      @purchasedetails = @customer.purchasedetails.includes(:product, buy: :customer)
+      @purchasedetails = @customer.purchasedetails.includes(:productos, buy: :customer)
     end
 
     @filter_result_empty = @customers.blank?
@@ -112,10 +112,21 @@ class DashboardController < ApplicationController
 
   def proveedores
     @proveedores = Proveedor.all.includes(:productos)
+    @proveedor = nil
     @proveedores = Proveedor.left_outer_joins(:productos).distinct.includes(:productos)
     @proveedor = Proveedor.new
-    @productos_proveedor = []
+    @productos_proveedor = []    
+
+    if params[:proveedor_id].present?
+      @proveedor = Proveedor.find_by(id: params[:proveedor_id])
+      @productos_proveedor = @proveedor&.productos || []
+    else
+      @productos_proveedor = Product.includes(:proveedor).all
+    end
+
       
+ 
+    
     if params[:id].present?
       @proveedores = @proveedores.where(id: params[:id])
     end
@@ -156,12 +167,11 @@ class DashboardController < ApplicationController
       render :proveedores
     end
 
-    end
+  end
     private
 
     def proveedor_params
       params.require(:proveedor).permit(:nombre, :direccion, :tipoProducto, :telefono, :correo)
     end
-
 end
 
