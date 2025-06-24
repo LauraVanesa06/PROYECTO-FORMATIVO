@@ -50,7 +50,7 @@
     <section class="principal">
       <div class="filt">
         <div class="cont-volver">
-          <a href="/clientes" class="a-volver" style="text-decoration:none;"><i class="fas fa-arrow-left" id="vol"></i></a>
+          <a href="/proveedores" class="a-volver" style="text-decoration:none;"><i class="fas fa-arrow-left" id="vol"></i></a>
         </div>
         <div class="filtro">
           <p class=p><i class="fas fa-filter"></i> Filtros</p>
@@ -78,10 +78,11 @@
         <aside class="clientes">
           <div class="div-customer">Todos los proveedores:</div>
             <% @proveedores.uniq { |p| p.nombre }&.each do |proveedor| %>
-            <div class="proveedor-item">
-              <%= link_to proveedor.nombre, proveedores_path(proveedor_id: proveedor.id), class: "btn btn-outline-dark mb-2 w-100" %>
-            </div>
-          <% end %>
+              <div class="proveedor-item">
+                <%= link_to proveedor.nombre, dashboard_proveedores_path(nombre: proveedor.nombre), class: "btn btn-outline-dark mb-2 w-100" %>
+
+              </div>
+            <% end %>
   
         </aside>
 
@@ -94,14 +95,6 @@
 
       <div id="purcha" class="mt-4">
         <h3 class="mb-3">Proveedores encontrados</h3>
-          <% if @proveedor.present? %>
-             <%= @proveedor.nombre %>
-          <% else %>
-            Compras de todos los proveedores
-          <% end %>
-        
-
-
         <div class="row">
           <% productos = @proveedor.present? ? @productos_proveedor : Product.includes(:proveedor).all %>
 
@@ -111,14 +104,15 @@
               <div class="card-body">
                 <h5 class="card-title"><%= proveedor.nombre %></h5>
                 <p class="card-text">
-                  <strong>Dirección:</strong> <%= proveedor.direccion %><br>
-                  <strong>Producto:</strong> <%= proveedor.tipoProducto %><br>
+                  <strong>Dirección:</strong> <%= proveedor.direccion %> <br>
+                  <strong>Tipo de Producto:</strong> <%= proveedor.tipoProducto %><br>
                   <strong>Teléfono:</strong> <%= proveedor.telefono %><br>
                   <strong>Correo:</strong> <%= proveedor.correo %>
-                  %><br>
-                  <strong>Producto:</strong>
+                  %>
+       
                   <% proveedor.productos.each do |producto| %>
-                  < %= producto.nombre %> - Stock: <%= producto.stock %><br>
+                    <strong>Producto:</strong> <%= producto.nombre %><br>
+                    <strong>Stock:</strong> <%= producto.stock %><br>
                   <% end %>
                 </p>
               </div>
