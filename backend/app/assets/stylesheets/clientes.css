@@ -2,7 +2,7 @@
     display: flex;
     flex-direction: column;
     width: 100%;
-    height: auto;
+    height: 670px;
     background-color: #5b5b5b;
 }
 .filt{
@@ -46,7 +46,10 @@
     justify-content: space-between;
     flex-direction: row;
     align-items: center;
-    width: 370px;
+    width: auto;
+}
+.filtro-id{
+  margin-right: 8px;
 }
 .p{
     margin-left: 20px;
@@ -69,7 +72,7 @@
   color:white;
 }
 .contenedor{
-    height: auto;
+    height: 100%;
     min-height: 500px;
     display: flex;
     flex-direction: row;
@@ -79,7 +82,7 @@
 }
 .clientes{
     width: 20%;
-    height: auto;
+    height: 100%;
     padding: 0;
 }
 .div-customer{
@@ -88,12 +91,16 @@
     font-size: 17px;
     margin-left: 7px;
     margin-bottom: 10px;
-    margin-top: -10px;
     font-weight: bold;
     font-family: 'Segoe UI', sans-serif;
     color: white;
     margin-left: 10px;
     padding: 0;
+}
+.compras{
+    overflow-y: auto;
+    height: 85%;
+    width: 100%;
 }
 .cli{
     display: flex;
@@ -173,7 +180,7 @@
 }
 .cont-facturas{
     width: 80%;
-    height: auto;
+    height: 100%;
     background-color: #e9cfae;
     padding: 0;
     margin: 0;

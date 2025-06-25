@@ -90,8 +90,8 @@ class DashboardController < ApplicationController
     @customer = nil
     @purchasedetails = []
 
-    if params[:id].present?
-      @customers = @customers.where(id: params[:id])
+    if params[:cc].present?
+      @customers = @customers.where(documento: params[:cc])
     end
 
     if params[:name].present?

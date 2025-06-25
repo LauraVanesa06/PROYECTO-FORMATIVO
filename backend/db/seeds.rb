@@ -184,11 +184,11 @@ products.each do |product|
 end
 
 customers = Customer.create!([
-  { nombre: "Juan Pérez", telefono: "555-0101" },
-  { nombre: "Laura Torres", telefono: "555-0202" },
-  { nombre: "Carlos Sanchez", telefono: "555-0107" },
-  { nombre: "Michael Jackson", telefono: "555-0502" },
-  { nombre: "Falcao Torres", telefono: "555-0121" }
+  { nombre: "Juan Pérez", telefono: "555-0101", documento: 123456789 },
+  { nombre: "Laura Torres", telefono: "555-0202", documento: 345678912 },
+  { nombre: "Carlos Sanchez", telefono: "555-0107", documento: 678912345 },
+  { nombre: "Michael Jackson", telefono: "555-0502", documento: 891234567},
+  { nombre: "Falcao Torres", telefono: "555-0121", documento: 987654321 }
 ])
 
 buys = Buy.create!([
