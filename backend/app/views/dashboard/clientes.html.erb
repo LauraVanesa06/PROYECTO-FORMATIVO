@@ -53,9 +53,11 @@
               <%= label_tag :documento, "CC:" %>
               <%= text_field_tag :documento, params[:documento], placeholder: "Ej: 123456", size: 12, style:"border-radius:10px; padding-left: 10px; border:1px solid grey;" %>
             </div>
-            <div class="filtro-id">
-              <%= label_tag :name, "Nombre:" %>
-              <%= text_field_tag :name, params[:name], placeholder: "Ej: Juanito", size: 15, style:"border-radius:10px; padding-left: 10px; border:1px solid grey;" %>
+            <div class="filtro-fecha">
+              <%= label_tag :fecha, "Fecha:" %>
+              <%= text_field_tag :year, params[:year], placeholder: "AAAA", size: 4, style:"border-radius:10px; padding-left: 10px; border:1px solid grey;" %>
+              <%= text_field_tag :month, params[:month], placeholder: "MM", size: 2, style:"border-radius:10px; padding-left: 10px; border:1px solid grey;" %>
+              <%= text_field_tag :day, params[:day], placeholder: "DD", size: 2, style:"border-radius:10px; padding-left: 10px; border:1px solid grey;" %>
             </div>
             <div>
               <%= button_tag type: 'submit', class: 'btn' do %>
@@ -72,7 +74,7 @@
         <article class=compras>
           <% if @purchasedetails.present? && @purchasedetails.any? %>
             <% @purchasedetails.each do |p| %>
-              <div class="compra-info">
+              <div class="compra-info" onclick="mostrarDetalle('<%= dom_id(p, :vista) %>')">
                 <p class=p-id><strong>ID:</strong> <%= p.buy_id %></p>
                 <p class=p-fecha><%= p.buy.fecha.strftime("%d/%m/%Y") %></p>
               </div>
@@ -81,25 +83,54 @@
       </aside>
       <section class="cont-facturas">
         <div id="purcha">
-          <% if @purchasedetails.present? && @purchasedetails.any? %>
-            <% @purchasedetails.each do |purchasedetail| %>
-              <div id="<%= dom_id purchasedetail %>" class="div-purchase">
-                <div class="color"></div>
-                <div>
-                  <p><strong>Id de compra:</strong> <%= purchasedetail.buy_id %></p>
-                  <p><strong>Fecha de compra:</strong> <%= purchasedetail.buy.fecha %></p>
-                  <p><strong>Nombre del cliente:</strong> <%= purchasedetail.buy.customer.nombre %></p>
-                  <p><strong>Cantidad:</strong> <%= purchasedetail.cantidad %></p>
-                  <p><strong>PrecioXunidad:</strong> <%= purchasedetail.preciounidad %></p>
-                  <p><strong>Nombre del producto:</strong> <%= purchasedetail.product.nombre %></p>
-                  <p><strong>Categoria del producto:</strong> <%= purchasedetail.product.category.nombre %></p>
-                </div>
-              </div>
-            <% end %>
-          <% elsif @customer.present? %>
-            <p id="p1">¡No se encontraron productos asociados a <%= @customer.nombre %>!</p>
-          <% elsif @filter_result_empty %>
-            <p id="p1">¡No se encontraron compras asociadas a los filtros aplicados!</p>
+          <% @purchasedetails.each do |p| %>
+            <div id="<%= dom_id(p, :vista) %>" class="div-purchase" style="display: none;">
+              <h1 class=h1>Detalles de la Compra 🛒</h1>
+              <section class=n1>
+                <section class=n2>
+                  <h1 class=h11>Datos del Cliente</h1>
+                  <div class=deta-cliente>
+                    <p><strong>Id del usuario cliente:</strong> <%= p.buy.customer.id %></p>
+                    <p><strong>Nombre:</strong> <%= p.buy.customer.nombre %></p>
+                    <p><strong>Numero de identificacion:</strong> <%= p.buy.customer.documento %></p>
+                    <p><strong>Contacto/telefono:</strong> <%= p.buy.customer.telefono %></p>
+                  </div>
+                  <h1 class=h11>Datos del Producto</h1>
+                  <div class=deta-produ>
+                    <p><strong>Id del producto:</strong> <%= p.product.id %></p>
+                    <p><strong>Nombre:</strong> <%= p.product.nombre %></p>
+                    <p><strong>Descripcion:</strong> <%= p.product.descripcion %></p>
+                    <p><strong>Precio:</strong> <%= p.product.precio %></p>
+                    <p><strong>PrecioXunidad:</strong> <%= p.preciounidad %></p>
+                    <p><strong>Categoria del producto:</strong> <%= p.product.category.nombre %></p>
+                    <p><strong>Proveedor del producto:</strong> <%= p.product.supplier.nombre %></p>
+                  </div>
+                  <h1 class=h11>Datos de la Compra</h1>
+                  <div class=deta-compra>
+                    <p><strong>Id de la compra:</strong> <%= p.buy_id %></p>
+                    <p><strong>Fecha:</strong> <%= p.buy.fecha %></p>
+                    <p><strong>Cantidad total de los productos comprados:</strong> <%= p.cantidad %></p>
+                    <p><strong>Contacto/telefono del proveedor:</strong> <%= p.product.supplier.contacto%></p>
+                  </div>
+                </section>
+                <section class=n3>
+                  <h1 class=h11>Imagen del Producto</h1>
+                  <div class="div-foto">
+                    <% if p.product.imagen.attached? %>
+                      <%= image_tag url_for(p.product.imagen), alt: "Imagen del producto" %>
+                    <% else %>
+                      <p>No hay imagen</p>
+                    <% end %>
+                  </div>
+                  <button class="editar"><%= link_to "Editar", edit_purchasedetail_path(p) %></button>
+                </section>
+              </section>
+            </div>
+          <% end %>
+          <% if @purchasedetails.blank? && @filter_result_empty %>
+            <div class="mensaje-vacio" style="margin-top:-570px;">
+              <p style="color:red;">⚠️ No se encontró ningún cliente que coincida con los filtros aplicados.</p>
+            </div>
           <% end %>
         </div>
         <%= link_to "+", new_purchasedetail_path, class: "new-pur" %>
@@ -118,6 +149,18 @@
         menu.classList.toggle("active");
       });
   </script>
+  <script>
+    function mostrarDetalle(id) {
+      const detalles = document.querySelectorAll('.div-purchase');
+      detalles.forEach(function(div) {
+        div.style.display = 'none';
+      });
 
+      const seleccionado = document.getElementById(id);
+      if (seleccionado) {
+        seleccionado.style.display = 'block';
+      }
+    }
+  </script>
 </body>
 </html>

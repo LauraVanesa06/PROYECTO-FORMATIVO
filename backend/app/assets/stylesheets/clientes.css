@@ -48,7 +48,7 @@
     align-items: center;
     width: auto;
 }
-.filtro-id{
+.filtro-id, .filtro-fecha{
   margin-right: 8px;
 }
 .p{
@@ -99,10 +99,11 @@
 }
 .compras{
     overflow-y: auto;
-    height: 85%;
+    height: 90%;
     width: 100%;
 }
 .compra-info{
+  text-decoration: none;
     display: flex;
     flex-direction: row;
     border-radius: 0 25px 25px 0;
@@ -120,7 +121,7 @@
     align-items: center;
 }
 .p-id{
-    width: 65px;
+    width: 80px;
     height: 37.5px;
     display: flex;
     justify-content: center;
@@ -130,10 +131,11 @@
     color: white;
 }
 .p-fecha{
+  color: rgb(0, 0, 0);
     display: flex; 
     align-items: center;
-    width: 100%;
-    justify-content: center;
+    width: 80%;
+    padding-left: 30px;
     font-family: Arial, Helvetica, sans-serif;
     background-color: #b5cde7;
     border-radius: 0 25px 25px 0;
@@ -149,6 +151,7 @@
 }
 .p-fecha:hover{
     background-color: #e1e9f2;
+    width: 100%;
 }
 .btn-customer{
     width: 100%;
@@ -185,6 +188,9 @@
     width: 80%;
     height: 100%;
     background-color: #e9cfae;
+    background-image: url("clientes-fondo.png");
+    background-repeat: no-repeat;
+    background-position: center center;
     padding: 0;
     margin: 0;
     display: flex;
@@ -194,18 +200,77 @@
 }
 .div-purchase{
     font-size: 13px;
-    width: 342px;
+    width: 95%;
+    height: 90%;
     padding-left: 8px !important;
     padding: 15px;
     color:rgba(0, 0, 0, 0.874);
     background-color: #ffffff;
     margin: 5px;
     display: flex;
-    flex-direction: row;
+    flex-direction: column !important;
     align-items: center;
+    justify-content: center !important;
     border-radius: 10px;
     border: 1px solid transparent;
     box-shadow: 0 0 8px #989898;
+}
+.h1{
+  display: flex;
+  justify-content: center;
+  margin-top: 5px;
+  font-size: 20px;
+  margin-bottom: 5px;
+}
+.h11{
+  font-size: 10px;
+}
+.n1{
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  width: 100%;
+}
+.n2{
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+.n3{
+  width: 30%;
+  margin-left: 15px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.n3 p{
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+}
+.deta-cliente{
+  width: 100%;
+  height: 100px;
+  border: solid grey 1px;
+    border-radius: 5px;
+  margin-bottom: 5px;
+  padding: 13px;
+}
+.deta-produ{
+  width: 100%;
+  height: 170px;
+  border: solid grey 1px;
+    border-radius: 5px;
+  margin-bottom: 5px;
+  padding: 13px;
+}
+.deta-compra{
+  width: 100%;
+  height: 100px;
+  border: solid grey 1px;
+    border-radius: 5px;
+  padding: 13px;
 }
 .color{
   height: 100%;
@@ -215,10 +280,52 @@
   margin-right: 10px;
   border-radius: 50%;
 }
+.div-foto{
+    width: 100%;
+    height: 300px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 10px;
+    border: solid grey 1px;
+    border-radius: 5px;
+}
+.div-foto img{
+    max-width: 90%;
+    height: 250px;
+    object-fit: contain;
+}
+.editar{
+    border: solid 1px #f5a226;
+    background-color: #ffb950;
+    height: 25px;
+    width: 90px;
+    border-radius: 10px;
+    color: white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-weight: bold;
+    margin-top: 20px;
+}
+.editar:hover{
+    background-color: #f4a735;
+}
+.editar a{
+    color: white;
+    width: 90px;
+    height: 25px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-decoration: none;
+}
 #purcha{
     display: flex;
-    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
     width: 100%;
+    height: 100%;
     gap: 6px;
     padding: 8px;
 }
