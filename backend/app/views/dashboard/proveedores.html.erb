@@ -73,55 +73,85 @@
           </div>
         </div>
       </div>
-  
       <section class="contenedor">
         <aside class="clientes">
           <div class="div-customer">Todos los proveedores:</div>
             <% @proveedores.uniq { |p| p.nombre }&.each do |proveedor| %>
               <div class="proveedor-item">
                 <%= link_to proveedor.nombre, dashboard_proveedores_path(nombre: proveedor.nombre), class: "btn btn-outline-dark mb-2 w-100" %>
-
               </div>
             <% end %>
-  
         </aside>
-
         <section class="cont-facturas"> 
-  
-
-  <div id="purcha" class="mt-4">
-
-
-
-      <div id="purcha" class="mt-4">
-        <h3 class="mb-3">Proveedores encontrados</h3>
-        <div class="row">
-          <% productos = @proveedor.present? ? @productos_proveedor : Product.includes(:proveedor).all %>
-
-        <% @proveedores.each do |proveedor| %>
-          <div class="col-md-4">
-             <div class="card mb-4 shadow-sm">
-              <div class="card-body">
-                <h5 class="card-title"><%= proveedor.nombre %></h5>
-                <p class="card-text">
-                  <strong>Dirección:</strong> <%= proveedor.direccion %> <br>
-                  <strong>Tipo de Producto:</strong> <%= proveedor.tipoProducto %><br>
-                  <strong>Teléfono:</strong> <%= proveedor.telefono %><br>
-                  <strong>Correo:</strong> <%= proveedor.correo %>
-                  %>
-       
-                  <% proveedor.productos.each do |producto| %>
-                    <strong>Producto:</strong> <%= producto.nombre %><br>
-                    <strong>Stock:</strong> <%= producto.stock %><br>
-                  <% end %>
-                </p>
+        <div id="purcha" class="mt-4">
+          <h3 class="mb-3">Proveedores encontrados</h3>
+          <div class="row">
+            <% productos = @proveedor.present? ? @productos_proveedor : Product.includes(:proveedor).all %>
+            <% @proveedores.each do |proveedor| %>
+              <div class="col-md-4">
+                <div class="card mb-4 shadow-sm">
+                  <div class="card-body">
+                    <h5 class="card-title"><%= proveedor.nombre %></h5>
+                    <p class="card-text">
+                      <strong>Dirección:</strong> <%= proveedor.direccion %> <br>
+                      <strong>Tipo de Producto:</strong> <%= proveedor.tipoProducto %><br>
+                      <strong>Teléfono:</strong> <%= proveedor.telefono %><br>
+                      <strong>Correo:</strong> <%= proveedor.correo %>
+                      <% producto = proveedor.productos.last %>
+                        <strong>Producto:</strong> <%= producto&.nombre %><br>
+                        <strong>Stock:</strong> <%= producto&.stock %><br>
+                       
+                    </p>
+                  </div>
+                  <div class='edit'>
+                    <button type="button"  data-bs-toggle="modal" data-bs-target="#modalEditarProveedor-<%= proveedor.id %>" class="editar2">
+                    Editar
+                    </button>
+                  </div>
+                </div>
               </div>
-            </div>
+              <div class="modal fade" id="modalEditarProveedor-<%= proveedor.id %>" tabindex="-1" aria-labelledby="editarLabel-<%= proveedor.id %>" aria-hidden="true">
+                <div class="modal-dialog">
+                  <div class="modal-content">
+                    <div class="modal-header bg-dark text-white">
+                      <h5 class="modal-title">Editar Proveedor</h5>
+                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Cerrar">
+                        </button>
+                    </div>
+                    <%= form_with model: proveedor, url: dashboard_proveedor_path(proveedor), method: :patch, local: true do |form| %>
+                      <div class="modal-body">
+                        <div class="mb-3">      
+                          <%= form.label :nombre %>
+                          <%= form.text_field :nombre, class: "form-control" %>
+                        </div>
+                        <div class="mb-3">
+                          <%= form.label :direccion %>
+                          <%= form.text_field :direccion, class: "form-control" %>
+                        </div>
+                        <div class="mb-3">
+                            <%= form.label :tipoProducto %>
+                            <%= form.text_field :tipoProducto, class: "form-control" %>
+                        </div>
+                        <div class="mb-3">
+                          <%= form.label :telefono %>
+                          <%= form.text_field :telefono, class: "form-control" %>
+                        </div>
+                        <div class="mb-3">
+                          <%= form.label :correo %>
+                          <%= form.email_field :correo, class: "form-control" %>
+                        </div>
+                      </div>
+                      <div class="modal-footer">
+                        <%= form.submit "Guardar cambios", class: "btn btn-success" %>
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                      </div>
+                    <% end %>
+                  </div>
+                </div>
+              </div>
+            <% end %>
           </div>
-        <% end %>
-      </div>
-
-   
+        </div>   
     
     <div class="text-end mt-4">
       <button type="button" class="btn btn-danger rounded-circle" data-bs-toggle="modal" data-bs-target="#modalNuevoProveedor" title="Agregar proveedor" style="width: 50px; height: 50px; font-size: 24px;">

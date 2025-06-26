@@ -41,15 +41,16 @@ Rails.application.routes.draw do
   get 'productos', to: 'home#producto'
   get 'contactos', to: 'home#contacto'
 
-  get "proveedores" => "dashboard#proveedores"
-
-
     # Otras rutas que tengas
     #login
 
-
+  #rutas proveedores
   get 'dashboard/proveedores', to: 'dashboard#proveedores',  as: 'dashboard_proveedores'
   post 'dashboard/proveedores', to: 'dashboard#crear_proveedor'
+  get "proveedores" => "dashboard#proveedores"
+  patch "dashboard/proveedores/:id", to: "dashboard#actualizar_proveedor", as: :dashboard_proveedor
+
+
   
     devise_scope :user do
       get '/acceso', to: 'usuarios/sessions#new', as: :custom_login

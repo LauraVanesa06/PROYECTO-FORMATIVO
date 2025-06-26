@@ -112,7 +112,12 @@ class DashboardController < ApplicationController
 
 
   def proveedores
-      @proveedor_form = Proveedor.new
+    @products = Product.all
+    @proveedor_form = Proveedor.new
+    
+    if params[:productos_id].present?
+      @proveedores = @proveedores.where(producto_id: params[:producto_id])
+    end
 
     # Filtro por nombre desde el sidebar
     if params[:nombre].present?
@@ -161,7 +166,14 @@ class DashboardController < ApplicationController
       render :proveedores
     end
   end
-
+def actualizar_proveedor
+  @proveedor = Proveedor.find(params[:id])
+  if @proveedor.update(proveedor_params)
+    redirect_to dashboard_proveedores_path, notice: "Proveedor actualizado"
+  else
+    redirect_to dashboard_proveedores_path, alert: "Error al actualizar proveedor"
+  end
+end
   
     private
 

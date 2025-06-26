@@ -324,6 +324,34 @@
     padding: 15px;
   }
 }
+.editar2{
+    height: 25px;
+    width: 90px;
+    border-radius: 10px;
+    color: white;
+    display: flex;
+    justify-content: center;
+    align-items: flex-end;
+    position: relative;
+    font-weight: bold;
+}
+.editar2 a{
+    color: white;
+    width: 90px;
+    height: 25px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-decoration: none;
+}
+.editar2{
+    border: solid 1px #f5a226;
+    background-color: #ffb950;
+}
+.editar2:hover{
+    background-color: #f4a735;
+}
+
 
 
 @media (max-width: 900px) {
