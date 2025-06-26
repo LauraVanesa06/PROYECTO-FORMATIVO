@@ -102,20 +102,20 @@
     height: 85%;
     width: 100%;
 }
-.cli{
+.compra-info{
     display: flex;
     flex-direction: row;
-    border-radius: 0 13px 13px 0;
-    border: solid 1px grey;
+    border-radius: 0 25px 25px 0;
+    border: solid 1px rgb(250, 250, 250);
     width: 90%;
     height: 40px;
     background-color:rgb(238, 238, 238);
     margin-bottom: -1px;
 }
-.cli:hover{
+.compra-info:hover{
     border-radius: 0 25px 25px 0;
 }
-.cli p{
+.compra-info p{
     display: flex;
     align-items: center;
 }
@@ -129,12 +129,16 @@
     font-weight: bold;
     color: white;
 }
-.p-name{
-    display: flex;
+.p-fecha{
+    display: flex; 
     align-items: center;
     width: 100%;
+    justify-content: center;
+    font-family: Arial, Helvetica, sans-serif;
+    background-color: #b5cde7;
+    border-radius: 0 25px 25px 0;
 }
-.p-name a{
+.p-fecha a{
     width: 100%;
     font-size: 15px;
     border-radius: 0 13px 13px 0;
@@ -143,9 +147,8 @@
     font-weight: bold;
     text-decoration: none;
 }
-.p-name:hover{   
-    border-radius: 0 25px 25px 0;
-    background-color: rgb(255, 225, 169);
+.p-fecha:hover{
+    background-color: #e1e9f2;
 }
 .btn-customer{
     width: 100%;

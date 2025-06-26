@@ -50,8 +50,8 @@
         <div class="div">
           <%= form_tag clientes_path, class:"filtros", method: :get do %>
             <div class="filtro-id">
-              <%= label_tag :cc, "CC:" %>
-              <%= text_field_tag :cc, params[:cc], placeholder: "Ej: 123456", size: 12, style:"border-radius:10px; padding-left: 10px; border:1px solid grey;" %>
+              <%= label_tag :documento, "CC:" %>
+              <%= text_field_tag :documento, params[:documento], placeholder: "Ej: 123456", size: 12, style:"border-radius:10px; padding-left: 10px; border:1px solid grey;" %>
             </div>
             <div class="filtro-id">
               <%= label_tag :name, "Nombre:" %>
@@ -68,13 +68,16 @@
     </div>
     <section class="contenedor">
       <aside class="clientes">
-        <div class="div-customer">Todas las compras:</div>
+        <div class="div-customer">Todas las fechas de compra:</div>
         <article class=compras>
-          <% @customers.each do |customer| %>
-            <%= render customer %>
+          <% if @purchasedetails.present? && @purchasedetails.any? %>
+            <% @purchasedetails.each do |p| %>
+              <div class="compra-info">
+                <p class=p-id><strong>ID:</strong> <%= p.buy_id %></p>
+                <p class=p-fecha><%= p.buy.fecha.strftime("%d/%m/%Y") %></p>
+              </div>
+            <% end %>
           <% end %>
-        </article>
-        <div class="btn-customer"><%= link_to "+", new_customer_path, class:"new-customer"%></div>
       </aside>
       <section class="cont-facturas">
         <div id="purcha">
@@ -96,7 +99,7 @@
           <% elsif @customer.present? %>
             <p id="p1">¡No se encontraron productos asociados a <%= @customer.nombre %>!</p>
           <% elsif @filter_result_empty %>
-            <p id="p1">¡No se encontró ningún cliente con los filtros aplicados!</p>
+            <p id="p1">¡No se encontraron compras asociadas a los filtros aplicados!</p>
           <% end %>
         </div>
         <%= link_to "+", new_purchasedetail_path, class: "new-pur" %>
