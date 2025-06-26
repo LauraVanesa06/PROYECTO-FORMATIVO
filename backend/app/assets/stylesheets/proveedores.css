@@ -218,6 +218,7 @@
     border-radius: 20px;
 }
 .div-purchase{
+  
     font-size: 13px;
     width: 342px;
     padding-left: 8px !important;
@@ -232,6 +233,8 @@
     border: 1px solid transparent;
     box-shadow: 0 0 8px #989898;
 }
+
+
 .color{
   height: 100%;
   width: 5px;
@@ -240,12 +243,8 @@
   margin-right: 10px;
   border-radius: 50%;
 }
-#purcha{
-    display: flex;
-    flex-wrap: wrap;
-    width: 100%;
-    gap: 6px;
-    padding: 8px;
+.ordenar{
+  display: flex;
 }
 #p1{
     color: red;
@@ -361,16 +360,27 @@
 }
 /* seccion debajo de filtro*/
 .contenedor{
-    margin: 0;
+   width: 80%;
+    height: auto;
+    background-color: #e9cfae;
     padding: 0;
-    height: 100%;
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    row-gap: 6px;
-    column-gap: 6px;
-    font-size: 30px;
+    margin: 0;
+    display: ruby;
+    flex-direction: column;
+    gap: 0;
+    border-radius: 20px;
+    
 }
+#purcha{
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  justify-content: flex-start;
+  width: 100%; 
+  padding: 8px;
+}
+
+
 @media (max-width: 900px) {
   /* aqui empieza*/
   
@@ -396,7 +406,12 @@
     font-size: 18px;
     padding: 0 2px;
   }
-
+  #purcha {
+    flex-direction: column;
+    flex-wrap: nowrap;
+    padding: 10px;
+    gap: 10px;
+  }
   /* termina */
   
   .clientes, .cont-facturas {
@@ -407,18 +422,15 @@
   .cont-facturas {
     margin-top: 20px;
   }
-  #purcha {
-    flex-direction: column;
-    flex-wrap: nowrap;
-    padding: 10px;
-    gap: 10px;
-  }
+
   .div-purchase {
     width: 98%;
     margin: 8px auto;
     flex-direction: column;
     align-items: flex-start;
     font-size: 15px;
+
+    
   }
   .cont-purcha {
     padding: 15px;
@@ -613,6 +625,13 @@
     gap: 6px;
     font-size: 13px;
     padding: 0 1px;
+  }
+
+   #purcha {
+    flex-direction: column;
+    flex-wrap: nowrap;
+    padding: 6px 2px;
+    gap: 6px;
   }
 /* fin*/
   .container {
