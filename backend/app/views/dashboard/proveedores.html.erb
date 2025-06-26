@@ -48,21 +48,34 @@
       </div>
     </nav>
     <section class="principal">
-      <div class="filt">
-        <div class="cont-volver">
-          <a href="/proveedores" class="a-volver" style="text-decoration:none;"><i class="fas fa-arrow-left" id="vol"></i></a>
+    <button class="hamburger-categorias" id="hamburger-categorias">&#9776; Categorías</button>
+
+     <aside class="asidefiltro" id="asideproveedores">
+        <div class="div-div">
+          <a href="/proveedores" class="divDisposicion" style="text-decoration:none;"><i class="fas fa-arrow-left" id="flechita"></i></a>
+          <div class="divDisposicion">Todos los proveedores:</div>
         </div>
-        <div class="filtro">
+          <% @proveedores.uniq { |p| p.nombre }&.each do |proveedor| %>
+            <div class="probar">
+            <div class="nose">
+              <%= link_to proveedor.nombre, dashboard_proveedores_path(nombre: proveedor.nombre), class: "btn btn-outline-dark mb-2 w-100" %>
+              </div>
+            </div>
+          <% end %>
+      </aside>
+      
+      <section class="SeccionProveedores">
+        <nav class="nav-filtros">
           <p class=p><i class="fas fa-filter"></i> Filtros</p>
           <div class="div">
             <%= form_tag proveedores_path, class:"filtros", method: :get do %>
               <div class="filtro-id">
                 <%= label_tag :id, "ID:" %>
-                  <%= text_field_tag :id, params[:id], placeholder: "Ej: 1", size: 2, style:"border-radius:10px; padding-left: 10px; border:1px solid grey;" %>
+                <%= text_field_tag :id, params[:id], placeholder: "Ej: 1", size: 2, style:"border-radius:10px; padding-left: 10px; border:1px solid grey;" %>
               </div>
               <div class="filtro-id">
                 <%= label_tag :name, "Nombre:" %>
-                  <%= text_field_tag :name, params[:name], placeholder: "Ej: nombreprovedor", size: 12, style:"border-radius:10px; padding-left: 10px; border:1px solid grey;" %>
+                <%= text_field_tag :name, params[:name], placeholder: "Ej: nombreprovedor", size: 12, style:"border-radius:10px; padding-left: 10px; border:1px solid grey;" %>
               </div>
               <div>
                 <%= button_tag type: 'submit', class: 'btn' do %>
@@ -71,18 +84,8 @@
               </div>
             <% end %>
           </div>
-        </div>
-      </div>
+        </nav>
       <section class="contenedor">
-        <aside class="clientes">
-          <div class="div-customer">Todos los proveedores:</div>
-            <% @proveedores.uniq { |p| p.nombre }&.each do |proveedor| %>
-              <div class="proveedor-item">
-                <%= link_to proveedor.nombre, dashboard_proveedores_path(nombre: proveedor.nombre), class: "btn btn-outline-dark mb-2 w-100" %>
-              </div>
-            <% end %>
-        </aside>
-        <section class="cont-facturas"> 
         <div id="purcha" class="mt-4">
           <h3 class="mb-3">Proveedores encontrados</h3>
           <div class="row">
@@ -215,8 +218,9 @@
   </div>
 </div>
 
-      </section>  
-  </section>
+      </section>
+      </section>    
+    </section>
   <footer>
     &copy; 2025 Ferremateriales el Maestro - Todos los derechos reservados
   </footer>
