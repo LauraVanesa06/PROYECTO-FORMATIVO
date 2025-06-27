@@ -228,7 +228,6 @@
     margin: 5px;
     display: flex;
     flex-direction: row;
-    align-items: center;
     border-radius: 10px;
     border: 1px solid transparent;
     box-shadow: 0 0 8px #989898;
@@ -236,10 +235,10 @@
 
 
 .color{
-  height: 100%;
+  height: auto;
   width: 5px;
-  border: solid 1px rgb(26, 131, 18);
-  background-color:#19e76f;
+  border: solid 1px rgb(93, 138, 186);
+  background-color:rgb(93, 138, 186);
   margin-right: 10px;
   border-radius: 50%;
 }
@@ -435,6 +434,15 @@
   .cont-purcha {
     padding: 15px;
   }
+}
+.edit{
+  font-size: 13px;
+   
+    padding-left: 8px !important;
+    
+    border-radius: 10px;
+    align-content: center;
+
 }
 .editar2{
     height: 25px;

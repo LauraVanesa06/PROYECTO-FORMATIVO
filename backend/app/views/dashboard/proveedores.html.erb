@@ -97,7 +97,6 @@
       <section class="contenedor">
         <h3 class="mb-3">Proveedores encontrados</h3>
         <div id="purcha" class="mt-4">
-          
             <% productos = @proveedor.present? ? @productos_proveedor : Product.includes(:proveedor).all %>
               <% @proveedores.each do |proveedor| %>
                 <div class="div-purchase" id="purchasedetail" class="mt-4" >
