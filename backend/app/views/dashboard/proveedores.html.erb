@@ -64,13 +64,14 @@
           <a href="/proveedores" class="divDisposicion" style="text-decoration:none;"><i class="fas fa-arrow-left" id="flechita"></i></a>
           <div class="divDisposicion">Todos los proveedores:</div>
         </div>
-          <% @proveedores.uniq { |p| p.nombre }&.each do |proveedor| %>
-            <div class="probar">
-            <div class="nose">
-              <%= link_to proveedor.nombre, dashboard_proveedores_path(nombre: proveedor.nombre), class: "btn btn-outline-dark mb-2 w-100" %>
+          <article class=compras>
+            <% @proveedores.uniq { |p| p.nombre }&.each do |proveedor| %>
+              <div class="compra-info">
+                <%= link_to proveedor.nombre, dashboard_proveedores_path(nombre: proveedor.nombre), class: "btn btn-outline-dark mb-2 w-100" %>
               </div>
-            </div>
-          <% end %>
+            <% end %>
+          </article>
+        </div>
       </aside>
       
       <section class="SeccionProveedores">

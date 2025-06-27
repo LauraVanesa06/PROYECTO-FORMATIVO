@@ -303,6 +303,53 @@
     color:white;
 
 }
+.div-customer{
+    display: flex;
+    justify-content: flex-start !important;
+    font-size: 17px;
+    margin-left: 7px;
+    margin-bottom: 10px;
+    font-weight: bold;
+    font-family: 'Segoe UI', sans-serif;
+    color: white;
+    margin-left: 10px;
+    padding: 0;
+}
+
+.compras{
+    overflow-y: auto;
+    height: 90%;
+    width: 100%;
+        padding-left: 20px;
+}
+
+.compra-info{
+  text-decoration: none;
+    display: flex;
+    flex-direction: row;
+    width: 90%;
+    height: 40px;
+    background-color: #e6f0ff; 
+  color: #003366;             
+  border: 2px solid rgb(93, 138, 186);  
+  padding-left: 12px;
+  margin-left: 8px;
+  margin-bottom: 10px;
+  border-radius: 15px;
+  font-weight: bold;
+  transition: all 0.2s ease-in-out;
+
+}
+.compra-info:hover{
+    border-radius: 0 25px 25px 0;
+     background-color: #cce0ff;  /* Azul un poco más oscuro al pasar el mouse */
+  color: #001f4d;
+  transform: scale(1.02);
+}
+.compra-info p{
+    display: flex;
+    align-items: center;
+}
 
 .probar {
   text-decoration: none;

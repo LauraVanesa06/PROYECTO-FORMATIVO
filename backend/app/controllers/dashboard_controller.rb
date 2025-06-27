@@ -204,14 +204,14 @@ class DashboardController < ApplicationController
       render :proveedores
     end
   end
-def actualizar_proveedor
-  @proveedor = Proveedor.find(params[:id])
-  if @proveedor.update(proveedor_params)
-    redirect_to dashboard_proveedores_path, notice: "Proveedor actualizado"
-  else
-    redirect_to dashboard_proveedores_path, alert: "Error al actualizar proveedor"
+  def actualizar_proveedor
+    @proveedor = Proveedor.find(params[:id])
+    if @proveedor.update(proveedor_params)
+      redirect_to dashboard_proveedores_path, notice: "Proveedor actualizado"
+    else
+      redirect_to dashboard_proveedores_path, alert: "Error al actualizar proveedor"
+    end
   end
-end
   
     private
 
@@ -221,5 +221,4 @@ end
 end
 
 
-end
 
