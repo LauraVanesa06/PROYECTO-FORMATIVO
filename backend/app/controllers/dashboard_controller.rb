@@ -152,6 +152,13 @@ class DashboardController < ApplicationController
   def proveedores
     @products = Product.all
     @proveedor_form = Proveedor.new
+      @proveedores = Proveedor.includes(:productos).all
+      @proveedor = Proveedor.new
+  @productos_proveedor = []
+    @categorias = Category.all
+  @suppliers = Supplier.all
+
+
     
     if params[:productos_id].present?
       @proveedores = @proveedores.where(producto_id: params[:producto_id])
@@ -190,17 +197,33 @@ class DashboardController < ApplicationController
 
     if @proveedor.save
       # Busca producto por nombre y proveedor
-      producto = Product.find_by(nombre: params[:nombre_product], proveedor_id: @proveedor.id)
+      product_name = params[:nombre_product].strip
+      stock = params[:stock].to_i
+      categoria_id = params[:category_id]
+      supplier_id = params[:supplier_id]
+      
+      producto = Product.joins(:proveedor)
+                  .find_by(nombre: product_name, proveedores: { nombre: @proveedor.nombre })
 
-      if producto
-        producto.increment!(:stock, params[:stock].to_i)
-      else
-        Product.create(nombre: params[:nombre_product], stock: params[:stock], proveedor_id: @proveedor.id)
-      end
+ 
+
+    if producto
+      producto.increment!(:stock, stock)
+    else
+      # Crear producto asociado al proveedor
+      Product.create!(
+        nombre: product_name,
+        stock: stock,
+        proveedor_id: @proveedor.id,
+          category_id: categoria_id,
+        supplier_id: supplier_id
+      )
+    end 
+
 
       redirect_to dashboard_proveedores_path, notice: "Proveedor y producto registrados."
     else
-      @proveedores = Proveedor.includes(:productos).all
+      @proveedores = Proveedor.includes(:productos)
       render :proveedores
     end
   end

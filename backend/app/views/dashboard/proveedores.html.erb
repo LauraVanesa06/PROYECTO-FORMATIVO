@@ -110,10 +110,11 @@
                     <strong>Tipo de Producto:</strong> <%= proveedor.tipoProducto %><br>
                     <strong>Teléfono:</strong> <%= proveedor.telefono %><br>
                     <strong>Correo:</strong> <%= proveedor.correo %>
-                    <% producto = proveedor.productos.last %>
-                      <strong>Producto:</strong> <%= producto&.nombre %><br>
-                      <strong>Stock:</strong> <%= producto&.stock %><br>
-                     
+                  <% producto = proveedor.productos.last %>
+                  <% if producto %>
+                    <strong>Producto:</strong> <%= producto.nombre %><br>
+                    <strong>Stock:</strong> <%= producto.stock %><br>
+                  <% end %>
                   </p>
                 </div>
                 <div class='edit'>
@@ -216,6 +217,15 @@
             <%= form.label :stock %>
             <%= number_field_tag :stock, class: "form-control"  %>
           </div>
+          <div class="mb-3">
+  <%= form.label :category_id, "Categoría del producto" %>
+  <%= select_tag :category_id, options_from_collection_for_select(@categorias, :id, :nombre), class: "form-select" %>
+</div>
+
+<div class="mb-3">
+  <%= form.label :supplier_id, "Proveedor externo (Supplier)" %>
+  <%= select_tag :supplier_id, options_from_collection_for_select(@suppliers, :id, :nombre), class: "form-select" %>
+</div>
           <div class="modal-footer">
             <%= form.submit "Agregar", class: "btn btn-primary" %>
             

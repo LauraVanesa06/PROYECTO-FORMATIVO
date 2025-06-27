@@ -458,6 +458,8 @@
     padding: 10px;
     gap: 10px;
   }
+
+  
   /* termina */
   
   .clientes, .cont-facturas {
@@ -687,7 +689,9 @@
     flex-wrap: nowrap;
     padding: 6px 2px;
     gap: 6px;
+
   }
+  
 /* fin*/
   .container {
     flex-direction: column;
