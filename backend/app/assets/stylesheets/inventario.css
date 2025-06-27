@@ -1,5 +1,5 @@
 .section-container{
-    height: auto;
+    height: 670px;
     display: flex;
     flex-direction: row;
     margin: 0;
@@ -102,6 +102,7 @@
     gap: 0;
 }
 .section-models{
+    overflow-y: auto;
     margin: 0;
     padding: 0;
     height: 100%;
