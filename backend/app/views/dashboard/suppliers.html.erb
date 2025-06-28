@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+  <html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <%= favicon_link_tag 'favicon.png' %>
+    <title>Dashboard Ferretería</title>
+    <%= stylesheet_link_tag "proveedores", media: "all" %>
+    <%= stylesheet_link_tag "dashboard", media: "all" %>
+    <%= favicon_link_tag 'header-icon.png' %>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Eczar:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Bootstrap CSS CDN -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap JS (opcional, para dropdowns/modals) -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  </head>
+  <body>
+    <header>
+      <div class="container-header">
+        <div class="img-empresa">
+          <img src="img/test.png" alt="" width="60px">
+        </div>
+        <button class="hamburger" id="hamburger">&#9776;</button>
+        <p class="pricipal">Ferremateriales el Maestro - Dashboard</p>
+
+        <% if user_signed_in? %>
+          <%= button_to destroy_user_session_path, method: :delete, form: { data: { turbo: true } }, id: "cerrar", class: "logout2" do %>
+          <span><i class="fas fa-sign-out-alt" style="color: white"></i></span>
+          <% end %>
+        <% end %>
+      </div>
+    </header>
+
+    <nav class="nav-bg">
+      <div class="container-nav">
+        <ul class="menu" id="menu">
+          <li><a href="dashboard"class="link-menu">Inicio</a></li>
+          <li><a href="inventario"class="link-menu">Inventario</a></li>
+          <li><a href="ventas"class="link-menu">Ventas</a></li>
+          <li><a href="suppliers"class="link-menu">Proveedores</a></li>
+          <li><a href="clientes"class="link-menu">Clientes</a></li>
+        </ul>
+        <div>
+          <% if user_signed_in? %>
+            <%= button_to "Cerrar sesión", destroy_user_session_path, method: :delete, form: { data: { turbo: true } }, id: "cerrar", class: "logout"%>
+          <% end %>
+        </div>
+      </div>
+    </nav>
+    <section class="principal">
+      <button class="hamburger-categorias" id="hamburger-categorias">&#9776; Categorías</button>
+      <aside class="asidefiltro" id="asideproveedores">
+        <div class="div-div">
+          <a href="/suppliers" class="divDisposicion" style="text-decoration:none;"><i class="fas fa-arrow-left" id="flechita"></i></a>
+          <div class="divDisposicion">Todos los proveedores:</div>
+        </div>
+        <article class=compras>
+          <% @suppliers.uniq { |p| p.nombre }&.each do |supplier| %>
+            <div class="compra-info">
+              <%= link_to supplier.nombre, dashboard_suppliers_path(nombre: supplier.nombre), class: "btn btn-outline-dark mb-2 w-100" %>
+            </div>
+          <% end %>
+        </article>
+      </aside>
+      
+      <section class="SeccionProveedores">
+        <nav class="nav-filtros">
+          <p class=p><i class="fas fa-filter"></i> Filtros</p>
+          <div class="div">
+            <%= form_tag suppliers_path, class:"filtros", method: :get do %>
+              <div class="filtro-id">
+                <%= label_tag :id, "ID:" %>
+                <%= text_field_tag :id, params[:id], placeholder: "Ej: 1", size: 2, style:"border-radius:10px; padding-left: 10px; border:1px solid grey;" %>
+              </div>
+              <div class="filtro-id">
+                <%= label_tag :name, "Nombre:" %>
+                <%= text_field_tag :name, params[:name], placeholder: "Ej: nombreprovedor", size: 12, style:"border-radius:10px; padding-left: 10px; border:1px solid grey;" %>
+              </div>
+              <div>
+                <%= button_tag type: 'submit', class: 'btn' do %>
+                  <i class="fas fa-search"></i>
+                <% end %>
+              </div>
+            <% end %>
+          </div>
+        </nav>
+        <section class="contenedor">
+          <h3 class="mb-3">Proveedores encontrados</h3>
+          <div id="purcha" class="mt-4">
+            <% products = @supplier.present? ? @products_supplier : Product.includes(:supplier).all %>
+              <% @suppliers.each do |supplier| %>
+                <div class="div-purchase" id="purchasedetail" class="mt-4" >
+                  <div class="color">
+                  </div>
+                  <div class="card-body">
+                    <h5 class="card-title"><%= supplier.nombre %></h5>
+                    <p class="card-text"> 
+                      <strong>Nombre:</strong> <%= supplier.nombre %><br>
+                      <strong>Contacto:</strong> <%= supplier.contacto %><br>
+                      <% product = supplier.products.last %>
+                      <% if product %>
+                        <strong>Producto:</strong> <%= product.nombre %><br>
+                        <strong>Stock:</strong> <%= product.stock %><br>
+                      <% end %>
+                    </p>
+                  </div>
+                  <div class='edit'>
+                    <button type="button"  data-bs-toggle="modal" data-bs-target="#modalEditarProveedor-<%= supplier.id %>" class="editar2">
+                    Editar
+                    </button>
+                  </div>
+                </div>
+                <div class="modal fade" id="modalEditarProveedor-<%= supplier.id %>" tabindex="-1" aria-labelledby="editarLabel-<%= supplier.id %>" aria-hidden="true">
+                  <div class="modal-dialog">
+                    <div class="modal-content">
+                      <div class="modal-header bg-dark text-white">
+                        <h5 class="modal-title">Editar Proveedor</h5>
+                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Cerrar">
+                        </button>
+                      </div>
+                      <%= form_with model: supplier, url: dashboard_supplier_path(supplier), method: :patch, local: true do |form| %>
+                        <div class="modal-body">
+                          <div class="mb-3">      
+                            <%= form.label :nombre %>
+                            <%= form.text_field :nombre, class: "form-control" %>
+                          </div>                   
+                          <div class="mb-3">
+                            <%= form.label :contacto %>
+                            <%= form.text_field :contacto, class: "form-control" %>
+                          </div> 
+                        </div>
+                        <div class="modal-footer">
+                          <%= form.submit "Guardar cambios", class: "btn btn-success" %>
+                          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                        </div>
+                      <% end %>
+                    </div>
+                  </div>
+                </div>
+              <% end %>
+    
+          </div>
+          <div class="text-end mt-4">
+            <button type="button" class="btn btn-danger rounded-circle" data-bs-toggle="modal" data-bs-target="#modalNuevoProveedor" title="Agregar proveedor" style="width: 50px; height: 50px; font-size: 24px;">
+              +
+            </button>
+          </div>    
+        </section>
+      
+        <!-- Modal -->
+        <div class="modal fade" id="modalNuevoProveedor" tabindex="-1" aria-labelledby="modalNuevoProveedorLabel" aria-hidden="true">
+          <div class="modal-dialog">
+            <div class="modal-content">    
+              <div class="modal-header bg-dark text-white">
+                <h5 class="modal-title" id="modalNuevoProveedorLabel">Nuevo Proveedor</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+              </div>
+
+              <div class="modal-body">
+                <%= form_with model: @supplier, url: dashboard_suppliers_path, method: :post, local: true do |form| %>
+                  <div class="mb-3">
+                    <%= form.label :nombre %>
+                    <%= form.text_field :nombre, class: "form-control" %>
+                  </div>
+                  <div class="mb-3">
+                    <%= form.label :contacto %>
+                    <%= form.text_field :contacto, class: "form-control" %>
+                  </div>
+          
+                  <div class="mb-3">
+                    <%= form.label :nombre_product %>
+                    <%= text_field_tag :nombre_product%>
+                  </div>
+                  <div class="mb-3">
+                    <%= form.label :stock %>
+                    <%= number_field_tag :stock, class: "form-control"  %>
+                  </div>
+                  <div class="mb-3">
+                    <%= form.label :category_id, "Categoría del producto" %>
+                    <%= select_tag :category_id, options_from_collection_for_select(Category.all, :id, :nombre), class: "form-control" %>
+                  </div>
+                  <div class="modal-footer">
+                    <%= form.submit "Agregar", class: "btn btn-primary" %>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                  </div>
+                <% end %>
+              </div>
+
+            </div>
+          </div>
+        </div>
+      </section>
+    </section>    
+    <footer>
+      &copy; 2025 Ferremateriales el Maestro - v2.3.7
+    </footer>
+  </body>
+</html>

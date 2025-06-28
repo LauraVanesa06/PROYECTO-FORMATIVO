@@ -1,80 +1,75 @@
 class SuppliersController < ApplicationController
-  before_action :set_supplier, only: %i[ show edit update destroy ]
+  before_action :authenticate_user!
+  before_action :only_admins
 
-  # GET /suppliers or /suppliers.json
+  private
+
+  def only_admins
+    unless current_user&.admin?
+      redirect_to root_path, alert: "Acceso no autorizado"
+    end
+  end
+
+
   def index
     @suppliers = Supplier.all
+    @supplier = Supplier.new
   end
 
-  # GET /suppliers/1 or /suppliers/1.json
   def show
+    @product = Product.find(params[:id])
   end
 
-  # GET /suppliers/new
+
   def new
     @supplier = Supplier.new
   end
 
-  # GET /suppliers/1/edit
-  def edit
-  end
-
-  # POST /suppliers or /suppliers.json
   def create
-    @supplier = Supplier.new(supplier_params)
+    existing_product = Product.find_by(nombre: params[:product][:nombre])
 
-    respond_to do |format|
-      if @supplier.save
-        format.html { redirect_to @supplier, notice: "Supplier was successfully created." }
-        format.json { render :show, status: :created, location: @supplier }
-      else
-        format.html { render :new, status: :unprocessable_entity }
-        format.json { render json: @supplier.errors, status: :unprocessable_entity }
-      end
+    if existing_product
+      # Ya existe → solo actualizar stock
+      existing_product.increment!(:stock, params[:product][:stock].to_i)
+      flash[:notice] = "Producto existente, se actualizó el stock."
+    else
+      # No existe → crear nuevo producto
+      Product.create(product_params)
+      flash[:notice] = "Producto creado correctamente."
     end
-  end
 
-  # PATCH/PUT /suppliers/1 or /suppliers/1.json
-  def update
-    respond_to do |format|
-      if @supplier.update(supplier_params)
-        format.html { redirect_to @supplier, notice: "Supplier was successfully updated." }
-        format.json { render :show, status: :ok, location: @supplier }
-      else
-        format.html { render :edit, status: :unprocessable_entity }
-        format.json { render json: @supplier.errors, status: :unprocessable_entity }
-      end
-    end
-  end
-
-  # DELETE /suppliers/1 or /suppliers/1.json
-  def destroy
-    @supplier.destroy!
-
-    respond_to do |format|
-      format.html { redirect_to suppliers_path, status: :see_other, notice: "Supplier was successfully destroyed." }
-      format.json { head :no_content }
-    end
-  end
-
-  def products
-    @supplier = Supplier.find(params[:id])
-    @products = @supplier.products
-  end
-
-  def products
-    @supplier = Supplier.find(params[:id])
-    @products = @supplier.products
+    redirect_to dashboard_proveedores_path
   end
 
   private
-    # Use callbacks to share common setup or constraints between actions.
-    def set_supplier
-      @supplier = Supplier.find(params.expect(:id))
-    end
 
-    # Only allow a list of trusted parameters through.
-    def supplier_params
-      params.expect(supplier: [ :nombre, :contacto ])
+  def product_params
+    params.require(:product).permit(:nombre, :descripcion, :stock, :supplier_id)
+  end
+  def edit
+      @product = Product.find(params[:id])
+  end
+
+  def update
+    @product = Product.find(params[:id])
+    if @product.update(product_params)
+      redirect_to @product
+    else
+      render :edit
     end
+  end
+
+  def destroy
+    @product = Product.find(params[:id])
+    @product.destroy
+    redirect_to products_path
+  end
+
+
+  private 
+
+  def suppliers_params
+    params.require(:supplier).permit(:nombre, :contacto)
+  end
+
 end

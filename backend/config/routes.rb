@@ -16,7 +16,7 @@ Rails.application.routes.draw do
   get "/dashboard/inventario", to: "dashboard#inventario"
   get 'clientes', to: 'dashboard#clientes', as: 'clientes'
 
-  resources :categories, :suppliers do
+  resources :categories do
     member do
       get :products
     end
@@ -45,11 +45,13 @@ Rails.application.routes.draw do
     #login
 
   #rutas proveedores
-  get 'dashboard/proveedores', to: 'dashboard#proveedores',  as: 'dashboard_proveedores'
-  post 'dashboard/proveedores', to: 'dashboard#crear_proveedor'
-  get "proveedores" => "dashboard#proveedores"
-  patch "dashboard/proveedores/:id", to: "dashboard#actualizar_proveedor", as: :dashboard_proveedor
-
+  get 'dashboard/suppliers', to: 'dashboard#suppliers',  as: 'dashboard_suppliers'
+  post 'dashboard/suppliers', to: 'dashboard#crear_supplier'
+  get "suppliers" => "dashboard#suppliers"
+  patch "dashboard/suppliers/:id", to: "dashboard#actualizar_supplier", as: :dashboard_supplier
+resources :suppliers do
+  get 'products', to: 'suppliers#products'
+end
 
   
     devise_scope :user do
