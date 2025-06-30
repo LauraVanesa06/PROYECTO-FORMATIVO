@@ -160,9 +160,7 @@ class DashboardController < ApplicationController
 
 
     
-    if params[:products_id].present?
-      @suppliers = @suppliers.where(product_id: params[:product_id])
-    end
+
 
     # Filtro por nombre desde el sidebar
     if params[:nombre].present?
@@ -211,12 +209,11 @@ class DashboardController < ApplicationController
     if producto
       producto.increment!(:stock, stock)
     else
-      # Crear producto asociado al proveedor
       Product.create!(
         nombre: product_name,
         stock: stock,
         supplier_id: @supplier.id,
-          category_id: categoria_id,
+        category_id: categoria_id,
       )
     end 
 
@@ -239,7 +236,7 @@ class DashboardController < ApplicationController
     private
 
     def supplier_params
-      params.require(:supplier).permit(:nombre, :direccion, :tipoProducto, :telefono, :correo)
+      params.require(:supplier).permit(:nombre, :contacto)
     end
 end
 
