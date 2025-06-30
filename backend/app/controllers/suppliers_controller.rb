@@ -25,21 +25,35 @@ class SuppliersController < ApplicationController
     @supplier = Supplier.new
   end
 
-  def create
-    existing_product = Product.find_by(nombre: params[:product][:nombre])
+def crear_supplier
+  @supplier = Supplier.new(supplier_params)
 
-    if existing_product
-      # Ya existe → solo actualizar stock
-      existing_product.increment!(:stock, params[:product][:stock].to_i)
-      flash[:notice] = "Producto existente, se actualizó el stock."
+  if @supplier.save
+    product_name = params[:nombre_product]
+    stock = params[:stock].to_i
+    supplier_nombre = @supplier.nombre
+
+    # Buscar si ya existe un producto con ese nombre y proveedor con ese nombre
+    product = Product.joins(:supplier)
+                                .where(nombre: product_name, suppliers: { nombre: supplier_nombre })
+                                .first
+
+    if product
+      # Solo aumentar el stock del producto existente
+      product.increment!(:stock, stock)
     else
-      # No existe → crear nuevo producto
-      Product.create(product_params)
-      flash[:notice] = "Producto creado correctamente."
+      # Crear producto nuevo y asociarlo al proveedor recien creado
+      Product.create!(
+        nombre: product_name,
+        stock: stock,
+        supplier_id: @supplier.id
+      )
     end
-
-    redirect_to dashboard_proveedores_path
   end
+
+  redirect_to dashboard_suppliers_path
+end
+
 
   private
 

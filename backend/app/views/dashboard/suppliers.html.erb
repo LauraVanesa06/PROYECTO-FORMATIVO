@@ -89,20 +89,23 @@
           <h3 class="mb-3">Proveedores encontrados</h3>
           <div id="purcha" class="mt-4">
             <% products = @supplier.present? ? @products_supplier : Product.includes(:supplier).all %>
-              <% @suppliers.each do |supplier| %>
+           <% @suppliers.each do |supplier| %>
                 <div class="div-purchase" id="purchasedetail" class="mt-4" >
                   <div class="color">
                   </div>
                   <div class="card-body">
                     <h5 class="card-title"><%= supplier.nombre %></h5>
                     <p class="card-text"> 
-                      <strong>Nombre:</strong> <%= supplier.nombre %><br>
-                      <strong>Contacto:</strong> <%= supplier.contacto %><br>
-                      <% product = supplier.products.last %>
-                      <% if product %>
-                        <strong>Producto:</strong> <%= product.nombre %><br>
-                        <strong>Stock:</strong> <%= product.stock %><br>
-                      <% end %>
+                        <strong>Nombre:</strong> <%= supplier.nombre %><br>
+                        <strong>Contacto:</strong> <%= supplier.contacto %><br>
+                        <% product= supplier.products.last %>
+                        <% if product %>
+                          <strong>Producto:</strong> <%= product.nombre %><br>
+                          <strong>Stock:</strong> <%= product.stock %><br>
+                        <% else %>
+                          <strong>Producto:</strong> No tiene productos registrados<br>
+                        <% end %>
+                
                     </p>
                   </div>
                   <div class='edit'>

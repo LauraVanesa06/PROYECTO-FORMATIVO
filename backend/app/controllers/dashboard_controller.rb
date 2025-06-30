@@ -150,80 +150,66 @@ class DashboardController < ApplicationController
 
 
   def suppliers
-    @products = Product.all
+  #  @products = Product.all
     @supplier_form = Supplier.new
-    @suppliers = Supplier.includes(:products).all
     @supplier = Supplier.new
-    @products_supplier = []
+  #  @products_supplier = []
     @categorias = Category.all
+    @suppliers = Supplier.includes(:products).all
  
 
-
-    
-
-
-    # Filtro por nombre desde el sidebar
-    if params[:nombre].present?
-      @suppliers = Supplier.where(nombre: params[:nombre]).includes(:products)
-    else
-      @suppliers = Supplier.includes(:products).all
-    end
-    # Filtros por ID o búsqueda por nombre (filtros del formulario superior)
-    @suppliers = @suppliers.where(id: params[:id]) if params[:id].present?
-    @suppliers = @suppliers.where("nombre LIKE ?", "%#{params[:name]}%") if params[:name].present?
-
-    # Para mostrar productos en tarjetas
-        @products_supplier = @suppliers.flat_map(&:products)
-
-
-    # Usado para vista si no hay resultados
-    @filter_result_empty = @suppliers.blank?
-    if params[:supplier_id].present?
-      @supplier = Supplier.find_by(id: params[:supplier_id])
-      @products_supplier = @suppliers&.products || []
-    elsif @suppliers.size == 1
-      @supplier = @suppliers.first
-      @products_supplier = @supplier.products
-    else
-      @products_supplier = Supplier.includes(:supplier).all
-      @supplier = Supplier.new # <-- asegúrate de que esto esté siempre definido al final
-    end
-
+  # Filtro por nombre desde el sidebar
+  if params[:nombre].present?
+    @suppliers = @suppliers.where(nombre: params[:nombre])
   end
 
-  def crear_supplier
-    @supplier = Supplier.new(supplier_params)
+  # Asignación de proveedor específico si se envía un parámetro
+  if params[:supplier_id].present?
+    @supplier = Supplier.find_by(id: params[:supplier_id])
+    @products_supplier = @supplier.present? ? @supplier.products : []
+  elsif @suppliers.size == 1
+    @supplier = @suppliers.first
+    @products_supplier = @supplier.products
+  else
+    @products_supplier = Product.includes(:supplier).all
+  end
 
-    if @supplier.save
-      # Busca producto por nombre y proveedor
-      product_name = params[:nombre_product].strip
-      stock = params[:stock].to_i
-      categoria_id = params[:category_id]
+  # Bandera para mostrar mensaje si no hay resultados
+  @filter_result_empty = @suppliers.blank?
+end
 
-      
-      producto = Product.joins(:supplier)
-                  .find_by(nombre: product_name, suppliers: { nombre: @supplier.nombre })
 
- 
+def crear_supplier
+  @supplier = Supplier.new(supplier_params)
 
-    if producto
-      producto.increment!(:stock, stock)
+  if @supplier.save
+    product_name = params[:nombre_product]
+    stock = params[:stock].to_i
+    supplier_nombre = @supplier.nombre
+
+    # Buscar si ya existe un producto con ese nombre y proveedor con ese nombre
+    product = Product.joins(:supplier)
+                                .where(nombre: product_name, suppliers: { nombre: supplier_nombre })
+                                .first
+
+
+    if product
+      # Solo aumentar el stock del producto existente
+      product.increment!(:stock, stock)
     else
+      # Crear producto nuevo y asociarlo al proveedor recien creado
       Product.create!(
         nombre: product_name,
         stock: stock,
-        supplier_id: @supplier.id,
-        category_id: categoria_id,
+        supplier_id: @supplier.id
       )
-    end 
-
-
-      redirect_to dashboard_suppliers_path, notice: "Proveedor y producto registrados."
-    else
-      @suppliers = Supplier.includes(:product)
-      render :suppliers
     end
   end
+
+  redirect_to dashboard_suppliers_path
+end
+
+
   def actualizar_supplier
     @supplier = Supplier.find(params[:id])
     if @supplier.update(supplier_params)
