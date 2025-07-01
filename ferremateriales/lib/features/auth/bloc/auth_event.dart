@@ -14,7 +14,14 @@ class LoginSubmitted extends AuthEvent {
   @override
   List<Object> get props => [email, password];
 }
-class LogoutRequested extends AuthEvent {
-  
-}
 
+class LogoutRequested extends AuthEvent {}
+
+class ResetPasswordRequested extends AuthEvent {
+  final String email;
+
+  ResetPasswordRequested({required this.email});
+
+  @override
+  List<Object> get props => [email];
+}

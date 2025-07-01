@@ -20,13 +20,6 @@ class _RegisterViewState extends State<RegisterView> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              // Logo de la empresa
-              Image.asset(
-                'assets/logo_empresa.png', // asegúrate de tenerlo en assets
-                height: 120,
-              ),
-              const SizedBox(height: 20),
-
               // Título
               Text(
                 'Crea tu cuenta',

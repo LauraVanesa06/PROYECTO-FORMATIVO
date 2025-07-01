@@ -4,17 +4,9 @@ import 'package:google_fonts/google_fonts.dart';
 import '../bloc/auth_bloc.dart';
 import '../bloc/auth_state.dart';
 import '../widgets/login_form.dart';
-import '../../productos/views/initial_view.dart'; // tu pantalla principal
-
-import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:google_fonts/google_fonts.dart';
-import '../bloc/auth_bloc.dart';
-import '../bloc/auth_state.dart';
-import '../widgets/login_form.dart';
-import '../../productos/views/initial_view.dart';
-import 'register_view.dart'; // Asegúrate de crear esta vista
-import 'reset_password_view.dart'; // Igual, debes crear esta vista
+import '../../productos/views/initial_view.dart'; 
+import 'register_view.dart';
+import 'reset_password_view.dart'; 
 
 class LoginView extends StatelessWidget {
   @override
@@ -36,7 +28,7 @@ class LoginView extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Text(
-                  'Bienvenido a SIF',
+                  'Bienvenido a FERREMATERIALES',
                   style: GoogleFonts.montserrat(
                     fontSize: 28,
                     fontWeight: FontWeight.bold,
