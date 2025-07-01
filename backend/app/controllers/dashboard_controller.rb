@@ -163,17 +163,33 @@ class DashboardController < ApplicationController
     @suppliers = @suppliers.where(nombre: params[:nombre])
   end
 
+ 
+  # Filtro por ID
+  
+  if params[:id].present? && params[:id] != ""
+    @suppliers = Supplier.where(id: params[:id])
+  elsif params[:name].present? && params[:name] != ""
+    @suppliers = Supplier.where("nombre ILIKE ?", "%#{params[:name]}%")
+  else
+    @suppliers = Supplier.all
+  end
+
+    @products_supplier = Product.where(supplier_id: @suppliers.pluck(:id))
+
+  #Filtro por nombre (desde filtro de arriba, no sidebar)
+  if params[:name].present?
+    @suppliers = @suppliers.where("nombre ILIKE ?", "%#{params[:name]}%")
+  end
+
+
   # Asignación de proveedor específico si se envía un parámetro
-  if params[:supplier_id].present?
-    @supplier = Supplier.find_by(id: params[:supplier_id])
-    @products_supplier = @supplier.present? ? @supplier.products : []
-  elsif @suppliers.size == 1
+ 
+if @suppliers.size == 1
     @supplier = @suppliers.first
     @products_supplier = @supplier.products
   else
     @products_supplier = Product.includes(:supplier).all
   end
-
   # Bandera para mostrar mensaje si no hay resultados
   @filter_result_empty = @suppliers.blank?
 end
@@ -185,13 +201,12 @@ def crear_supplier
   if @supplier.save
     product_name = params[:nombre_product]
     stock = params[:stock].to_i
-    supplier_nombre = @supplier.nombre
+
 
     # Buscar si ya existe un producto con ese nombre y proveedor con ese nombre
     product = Product.joins(:supplier)
-                                .where(nombre: product_name, suppliers: { nombre: supplier_nombre })
+                                .where(nombre: product_name, suppliers: { nombre: @supplier.nombre })
                                 .first
-
 
     if product
       # Solo aumentar el stock del producto existente
@@ -209,15 +224,37 @@ def crear_supplier
   redirect_to dashboard_suppliers_path
 end
 
+def actualizar_supplier
+  @supplier = Supplier.find(params[:id])
 
-  def actualizar_supplier
-    @supplier = Supplier.find(params[:id])
-    if @supplier.update(supplier_params)
-      redirect_to dashboard_suppliers_path, notice: "Proveedor actualizado"
-    else
-      redirect_to dashboard_suppliers_path, alert: "Error al actualizar proveedor"
+  if @supplier.update(supplier_params)
+    product_name = params[:nombre_product].presence
+    stock = params[:stock].to_i
+    category_id = params[:category_id].presence
+
+    if product_name && stock > 0
+      existing_product = Product.find_by(nombre: product_name, supplier_id: @supplier.id)
+
+      if existing_product
+        # Si ya existe el producto, se actualiza su stock (sumando el nuevo)
+        existing_product.increment!(:stock, stock)
+      else
+        # Si no existe, se crea un nuevo producto
+        Product.create!(
+          nombre: product_name,
+          stock: stock,
+          supplier_id: @supplier.id,
+          category_id: category_id
+        )
+      end
     end
+
+    redirect_to dashboard_suppliers_path, notice: "Proveedor y producto actualizados"
+  else
+    redirect_to dashboard_suppliers_path, alert: "Error al actualizar proveedor"
   end
+end
+
   
     private
 

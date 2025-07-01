@@ -52,10 +52,13 @@
       <button class="hamburger-categorias" id="hamburger-categorias">&#9776; Categorías</button>
       <aside class="asidefiltro" id="asideproveedores">
         <div class="div-div">
-          <a href="/suppliers" class="divDisposicion" style="text-decoration:none;"><i class="fas fa-arrow-left" id="flechita"></i></a>
+          <a href="/suppliers" class="divDisposicion" style="text-decoration:none;">
+            <i class="fas fa-arrow-left" id="flechita"></i>
+          </a>
           <div class="divDisposicion">Todos los proveedores:</div>
         </div>
-        <article class=compras>
+
+        <article class="compras">
           <% @suppliers.uniq { |p| p.nombre }&.each do |supplier| %>
             <div class="compra-info">
               <%= link_to supplier.nombre, dashboard_suppliers_path(nombre: supplier.nombre), class: "btn btn-outline-dark mb-2 w-100" %>
@@ -63,30 +66,32 @@
           <% end %>
         </article>
       </aside>
+
       
       <section class="SeccionProveedores">
-        <nav class="nav-filtros">
-          <p class=p><i class="fas fa-filter"></i> Filtros</p>
-          <div class="div">
-            <%= form_tag suppliers_path, class:"filtros", method: :get do %>
-              <div class="filtro-id">
-                <%= label_tag :id, "ID:" %>
-                <%= text_field_tag :id, params[:id], placeholder: "Ej: 1", size: 2, style:"border-radius:10px; padding-left: 10px; border:1px solid grey;" %>
-              </div>
-              <div class="filtro-id">
-                <%= label_tag :name, "Nombre:" %>
-                <%= text_field_tag :name, params[:name], placeholder: "Ej: nombreprovedor", size: 12, style:"border-radius:10px; padding-left: 10px; border:1px solid grey;" %>
-              </div>
-              <div>
-                <%= button_tag type: 'submit', class: 'btn' do %>
-                  <i class="fas fa-search"></i>
-                <% end %>
-              </div>
-            <% end %>
-          </div>
-        </nav>
+            <nav class="nav-filtros">
+  <p class="p"><i class="fas fa-filter"></i> Filtros</p>
+  <div class="div">
+    <%= form_tag dashboard_suppliers_path, method: :get, class: "filtros" do %>
+      <div class="filtro-id">
+        <%= label_tag :id, "ID:" %>
+        <%= text_field_tag :id, params[:id], placeholder: "Ej: 1", size: 2, style:"border-radius:10px; padding-left: 10px; border:1px solid grey;" %>
+      </div>
+      <div class="filtro-id">
+        <%= label_tag :nombre, "Nombre:" %>
+        <%= text_field_tag :nombre, params[:nombre], placeholder: "Ej: nombreproveedor", size: 12, style:"border-radius:10px; padding-left: 10px; border:1px solid grey;" %>
+      </div>
+      <div>
+        <%= button_tag type: 'submit', class: 'btn' do %>
+          <i class="fas fa-search"></i>
+        <% end %>
+      </div>
+    <% end %>
+  </div>
+</nav>
+
         <section class="contenedor">
-          <h3 class="mb-3">Proveedores encontrados</h3>
+          <h3 class="mb-3 text-center"> Registros de proveedores </h3>
           <div id="purcha" class="mt-4">
             <% products = @supplier.present? ? @products_supplier : Product.includes(:supplier).all %>
            <% @suppliers.each do |supplier| %>
@@ -98,7 +103,7 @@
                     <p class="card-text"> 
                         <strong>Nombre:</strong> <%= supplier.nombre %><br>
                         <strong>Contacto:</strong> <%= supplier.contacto %><br>
-                        <% product= supplier.products.last %>
+                       <% product = supplier.products.order(created_at: :desc).first %>
                         <% if product %>
                           <strong>Producto:</strong> <%= product.nombre %><br>
                           <strong>Stock:</strong> <%= product.stock %><br>
@@ -122,6 +127,7 @@
                         <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Cerrar">
                         </button>
                       </div>
+                     <% product = supplier.products.order(created_at: :desc).first %>
                       <%= form_with model: supplier, url: dashboard_supplier_path(supplier), method: :patch, local: true do |form| %>
                         <div class="modal-body">
                           <div class="mb-3">      
@@ -132,6 +138,22 @@
                             <%= form.label :contacto %>
                             <%= form.text_field :contacto, class: "form-control" %>
                           </div> 
+                          <% if product %>
+    <div class="mb-3">
+      <%= label_tag :nombre_product, "Nombre del producto" %>
+      <%= text_field_tag :nombre_product, product.nombre, class: "form-control" %>
+    </div>
+
+    <div class="mb-3">
+      <%= label_tag :stock, "Stock" %>
+      <%= number_field_tag :stock, product.stock, class: "form-control" %>
+    </div>
+
+    <div class="mb-3">
+      <%= label_tag :category_id, "Categoría del producto" %>
+      <%= select_tag :category_id, options_from_collection_for_select(Category.all, :id, :nombre, product.category_id), class: "form-control" %>
+    </div>
+  <% end %>
                         </div>
                         <div class="modal-footer">
                           <%= form.submit "Guardar cambios", class: "btn btn-success" %>

@@ -406,7 +406,7 @@
 }
 /* seccion debajo de filtro*/
 .contenedor{
-   width: 80%;
+   width: 100%;
     height: auto;
     background-color: #e9cfae;
     padding: 0;
@@ -424,8 +424,9 @@
   justify-content: flex-start;
   width: 100%; 
   padding: 8px;
+  justify-content: space-around;
+    align-items: stretch;
 }
-
 
 @media (max-width: 900px) {
   /* aqui empieza*/
