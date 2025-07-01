@@ -65,6 +65,18 @@ class LoginView extends StatelessWidget {
                     child: LoginForm(), // modificaremos LoginForm abajo
                   ),
                 ),
+                const SizedBox(height: 16),
+
+                // Botón de registrarse
+                TextButton(
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (_) => RegisterView()),
+                    );
+                  },
+                  child: const Text("¿No tienes cuenta? Regístrate aquí"),
+                ),
 
                 // Botón de olvidar contraseña
                 TextButton(
