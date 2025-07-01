@@ -62,7 +62,10 @@
       <% @categories.each do |category| %>
         <%= render category %>
       <% end %>
-    <div class="btn-categ"><%= link_to "+", new_category_path, class:"new-categ"%></div>
+    <div class="btn-categ">
+  <a href="#modal-new-category" class="new-categ">+</a>
+</div>
+
   </aside>
   <section class="section-product">
     <nav class="nav-filtros">
@@ -258,7 +261,7 @@
       </div> 
 
       <div class="btn3">
-        <%= form.submit "Crear", class:'btn4' %>
+        <%= form.submit "Crear", class:'btn4 bc' %>
       </div>
 
     <% end %>
@@ -268,6 +271,9 @@
     </section>
   </section>
   </section>
+
+  
+
   <footer>
     &copy; 2025 Ferremateriales el Maestro - Todos los derechos reservados
   </footer>
@@ -286,6 +292,26 @@
     menuCategorias.classList.toggle("active");
   });
   </script>
+
+<!-- MODAL NUEVA CATEGORÍA -->
+<div id="modal-new-category" class="modal">
+  <div class="modal-content2">
+    <a href="#" class="close">&times;</a>
+    <div class="titulo2 tc">Crear Categoría</div>
+
+    <%= form_with(model: Category.new, url: categories_path, local: true, class: 'form-editar') do |form| %>
+      <div class="texto2">
+        <%= form.label :nombre, "Nombre:", style: "display: block" %>
+        <%= form.text_field :nombre %>
+      </div>
+
+      <div class="btn3">
+        <%= form.submit "Crear", class: 'btn4 bc' %>
+      </div>
+    <% end %>
+  </div>
+</div>
+
 
 </body>
 </html>
