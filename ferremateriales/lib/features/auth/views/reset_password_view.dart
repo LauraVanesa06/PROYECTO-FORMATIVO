@@ -24,15 +24,24 @@ class _ResetPasswordViewState extends State<ResetPasswordView> {
             children: [
               TextFormField(
                 decoration: const InputDecoration(
-                  labelText: "Correo electrónico",
                   prefixIcon: Icon(Icons.email),
+                  labelText: 'Correo electrónico',
                   border: OutlineInputBorder(),
                 ),
                 onChanged: (value) => _email = value,
-                validator: (value) => (value == null || value.isEmpty)
-                    ? "Campo requerido"
-                    : null,
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'El correo es obligatorio';
+                  }
+                  // expresión regular simple para correos
+                  final emailRegex = RegExp(r"^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$");
+                  if (!emailRegex.hasMatch(value)) {
+                    return 'Correo no válido';
+                  }
+                  return null;
+                },
               ),
+
               const SizedBox(height: 20),
               ElevatedButton(
                 child: const Text("Enviar recuperación"),
