@@ -6,6 +6,16 @@ import '../bloc/auth_state.dart';
 import '../widgets/login_form.dart';
 import '../../productos/views/initial_view.dart'; // tu pantalla principal
 
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:google_fonts/google_fonts.dart';
+import '../bloc/auth_bloc.dart';
+import '../bloc/auth_state.dart';
+import '../widgets/login_form.dart';
+import '../../productos/views/initial_view.dart';
+import 'register_view.dart'; // Asegúrate de crear esta vista
+import 'reset_password_view.dart'; // Igual, debes crear esta vista
+
 class LoginView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -18,14 +28,13 @@ class LoginView extends StatelessWidget {
         );
       },
       child: Scaffold(
-        backgroundColor: const Color(0xFFE5E5E5), // Fondo gris claro
+        backgroundColor: const Color(0xFFE5E5E5),
         body: Center(
           child: SingleChildScrollView(
             padding: const EdgeInsets.symmetric(horizontal: 24.0),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                // Título
                 Text(
                   'Bienvenido a SIF',
                   style: GoogleFonts.montserrat(
@@ -45,7 +54,7 @@ class LoginView extends StatelessWidget {
                 ),
                 const SizedBox(height: 30),
 
-                // Tarjeta con el formulario
+                // Tarjeta de formulario
                 Card(
                   elevation: 8,
                   shape: RoundedRectangleBorder(
@@ -53,8 +62,19 @@ class LoginView extends StatelessWidget {
                   ),
                   child: Padding(
                     padding: const EdgeInsets.all(20.0),
-                    child: LoginForm(), // Tu widget de formulario
+                    child: LoginForm(), // modificaremos LoginForm abajo
                   ),
+                ),
+
+                // Botón de olvidar contraseña
+                TextButton(
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (_) => ResetPasswordView()),
+                    );
+                  },
+                  child: const Text("¿Olvidaste tu contraseña?"),
                 ),
               ],
             ),
