@@ -509,6 +509,9 @@ input::placeholder {
     justify-content: space-between;
     margin-bottom: 15px;
 }
+.tc{
+    color: limegreen;
+}
 .btn3{
     margin-top: 15px;
     width: 100%;
