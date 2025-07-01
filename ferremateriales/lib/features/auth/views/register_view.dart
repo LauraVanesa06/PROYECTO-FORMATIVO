@@ -156,6 +156,7 @@ class _RegisterViewState extends State<RegisterView> {
                               foregroundColor: Colors.white,
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(12),
+                                
                               ),
                             ),
                           ),

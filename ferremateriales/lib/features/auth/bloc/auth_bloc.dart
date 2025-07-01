@@ -4,34 +4,54 @@ import 'auth_state.dart';
 
 class AuthBloc extends Bloc<AuthEvent, AuthState> {
   AuthBloc() : super(const AuthState()) {
-    // LOGIN
+    // lista de usuarios registrados en memoria
+    final List<Map<String, String>> _registeredUsers = [
+      {'email': 'usuario@test.com', 'password': '1234'}
+    ];
+
+    // login
     on<LoginSubmitted>((event, emit) async {
       emit(state.copyWith(status: AuthStatus.loading));
-      await Future.delayed(const Duration(seconds: 1)); // simulación de red
+      await Future.delayed(const Duration(seconds: 1));
 
-      if (event.email == 'usuario@test.com' && event.password == '1234') {
+      final userFound = _registeredUsers.firstWhere(
+        (user) =>
+            user['email'] == event.email && user['password'] == event.password,
+        orElse: () => {},
+      );
+
+      if (userFound.isNotEmpty) {
         emit(state.copyWith(status: AuthStatus.success));
       } else {
         emit(state.copyWith(
-          status: AuthStatus.failure,
-          error: 'Credenciales incorrectas',
-        ));
+            status: AuthStatus.failure, error: 'Credenciales incorrectas'));
       }
     });
 
-    // LOGOUT
+    // logout
     on<LogoutRequested>((event, emit) async {
       emit(const AuthState(status: AuthStatus.initial));
     });
 
-    // RESET PASSWORD
-    on<ResetPasswordRequested>((event, emit) async {
+    // registro
+    on<RegisterRequested>((event, emit) async {
       emit(state.copyWith(status: AuthStatus.loading));
-      await Future.delayed(const Duration(seconds: 1)); // simulación de red
-      // puedes validar si existe el correo aquí
-      emit(state.copyWith(
-        status: AuthStatus.success,
-      ));
+      await Future.delayed(const Duration(seconds: 1));
+
+      final existingUser = _registeredUsers.any((user) => user['email'] == event.email);
+
+      if (existingUser) {
+        emit(state.copyWith(
+          status: AuthStatus.failure,
+          error: 'El usuario ya existe',
+        ));
+      } else {
+        _registeredUsers.add({
+          'email': event.email,
+          'password': event.password,
+        });
+        emit(state.copyWith(status: AuthStatus.success));
+      }
     });
   }
 }
