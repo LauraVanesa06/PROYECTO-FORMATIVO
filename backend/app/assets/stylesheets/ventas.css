@@ -4,7 +4,7 @@
     width: 100%;
     padding: 0;
     gap: 0;
-    height: auto;
+    height: 670px;
     background-color: #e9cfae;
 }
 #sect1{
@@ -86,7 +86,7 @@
     margin: 0;
     gap: 0;
     width: 100%;
-    height: auto;
+    height: 1005;
     margin-left: 20px;
     display: flex;
     flex-direction: column;
@@ -139,7 +139,9 @@ input::placeholder {
 .cont-ventas{
     display: flex;
     justify-content: center;
+    overflow-y: auto;
     width: 90%;
+    height: 100%;
 }
 .div-purchase{
     width: 48%;

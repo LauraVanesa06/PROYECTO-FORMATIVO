@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Dashboard Ferretería</title>
   <%= stylesheet_link_tag "ventas", media: "all" %>
+  <%= favicon_link_tag 'favicon.png' %>
   <%= stylesheet_link_tag "dashboard", media: "all" %>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
@@ -173,7 +174,7 @@
               <%= label_tag :id, "ID:" %>
               <%= text_field_tag :id, params[:id], placeholder: "Ej: 1", size: 10, style:"border-radius:10px; padding-left: 10px; border:1px solid grey;" %>
             </div>
-            <div class="filtro-fecha">
+            <div class="filtro-id">
               <%= label_tag :fecha, "Fecha:" %>
               <%= text_field_tag :year, params[:year], placeholder: "AAAA", size: 4, style:"border-radius:10px; padding-left: 10px; border:1px solid grey;" %>
               <%= text_field_tag :month, params[:month], placeholder: "MM", size: 2, style:"border-radius:10px; padding-left: 10px; border:1px solid grey;" %>
@@ -268,7 +269,7 @@
   
 
   <footer>
-    &copy; 2025 Ferremateriales el Maestro - Todos los derechos reservados
+    &copy; 2025 Ferremateriales el Maestro - v2.3.7
   </footer>
 
 </body>
