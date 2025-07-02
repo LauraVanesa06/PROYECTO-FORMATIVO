@@ -39,53 +39,17 @@
     </div>
   </nav>
 
-    <section class="fondo">
-      <div class="welcome">
-        <p>¡Bienvenido!</p>
-      </div>
+  <section class="fondo">
+    <section class="section-1">
+      <div class="grafica-1"></div>
+      <div class="grafica-2"></div>
+      <div class="grafica-3"></div>
     </section>
-    <section class="chart-container-base" style="display: flex; justify-content: space-around; gap: 20px; flex-wrap: wrap; padding: 1px;">
-      <div class="chart-container1" >
-        <canvas id="ventasChart" style></canvas>
-      </div>
-
-      <div class="chart-container2" >
-        <canvas id="tortaChart"></canvas>
-      </div>
-
-      <div class="chart-container3" >
-        <canvas id="lineChart"></canvas>
-      </div>
+    <section class="section-2">
+      <div class="grafica-4"></div>
+      <div class="grafica-5"></div>
     </section>
-    <section class="section-card">
-      <%= link_to inventario_path, class: "card-link" do %>
-        <div class="card">
-          <h3>Productos en Stock</h3>
-          <p>320</p>
-        </div>
-      <% end %>
-
-      <%= link_to ventas_path, class: "card-link" do %>
-        <div class="card">
-          <h3>Ventas Hoy</h3>
-          <p>$1,850</p>
-        </div>
-      <% end %>
-
-      <%= link_to proveedores_path, class: "card-link" do %>
-        <div class="card">
-          <h3>Pedidos Pendientes</h3>
-          <p>7</p>
-        </div>
-      <% end %>
-
-      <%= link_to clientes_path, class: "card-link" do %>
-        <div class="card">
-          <h3>Clientes Registrados</h3>
-          <p>120</p>
-        </div>
-      <% end %>
-    </section>}
+  </section>
   <footer>
     &copy; 2025 Ferremateriales el Maestro - v2.3.7
   </footer>
