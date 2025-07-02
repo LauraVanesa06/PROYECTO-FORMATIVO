@@ -16,60 +16,90 @@
   display: flex;
   flex-direction: column;
   justify-content: space-around;
+  
 }
 
 .section-1{
   height: 330px;
   width: 100%;
-  padding-inline: 20px;
-  border: solid 2px black;
   display: flex;
   align-items: center;
-  justify-content: space-around;
-}
-
-.section-2{
-  height: 330px;
-  width: 100%;
-  border: solid 2px black;
+  justify-content: center;
 }
 
 .grafica-1{
   height: 90%;
-  width: 24%;
-  border: solid 1px black;
+  width: 22%;
+  border: solid 2px grey;
+  background: linear-gradient(to bottom, #5d5d5d, #424242);
+  border-radius: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-evenly;
+  margin-right: 13px;
+}
+
+.porcentaje-1{
+  height: 150px;
+  width: 150px;
+  position: relative;
+}
+.grafica-porcentaje {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 2rem;
+  font-weight: bold;
+  color: white;
+}
+
+.texto-1{
+  height: 60px;
+  width: 80%;
+  border: solid 1px red;
 }
 
 .grafica-2{
   height: 90%;
-  width: 49%;
-  border: solid 1px black;
+  width: 47%;
+  border: solid 2px grey;
+  background: linear-gradient(to bottom, #5d5d5d, #424242);
+  border-radius: 20px;
+  
 }
 .grafica-3{
   height: 90%;
-  width: 24%;
-  border: solid 1px black;
+  width: 22%;
+  border: solid 2px grey;
+  background: linear-gradient(to bottom, #5d5d5d, #424242);
+  border-radius: 20px;
+  margin-left: 13px;
+
 }
 
 .section-2{
   height: 330px;
   width: 100%;
-  padding-inline: 20px;
-  border: solid 2px black;
   display: flex;
   align-items: flex-start;
-  justify-content: space-around;
+  justify-content: space-evenly;
 }
 
 .grafica-4{
   height: 95%;
-  width: 49%;
-  border: solid 1px black;
+  width: 47%;
+  border: solid 2px grey;
+  background: linear-gradient(to bottom, #5d5d5d, #424242);
+  border-radius: 20px;
 }
 .grafica-5{
   height: 95%;
-  width: 49%;
-  border: solid 1px black;
+  width: 47%;
+  border: solid 2px grey;
+  background: linear-gradient(to bottom, #5d5d5d, #424242);
+  border-radius: 20px;
 }
 
   header {
