@@ -150,96 +150,91 @@ class DashboardController < ApplicationController
 
 
   def suppliers
-  #  @products = Product.all
+
     @supplier_form = Supplier.new
     @supplier = Supplier.new
-  #  @products_supplier = []
     @categorias = Category.all
     @suppliers = Supplier.includes(:products).all
  
-
-  # Filtro por nombre desde el sidebar
-  if params[:nombre].present?
-    @suppliers = @suppliers.where(nombre: params[:nombre])
-  end
-
- 
-  # Filtro por ID
+    if params[:nombre].present?
+      @suppliers = Supplier.where(nombre: params[:nombre])
+    else
+      @suppliers = Supplier.all
+    end
   
-  if params[:id].present? && params[:id] != ""
-    @suppliers = Supplier.where(id: params[:id])
-  elsif params[:name].present? && params[:name] != ""
-    @suppliers = Supplier.where("nombre ILIKE ?", "%#{params[:name]}%")
-  else
-    @suppliers = Supplier.all
-  end
+    # Filtro por ID
+    if params[:id].present? && params[:id] != ""
+      @suppliers = Supplier.where(id: params[:id])
+    elsif params[:name].present? && params[:name] != ""
+      @suppliers = Supplier.where("nombre ILIKE ?", "%#{params[:name]}%")
+    else
+      @suppliers = Supplier.all
+    end
 
     @products_supplier = Product.where(supplier_id: @suppliers.pluck(:id))
 
-  #Filtro por nombre (desde filtro de arriba, no sidebar)
-  if params[:name].present?
-    @suppliers = @suppliers.where("nombre ILIKE ?", "%#{params[:name]}%")
-  end
-
-
-  # Asignación de proveedor específico si se envía un parámetro
- 
-if @suppliers.size == 1
-    @supplier = @suppliers.first
-    @products_supplier = @supplier.products
-  else
-    @products_supplier = Product.includes(:supplier).all
-  end
-  # Bandera para mostrar mensaje si no hay resultados
-  @filter_result_empty = @suppliers.blank?
-end
-
-
-def crear_supplier
-  @supplier = Supplier.new(supplier_params)
-
-  if @supplier.save
-    product_name = params[:nombre_product]
-    stock = params[:stock].to_i
-
-
-    # Buscar si ya existe un producto con ese nombre y proveedor con ese nombre
-    product = Product.joins(:supplier)
-                                .where(nombre: product_name, suppliers: { nombre: @supplier.nombre })
-                                .first
-
-    if product
-      # Solo aumentar el stock del producto existente
-      product.increment!(:stock, stock)
-    else
-      # Crear producto nuevo y asociarlo al proveedor recien creado
-      Product.create!(
-        nombre: product_name,
-        stock: stock,
-        supplier_id: @supplier.id
-      )
+    #Filtro por nombre (desde filtro del nav)
+    if params[:name].present?
+      @suppliers = @suppliers.where("nombre ILIKE ?", "%#{params[:name]}%")
     end
+
+
+     # Asignación de proveedor específico si se envía un parámetro
+ 
+    if @suppliers.size == 1
+        @supplier = @suppliers.first
+        @products_supplier = @supplier.products
+      else
+        @products_supplier = Product.includes(:supplier).all
+      end
+      # Bandera para mostrar mensaje si no hay resultados
+      @filter_result_empty = @suppliers.blank?
   end
 
-  redirect_to dashboard_suppliers_path
-end
 
-def actualizar_supplier
+  def crear_supplier
+    @supplier = Supplier.new(supplier_params)
+
+    if @supplier.save
+      product_name = params[:nombre_product]
+      stock = params[:stock].to_i
+
+      # Buscar si ya existe un producto con ese nombre y proveedor con ese nombre
+      product = Product.joins(:supplier)
+                                  .where(nombre: product_name, suppliers: { nombre: @supplier.nombre })
+                                  .first
+
+      if product
+        #  aumentar el stock del producto 
+        product.increment!(:stock, stock)
+      else
+        # Crear producto y asociarlo al proveedor nuevo
+        Product.create!(
+          nombre: product_name,
+          stock: stock,
+          supplier_id: @supplier.id
+        )
+      end
+    end
+
+    redirect_to dashboard_suppliers_path
+  end
+
+  def actualizar_supplier
   @supplier = Supplier.find(params[:id])
 
   if @supplier.update(supplier_params)
     product_name = params[:nombre_product].presence
     stock = params[:stock].to_i
     category_id = params[:category_id].presence
+    category_id = category_id.to_i if category_id.present?
 
     if product_name && stock > 0
       existing_product = Product.find_by(nombre: product_name, supplier_id: @supplier.id)
 
       if existing_product
-        # Si ya existe el producto, se actualiza su stock (sumando el nuevo)
         existing_product.increment!(:stock, stock)
       else
-        # Si no existe, se crea un nuevo producto
         Product.create!(
           nombre: product_name,
           stock: stock,
@@ -256,11 +251,11 @@ def actualizar_supplier
 end
 
   
-    private
+  private
 
-    def supplier_params
-      params.require(:supplier).permit(:nombre, :contacto)
-    end
+  def supplier_params
+    params.require(:supplier).permit(:nombre, :contacto)
+  end
 end
 
 

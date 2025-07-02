@@ -53,6 +53,7 @@ resources :suppliers do
   get 'products', to: 'suppliers#products'
 end
 
+
     devise_scope :user do
       get '/acceso', to: 'usuarios/sessions#new', as: :custom_login
       get '/registro', to: 'usuarios/registrations#new', as: :custom_signup

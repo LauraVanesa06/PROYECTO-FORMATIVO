@@ -94,6 +94,7 @@
     font-weight: bold;
     font-family: 'Segoe UI', sans-serif;
     color: #424242;
+        margin: 0px 10px;
 }
   
   #vol{
@@ -222,7 +223,7 @@
     font-size: 13px;
     width: 342px;
     padding-left: 8px !important;
-    padding: 15px;
+    padding: 10px;
     color:rgba(0, 0, 0, 0.874);
     background-color: #ffffff;
     margin: 5px;
@@ -278,15 +279,25 @@
   display: flex;
   flex-direction: row;
   width: 100%;
-  height: auto;
+  height: 670px;
   background-color: #5b5b5b;
+
 }
+
+
+
+
+
+
+
+
 /* aside */
-.asidefiltro {
-    width: 20%;
-    background-color: #424242;
+.filtroAside{
+      width: 20%;
+    background-color: rgb(66, 66, 66);
 }
-.divDisposicion{
+
+.div-categ{
     display: flex;
     justify-content: flex-start !important;
     font-size: 17px;
@@ -299,78 +310,84 @@
     margin-left: 10px;
     padding: 0;
 }
+.filtroproveedores{
+    width: 20%;
+    background-color: #424242;
+}
+
+
 #flechita{
     color:white;
 
 }
-.div-customer{
-    display: flex;
-    justify-content: flex-start !important;
-    font-size: 17px;
-    margin-left: 7px;
-    margin-bottom: 10px;
-    font-weight: bold;
-    font-family: 'Segoe UI', sans-serif;
-    color: white;
-    margin-left: 10px;
-    padding: 0;
-}
 
-.compras{
-    overflow-y: auto;
-    height: 90%;
-    width: 100%;
-        padding-left: 20px;
-}
-
-.compra-info{
-  text-decoration: none;
-    display: flex;
-    flex-direction: row;
-    width: 90%;
-    height: auto;
-    background-color: #e6f0ff; 
-  color: #003366;             
-  border: 2px solid rgb(93, 138, 186);  
-  padding-left: 12px;
-  margin-left: 8px;
-  margin-bottom: 10px;
-  border-radius: 15px;
-  font-weight: bold;
-  transition: all 0.2s ease-in-out;
-
-}
-.compra-info:hover{
-    border-radius: 0 25px 25px 0;
-     background-color: #cce0ff;  /* Azul un poco más oscuro al pasar el mouse */
-  color: #001f4d;
-  transform: scale(1.02);
-}
-.compra-info p{
-    display: flex;
-    align-items: center;
-}
-
-.probar {
-  text-decoration: none;
+.ul-nombre {
+      text-decoration: none;
     margin-bottom: 7px;
     margin-left: 15px;
     padding: 0;
     width: 85%;
-    color: white;
+
 }
-.probar a{
- 
-    color: white;
+.ul-nombre:hover {
+    width: 90%;
 }
-.nose{
-      margin: 0;
-    padding: 0;
-    display: flex
-;
+.li-nombre {
+  display: flex;
     justify-content: center;
     align-items: center;
+      text-decoration: none;
+    margin-bottom: 17px;
+    margin-left: 7px;
+    padding: 10px;
+    justify-self: anchor-center;
+  font-size: 15px;
+    border-radius: 60px;
+    width: 90%;
+    text-align: center;
+ 
+    font-family: 'roboto', sans-serif;
+    background-color: grey;
 }
+.li-nombre a {   
+    color: white;
+    font-weight: bold;
+    font-size: 14px;
+    text-decoration: none;
+    height: 100%;
+    width: 100%;
+}
+.li-nombre a:hover {
+    font-size: 16px;
+}
+/*modal para crear*/ 
+.formulario-proveedor {
+  padding: 10px;
+  background-color: #fdfdfd;
+  border-radius: 12px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+  font-family: 'Segoe UI', sans-serif;
+}
+
+.formulario-proveedor .form-group {
+  margin-bottom: 15px;
+}
+
+.input-estilizado {
+  border-radius: 10px;
+  padding: 8px 12px;
+  border: 1px solid #ccc;
+  font-size: 14px;
+  width: 100%;
+  transition: all 0.3s ease;
+}
+
+.input-estilizado:focus {
+  border-color: #ff9900;
+  box-shadow: 0 0 5px rgba(255, 153, 0, 0.5);
+  outline: none;
+}
+
 /* secion de losp roveedores */
 .SeccionProveedores{
   width: 80%;
@@ -383,18 +400,24 @@
     flex-direction: column;
     gap: 0;
 }
+.nav-bg {
+    background-color: black;
+    background-size: 15%;
+    background-position: center;
+
+}
 
 .nav-filtros{
   background-color: white;
     border: solid 1px grey;
     border-radius: 15px;
-    margin: 10px;
+    margin: 20px;
     height: 40px;
-    display: flex
-;
+    display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 0;
+    padding: 20px;
+     margin-top: 20px;
 }
 
 .p {
@@ -406,8 +429,8 @@
 }
 /* seccion debajo de filtro*/
 .contenedor{
-   width: 100%;
-    height: auto;
+   width: 99%;
+    min-height: 60vh;
     background-color: #e9cfae;
     padding: 0;
     margin: 0;
@@ -415,6 +438,7 @@
     flex-direction: column;
     gap: 0;
     border-radius: 20px;
+    overflow-y: auto;
     
 }
 #purcha{
@@ -428,6 +452,16 @@
     align-items: stretch;
 }
 
+
+  #new-prod {
+    font-size: 18px;
+    padding: 10px 14px;
+    bottom: 10px;
+    right: 10px;
+ 
+    right: 0;
+    bottom: 22px
+  }
 @media (max-width: 900px) {
   /* aqui empieza*/
   
@@ -488,7 +522,7 @@
 .edit{
   font-size: 13px;
    
-    padding-left: 8px !important;
+    padding-left: 200px !important;
     
     border-radius: 10px;
     align-content: center;
@@ -522,6 +556,22 @@
     background-color: #f4a735;
 }
 
+.body2{
+  flex: 1 1 auto;
+    padding: var(--bs-card-spacer-y) var(--bs-card-spacer-x);
+    color: var(--bs-card-color);
+}
+
+#card-body {
+    flex: 1 1 auto;
+    padding: var(--bs-card-spacer-y) var(--bs-card-spacer-x);
+    color: var(--bs-card-color);
+    display: flex;
+    flex-direction: row-reverse;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-content: space-between;
+}
 .hamburger-categorias{
     display: none;
 }
@@ -678,6 +728,7 @@
   }
 
   .contenedor{
+    min-height: 60vh;
      flex-direction: column;
     align-items: stretch;
     gap: 6px;
@@ -692,6 +743,7 @@
     gap: 6px;
 
   }
+  
   
 /* fin*/
   .container {
