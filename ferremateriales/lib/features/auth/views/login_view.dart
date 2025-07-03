@@ -4,9 +4,9 @@ import 'package:google_fonts/google_fonts.dart';
 import '../bloc/auth_bloc.dart';
 import '../bloc/auth_state.dart';
 import '../widgets/login_form.dart';
-import '../../productos/views/initial_view.dart'; 
+import '../../productos/views/initial_view.dart';
 import 'register_view.dart';
-import 'reset_password_view.dart'; 
+import 'reset_password_view.dart';
 
 class LoginView extends StatelessWidget {
   @override
@@ -20,67 +20,81 @@ class LoginView extends StatelessWidget {
         );
       },
       child: Scaffold(
-        backgroundColor: const Color(0xFFE5E5E5),
-        body: Center(
-          child: SingleChildScrollView(
-            padding: const EdgeInsets.symmetric(horizontal: 24.0),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Text(
-                  'Bienvenido a FERREMATERIALES',
-                  style: GoogleFonts.montserrat(
-                    fontSize: 28,
-                    fontWeight: FontWeight.bold,
-                    color: Color(0xFF14213D),
+        body: Container(
+          decoration: BoxDecoration(
+            image: DecorationImage(
+              image: AssetImage('assets/images/degrade.png'),
+              fit: BoxFit.cover,
+            ),
+          ),
+          child: Center(
+            child: SingleChildScrollView(
+              padding: const EdgeInsets.symmetric(horizontal: 24.0),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  // logo usuario
+                  CircleAvatar(
+                    backgroundColor: Colors.orange,
+                    radius: 40,
+                    child: Icon(Icons.person, color: Colors.white, size: 40),
                   ),
-                  textAlign: TextAlign.center,
-                ),
-                const SizedBox(height: 10),
-                Text(
-                  'Inicia sesión para continuar',
-                  style: GoogleFonts.montserrat(
-                    fontSize: 16,
-                    color: Colors.grey[700],
-                  ),
-                ),
-                const SizedBox(height: 30),
+                  const SizedBox(height: 16),
 
-                // Tarjeta de formulario
-                Card(
-                  elevation: 8,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(16),
+                  // título
+                  Text(
+                    'Inicia sesión para continuar',
+                    style: GoogleFonts.montserrat(
+                      fontSize: 28,
+                      fontWeight: FontWeight.bold,
+                      color: Color.fromARGB(255, 219, 222, 227),
+                    ),
+                    textAlign: TextAlign.center,
                   ),
-                  child: Padding(
-                    padding: const EdgeInsets.all(20.0),
-                    child: LoginForm(), // modificaremos LoginForm abajo
+                  // const SizedBox(height: 10),
+                  // Text(
+                  //   'Inicia sesión para continuar',
+                  //   style: GoogleFonts.montserrat(
+                  //     fontSize: 16,
+                  //     color: Colors.grey[200], // más contraste con fondo oscuro
+                  //   ),
+                  // ),
+                  const SizedBox(height: 30),
+
+                  // LoginForm sin tarjeta
+                  LoginForm(),
+
+                  const SizedBox(height: 16),
+
+                  // Botón de registrarse
+                  TextButton(
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (_) => RegisterView()),
+                      );
+                    },
+                    child: const Text(
+                      "¿No tienes cuenta? Regístrate aquí",
+                      style: TextStyle(color: Colors.white),
+                    ),
                   ),
-                ),
-                const SizedBox(height: 16),
 
-                // Botón de registrarse
-                TextButton(
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (_) => RegisterView()),
-                    );
-                  },
-                  child: const Text("¿No tienes cuenta? Regístrate aquí"),
-                ),
-
-                // Botón de olvidar contraseña
-                TextButton(
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (_) => ResetPasswordView()),
-                    );
-                  },
-                  child: const Text("¿Olvidaste tu contraseña?"),
-                ),
-              ],
+                  // Botón de olvidar contraseña
+                  TextButton(
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (_) => ResetPasswordView()),
+                      );
+                    },
+                    child: const Text(
+                      "¿Olvidaste tu contraseña?",
+                      style: TextStyle(color: Colors.white),
+                    ),
+                  ),
+                ],
+              ),
             ),
           ),
         ),
