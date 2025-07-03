@@ -212,6 +212,7 @@ main {
   
 .field {
   margin-bottom: 10px;
+  color: white;
 }
  
 
@@ -639,6 +640,9 @@ textarea {
   margin-bottom: 12px;
   gap: 6px;
 }
+.iwp{
+  margin: 20px;
+}
 
 .input-wrapper input {
   flex: 1;
@@ -705,6 +709,8 @@ textarea {
 .hex-button:hover {
   background-color: #5a95d6;
 }
+
+
 
 /* Links inferiores */
 .bottom-links {
