@@ -42,7 +42,7 @@
         <li><a href="dashboard"class="link-menu">Inicio</a></li>
         <li><a href="inventario"class="link-menu">Inventario</a></li>
         <li><a href="ventas"class="link-menu">Ventas</a></li>
-        <li><a href="proveedores"class="link-menu">Proveedores</a></li>
+        <li><a href="suppliers"class="link-menu">Proveedores</a></li>
         <li><a href="clientes"class="link-menu">Clientes</a></li>
       </ul>
       <% if user_signed_in? %>
@@ -143,7 +143,7 @@
                 </li>
                 <li>
                   <strong class="titulo">Proveedor:</strong>
-                  <%= product.supplier.nombre %>
+                  <%= product.supplier&.nombre %>
                 </li>
                 <li>
                   <strong class="titulo">Categoria:</strong>
