@@ -30,7 +30,7 @@
         <li><a href="dashboard"class="link-menu">Inicio</a></li>
         <li><a href="inventario"class="link-menu">Inventario</a></li>
         <li><a href="ventas"class="link-menu">Ventas</a></li>
-        <li><a href="proveedores"class="link-menu">Proveedores</a></li>
+        <li><a href="suppliers"class="link-menu">Proveedores</a></li>
         <li><a href="clientes"class="link-menu">Clientes</a></li>
       </ul>
       <% if user_signed_in? %>
@@ -72,7 +72,7 @@
         </div>
       <% end %>
 
-      <%= link_to proveedores_path, class: "card-link" do %>
+      <%= link_to suppliers_path, class: "card-link" do %>
         <div class="card">
           <h3>Pedidos Pendientes</h3>
           <p>7</p>

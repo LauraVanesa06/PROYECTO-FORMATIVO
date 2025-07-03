@@ -1,19 +1,20 @@
 class ProveedoresController < ApplicationController
 
-before_action :authenticate_user!
-before_action :only_admins
+  before_action :authenticate_user!
+  before_action :only_admins
 
-private
+  private
 
-def only_admins
-  unless current_user&.admin?
-    redirect_to root_path, alert: "Acceso no autorizado"
+  def only_admins
+    unless current_user&.admin?
+      redirect_to root_path, alert: "Acceso no autorizado"
+    end
   end
-end
 
 
   def index
-    @productos = Producto.all
+    @proveedores = Proveedor.all
+    @proveedor = Proveedor.new
   end
 
   def show
@@ -21,25 +22,33 @@ end
   end
 
 
-def new
-  @proveedor = Proveedor.new
-end
-
-
-def create
-  @proveedor = Proveedor.new(proveedor_params)
-
-  if @proveedor.save
-    respond_to do |format|
-      format.turbo_stream
-      format.html { redirect_to proveedores_path, notice: 'Proveedor creado correctamente.' }
-    end
-  else
-    render :new, status: :unprocessable_entity
+  def new
+    @proveedor = Proveedor.new
   end
-end
-def edit
-    @producto = Producto.find(params[:id])
+
+  def create
+    existing_product = Product.find_by(nombre: params[:product][:nombre])
+
+    if existing_product
+      # Ya existe → solo actualizar stock
+      existing_product.increment!(:stock, params[:product][:stock].to_i)
+      flash[:notice] = "Producto existente, se actualizó el stock."
+    else
+      # No existe → crear nuevo producto
+      Product.create(product_params)
+      flash[:notice] = "Producto creado correctamente."
+    end
+
+    redirect_to dashboard_proveedores_path
+  end
+
+  private
+
+  def product_params
+    params.require(:product).permit(:nombre, :descripcion, :stock, :proveedor_id, ...)
+  end
+  def edit
+      @producto = Producto.find(params[:id])
   end
 
   def update
@@ -58,11 +67,10 @@ def edit
   end
 
 
-private
+  private 
 
-def proveedor_params
-    params.require(:proveedor).permit(:nombre, :direccion, :tipoProducto, :telefono)
-
-end
+  def proveedor_params
+    params.require(:proveedor).permit(:nombre, :direccion, :tipoProducto, :telefono, :correo)
+  end
 
 end
