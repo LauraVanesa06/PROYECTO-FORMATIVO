@@ -112,6 +112,7 @@
           <div id="modal-ver-<%= product.id %>" class="modal-ver">
             <div class="modal-content">
               <a href="#" class="close">&times;</a>
+              <div class="titulo2 ps">Producto</div>
               <div class="div-foto-model">
                   <% if product.imagen.attached? %>
                     <%= image_tag url_for(product.imagen), alt: "Imagen del producto" %>

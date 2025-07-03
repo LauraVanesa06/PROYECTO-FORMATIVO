@@ -492,6 +492,10 @@ input::placeholder {
     font-weight: bold;
     font-size: 17px;
 }
+.ps{
+    position: absolute;
+    margin-left: 45%;
+}
 .form-editar{
     width: 90%;
     height: auto;
