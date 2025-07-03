@@ -563,8 +563,11 @@ input::placeholder {
     display: flex;
     justify-content: center;
     align-items: flex-end;
-    position: relative;
+    position: absolute;
     font-weight: bold;
+    margin-left: -50%;
+    margin-top: 45%;
+
 }
 .editar2 a{
     color: white;
