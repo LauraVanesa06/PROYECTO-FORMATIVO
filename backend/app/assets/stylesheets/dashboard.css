@@ -31,7 +31,7 @@
   height: 90%;
   width: 22%;
   border: solid 2px grey;
-  background: linear-gradient(to bottom, #5d5d5d, #424242);
+  background: linear-gradient(to bottom, #909090, #424242);
   border-radius: 20px;
   display: flex;
   flex-direction: column;
@@ -45,6 +45,7 @@
   width: 150px;
   position: relative;
 }
+
 .grafica-porcentaje {
   position: absolute;
   top: 50%;
@@ -55,17 +56,13 @@
   color: white;
 }
 
-.texto-1{
-  height: 60px;
-  width: 80%;
-  border: solid 1px red;
-}
+
 
 .grafica-2{
   height: 90%;
   width: 47%;
   border: solid 2px grey;
-  background: linear-gradient(to bottom, #5d5d5d, #424242);
+  background: linear-gradient(to bottom, #909090, #424242);
   border-radius: 20px;
   
 }
@@ -73,7 +70,7 @@
   height: 90%;
   width: 22%;
   border: solid 2px grey;
-  background: linear-gradient(to bottom, #5d5d5d, #424242);
+  background: linear-gradient(to bottom, #909090, #424242);
   border-radius: 20px;
   margin-left: 13px;
 
@@ -91,14 +88,14 @@
   height: 95%;
   width: 47%;
   border: solid 2px grey;
-  background: linear-gradient(to bottom, #5d5d5d, #424242);
+  background: linear-gradient(to bottom, #909090, #424242);
   border-radius: 20px;
 }
 .grafica-5{
   height: 95%;
   width: 47%;
   border: solid 2px grey;
-  background: linear-gradient(to bottom, #5d5d5d, #424242);
+  background: linear-gradient(to bottom, #909090, #424242);
   border-radius: 20px;
 }
 
@@ -131,6 +128,115 @@
 
   }
 
+.graf-1{
+  border: solid 1px black;
+  height: 170px;
+  width: 170px;
+}
+
+.texto-1{
+  height: 60px;
+  width: 70%;
+  border: solid 1px black;
+}
+
+.grafica-2{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-evenly;
+}
+.texto-2{
+  border: solid 1px black;
+  height: 70px;
+  width: 85%;
+}
+.texto-2-2{
+  border: solid 1px black;
+  height: 100%;
+  width: 85%;
+}
+.img-2{
+  border: solid 1px black;
+  height: 100%;
+  width: 15%;
+}
+.graf-2{
+  border: solid 1px black;
+  height: 200px;
+  width: 90%;
+}
+.grafica-3{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+.grafica-3 section{
+  width: 90%;
+  height: 46%;
+  display: flex;
+  align-items: center;
+}
+.grafica-3 section div{
+  width: 80%;
+  height: 100%;
+  border: solid 1px black;
+}
+.texto-3{
+  height: 80% !important;
+}
+.grafica-4{
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+}
+.texto-4{
+  width: 55%;
+  height: 80%;
+  display: flex;
+  flex-direction: column;
+}
+.texto-4-2{
+  width: 95%;
+  height: 55%;
+  border: solid 1px black;
+}
+.graf-4-1{
+  width: 95%;
+  height: 45%;
+  border: solid 1px black;
+}
+.graf-4-2{
+  border:solid 1px black;
+  width: 35%;
+  height: 80%;
+}
+.grafica-5{
+  display: flex;
+  justify-content: space-evenly;
+  align-items: center;
+  flex-direction: column;
+}
+.graf-5{
+  height: 200px;
+  width: 90%;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+}
+.graf-5 div{
+  width: 30%;
+  height: 100%;
+  border: solid 1px black;
+}
+
+.texto-5{
+  border: solid 1px black;
+  height: 70px;
+  width: 85%;
+}
 
   .nav-bg{
     background-color: black;

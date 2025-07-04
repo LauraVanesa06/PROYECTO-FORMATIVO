@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Dashboard Ferretería</title>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chartjs-chart-radial-gauge@0.3.0/build/index.umd.js"></script>
   <%= favicon_link_tag 'favicon.png' %>
   <%= stylesheet_link_tag "dashboard", media: "all" %>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
@@ -42,22 +43,42 @@
   <section class="fondo">
     <section class="section-1">
       <div class="grafica-1">
-        <section class="porcentaje-1">
-          <canvas id="grafica"></canvas>
-          <div class="grafica-porcentaje"><span>8</span>0%</div>
-        </section>
+        <section class="graf-1">grafica 1</section>
         <section class="texto-1">texto</section>
       </div>
       <div class="grafica-2">
-        <section class="texto-2">texto</section>
-        <section class="grafica-barras"></section>
+        <section class="texto-2">
+          <div class="texto-2-2">texto</div>
+          <div class="img-2">imagen</div>
+        </section>
+        <section class="graf-2">grafica 2</section>
       </div>
-      <div class="grafica-3"></div>
+      <div class="grafica-3">
+        <section>
+          <div>imagen</div>
+          <div class="texto-3">texto 1</div>
+        </section>
+        <section>
+          <div>imagen</div>
+          <div class="texto-3">texto 2</div>
+        </section>
+      </div>
     </section>
     <section class="section-2">
-      <div class="grafica-4"></div>
+      <div class="grafica-4">
+        <section class="texto-4">
+          <div class="texto-4-2">texto</div>
+          <div class="graf-4-1">grafica 4.1</div>
+        </section>
+        <section class="graf-4-2">grafica 4.2</section>
+      </div>
       <div class="grafica-5">
-        
+        <section class="texto-5">texto</section>
+        <section class="graf-5">
+          <div>grafica 5.1</div>
+          <div>grafica 5.2</div>
+          <div>grafica 5.3</div>
+        </section>
       </div>
     </section>
   </section>
@@ -74,26 +95,25 @@
     gradient.addColorStop(1, 'blue');
 
     new Chart(ctx, {
-      type: 'doughnut',
-      data: {
-        datasets: [{
-          data: [80, 20],
-          backgroundColor: [
-            gradient,
-            '#3a3f51'
-          ],
-          borderWidth: 0,
-          cutout: '90%'
-        }]
-      },
-      options: {
-        responsive: true,
-        maintainAspectRatio: false,
-        plugins: {
-          legend: { display: false },
-          tooltip: { enabled: false }
-        }
-      }
+      type: 'radialGauge',
+  data: {
+    datasets: [{
+      data: [80],
+      backgroundColor: [
+        gradient,
+          '#3a3f51'
+      ],
+    }]
+  },
+  options: {
+    // See https://github.com/pandameister/chartjs-chart-radial-gauge#options
+    domain: [0, 100],
+    trackColor: '#f0f8ff', 
+    centerPercentage: 90,
+    centerArea: {
+      text: (val) => val + '%',
+    },
+  }
     });
 </script>
 
