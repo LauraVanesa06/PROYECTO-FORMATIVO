@@ -39,4 +39,14 @@ class Api::V1::DashboardController < ApplicationController
             valores: datos_ordenados.values
         }
     end
+    def resumen
+        render json: {
+        productos_en_stock: Product.sum(:stock),
+        ventas_hoy: Purchasedetail.joins(:buy)
+                        .where('date(buys.fecha) = ?', Date.today)
+                        .sum('preciounidad * cantidad'),
+        proveedores_registrados: Supplier.count,
+        clientes_registrados: Customer.count
+        }
+    end
 end

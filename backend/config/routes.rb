@@ -38,6 +38,7 @@ Rails.application.routes.draw do
       get 'ventas_por_dia', to: 'dashboard#ventas_por_dia'
       get 'inventario_por_categoria', to: 'dashboard#inventario_por_categoria'
       get 'ventas_mensuales', to: 'dashboard#ventas_mensuales'
+      get 'dashboard/resumen', to: 'dashboard#resumen'
     end
   end
 

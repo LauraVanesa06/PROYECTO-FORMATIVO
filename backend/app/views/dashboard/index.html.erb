@@ -58,34 +58,34 @@
       </div>
     </section>
     <section class="section-card">
-      <%= link_to inventario_path, class: "card-link" do %>
-        <div class="card">
-          <h3>Productos en Stock</h3>
-          <p>320</p>
-        </div>
-      <% end %>
+    <%= link_to inventario_path, class: "card-link" do %>
+      <div class="card">
+        <h3>Productos en Stock</h3>
+        <p id="stock">0</p>
+      </div>
+    <% end %>
 
-      <%= link_to ventas_path, class: "card-link" do %>
-        <div class="card">
-          <h3>Ventas Hoy</h3>
-          <p>$1,850</p>
-        </div>
-      <% end %>
+    <%= link_to ventas_path, class: "card-link" do %>
+      <div class="card">
+        <h3>Ventas Hoy</h3>
+        <p id="ventas">$0</p>
+      </div>
+    <% end %>
 
-      <%= link_to proveedores_path, class: "card-link" do %>
-        <div class="card">
-          <h3>Pedidos Pendientes</h3>
-          <p>7</p>
-        </div>
-      <% end %>
+    <%= link_to proveedores_path, class: "card-link" do %>
+      <div class="card">
+        <h3>Proveedores Registrados</h3>
+        <p id="proveedores">0</p>
+      </div>
+    <% end %>
 
-      <%= link_to clientes_path, class: "card-link" do %>
-        <div class="card">
-          <h3>Clientes Registrados</h3>
-          <p>120</p>
-        </div>
-      <% end %>
-    </section>}
+    <%= link_to clientes_path, class: "card-link" do %>
+      <div class="card">
+        <h3>Clientes Registrados</h3>
+        <p id="clientes">0</p>
+      </div>
+    <% end %>
+  </section>
   <footer>
     &copy; 2025 Ferremateriales el Maestro - v2.3.7
   </footer>
@@ -224,6 +224,15 @@
 
   btn.addEventListener("click", () => {
     menu.classList.toggle("active");
+  });
+
+  fetch('/api/v1/dashboard/resumen')
+  .then(res => res.json())
+  .then(data => {
+    document.getElementById('stock').innerText = data.productos_en_stock;
+    document.getElementById('ventas').innerText = `$${data.ventas_hoy}`;
+    document.getElementById('proveedores').innerText = data.proveedores_registrados;
+    document.getElementById('clientes').innerText = data.clientes_registrados;
   });
 </script>
 
