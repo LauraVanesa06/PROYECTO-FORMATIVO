@@ -16,6 +16,7 @@
   display: flex;
   flex-direction: column;
   justify-content: space-around;
+  background-color: rgb(41, 41, 41);
 }
 
 .section-1{
@@ -32,7 +33,7 @@ canvas {
 .grafica-1{
   height: 90%;
   width: 22%;
-  border: solid 3px #b19878;
+  border: solid 3px #565656;
   background: linear-gradient(to bottom, grey, rgb(57, 57, 57));
   border-radius: 20px;
   display: flex;
@@ -63,7 +64,7 @@ canvas {
 .grafica-2{
   height: 90%;
   width: 47%;
-  border: solid 3px #b19878;
+  border: solid 3px #565656;
   background: linear-gradient(to bottom, grey, rgb(57, 57, 57));
   border-radius: 20px;
   
@@ -71,7 +72,7 @@ canvas {
 .grafica-3{
   height: 90%;
   width: 22%;
-  border: solid 3px #b19878;
+  border: solid 3px #565656;
   background: linear-gradient(to bottom, grey, rgb(57, 57, 57));
   border-radius: 20px;
   margin-left: 13px;
@@ -89,20 +90,20 @@ canvas {
 .grafica-4{
   height: 95%;
   width: 47%;
-  border: solid 3px #b19878;
+  border: solid 3px #565656;
   background: linear-gradient(to bottom, grey, rgb(57, 57, 57));
   border-radius: 20px;
 }
 .grafica-5{
   height: 95%;
   width: 47%;
-  border: solid 3px #b19878;
+  border: solid 3px #565656;
   background: linear-gradient(to bottom, grey, rgb(57, 57, 57));
   border-radius: 20px;
 }
 
   header {
-   background-image: url('madera.jpg');
+   background-image: url('madera2.jpg');
    background-size: 100% 100% !important;
    background-position: center !important;
    overflow: hidden;           
@@ -228,7 +229,7 @@ canvas {
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: space-evenly;
+  justify-content: center;
 }
 .grafica-3 section{
   width: 90%;
@@ -250,7 +251,7 @@ canvas {
 }
 
 .ingresos{
-  background-image: url('ingresos.png');
+  background-image: url('ingresos2.png');
   background-size: 95% 80% !important;
   background-position: center !important;
   background-repeat: no-repeat;
