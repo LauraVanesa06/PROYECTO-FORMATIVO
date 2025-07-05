@@ -13,9 +13,10 @@ Rails.application.routes.draw do
   get "dashboard" => "dashboard#index"
 
   get 'inventario', to: 'dashboard#inventario', as: 'inventario'
+  get "/dashboard/inventario", to: "dashboard#inventario"
   get 'clientes', to: 'dashboard#clientes', as: 'clientes'
 
-  resources :categories, :suppliers do
+  resources :categories do
     member do
       get :products
     end
@@ -47,7 +48,6 @@ Rails.application.routes.draw do
   resources :purchasedetails
 
   get "ventas" => "dashboard#ventas"
-  get "proveedores" => "dashboard#proveedores"
 
 
 
@@ -56,11 +56,19 @@ Rails.application.routes.draw do
   get 'productos', to: 'home#producto'
   get 'contactos', to: 'home#contacto'
 
-  
-  resources :proveedores
     # Otras rutas que tengas
     #login
- 
+
+  #rutas proveedores
+  get 'dashboard/suppliers', to: 'dashboard#suppliers',  as: 'dashboard_suppliers'
+  post 'dashboard/suppliers', to: 'dashboard#crear_supplier'
+  get "suppliers" => "dashboard#suppliers"
+  patch "dashboard/suppliers/:id", to: "dashboard#actualizar_supplier", as: :dashboard_supplier
+resources :suppliers do
+  get 'products', to: 'suppliers#products'
+end
+
+
     devise_scope :user do
       get '/acceso', to: 'usuarios/sessions#new', as: :custom_login
       get '/registro', to: 'usuarios/registrations#new', as: :custom_signup
