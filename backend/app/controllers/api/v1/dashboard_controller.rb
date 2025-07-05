@@ -5,8 +5,18 @@ class Api::V1::DashboardController < ApplicationController
         .group("DATE(buys.fecha)")
         .sum("preciounidad * cantidad")
 
+        dias = {
+            "Monday" => "Lunes",
+            "Tuesday" => "Martes",
+            "Wednesday" => "Miércoles",
+            "Thursday" => "Jueves",
+            "Friday" => "Viernes",
+            "Saturday" => "Sábado",
+            "Sunday" => "Domingo"
+        }
+
         render json: {
-        labels: ventas.keys.map { |d| I18n.l(Date.parse(d), format: "%A") },
+        labels: ventas.keys.map { |d| dias[Date.parse(d).strftime("%A")] || d },
         valores: ventas.values
         }
     end 
