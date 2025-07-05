@@ -11,6 +11,7 @@
   <%= stylesheet_link_tag "dashboard", media: "all" %>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
   <link href="https://fonts.googleapis.com/css2?family=Eczar:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@700&display=swap" rel="stylesheet">
 </head>
 <body>
 
@@ -121,9 +122,30 @@
         <section class="texto-5"><div class="titulo-5">Ventas por día / semana / mes</div>Esta sección muestra el total de ventas realizadas durante el periodo 
         seleccionado (diario, semanal o mensual). La información permite identificar tendencias, evaluar el rendimiento y apoyar la toma de decisiones estratégicas.</section>
         <section class="graf-5">
-          <div><div class="graf-5-2">grafica Ventas por día pink</div><div class="texto-5-2">Día (<div>10</div>)</div></div>
-          <div><div class="graf-5-2">grafica Ventas por semana purple</div><div class="texto-5-2">Semana (<div>80</div>)</div></div>
-          <div><div class="graf-5-2">grafica Ventas por mes blue</div><div class="texto-5-2">Mes (<div>130</div>)</div></div>
+
+          <!-- Dia -->
+          <div>
+            <div class="graf-5-2">
+              <canvas id="grafDia" width="120" height="120"></canvas>
+            </div>
+            <div class="texto-5-2">Día (<div>10</div>)</div>
+          </div>
+
+          <!--Semana -->
+          <div>
+            <div class="graf-5-2">
+              <canvas id="grafSemana" width="120" height="120"></canvas>
+            </div>
+            <div class="texto-5-2">Semana (<div>80</div>)</div>
+          </div>
+
+          <!-- Mes -->
+          <div>
+            <div class="graf-5-2">
+              <canvas id="grafMes" width="120" height="120"></canvas>
+            </div>
+            <div class="texto-5-2">Mes (<div>130</div>)</div>
+          </div>
         </section>
       </div>
     </section>
@@ -397,6 +419,48 @@
     },
     plugins: [ChartDataLabels]
   });
+</script>
+
+<!-- grafica del seccion 5 -->
+<script>
+  const crearDoughnut = (id, porcentaje) => {
+    const ctx = document.getElementById(id).getContext('2d');
+    new Chart(ctx, {
+      type: 'doughnut',
+      data: {
+        labels: ['Progreso', 'Restante'],
+        datasets: [{
+          data: [porcentaje, 100 - porcentaje],
+          backgroundColor: ['#00e676', '#d3d3d3'], // Verde vivo y gris claro
+          borderWidth: 2,
+          borderColor: ['transparent', 'transparent']
+        }]
+      },
+      options: {
+        cutout: '75%',
+        responsive: false,
+        plugins: {
+          legend: { display: false },
+          tooltip: { enabled: false },
+          datalabels: {
+            display: true,
+            formatter: () => `${porcentaje}%`,
+            color: 'white',
+            font: {
+              size: 18,
+              weight: 'bold',
+              family: 'Poppins'
+            }
+          }
+        }
+      },
+      plugins: [ChartDataLabels]
+    });
+  };
+
+  crearDoughnut('grafDia', 25);
+  crearDoughnut('grafSemana', 40);
+  crearDoughnut('grafMes', 90);
 </script>
 
 </body>
