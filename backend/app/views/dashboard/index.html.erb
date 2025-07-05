@@ -64,12 +64,22 @@
           </div>
         </section>
         <section class="graf-2">
-          <canvas id="graficoVentas" width="900" height="600"></canvas>
+          <canvas id="graficoVentas" ></canvas>
         </section>
       </div>
       <div class="grafica-3">
         <section>
-          <div>grafica (ingresos)</div>
+          <div class="ingresos">
+            <p class="flecha">🢁</p>
+            <p class="etiqueta">Ingresos</p>
+            <p class="monto">$3.250.000</p>
+          </div>
+          <!--<div class="contenedor-moneda">
+            <div class="texto-centro">
+              <div class="flecha">↑</div>
+              <div class="etiqueta">Ingresos</div>
+              <div class="monto">$3.250.000</div>
+          </div>-->
           <div class="texto-3">Total de dinero recibido por ventas y otras entradas durante el periodo.</div>
         </section>
         <section>
@@ -121,32 +131,29 @@
       <div class="grafica-5">
         <section class="texto-5"><div class="titulo-5">Ventas por día / semana / mes</div>Esta sección muestra el total de ventas realizadas durante el periodo 
         seleccionado (diario, semanal o mensual). La información permite identificar tendencias, evaluar el rendimiento y apoyar la toma de decisiones estratégicas.</section>
+
         <section class="graf-5">
 
           <!-- Dia -->
-          <div>
-            <div class="graf-5-2">
-              <canvas id="grafDia" width="120" height="120"></canvas>
-            </div>
-            <div class="texto-5-2">Día (<div>10</div>)</div>
+          <div class="grafico">
+            <canvas id="grafDia" width="120" height="120"></canvas>
+            <div class="etiqueta">Día</div>
           </div>
 
           <!--Semana -->
-          <div>
-            <div class="graf-5-2">
-              <canvas id="grafSemana" width="120" height="120"></canvas>
-            </div>
-            <div class="texto-5-2">Semana (<div>80</div>)</div>
+          <div class="grafico">
+            <canvas id="grafSemana" width="120" height="120"></canvas>
+            <div class="etiqueta">Semana</div>
           </div>
 
           <!-- Mes -->
-          <div>
-            <div class="graf-5-2">
-              <canvas id="grafMes" width="120" height="120"></canvas>
-            </div>
-            <div class="texto-5-2">Mes (<div>130</div>)</div>
+          <div class="grafico">
+            <canvas id="grafMes" width="120" height="120"></canvas>
+            <div class="etiqueta">Mes</div>
           </div>
+
         </section>
+
       </div>
     </section>
   </section>
@@ -171,7 +178,7 @@
           ],
           borderColor: 'grey',
           borderWidth: 1,
-          cutout: '20%'  
+          cutout: '40%'  
         }]
       },
       options: {
@@ -297,6 +304,9 @@
   });
 </script>
 
+<!-- grafica de la seccion 3 -->
+
+
 <!-- grafica 1 de la seccion 4 -->
 <script>
   const crearGauge = (ctxId, porcentaje, color1, color2) => {
@@ -306,10 +316,10 @@
       data: {
         datasets: [{
           data: [porcentaje, 100 - porcentaje],
-          backgroundColor: ['#FF4081', '#4a4a4a'],
+          backgroundColor: ['#FF4081', '#383838'],
           borderColor: 'grey',
           borderWidth: 1,
-          cutout: '20%' 
+          cutout: '3%' 
         }]
       },
       options: {
@@ -364,7 +374,7 @@
       labels: ['Transferencia', 'Efectivo', 'Tarjeta', 'Pago Online'],
       datasets: [{
         data: [19, 78, 66, 82],
-        backgroundColor: [gradienteVerde, gradienteAmarillo, gradienteRojo, gradienteAzul],
+        backgroundColor: ['#f8bbd0', '#f06292', '#ec407a', '#e91e63'],
         borderRadius: 5,
         borderSkipped: false
       }]
@@ -380,7 +390,7 @@
           offset: 4,
           rotation: 0,
           color: function(context) {
-            return ['#7bed9f', '#f8b500', '#ff5e62', '#00f2fe'][context.dataIndex];
+            return ['white', 'white', 'white', 'white'][context.dataIndex];
           },
           font: {
             family: 'Segoe UI',
@@ -423,44 +433,55 @@
 
 <!-- grafica del seccion 5 -->
 <script>
-  const crearDoughnut = (id, porcentaje) => {
-    const ctx = document.getElementById(id).getContext('2d');
-    new Chart(ctx, {
-      type: 'doughnut',
-      data: {
-        labels: ['Progreso', 'Restante'],
-        datasets: [{
-          data: [porcentaje, 100 - porcentaje],
-          backgroundColor: ['#00e676', '#d3d3d3'], // Verde vivo y gris claro
-          borderWidth: 2,
-          borderColor: ['transparent', 'transparent']
-        }]
-      },
-      options: {
-        cutout: '75%',
-        responsive: false,
-        plugins: {
-          legend: { display: false },
-          tooltip: { enabled: false },
-          datalabels: {
-            display: true,
-            formatter: () => `${porcentaje}%`,
-            color: 'white',
-            font: {
-              size: 18,
-              weight: 'bold',
-              family: 'Poppins'
-            }
-          }
-        }
-      },
-      plugins: [ChartDataLabels]
-    });
+function crearDoughnut(id, cantidad, label) {
+  const ctx = document.getElementById(id).getContext('2d');
+
+  const centroTexto = {
+    id: 'centroTexto',
+    beforeDraw(chart) {
+      const { width } = chart;
+      const { height } = chart;
+      const ctx = chart.ctx;
+      ctx.restore();
+      const fontSize = 16;
+      ctx.font = `bold ${fontSize}px Poppins`;
+      ctx.fillStyle = 'white';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+
+      ctx.fillText(label, width / 2, height / 2 - 10);
+      ctx.fillText(cantidad, width / 2, height / 2 + 10);
+      ctx.save();
+    }
   };
 
-  crearDoughnut('grafDia', 25);
-  crearDoughnut('grafSemana', 40);
-  crearDoughnut('grafMes', 90);
+  new Chart(ctx, {
+    type: 'doughnut',
+    data: {
+      labels: ['Dato', 'Restante'],
+      datasets: [{
+        data: [cantidad, 200 - cantidad],
+        backgroundColor: ['#7E57C2', '#383838'],
+        borderColor: ['transparent', 'transparent'],
+        borderWidth: 2
+      }]
+    },
+    options: {
+      cutout: '85%',
+      responsive: false,
+      plugins: {
+        legend: { display: false },
+        tooltip: { enabled: false }
+      }
+    },
+    plugins: [centroTexto]
+  });
+}
+
+crearDoughnut('grafDia', 10, 'Día');
+crearDoughnut('grafSemana', 80, 'Semana');
+crearDoughnut('grafMes', 130, 'Mes');
+
 </script>
 
 </body>
