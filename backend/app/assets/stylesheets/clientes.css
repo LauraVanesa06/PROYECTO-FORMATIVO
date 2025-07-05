@@ -126,7 +126,7 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    background-color: #5d8aba;
+    background-color: #6876aa;
     font-weight: bold;
     color: white;
 }
@@ -137,7 +137,7 @@
     width: 80%;
     padding-left: 30px;
     font-family: Arial, Helvetica, sans-serif;
-    background-color: #b5cde7;
+    background-color: #cbcdea;
     border-radius: 0 25px 25px 0;
 }
 .p-fecha a{

@@ -31,7 +31,7 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    background: linear-gradient(#4a82be, white);
+    background: linear-gradient(#66BB6A, white);
 }
 .div-white{
     width: 100%;
