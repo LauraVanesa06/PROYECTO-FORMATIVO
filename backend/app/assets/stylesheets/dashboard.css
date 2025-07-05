@@ -239,7 +239,6 @@ canvas {
 .grafica-3 section div{
   width: 80%;
   height: 100%;
-  border: solid 1px black;
 }
 .texto-3{
   border: none !important;
@@ -251,9 +250,45 @@ canvas {
 }
 
 .ingresos{
-  
+  background-image: url('ingresos.png');
+  background-size: 95% 80% !important;
+  background-position: center !important;
+  background-repeat: no-repeat;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
 }
-
+.egresos{
+  background-image: url('egresos.png');
+  background-size: 95% 80% !important;
+  background-position: center !important;
+  background-repeat: no-repeat;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+.flecha{
+  font-size: 30px;
+  color: white;
+  line-height: 1;
+}
+#F1{
+  margin-top: -15px;
+}
+#F2{
+  margin-bottom: -15px;
+}
+.etiqueta {
+  color: white;
+  font-weight: bold;
+}
+.monto {
+  color: white;
+  font-weight: bold;
+  font-size: 20px;
+}
 .grafica-4{
   display: flex;
   flex-direction: row;
@@ -403,11 +438,7 @@ canvas {
   text-align: center;
 }
 
-.etiqueta {
-  color: white;
-  font-size: 16px;
-  margin-top: 8px;
-}
+
   .nav-bg{
     background-color: black;
     background-size: 15%;
