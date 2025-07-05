@@ -18,31 +18,53 @@ class _LoginFormState extends State<LoginForm> {
   Widget build(BuildContext context) {
     return Form(
       key: _formKey,
+      
       child: Column(
         children: [
           // Campo de usuario con ícono
           TextFormField(
-            decoration: const InputDecoration(
-              prefixIcon: Icon(Icons.person),
-              labelText: 'Usuario',
-              border: OutlineInputBorder(),
+            style: const TextStyle(color: Colors.white),
+            decoration: InputDecoration(
+              prefixIcon: const Icon(Icons.person, color: Colors.orange),
+              hintText: 'Usuario',
+              hintStyle: const TextStyle(color: Colors.white54),
+              filled: true,
+              fillColor: Colors.black.withOpacity(0.7),
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(12),
+              ),
+              focusedBorder: OutlineInputBorder(    // <--- aquí
+              borderSide: const BorderSide(color: Colors.orange),
+              borderRadius: BorderRadius.circular(12),
+            ),
             ),
             onChanged: (value) => _username = value,
             validator: (value) =>
                 value == null || value.isEmpty ? 'Campo requerido' : null,
           ),
-          const SizedBox(height: 16),
+          const SizedBox(height: 14),
 
           // Campo de contraseña con íconos
           TextFormField(
             obscureText: _obscurePassword,
+            style: const TextStyle(color: Colors.white),
             decoration: InputDecoration(
-              prefixIcon: const Icon(Icons.lock),
-              labelText: 'Contraseña',
-              border: const OutlineInputBorder(),
+              prefixIcon: const Icon(Icons.lock, color: Colors.orange),
+              hintText: 'Contraseña',
+              hintStyle: const TextStyle(color: Colors.white54),
+              filled: true,
+              fillColor: Colors.black.withOpacity(0.7),
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(12),
+              ),
+                focusedBorder: OutlineInputBorder(    // <--- aquí
+                borderSide: const BorderSide(color: Colors.orange),                  borderRadius: BorderRadius.circular(12),
+              ),
+
               suffixIcon: IconButton(
                 icon: Icon(
                   _obscurePassword ? Icons.visibility_off : Icons.visibility,
+                  color: Colors.orange,
                 ),
                 onPressed: () {
                   setState(() {
@@ -55,7 +77,7 @@ class _LoginFormState extends State<LoginForm> {
             validator: (value) =>
                 value == null || value.isEmpty ? 'Campo requerido' : null,
           ),
-          const SizedBox(height: 20),
+          const SizedBox(height: 14),
 
           // Botón de login
           SizedBox(
@@ -71,7 +93,18 @@ class _LoginFormState extends State<LoginForm> {
                       );
                 }
               },
-              child: const Text("Iniciar sesión"),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.orange,
+                foregroundColor: Colors.white,  
+                
+              ),
+              child: const Text(
+                "Iniciar sesión",
+                style: TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
             ),
           ),
         ],

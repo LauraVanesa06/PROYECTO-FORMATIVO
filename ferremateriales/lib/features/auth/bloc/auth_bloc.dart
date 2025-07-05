@@ -6,7 +6,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
   AuthBloc() : super(const AuthState()) {
     // lista de usuarios registrados en memoria
     final List<Map<String, String>> _registeredUsers = [
-      {'email': 'usuario@test.com', 'password': '1234'}
+      
     ];
 
     // login
