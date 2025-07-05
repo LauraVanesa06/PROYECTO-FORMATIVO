@@ -33,6 +33,13 @@ Rails.application.routes.draw do
     end
   end
 
+  namespace :api do
+    namespace :v1 do
+      get 'ventas_por_dia', to: 'dashboard#ventas_por_dia'
+      get 'inventario_por_categoria', to: 'dashboard#inventario_por_categoria'
+    end
+  end
+
   resources :products
   resources :buys
   resources :purchasedetails
