@@ -138,6 +138,8 @@
     });
   });
 
+  
+
   fetch('/api/v1/inventario_por_categoria')
   .then(res => res.json())
   .then(data => {
@@ -170,47 +172,52 @@
     });
   });
 
-  const ctx3 = document.getElementById('lineChart').getContext('2d');
-  new Chart(ctx3, {
-    type: 'line',
-    data: {
-      labels: ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio'],
-      datasets: [{
-        label: 'Ventas Mensuales',
-        data: [1200, 1500, 1800, 1600, 2000, 2400],
-        fill: false,
-        borderColor: 'black',
-        backgroundColor: '#3498DB',
-        tension: 0.3,
-        pointBackgroundColor: '#fff',
-        pointBorderColor: '#3498DB'
-      }]
-    },
-    options: {
-      responsive: true,
-      plugins: {
-        legend: {
-          position: 'top',
-          labels: {
-            color: 'white'
+  fetch('/api/v1/ventas_mensuales')
+  .then(res => res.json())
+  .then(data => {
+    new Chart(document.getElementById('lineChart'), {
+      type: 'line',
+      data: {
+        labels: data.labels, // Asegúrate de que data.labels contenga meses en español
+        datasets: [{
+          label: 'Ventas mensuales', // Título traducido
+          data: data.valores,
+          borderColor: 'black',
+          backgroundColor: '#3498DB',
+          fill: false,
+          tension: 0.3
+        }]
+      },
+      options: {
+        plugins: {
+          legend: {
+            labels: {
+              color: 'white',
+              font: {
+                family: 'sans-serif',
+                size: 14
+              }
+            }
+          }
+        },
+        scales: {
+          x: {
+            ticks: {
+              color: '#ffffff',
+            }
+          },
+          y: {
+            beginAtZero: true,
+            ticks: {
+              color: '#ffffff',
+              callback: value => '$' + value // formato moneda opcional
+            }
           }
         }
-      },
-      scales: {
-      x: {
-        ticks: {
-          color: '#ffffff'               // Texto del eje X
-        }
-      },
-      y: {
-        beginAtZero: true,
-        ticks: {
-          color: '#ffffff'               // Texto del eje Y
-        }
       }
-    }
-  }
-});
+    });
+  });
+
 
   const btn = document.getElementById("hamburger");
   const menu = document.getElementById("menu");

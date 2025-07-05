@@ -37,6 +37,7 @@ Rails.application.routes.draw do
     namespace :v1 do
       get 'ventas_por_dia', to: 'dashboard#ventas_por_dia'
       get 'inventario_por_categoria', to: 'dashboard#inventario_por_categoria'
+      get 'ventas_mensuales', to: 'dashboard#ventas_mensuales'
     end
   end
 
