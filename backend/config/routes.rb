@@ -28,6 +28,21 @@ Rails.application.routes.draw do
     end
   end
 
+  namespace :api do
+    namespace :v1 do
+      resources :productos, only: [:index, :show]
+    end
+  end
+
+  namespace :api do
+    namespace :v1 do
+      get 'ventas_por_dia', to: 'dashboard#ventas_por_dia'
+      get 'inventario_por_categoria', to: 'dashboard#inventario_por_categoria'
+      get 'ventas_mensuales', to: 'dashboard#ventas_mensuales'
+      get 'dashboard/resumen', to: 'dashboard#resumen'
+    end
+  end
+
   resources :products
   resources :buys
   resources :purchasedetails
