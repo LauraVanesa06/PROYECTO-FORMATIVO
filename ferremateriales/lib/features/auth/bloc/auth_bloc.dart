@@ -1,56 +1,49 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'auth_event.dart';
 import 'auth_state.dart';
 
 class AuthBloc extends Bloc<AuthEvent, AuthState> {
-  AuthBloc() : super(const AuthState()) {
-    // lista de usuarios registrados en memoria
-    final List<Map<String, String>> _registeredUsers = [
-      {'email': 'usuario@test.com', 'password': '1234'}
-    ];
+  final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
 
-    // login
+  AuthBloc() : super(const AuthState()) {
+    // LOGIN
     on<LoginSubmitted>((event, emit) async {
       emit(state.copyWith(status: AuthStatus.loading));
-      await Future.delayed(const Duration(seconds: 1));
-
-      final userFound = _registeredUsers.firstWhere(
-        (user) =>
-            user['email'] == event.email && user['password'] == event.password,
-        orElse: () => {},
-      );
-
-      if (userFound.isNotEmpty) {
+      try {
+        await _firebaseAuth.signInWithEmailAndPassword(
+          email: event.email,
+          password: event.password,
+        );
         emit(state.copyWith(status: AuthStatus.success));
-      } else {
+      } on FirebaseAuthException catch (e) {
         emit(state.copyWith(
-            status: AuthStatus.failure, error: 'Credenciales incorrectas'));
+          status: AuthStatus.failure,
+          error: e.message ?? "Credenciales incorrectas",
+        ));
       }
     });
 
-    // logout
+    // LOGOUT
     on<LogoutRequested>((event, emit) async {
+      await _firebaseAuth.signOut();
       emit(const AuthState(status: AuthStatus.initial));
     });
 
-    // registro
+    // REGISTRO
     on<RegisterRequested>((event, emit) async {
       emit(state.copyWith(status: AuthStatus.loading));
-      await Future.delayed(const Duration(seconds: 1));
-
-      final existingUser = _registeredUsers.any((user) => user['email'] == event.email);
-
-      if (existingUser) {
+      try {
+        await _firebaseAuth.createUserWithEmailAndPassword(
+          email: event.email,
+          password: event.password,
+        );
+        emit(state.copyWith(status: AuthStatus.success));
+      } on FirebaseAuthException catch (e) {
         emit(state.copyWith(
           status: AuthStatus.failure,
-          error: 'El usuario ya existe',
+          error: e.message ?? "Error al registrar",
         ));
-      } else {
-        _registeredUsers.add({
-          'email': event.email,
-          'password': event.password,
-        });
-        emit(state.copyWith(status: AuthStatus.success));
       }
     });
   }
