@@ -57,111 +57,109 @@
         </div>
         <canvas id="grafica"></canvas>
         <script>
-          const btn = document.getElementById("hamburger");
-          const menu = document.getElementById("menu");
+  const btn = document.getElementById("hamburger");
+  const menu = document.getElementById("menu");
 
-          btn.addEventListener("click", () => {
-            menu.classList.toggle("active");
-          });
+  btn.addEventListener("click", () => {
+    menu.classList.toggle("active");
+  });
 
-          new Chart(document.getElementById('grafica'), {
-            type: 'bar',
-            data: {
-              labels: ['Hoy', 'Semana', 'Mes', 'Año'],
-              datasets: [
-                {
-                  label: 'Minorista',
-                  data: [10, 20, 15, 25],
-                  backgroundColor: '#00b4d8',
-                  tension: 0.2,
-                },
-                {
-                  label: 'Mayorista',
-                  data: [20, 30, 25, 35],
-                  backgroundColor: '#0077b6',
-                  tension: 0.2
-                },
-                {
-                  label: 'Contratista/Empresa',
-                  data: [5, 15, 10, 18],
-                  backgroundColor: '#023e8a',
-                  tension: 0.2
-                },
-                {
-                  label: 'Online',
-                  data: [2, 17, 40, 60],
-                  backgroundColor: '#03045e',
-                  tension: 0.2
-                }
-              ]
-            },
-            options: {
-              responsive: true,
-              maintainAspectRatio: false,
-              plugins: {
-                legend: {
-                  labels: {
-                    usePointStyle: true,
-                    pointStyle: 'circle',
-                    color: 'black',
-                    font: {
-                      family: 'inconsolata',
-                      size: 10,
-                      weight: 'bold'
-                    }
-                  },
-                  onClick: function (e, legendItem, legend) {
-    const chart = legend.chart;
-    const index = legendItem.datasetIndex;
-
-    // Verificamos si ese es el único visible
-    const isOnlyVisible = chart.data.datasets.every((ds, i) => {
-      const meta = chart.getDatasetMeta(i);
-      return i === index ? !meta.hidden : meta.hidden;
-    });
-
-    // Si ya era el único visible, mostramos todos
-    if (isOnlyVisible) {
-      chart.data.datasets.forEach((ds, i) => {
-        chart.getDatasetMeta(i).hidden = false;
-      });
-    } else {
-      // Ocultamos todos excepto el seleccionado
-      chart.data.datasets.forEach((ds, i) => {
-        chart.getDatasetMeta(i).hidden = i !== index;
-      });
-    }
-
-    chart.update();
-  }
-                }
-              },
-              scales: {
-                y: {
-                  beginAtZero: true,
-                  ticks: {
-                    color: 'black',
-                    font: {
-                      family: 'inconsolata',
-                      size: 10,
-                      weight: 'bold'
-                    }
-                  }
-                },
-                x: {
-                  ticks: {
-                    color: 'black',
-                    font: {
-                      family: 'inconsolata',
-                      size: 10,
-                      weight: 'bold'
-                    }
-                  }
-                }
-              }
+  new Chart(document.getElementById('grafica'), {
+    type: 'bar',
+    data: {
+      labels: ['Hoy', 'Semana', 'Mes', 'Año'],
+      datasets: [
+        {
+          label: 'Minorista',
+          data: [10, 20, 15, 25],
+          backgroundColor: '#4CAF50',
+          tension: 0.2,
+        },
+        {
+          label: 'Mayorista',
+          data: [20, 30, 25, 35],
+          backgroundColor: '#66BB6A',
+          tension: 0.2
+        },
+        {
+          label: 'Contratista/Empresa',
+          data: [5, 15, 10, 18],
+          backgroundColor: '#388E3C',
+          tension: 0.2
+        },
+        {
+          label: 'Online',
+          data: [2, 17, 40, 60],
+          backgroundColor: '#2E7D32',
+          tension: 0.2
+        }
+      ]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: {
+          labels: {
+            usePointStyle: true,
+            pointStyle: 'circle',
+            color: 'black',
+            font: {
+              family: 'inconsolata',
+              size: 10,
+              weight: 'bold'
             }
-          });
-        </script>
+          },
+          onClick: function (e, legendItem, legend) {
+            const chart = legend.chart;
+            const index = legendItem.datasetIndex;
+
+            const isOnlyVisible = chart.data.datasets.every((ds, i) => {
+              const meta = chart.getDatasetMeta(i);
+              return i === index ? !meta.hidden : meta.hidden;
+            });
+
+            if (isOnlyVisible) {
+              chart.data.datasets.forEach((ds, i) => {
+                chart.getDatasetMeta(i).hidden = false;
+              });
+            } else {
+              chart.data.datasets.forEach((ds, i) => {
+                chart.getDatasetMeta(i).hidden = i !== index;
+              });
+            }
+
+            chart.update();
+          }
+        }
+      },
+      scales: {
+        y: {
+          beginAtZero: true,
+          ticks: {
+            color: 'black',
+            font: {
+              family: 'inconsolata',
+              size: 10,
+              weight: 'bold'
+            }
+          }
+        },
+        x: {
+          ticks: {
+            color: 'black',
+            font: {
+              family: 'inconsolata',
+              size: 10,
+              weight: 'bold'
+            }
+          }
+        }
+      }
+    }
+  });
+</script>
+
       </div>
       <div class="div-white"></div>
     </section>

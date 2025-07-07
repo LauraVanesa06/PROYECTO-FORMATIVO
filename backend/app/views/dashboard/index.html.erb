@@ -3,12 +3,15 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Dashboard Ferretería</title>
+  <title>Dashboard Ferretería</title> 
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chartjs-chart-radial-gauge@^0.3.0/dist/chartjs-chart-radial-gauge.min.js"></script>
   <%= favicon_link_tag 'favicon.png' %>
   <%= stylesheet_link_tag "dashboard", media: "all" %>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
   <link href="https://fonts.googleapis.com/css2?family=Eczar:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@700&display=swap" rel="stylesheet">
 </head>
 <body>
 
@@ -39,24 +42,112 @@
     </div>
   </nav>
 
-    <section class="fondo">
-      <div class="welcome">
-        <p>¡Bienvenido!</p>
+  <section class="fondo">
+    <section class="section-1">
+      <div class="grafica-1">
+        <section class="graf-1">
+          <canvas id="graficoClientes"></canvas>
+        </section>
+        <section class="texto-1">
+          <div class="titulo-1">Registros de <div>112</div> clientes nuevos</div>
+          <div class="texto-1-1">Este dato permite visualizar la evolución del negocio y el ritmo con el que se incrementa la cantidad
+             de personas que acceden por primera vez a nuestros productos y servicios.</div>
+        </section>
       </div>
+      <div class="grafica-2">
+        <section class="texto-2">
+          <section class="texto-2-1"><div class="titulo-2">Ventas por categoría de producto</div>Este gráfico presenta la distribución de
+           ventas por categorías de productos, permitiendo identificar cuáles generan mayores ingresos y aportan más al rendimiento general del negocio.</section>
+          <div class="img-2">
+            <canvas id="gaugeSegmentado"></canvas>
+            <div class="gauge-value">Stock<br>90%</div>
+          </div>
+        </section>
+        <section class="graf-2">
+          <canvas id="graficoVentas" ></canvas>
+        </section>
     </section>
 
     <section class="chart-container-base" style="display: flex; justify-content: space-around; gap: 20px; flex-wrap: wrap; padding: 1px;">
       <div class="chart-container1" >
         <canvas id="ventasChart" style></canvas>
       </div>
-
-      <div class="chart-container2" >
-        <canvas id="tortaChart"></canvas>
+      <div class="grafica-3">
+        <section>
+          <div class="ingresos">
+            <p class="flecha" id="F1">🡅</p>
+            <p class="etiqueta">Ingresos</p>
+            <p class="monto">$25.000.000</p>
+          </div>
+          <!--<div class="contenedor-moneda">
+            <div class="texto-centro">
+              <div class="flecha">↑</div>
+              <div class="etiqueta">Ingresos</div>
+              <div class="monto">$3.250.000</div>
+          </div>-->
+          <div class="texto-3">Total de dinero recibido por ventas y otras entradas durante el periodo.</div>
+        </section>
+        <section>
+          <div class="egresos">
+            <p class="monto">$21.100.000</p>
+            <p class="etiqueta">Egresos</p>
+            <p class="flecha" id="F2">🡇</p>
+          </div>
+          <div class="texto-3">Total de dinero destinado a compras, pagos y gastos operativos del periodo.</div>
+        </section>
       </div>
+    </section>
+    <section class="section-2">
+      <div class="grafica-4">
+        <section class="texto-4">
+          <div class="texto-4-2"><div class="titulo-4">Ventas por método de pago y canal</div>Este gráfico muestra las ventas según su canal de origen 
+            (física, online y por cotización) y el método de pago utilizado en tienda. La información permite analizar el comportamiento de compra del
+            cliente y mejorar la gestión comercial y financiera.</div>
+            <div class="graf-4-1">
+              <!-- Ventas online -->
+              <div>
+                <div class="gauge">
+                  <canvas id="gaugeOnline"></canvas>
+                  <div class="gauge-label">70%</div>
+                </div>
+                <div class="gauge-title">Online</div>
+              </div>
 
-      <div class="chart-container3" >
-        <canvas id="lineChart"></canvas>
+              <!-- Efectivo -->
+              <div>
+                <div class="gauge">
+                  <canvas id="gaugeEfectivo"></canvas>
+                  <div class="gauge-label">30%</div>
+                </div>
+                <div class="gauge-title">Efectivo</div>
+              </div>
+
+              <!-- Cotizadas -->
+              <div>
+                <div class="gauge">
+                  <canvas id="gaugeCotizadas"></canvas>
+                  <div class="gauge-label">5%</div>
+                </div>
+                <div class="gauge-title">Cotizadas</div>
+              </div>
+            </div>
+        </section>
+        <section class="graf-4-2">
+          <div class="titulo-4-2">Ventas por Método de Pago</div>
+          <canvas id="graficoPago"></canvas>
+        </section>
       </div>
+      <div class="grafica-5">
+        <section class="texto-5"><div class="titulo-5">Ventas por día / semana / mes</div>Esta sección muestra el total de ventas realizadas durante el periodo 
+        seleccionado (diario, semanal o mensual). La información permite identificar tendencias, evaluar el rendimiento y apoyar la toma de decisiones estratégicas.</section>
+
+        <section class="graf-5">
+
+          <!-- Dia -->
+          <div class="grafico">
+            <canvas id="grafDia" width="120" height="120"></canvas>
+            <div class="etiqueta">Día</div>
+          </div>
     </section>
 
     <section class="section-card">
@@ -81,6 +172,24 @@
         </div>
       <% end %>
 
+
+          <!--Semana -->
+          <div class="grafico">
+            <canvas id="grafSemana" width="120" height="120"></canvas>
+            <div class="etiqueta">Semana</div>
+          </div>
+
+          <!-- Mes -->
+          <div class="grafico">
+            <canvas id="grafMes" width="120" height="120"></canvas>
+            <div class="etiqueta">Mes</div>
+          </div>
+
+        </section>
+
+      </div>
+    </section>
+  </section>
     <%= link_to clientes_path, class: "card-link" do %>
       <div class="card">
         <h3>Clientes Registrados</h3>
@@ -92,8 +201,257 @@
   <footer>
     &copy; 2025 Ferremateriales el Maestro - v2.3.7
   </footer>
-  
+
+  <!-- grfaica de la seccion 1 -->
 <script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const ctx1 = document.getElementById('graficoClientes').getContext('2d');
+
+    new Chart(ctx1, {
+      type: 'doughnut',
+      data: {
+        labels: ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio'],
+        datasets: [{
+          data: [30, 45, 50, 40, 60, 55],
+          backgroundColor: [
+            '#0D47A1', '#1565C0', '#1976D2',
+            '#1E88E5', '#2196F3', '#42A5F5'
+          ],
+          borderColor: 'grey',
+          borderWidth: 1,
+          cutout: '40%'  
+        }]
+      },
+      options: {
+        plugins: {
+          legend: { display: false },
+          datalabels: {
+            color: 'white',
+            font: {
+              weight: 'bold',
+              size: 12
+            },
+            formatter: (value, context) =>
+              context.chart.data.labels[context.dataIndex] + ': ' + value
+          }
+        }
+      },
+      plugins: [ChartDataLabels]
+    });
+  });
+</script>
+
+<!-- grafica 1 de la seccion 2 -->
+<script>
+  const porcentaje = 90;
+
+  const totalSegmentos = 30;
+  const segmentosActivos = Math.round((porcentaje / 100) * totalSegmentos);
+  const datos = Array(totalSegmentos).fill(1);
+  const colores = Array.from({ length: totalSegmentos }, (_, i) =>
+    i < segmentosActivos ? 'white' : '#424242'
+  );
+
+  new Chart(document.getElementById('gaugeSegmentado'), {
+    type: 'doughnut',
+    data: {
+      datasets: [{
+        data: datos,
+        backgroundColor: colores,
+        borderColor: 'grey',
+        borderWidth: 2,
+        hoverOffset: 0
+      }]
+    },
+    options: {
+      cutout: '65%',
+      rotation: -90, 
+      circumference: 360,
+      plugins: {
+        legend: { display: false },
+        tooltip: { enabled: false }
+      }
+    }
+  });
+</script>
+
+<!-- grafica 2 de la seccion 2 -->
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const ctx2 = document.getElementById('graficoVentas').getContext('2d');
+    const categorias = [
+      'Herramientas',
+      'Tornillería y Fijaciones',
+      'Plomería',
+      'Electricidad',
+      'Construcción y Materiales',
+      'Pintura y Acabados',
+      'Ferretería para el hogar',
+      'Limpieza y Mantenimiento',
+      'Adhesivos y Selladores',
+      'Jardinería'
+    ];
+    const datos = [150, 120, 80, 100, 200, 90, 110, 70, 60, 50];
+    const colores = [
+      '#4CAF50',
+      '#4CAF50',
+      '#4CAF50',
+      '#4CAF50',
+      '#4CAF50',
+      '#4CAF50',
+      '#4CAF50',
+      '#4CAF50',
+      '#4CAF50',
+      '#4CAF50'
+    ];
+
+    new Chart(ctx2, {
+      type: 'bar',
+      data: {
+        labels: categorias,
+        datasets: [{
+          label: 'Ventas (unidades)',
+          data: datos,
+          backgroundColor: colores,
+          borderColor: colores,
+          borderWidth: 1
+        }]
+      },
+      options: {
+        indexAxis: 'y',
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: { display: false },
+          datalabels: {
+            align: 'start',
+            anchor: 'end',
+            color: 'white',
+            formatter: (value, context) =>
+              categorias[context.dataIndex] + ' (' + value + ')',
+            font: {
+              size: 12,
+              weight: 'bold'
+            }
+          }
+        },
+        scales: {
+          x: {
+            beginAtZero: true,
+            ticks: { color: 'white' },
+            title: {
+              display: true,
+              text: 'Unidades vendidas',
+              color: 'white'
+            },
+            grid: { color: 'rgba(255,255,255,0.1)' }
+          },
+          y: {
+            ticks: { display: false },
+            grid: { display: false }
+          }
+        }
+      },
+      plugins: [ChartDataLabels]
+    });
+  });
+</script>
+
+<!-- grafica de la seccion 3 -->
+
+
+<!-- grafica 1 de la seccion 4 -->
+<script>
+  const crearGauge = (ctxId, porcentaje, color1, color2) => {
+    const ctx = document.getElementById(ctxId).getContext('2d');
+    new Chart(ctx, {
+      type: 'doughnut',
+      data: {
+        datasets: [{
+          data: [porcentaje, 100 - porcentaje],
+          backgroundColor: ['#FF4081', '#383838'],
+          borderColor: 'grey',
+          borderWidth: 1,
+          cutout: '3%' 
+        }]
+      },
+      options: {
+        responsive: false,
+        plugins: {
+          legend: { display: false },
+          tooltip: { enabled: false }
+        }
+      }
+    });
+  };
+
+  crearGauge('gaugeOnline', 70);
+  crearGauge('gaugeEfectivo', 30);
+  crearGauge('gaugeCotizadas', 5);
+</script>
+
+<!-- grafica 2 de la seccion 4 -->
+<script>
+  const canvas = document.getElementById('graficoPago');
+  const ctx = canvas.getContext('2d');
+
+  const scale = window.devicePixelRatio || 1;
+  const visibleWidth = 500;
+  const visibleHeight = 300;
+
+  canvas.width = visibleWidth * scale;
+  canvas.height = visibleHeight * scale;
+  canvas.style.width = visibleWidth + 'px';
+  canvas.style.height = visibleHeight + 'px';
+  ctx.scale(scale, scale);
+
+  const gradienteVerde = ctx.createLinearGradient(0, 0, 0, visibleHeight);
+  gradienteVerde.addColorStop(0, '#a8e063');
+  gradienteVerde.addColorStop(1, '#56ab2f');
+
+  const gradienteAmarillo = ctx.createLinearGradient(0, 0, 0, visibleHeight);
+  gradienteAmarillo.addColorStop(0, '#fceabb');
+  gradienteAmarillo.addColorStop(1, '#f8b500');
+
+  const gradienteRojo = ctx.createLinearGradient(0, 0, 0, visibleHeight);
+  gradienteRojo.addColorStop(0, '#ff9966');
+  gradienteRojo.addColorStop(1, '#ff5e62');
+
+  const gradienteAzul = ctx.createLinearGradient(0, 0, 0, visibleHeight);
+  gradienteAzul.addColorStop(0, '#4facfe');
+  gradienteAzul.addColorStop(1, '#00f2fe');
+
+  new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels: ['Transferencia', 'Efectivo', 'Tarjeta', 'Pago Online'],
+      datasets: [{
+        data: [19, 78, 66, 82],
+        backgroundColor: ['#f8bbd0', '#f06292', '#ec407a', '#e91e63'],
+        borderRadius: 5,
+        borderSkipped: false
+      }]
+    },
+    options: {
+      responsive: false,
+      plugins: {
+        legend: { display: false },
+        tooltip: { enabled: false },
+        datalabels: {
+          anchor: 'end',
+          align: 'top',
+          offset: 4,
+          rotation: 0,
+          color: function(context) {
+            return ['white', 'white', 'white', 'white'][context.dataIndex];
+          },
+          font: {
+            family: 'Segoe UI',
+            weight: 'bold',
+            size: 30
+          },
+          formatter: function(value) {
+            return value;
   fetch('/api/v1/ventas_por_dia')
   .then(res => res.json())
   .then(data => {
@@ -137,10 +495,84 @@
         plugins: {
           legend: { labels: { color: 'white' } }
         }
+      },
+      layout: {
+        padding: { top: 0, bottom: 0 }
+      },
+      scales: {
+        x: {
+          ticks: {
+            color: 'white',
+            font: {
+              size: 39,
+              weight: 'bold',
+              family: 'Segoe UI'
+            },
+          maxRotation: 0,
+          minRotation: 0
+        },
+          grid: { display: false }
+        },
+        y: {
+          beginAtZero: true,
+          suggestedMax: 90,
+          ticks: { display: false },
+          grid: { display: false }
+        }
       }
+    },
+    plugins: [ChartDataLabels]
+
     });
   });
+</script>
 
+<!-- grafica del seccion 5 -->
+<script>
+function crearDoughnut(id, cantidad, label) {
+  const ctx = document.getElementById(id).getContext('2d');
+
+  const centroTexto = {
+    id: 'centroTexto',
+    beforeDraw(chart) {
+      const { width } = chart;
+      const { height } = chart;
+      const ctx = chart.ctx;
+      ctx.restore();
+      const fontSize = 16;
+      ctx.font = `bold ${fontSize}px Poppins`;
+      ctx.fillStyle = 'white';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+
+      ctx.fillText(label, width / 2, height / 2 - 10);
+      ctx.fillText(cantidad, width / 2, height / 2 + 10);
+      ctx.save();
+    }
+  };
+
+  new Chart(ctx, {
+    type: 'doughnut',
+    data: {
+      labels: ['Dato', 'Restante'],
+      datasets: [{
+        data: [cantidad, 200 - cantidad],
+        backgroundColor: ['#7E57C2', '#383838'],
+        borderColor: ['transparent', 'transparent'],
+        borderWidth: 2
+      }]
+    },
+    options: {
+      cutout: '85%',
+      responsive: false,
+      plugins: {
+        legend: { display: false },
+        tooltip: { enabled: false }
+      }
+    },
+    plugins: [centroTexto]
+  });
+}
   
 
   fetch('/api/v1/inventario_por_categoria')
@@ -221,9 +653,9 @@
     });
   });
 
-
-  const btn = document.getElementById("hamburger");
-  const menu = document.getElementById("menu");
+crearDoughnut('grafDia', 10, 'Día');
+crearDoughnut('grafSemana', 80, 'Semana');
+crearDoughnut('grafMes', 130, 'Mes');
 
   btn.addEventListener("click", () => {
     menu.classList.toggle("active");
@@ -238,7 +670,6 @@
     document.getElementById('clientes').innerText = data.clientes_registrados;
   });
 </script>
-
 
 </body>
 </html>

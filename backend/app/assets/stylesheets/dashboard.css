@@ -7,21 +7,106 @@
 
   body {
     background-color: #e9cfae;
-    background-image: url("fondo.jpg");
     background-repeat: no-repeat;
     background-position: center;
     background-size: cover;
   }
 .fondo{
-  width: 100%;
-  height: 200px;
-  background-size: cover;
-  background-position: center;
+  height: 670px;
   display: flex;
   flex-direction: column;
+  justify-content: space-around;
+  background-color: rgb(41, 41, 41);
 }
+
+.section-1{
+  height: 330px;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+canvas {
+  width: 95% !important;
+  height: 95% !important;
+}
+.grafica-1{
+  height: 90%;
+  width: 22%;
+  border: solid 3px #565656;
+  background: linear-gradient(to bottom, grey, rgb(57, 57, 57));
+  border-radius: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  margin-right: 13px;
+}
+
+.porcentaje-1{
+  height: 150px;
+  width: 150px;
+  position: relative;
+}
+
+.grafica-porcentaje {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 2rem;
+  font-weight: bold;
+  color: white;
+}
+
+
+
+.grafica-2{
+  height: 90%;
+  width: 47%;
+  border: solid 3px #565656;
+  background: linear-gradient(to bottom, grey, rgb(57, 57, 57));
+  border-radius: 20px;
+  
+}
+.grafica-3{
+  height: 90%;
+  width: 22%;
+  border: solid 3px #565656;
+  background: linear-gradient(to bottom, grey, rgb(57, 57, 57));
+  border-radius: 20px;
+  margin-left: 13px;
+
+}
+
+.section-2{
+  height: 330px;
+  width: 100%;
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-evenly;
+}
+
+.grafica-4{
+  height: 95%;
+  width: 47%;
+  border: solid 3px #565656;
+  background: linear-gradient(to bottom, grey, rgb(57, 57, 57));
+  border-radius: 20px;
+}
+.grafica-5{
+  height: 95%;
+  width: 47%;
+  border: solid 3px #565656;
+  background: linear-gradient(to bottom, grey, rgb(57, 57, 57));
+  border-radius: 20px;
+}
+
   header {
-    background-color: #eca123;
+   background-image: url('madera2.jpg');
+   background-size: 100% 100% !important;
+   background-position: center !important;
+   overflow: hidden;           
     color: white;
     padding: 30px;
     text-align: center;
@@ -39,7 +124,7 @@
   border: none;
   color: white;
   cursor: pointer;
-  display: none; /* Solo aparece en responsive */
+  display: none;
 }
 
   nav {
@@ -48,6 +133,311 @@
     padding-left: 90px;
 
   }
+
+.graf-1{
+  height: 170px;
+  width: 170px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.texto-1{
+  height: auto;
+  width: 90%;
+  display: flex;
+  flex-direction: column; 
+}
+
+.texto-1-1{
+  color: rgb(190, 190, 190);
+  font-size: 13px;
+  text-align: center;
+}
+
+.titulo-1{
+  color:white;
+  font-size: 15px;
+  font-weight: bold;
+  display: flex;
+  justify-content: center;
+  align-items: end;
+}
+.titulo-1 div{
+  color: rgb(18, 198, 48);
+  font-size: 17px;
+  margin-inline: 3px;
+}
+
+.grafica-2{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+.texto-2{
+  height: 65px;
+  width: 90%;
+}
+.texto-2-1{
+  height: auto;
+  width: 100%;
+  color: #d8d6d6;
+  font-size: 13px;
+  display: flex;
+  flex-direction: column;
+  text-align: center;
+}
+
+.titulo-2{
+  color:white;
+  font-size: 20px;
+  font-weight: bold;
+  display: flex;
+  justify-content: center;
+  align-items: end;
+}
+
+.texto-2-2{
+  border: solid 1px black;
+  height: 100%;
+  width: 85%;
+}
+.img-2{
+  height: 100%;
+  width: 73.4px;
+  position: relative;
+}
+.graf-2{
+  height: 200px;
+  width: 90%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.gauge-value {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: white;
+    font-weight: bold;
+    font-size: 10px;
+    text-align: center;
+  }
+.grafica-3{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+.grafica-3 section{
+  width: 90%;
+  height: 46%;
+  display: flex;
+  align-items: center;
+}
+.grafica-3 section div{
+  width: 80%;
+  height: 100%;
+}
+.texto-3{
+  border: none !important;
+  height: 80% !important;
+  color: #d8d6d6;
+  font-size: 13px;
+  display: flex;
+  align-items: center;
+}
+
+.ingresos{
+  background-image: url('ingresos2.png');
+  background-size: 95% 80% !important;
+  background-position: center !important;
+  background-repeat: no-repeat;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+.egresos{
+  background-image: url('egresos.png');
+  background-size: 95% 80% !important;
+  background-position: center !important;
+  background-repeat: no-repeat;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+.flecha{
+  font-size: 30px;
+  color: white;
+  line-height: 1;
+}
+#F1{
+  margin-top: -15px;
+}
+#F2{
+  margin-bottom: -15px;
+}
+.etiqueta {
+  color: white;
+  font-weight: bold;
+}
+.monto {
+  color: white;
+  font-weight: bold;
+  font-size: 20px;
+}
+.grafica-4{
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-evenly;
+}
+.texto-4{
+  width: 55%;
+  height: 80%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-evenly;
+}
+.texto-4-2{
+  width: 100%;
+  height: auto;
+  color: #d8d6d6;
+  font-size: 13px;
+  display: flex;
+  flex-direction: column;
+}
+.titulo-4{
+  color:white;
+  font-size: 20px;
+  font-weight: bold;
+  display: flex;
+  align-items: end;
+}
+.graf-4-1{
+  width: 100%;
+  height: 45%;
+  display: flex;
+    gap: 30px;
+    align-items: center;
+}
+.graf-4-2{
+  width: 35%;
+  height: 90%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+.titulo-4-2{
+  color:#d4d4d4;
+  font-size: 15px;
+  font-weight: bold;
+  display: flex;
+  justify-content: center;
+  align-items: start;
+}
+
+  .gauge {
+    position: relative;
+    width: 80px;
+    height: 80px;
+  }
+
+  .gauge canvas {
+    width: 100%;
+    height: 100%;
+  }
+
+  .gauge-label {
+    position: absolute;
+    top: 35%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: white;
+    font-weight: bold;
+    font-size: 18px;
+  }
+
+  .gauge-title {
+    text-align: center;
+    color: white;
+    font-weight: bold;
+    margin-top: 10px;
+    font-size: 15px;
+  }
+.grafica-5{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+}
+.graf-5{
+  height: 200px;
+  width: 90%;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  gap: 40px;
+  padding: 30px;
+}
+
+.graf-5 div{
+  width: 30%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+.titulo-5{
+  color:white;
+  font-size: 20px;
+  font-weight: bold;
+  display: flex;
+  justify-content: center;
+  align-items: end;
+}
+.texto-5{
+  height: auto;
+  width: 100%;
+  color: #d8d6d6;
+  font-size: 13px;
+  display: flex;
+  flex-direction: column;
+  text-align: center;
+}
+.graf-5-2{
+  height: 90%!important;
+  width: 100% !important;
+  border: solid black 1px !important;
+}
+.texto-5-2{
+  height: 10% !important;
+  width: 100% !important;
+  display: flex !important;
+  align-items: end;
+  justify-content: center;
+  flex-direction: row !important;
+  color:white;
+  font-size: 15px;
+  font-weight: bold;
+}
+.texto-5-2 div{
+  border: none;
+  color: rgb(18, 198, 48);
+  font-size: 17px;
+  width: auto;
+  height: auto;
+}
+.grafico {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
 
 
   .nav-bg{
