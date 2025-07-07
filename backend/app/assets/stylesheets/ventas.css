@@ -232,12 +232,16 @@ input::placeholder {
 }
 
 .modal {
-    display: none;
-    position: fixed;
-    top: 0; left: 0;
-    width: 100%; height: 100%;
-    background: rgba(0, 0, 0, 0.6);
-    z-index: 9999;
+  display: none;
+  position: fixed;
+  z-index: 9999;
+  padding-top: 50px;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  background-color: rgba(0,0,0,0.6);
 }
 
 .modal:target {
@@ -245,32 +249,31 @@ input::placeholder {
 }
 
 .modal-content {
-    border: 1px transparent;
-    box-shadow: 0 0px 10px rgba(0, 0, 0, 0.3);
-    background: white;
-    padding: 20px;
-    padding-top: 30px;
-    margin: 100px auto;
-    width: 600px;
-    border-radius: 25px;
-    position: relative;
-    display: flex;
-    flex-direction: row;
+  background-color: #fff;
+  margin: 50px auto;
+  padding: 20px;
+  width: 90%;
+  max-width: 450px;
+  border-radius: 10px;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  height: auto;
+  max-height: 90vh; /* Máximo 90% del alto de la pantalla */
+  overflow-y: auto; /* Scroll si es necesario */
 }
 
+
+
 .close {
-    position: absolute;
-    top: 5px; right: 5px;
-    text-decoration: none;
-    font-size: 25px;
-    font-weight: bold;
-    color: #424242;
-    width: 30px;
-    height: 30px;
-    font-family: 'inconsolata';
-    display: flex;
-    justify-content: center;
-    align-items: center;
+  position: absolute;
+  top: 5px;
+  right: 15px;
+  text-decoration: none;
+  font-size: 28px;
+  font-weight: bold;
+  color: #333;
 }
 .close:hover{
     background-color: rgb(252, 102, 102);
@@ -481,6 +484,71 @@ input::placeholder {
   }
 }
 
+
+.modal-content2 {
+  background-color: #fff;
+  margin: 50px auto;
+  padding: 20px;
+  width: 90%;
+  max-width: 450px;
+  border-radius: 10px;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  height: auto;
+  max-height: 90vh; /* Máximo 90% del alto de la pantalla */
+  overflow-y: auto; /* Scroll si es necesario */
+}
+
+.titulo2{
+    color: #fca123;
+    font-size: 30px;
+    margin-bottom: 35px;
+    font-weight: bold;
+    font-style: italic;
+}
+.texto2 label{
+    color:#424242;
+    font-weight: bold;
+    font-size: 17px;
+}
+.form-editar {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 15px;
+  height: auto;
+}
+
+.texto2{
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    margin-bottom: 15px;
+}
+.tb{
+    color: limegreen;
+}
+.btn4{
+    color:white;
+    font-weight: bold;
+    border-radius: 15px;
+    height: 30px;
+    width: 110px;
+    border: solid 1px #f5a226;
+    background-color: #ffb950;
+}
+.btn4:hover{
+    background-color: #f4a735;
+}
+.bb{
+    background-color: limegreen;
+    border: green;
+}
 @media (max-width: 375px) {
   .container {
     flex-direction: column;

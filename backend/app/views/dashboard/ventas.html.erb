@@ -235,7 +235,30 @@
           <% else %>
             <p>No se encontraron compras.</p>
           <% end %>
-          <%= link_to "+", new_buy_path, class: "new-buy" %>
+          <a class="new-buy" href="#modal-new-buy">+</a>
+
+          <div id="modal-new-buy" class="modal">
+            <div class="modal-content2">
+              <a href="#" class="close">&times;</a>
+              <div class="titulo2 tb">Crear Compra</div>
+              <%= form_with(model: Buy.new, url: buys_path, local: true, html: { multipart: true }, class: 'form-editar') do |form| %>
+                <div class="texto2">
+                  <%= form.label :fecha, "Fecha : ", style: "display: block" %>
+                  <%= form.date_field :fecha %>
+                </div>
+
+                <div class="texto2">
+                  <%= form.label :customer_id, "Cliente : " %>
+                  <%= form.collection_select :customer_id, Customer.all, :id, :nombre, prompt: "Seleccione un cliente" %>
+                </div>
+
+                <div class="btn3">
+                  <%= form.submit "Guardar", class:'btn4 bb' %>
+                </div>
+              <% end %>
+            </div>
+          </div>
+
         </div>
       </div>
     </section>
