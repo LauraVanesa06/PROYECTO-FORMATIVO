@@ -57,7 +57,8 @@
       <div class="grafica-2">
         <section class="texto-2">
           <section class="texto-2-1"><div class="titulo-2">Ventas por categoría de producto</div>Este gráfico presenta la distribución de
-           ventas por categorías de productos, permitiendo identificar cuáles generan mayores ingresos y aportan más al rendimiento general del negocio.</section>
+            ventas por categorías de productos, permitiendo identificar cuáles generan mayores ingresos y aportan más al rendimiento general del negocio.
+          </section>
           <div class="img-2">
             <canvas id="gaugeSegmentado"></canvas>
             <div class="gauge-value">Stock<br>90%</div>
@@ -66,11 +67,6 @@
         <section class="graf-2">
           <canvas id="graficoVentas" ></canvas>
         </section>
-    </section>
-
-    <section class="chart-container-base" style="display: flex; justify-content: space-around; gap: 20px; flex-wrap: wrap; padding: 1px;">
-      <div class="chart-container1" >
-        <canvas id="ventasChart" style></canvas>
       </div>
       <div class="grafica-3">
         <section>
@@ -97,6 +93,7 @@
         </section>
       </div>
     </section>
+
     <section class="section-2">
       <div class="grafica-4">
         <section class="texto-4">
@@ -146,56 +143,22 @@
           <!-- Dia -->
           <div class="grafico">
             <canvas id="grafDia" width="120" height="120"></canvas>
-            <div class="etiqueta">Día</div>
           </div>
-    </section>
-
-    <section class="section-card">
-    <%= link_to inventario_path, class: "card-link" do %>
-      <div class="card">
-        <h3>Productos en Stock</h3>
-        <p id="stock">0</p>
-      </div>
-    <% end %>
-
-    <%= link_to ventas_path, class: "card-link" do %>
-      <div class="card">
-        <h3>Ventas Hoy</h3>
-        <p id="ventas">$0</p>
-      </div>
-    <% end %>
-
-      <%= link_to suppliers_path, class: "card-link" do %>
-        <div class="card">
-          <h3>Pedidos Pendientes</h3>
-          <p>7</p>
-        </div>
-      <% end %>
-
 
           <!--Semana -->
           <div class="grafico">
             <canvas id="grafSemana" width="120" height="120"></canvas>
-            <div class="etiqueta">Semana</div>
           </div>
 
           <!-- Mes -->
           <div class="grafico">
             <canvas id="grafMes" width="120" height="120"></canvas>
-            <div class="etiqueta">Mes</div>
           </div>
 
         </section>
 
       </div>
     </section>
-  </section>
-    <%= link_to clientes_path, class: "card-link" do %>
-      <div class="card">
-        <h3>Clientes Registrados</h3>
-        <p id="clientes">0</p>
-      </div>
-    <% end %>
   </section>
 
   <footer>
@@ -421,7 +384,7 @@
   gradienteAzul.addColorStop(0, '#4facfe');
   gradienteAzul.addColorStop(1, '#00f2fe');
 
-  new Chart(ctx, {
+    new Chart(ctx, {
     type: 'bar',
     data: {
       labels: ['Transferencia', 'Efectivo', 'Tarjeta', 'Pago Online'],
@@ -441,10 +404,7 @@
           anchor: 'end',
           align: 'top',
           offset: 4,
-          rotation: 0,
-          color: function(context) {
-            return ['white', 'white', 'white', 'white'][context.dataIndex];
-          },
+          color: 'white',
           font: {
             family: 'Segoe UI',
             weight: 'bold',
@@ -452,80 +412,14 @@
           },
           formatter: function(value) {
             return value;
-  fetch('/api/v1/ventas_por_dia')
-  .then(res => res.json())
-  .then(data => {
-    const diasTraducidos = {
-      Monday: 'Lunes',
-      Tuesday: 'Martes',
-      Wednesday: 'Miércoles',
-      Thursday: 'Jueves',
-      Friday: 'Viernes',
-      Saturday: 'Sábado',
-      Sunday: 'Domingo'
-    };
-
-    const labelsTraducidos = data.labels.map(dia => diasTraducidos[dia] || dia);
-
-    new Chart(document.getElementById('ventasChart'), {
-      type: 'bar',
-      data: {
-        labels: labelsTraducidos,
-        datasets: [{
-          label: 'Ventas por día',
-          data: data.valores,
-          backgroundColor: 'rgb(70, 130, 180)',
-          borderColor: 'black',
-          borderWidth: 1
-        }]
-      },
-      options: {
-        scales: {
-          y: {
-            beginAtZero: true,
-            ticks: {
-              color: 'white',
-              callback: value => '$' + value
-            }
-          },
-          x: {
-            ticks: { color: 'white' }
           }
-        },
-        plugins: {
-          legend: { labels: { color: 'white' } }
-        }
-      },
-      layout: {
-        padding: { top: 0, bottom: 0 }
-      },
-      scales: {
-        x: {
-          ticks: {
-            color: 'white',
-            font: {
-              size: 39,
-              weight: 'bold',
-              family: 'Segoe UI'
-            },
-          maxRotation: 0,
-          minRotation: 0
-        },
-          grid: { display: false }
-        },
-        y: {
-          beginAtZero: true,
-          suggestedMax: 90,
-          ticks: { display: false },
-          grid: { display: false }
         }
       }
     },
     plugins: [ChartDataLabels]
-
-    });
   });
-</script>
+  </script>
+
 
 <!-- grafica del seccion 5 -->
 <script>
