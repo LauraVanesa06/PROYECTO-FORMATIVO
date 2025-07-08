@@ -51,6 +51,7 @@
     </div>
   </nav>
 
+
   <section class="section-container">
   <button class="hamburger-categorias" id="hamburger-categorias">&#9776; Categorías</button>
 
@@ -62,7 +63,10 @@
       <% @categories.each do |category| %>
         <%= render category %>
       <% end %>
-    <div class="btn-categ"><%= link_to "+", new_category_path, class:"new-categ"%></div>
+    <div class="btn-categ">
+  <a href="#modal-new-category" class="new-categ">+</a>
+</div>
+
   </aside>
   <section class="section-product">
     <nav class="nav-filtros">
@@ -108,6 +112,7 @@
           <div id="modal-ver-<%= product.id %>" class="modal-ver">
             <div class="modal-content">
               <a href="#" class="close">&times;</a>
+              <div class="titulo2 ps">Producto</div>
               <div class="div-foto-model">
                   <% if product.imagen.attached? %>
                     <%= image_tag url_for(product.imagen), alt: "Imagen del producto" %>
@@ -214,10 +219,63 @@
       <% else %>
         <p>No se encontraron productos.</p>
       <% end %>
-      <%= link_to "+", new_product_path, class: "new-prod" %>
+      <a href="#modal-new-product" class="new-prod">+</a>
+
+      <div id="modal-new-product" class="modal-ver">
+  <div class="modal-content2">
+    <a href="#" class="close">&times;</a>
+    <div class="titulo2 tc" >Crear Producto</div>
+    <%= form_with(model: Product.new, url: products_path, local: true, html: { multipart: true }, class: 'form-editar') do |form| %>
+
+      <div class="texto2">
+        <%= form.label :imagen, "Imagen : ", style: "display: block" %>
+        <%= form.file_field :imagen, class: "btn5" %>
+      </div>
+
+      <div class="texto2">
+        <%= form.label :nombre, "Nombre : ", style: "display: block" %>
+        <%= form.text_field :nombre %>
+      </div>
+
+      <div class="texto2">
+        <%= form.label :descripcion, "Descripcion : ", style: "display: block" %>
+        <%= form.text_area :descripcion, class:'descripcion' %>
+      </div>
+
+      <div class="texto2">
+        <%= form.label :precio, "Precio : ", style: "display: block" %>
+        <%= form.text_field :precio %>
+      </div>
+
+      <div class="texto2">
+        <%= form.label :stock, "Stock : ", style: "display: block" %>
+        <%= form.number_field :stock %>
+      </div>
+
+      <div class="texto2">
+        <%= form.label :category_id, "Categoría : " %>
+        <%= form.collection_select :category_id, Category.all, :id, :nombre, prompt: "Seleccione una categoría" %> 
+      </div>
+
+      <div class="texto2">
+        <%= form.label :supplier_id, "Proveedor : " %> 
+        <%= form.collection_select :supplier_id, Supplier.all, :id, :nombre, prompt: "Seleccione un proveedor" %>  
+      </div> 
+
+      <div class="btn3">
+        <%= form.submit "Crear", class:'btn4 bc' %>
+      </div>
+
+    <% end %>
+  </div>
+</div>
+
     </section>
   </section>
   </section>
+
+  
+
   <footer>
     &copy; 2025 Ferremateriales el Maestro - v2.3.7
   </footer>
@@ -236,6 +294,27 @@
     menuCategorias.classList.toggle("active");
   });
   </script>
+
+<!-- MODAL NUEVA CATEGORÍA -->
+<div id="modal-new-category" class="modal">
+  <div class="modal-content2">
+    <a href="#" class="close">&times;</a>
+    <div class="titulo2 tc">Crear Categoría</div>
+
+    <%= form_with(model: Category.new, url: categories_path, local: true, class: 'form-editar') do |form| %>
+      <div class="texto2">
+        <%= form.label :nombre, "Nombre:", style: "display: block" %>
+        <%= form.text_field :nombre %>
+      </div>
+
+      <div class="btn3">
+        <%= form.submit "Crear", class: 'btn4 bc' %>
+      </div>
+    <% end %>
+  </div>
+</div>
+
+
 
 </body>
 </html>

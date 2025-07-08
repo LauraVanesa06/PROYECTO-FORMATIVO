@@ -1,0 +1,11 @@
+es:
+  hello: "Hola"
+  devise:
+    sessions:
+      signed_in: "Inicio de sesión exitoso"
+      signed_out: "Sesión cerrada"
+    registrations:
+      signed_up: "¡Te has registrado exitosamente!"
+      updated: "Tu cuenta ha sido actualizada"
+    passwords:
+      send_instructions: "Recibirás un correo con instrucciones para recuperar tu contraseña"

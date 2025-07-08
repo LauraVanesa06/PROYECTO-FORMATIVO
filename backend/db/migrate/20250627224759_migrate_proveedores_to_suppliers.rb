@@ -1,10 +1,9 @@
-class MigrateProveedoresToSuppliers < ActiveRecord::Migration[8.0]
+class MigrateProveedoresToSuppliers < ActiveRecord::Migration[7.1]
   def up
-    Proveedor.all.each do |p|
-      Supplier.create!(
-        nombre: p.nombre,
-        contacto: p.telefono
-      )
-    end
+    # Ya no existe la tabla `proveedors`, así que esta migración queda vacía
+  end
+
+  def down
+    # No hay cambios que revertir
   end
 end

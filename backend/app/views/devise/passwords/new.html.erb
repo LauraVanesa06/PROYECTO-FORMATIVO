@@ -1,36 +1,47 @@
-<div class="login">
-  
+<% provide(:title, 'Recuperar contraseña') %>
+<%= stylesheet_link_tag "application", media: "all" %>
 
-<div class="base d-flex flex-row align-items-center justify-content-start flex-wrap">
+<div class="login d-flex justify-content-center align-items-center vh-100">
 
-<div class="login-container">
-<% resource = User.new %>
-<% resource_name = :user %>
-<% devise_mapping = Devise.mappings[:user] %>
+  <div class="hex-wrapper position-relative">
 
-<%= form_for(resource, as: resource_name, url: password_path(resource_name), html: { method: :post }) do |f| %>
-  <%= render "devise/shared/error_messages", resource: resource %>
+    <!-- Imagen del hexágono como fondo -->
+    <%= image_tag "hexagono.png", alt: "Hexágono", class: "hex-bg" %>
 
-<div class="sign-container">
-  <div class="field">
-    <%= f.label :email %><br />
-    <%= f.email_field :email, autofocus: true, autocomplete: "email", class: "form-control" %>
-  </div>
+    <!-- Icono del usuario superpuesto -->
+    <div class="user-icon position-absolute top-0 start-50 translate-middle">
+      <%= image_tag "user.png", alt: "Usuario", class: "rounded-circle user-img" %>
+    </div>
 
-  <div class="actions">
-    <%= f.submit "Send me reset password instructions" , class:"btn-login"%>
+    <!-- Contenido del login sobre el hexágono -->
+    <div class="hex-content position-absolute top-50 start-50 translate-middle text-center">
+      <% resource = User.new %>
+      <% resource_name = :user %>
+      <% devise_mapping = Devise.mappings[:user] %>
+
+      <!-- Mensajes de error -->
+      <%= render "devise/shared/error_messages", resource: resource %>
+
+      <%= form_for(resource, as: resource_name, url: password_path(resource_name), html: { method: :post }) do |f| %>
+        <div class="text-sg mb-3">
+          Recuperar contraseña
+        </div>
+
+        <div class="input-wrapper iwp">
+          <%= image_tag "avatar.png", class: "icon-img", alt: "Email" %>
+          <div class="divider"></div>
+          <%= f.email_field :email, placeholder: "Correo electrónico", autocomplete: "email" %>
+        </div>
+
+        <div class="hex-button-wrapper mb-3">
+          <%= f.submit "Solicitar", class: "hex-button" %>
+        </div>
+      <% end %>
+
+      <!-- Links al fondo -->
+      <div class="bottom-links">
+        <%= render "devise/shared/links" %>
+      </div>
+    </div>
   </div>
 </div>
-<% end %>
-
-<div class="base2 text-center">
-    <h3> BIENVENIDO </h3>
-    <hr> </hr>
-    
-    <div class="text-center mt-3">
-      <%= render "devise/shared/links" %>
-    </div>
-    
-    <hr> </hr> 
-    <%= link_to "Regresar", authenticated_root_path, class:"btn btn-outline-light" ,id: "link" %>
-  </div> 
