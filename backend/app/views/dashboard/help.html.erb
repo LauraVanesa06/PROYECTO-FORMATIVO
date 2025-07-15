@@ -1,0 +1,28 @@
+<h2>Centro de Ayuda</h2>
+
+<p>Aquí puedes contactar al técnico si encuentras errores o dudas sobre la plataforma.</p>
+
+<%= form_with url: send_report_path, method: :post, local: true do |form| %>
+  <div class="mb-3">
+    <%= form.label :nombre, "Tu nombre" %>
+    <%= form.text_field :nombre, class: "form-control" %>
+  </div>
+
+  <div class="mb-3">
+    <%= form.label :usuario, "Usuario afectado" %>
+    <%= form.text_field :usuario, class: "form-control" %>
+  </div>
+
+  <div class="mb-3">
+    <%= form.label :descripcion, "Descripción del error o duda" %>
+    <%= form.text_area :descripcion, class: "form-control" %>
+  </div>
+
+  <%= form.submit "Enviar al técnico", class: "btn btn-primary" %>
+<% end %>
+
+<% if flash[:notice] %>
+  <div class="alert alert-success mt-3">
+    <%= flash[:notice] %>
+  </div>
+<% end %>

@@ -250,12 +250,30 @@ class DashboardController < ApplicationController
   end
 end
 
+  def help
+  end
+  def send_report
+    nombre = params[:nombre]
+    usuario = params[:usuario]
+    descripcion = params[:descripcion]
+
+    tecnico_email = "lvanesadelahoz@gmail.com"
+
+    ContactarTecnicoMailer.reporte_error(nombre, usuario, descripcion, tecnico_email).deliver_now
+
+    flash[:notice] = "Tu mensaje fue enviado correctamente."
+    redirect_to help_path
+    
+  end
   
   private
 
   def supplier_params
     params.require(:supplier).permit(:nombre, :contacto)
   end
+  
+
+  
 end
 
 
