@@ -1,0 +1,18 @@
+[
+  {
+    "id": 1,
+    "nombre": "Martillo",
+    "descripcion": "Martillo de acero reforzado",
+    "precio": 15000.0,
+    "stock": 25,
+    "imagenUrl": "https://promart.vteximg.com.br/arquivos/ids/499388-1000-1000/64959.jpg?v=637318420275000000"
+  },
+  {
+    "id": 2,
+    "nombre": "Destornillador",
+    "descripcion": "Destornillador de estrella",
+    "precio": 8000.0,
+    "stock": 40,
+    "imagenUrl": "https://ejemplo.com/imagenes/destornillador.png"
+  }
+]
