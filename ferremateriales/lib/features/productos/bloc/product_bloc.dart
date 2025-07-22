@@ -28,14 +28,14 @@ class ProductBloc extends Bloc<ProductEvent, ProductState> {
 
             emit(ProductLoadSuccess(products));
           } else {
-            print("ERROR: El JSON no es una lista.");
+           // print("ERROR: El JSON no es una lista.");
             emit(ProductLoadFailure());
           }
         } else {
           emit(ProductLoadFailure());
         }
       } catch (e) {
-        print("ERROR al cargar productos: $e");
+        //print("ERROR al cargar productos: $e");
         emit(ProductLoadFailure());
       }
     });
