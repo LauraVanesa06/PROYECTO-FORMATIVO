@@ -1,6 +1,6 @@
-<h3>Nuevo reporte técnico</h3>
+<h1>📩 Nueva solicitud de ayuda</h1>
 
-<p><strong>Nombre del remitente:</strong> <%= @nombre %></p>
-<p><strong>Usuario afectado:</strong> <%= @usuario %></p>
+<p><strong>Nombre:</strong> <%= @support_request.user_name %></p>
+<p><strong>Email:</strong> <%= @support_request.user_email %></p>
 <p><strong>Descripción:</strong></p>
-<p><%= @descripcion %></p>
+<p><%= @support_request.description %></p>

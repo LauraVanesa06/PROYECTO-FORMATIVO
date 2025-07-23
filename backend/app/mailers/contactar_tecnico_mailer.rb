@@ -1,16 +1,24 @@
 class ContactarTecnicoMailer < ApplicationMailer
   default from: 'lvanesadelahoz@gmail.com'
 
-  #def reporte_error(nombre, usuario, descripcion, tecnico_email)
-   # @nombre = nombre
- #   @usuario = usuario
-    #@descripcion = descripcion
-
-def notify_technician(support_request)
+    def reporte_error(support_request)
     @support_request = support_request
 
-    mail(to: tecnico_email, subject: 'Nuevo reporte técnico desde el sistema')
+    mail(
+      to: 'lvanesadelahoz@gmail.com', 
+      subject: 'Nueva solicitud de ayuda',
+      reply_to: @support_request.user_email  
+          )
   end
+
+def confirm_user(support_request)
+    @support_request = support_request
+
+    mail(
+      to: @support_request.user_email,
+      subject: 'Confirmación de solicitud de ayuda'
+    )
+  end    
 end
 
 

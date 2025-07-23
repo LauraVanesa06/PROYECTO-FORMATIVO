@@ -253,16 +253,19 @@ end
   def help
   end
   def send_report
-    nombre = params[:nombre]
-    usuario = params[:usuario]
-    descripcion = params[:descripcion]
+    @support_request = SupportRequest.new(support_request_params)
 
-    tecnico_email = "lvanesadelahoz@gmail.com"
 
-    ContactarTecnicoMailer.reporte_error(nombre, usuario, descripcion, tecnico_email).deliver_now
+    if @support_request.save
+    ContactarTecnicoMailer.reporte_error(@support_request).deliver_now
+      ContactarTecnicoMailer.confirm_user(@support_request).deliver_now
 
     flash[:notice] = "Tu mensaje fue enviado correctamente."
-    redirect_to help_path
+    redirect_to help_path(sent: true)
+  else
+    flash[:alert] = "Hubo un error al enviar el mensaje."
+    render :new
+  end
     
   end
   
@@ -271,7 +274,11 @@ end
   def supplier_params
     params.require(:supplier).permit(:nombre, :contacto)
   end
-  
+
+ 
+  def support_request_params
+  params.require(:support_request).permit(:user_name, :user_email, :description)
+  end
 
   
 end

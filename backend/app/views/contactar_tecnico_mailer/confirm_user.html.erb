@@ -1,0 +1,13 @@
+<h1>✅ Solicitud enviada correctamente</h1>
+
+<p>Hola <%= @support_request.user_name %>,</p>
+
+<p>Gracias por contactarnos. Hemos recibido tu solicitud y un técnico se pondrá en contacto contigo pronto.</p>
+
+<p><strong>Resumen de tu solicitud:</strong></p>
+<ul>
+  <li><strong>Tu correo:</strong> <%= @support_request.user_email %></li>
+  <li><strong>Descripción:</strong> <%= @support_request.description %></li>
+</ul>
+
+<p>Atentamente,<br>El equipo de soporte</p>

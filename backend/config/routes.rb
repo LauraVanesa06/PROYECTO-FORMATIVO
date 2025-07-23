@@ -16,7 +16,7 @@ Rails.application.routes.draw do
   get "/dashboard/inventario", to: "dashboard#inventario"
   get 'clientes', to: 'dashboard#clientes', as: 'clientes'
   get 'help', to: 'dashboard#help', as: 'help'
-        post 'send_report', to: 'dashboard#send_report'
+        post 'send_report', to: 'dashboard#send_report', as: :send_report_dashboard_index
 
 
   resources :categories do
