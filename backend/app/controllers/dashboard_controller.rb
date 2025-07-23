@@ -263,11 +263,13 @@ end
     flash[:notice] = "Tu mensaje fue enviado correctamente."
     redirect_to help_path(sent: true)
   else
+
     flash[:alert] = "Hubo un error al enviar el mensaje."
     render :new
+  
   end
     
-  end
+end
   
   private
 
