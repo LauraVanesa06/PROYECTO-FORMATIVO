@@ -192,16 +192,26 @@ customers = Customer.create!([
 ])
 
 buys = Buy.create!([
-  { customer: customers[0], fecha: Time.new(2021, 3, 15, 10, 30) },
-  { customer: customers[1], fecha: Time.new(2022, 6, 22, 14, 45) },
-  { customer: customers[2], fecha: Time.new(2023, 9, 5, 18, 20) },
-  { customer: customers[3], fecha: Time.new(2024, 1, 12, 9, 10) },
-  { customer: customers[4], fecha: Time.new(2025, 7, 23, 16, 0) },
-  { customer: customers[0], fecha: Time.new(2020, 11, 30, 8, 15) },
-  { customer: customers[2], fecha: Time.new(2022, 4, 18, 13, 0) },
-  { customer: customers[3], fecha: Time.new(2023, 12, 25, 20, 30) },
-  { customer: customers[1], fecha: Time.new(2021, 8, 10, 11, 50) },
-  { customer: customers[4], fecha: Time.new(2024, 2, 2, 17, 45) }
+  { customer: customers[0], fecha: Time.zone.now.change(hour: 9), tipo: "Minorista" },
+  { customer: customers[1], fecha: Time.zone.now.change(hour: 11), tipo: "Mayorista" },
+  { customer: customers[2], fecha: Time.zone.now.change(hour: 13), tipo: "Contratista/Empresa" },
+  { customer: customers[2], fecha: Time.zone.now.change(hour: 13), tipo: "Contratista/Empresa" },
+
+  { customer: customers[3], fecha: 1.day.ago.change(hour: 10), tipo: "Minorista" },
+  { customer: customers[4], fecha: 2.days.ago.change(hour: 14), tipo: "Mayorista" },
+  { customer: customers[4], fecha: 2.days.ago.change(hour: 14), tipo: "Mayorista" },
+  { customer: customers[0], fecha: 3.days.ago.change(hour: 15), tipo: "Contratista/Empresa" },
+
+  { customer: customers[1], fecha: 10.days.ago.change(hour: 11), tipo: "Minorista" },
+  { customer: customers[1], fecha: 10.days.ago.change(hour: 11), tipo: "Minorista" },
+  { customer: customers[2], fecha: 15.days.ago.change(hour: 16), tipo: "Mayorista" },
+  { customer: customers[3], fecha: 20.days.ago.change(hour: 12), tipo: "Contratista/Empresa" },
+  { customer: customers[3], fecha: 20.days.ago.change(hour: 12), tipo: "Contratista/Empresa" },
+
+  { customer: customers[4], fecha: 2.months.ago.change(hour: 17), tipo: "Minorista" },
+  { customer: customers[0], fecha: 4.months.ago.change(hour: 10), tipo: "Mayorista" },
+  { customer: customers[0], fecha: 4.months.ago.change(hour: 10), tipo: "Mayorista" },
+  { customer: customers[1], fecha: 5.months.ago.change(hour: 13), tipo: "Contratista/Empresa" }
 ])
 
 Purchasedetail.create!([
