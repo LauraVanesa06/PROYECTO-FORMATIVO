@@ -121,14 +121,14 @@ class DashboardController < ApplicationController
 
     if params[:customer_id].present?
       @customer = Customer.find_by(id: params[:customer_id])
-      @purchasedetails = @customer&.purchasedetails&.includes(:productos, buy: :customer) || []
+      @purchasedetails = @customer&.purchasedetails&.includes(:product, buy: :customer) || []
 
     elsif params[:id].blank? && params[:name].blank?
-      @purchasedetails = Purchasedetail.includes(:productos, buy: :customer).all
+      @purchasedetails = Purchasedetail.includes(:product, buy: :customer).all
 
     elsif @customers.size == 1
       @customer = @customers.first
-      @purchasedetails = @customer.purchasedetails.includes(:productos, buy: :customer)
+      @purchasedetails = @customer.purchasedetails.includes(:product, buy: :customer)
 
       @purchasedetails = @customer&.purchasedetails&.includes(:product, buy: :customer) || []
       @purchasedetails = @purchasedetails.where(buy_id: buy_ids) if buy_ids.present?

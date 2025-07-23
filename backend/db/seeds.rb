@@ -192,11 +192,16 @@ customers = Customer.create!([
 ])
 
 buys = Buy.create!([
-  { customer: customers[0], fecha: Time.current },
-  { customer: customers[1], fecha: Time.current },
-  { customer: customers[2], fecha: Time.current },
-  { customer: customers[3], fecha: Time.current },
-  { customer: customers[4], fecha: Time.current },
+  { customer: customers[0], fecha: Time.new(2021, 3, 15, 10, 30) },
+  { customer: customers[1], fecha: Time.new(2022, 6, 22, 14, 45) },
+  { customer: customers[2], fecha: Time.new(2023, 9, 5, 18, 20) },
+  { customer: customers[3], fecha: Time.new(2024, 1, 12, 9, 10) },
+  { customer: customers[4], fecha: Time.new(2025, 7, 23, 16, 0) },
+  { customer: customers[0], fecha: Time.new(2020, 11, 30, 8, 15) },
+  { customer: customers[2], fecha: Time.new(2022, 4, 18, 13, 0) },
+  { customer: customers[3], fecha: Time.new(2023, 12, 25, 20, 30) },
+  { customer: customers[1], fecha: Time.new(2021, 8, 10, 11, 50) },
+  { customer: customers[4], fecha: Time.new(2024, 2, 2, 17, 45) }
 ])
 
 Purchasedetail.create!([
