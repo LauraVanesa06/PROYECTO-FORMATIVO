@@ -1,0 +1,66 @@
+[
+  {
+    "id": 1,
+    "nombre": "Martillo",
+    "descripcion": "Martillo de acero reforzado",
+    "precio": 15000.0,
+    "stock": 25,
+    "imagenUrl": "https://promart.vteximg.com.br/arquivos/ids/499388-1000-1000/64959.jpg?v=637318420275000000"
+  },
+  {
+    "id": 2,
+    "nombre": "Destornillador",
+    "descripcion": "Destornillador de estrella",
+    "precio": 8000.0,
+    "stock": 40,
+    "imagenUrl": "https://ejemplo.com/imagenes/destornillador.png"
+  },
+  {
+    "id": 3,
+    "nombre": "Alicate",
+    "descripcion": "Alicate universal antideslizante",
+    "precio": 12000.0,
+    "stock": 30,
+    "imagenUrl": "https://http2.mlstatic.com/D_NQ_NP_998862-MCO49813734204_052022-O.webp"
+  },
+  {
+    "id": 4,
+    "nombre": "Cinta métrica",
+    "descripcion": "Cinta métrica de 5 metros con bloqueo",
+    "precio": 7000.0,
+    "stock": 20,
+    "imagenUrl": "https://www.toolcraft.mx/imagenes/21/TC3013-1.jpg"
+  },
+  {
+    "id": 5,
+    "nombre": "Serrucho",
+    "descripcion": "Serrucho manual para madera",
+    "precio": 18000.0,
+    "stock": 15,
+    "imagenUrl": "https://ferreteriaelbombillo.com/wp-content/uploads/2020/07/Serrucho-para-Madera.jpg"
+  },
+  {
+    "id": 6,
+    "nombre": "Taladro",
+    "descripcion": "Taladro eléctrico 650W con percutor",
+    "precio": 95000.0,
+    "stock": 10,
+    "imagenUrl": "https://http2.mlstatic.com/D_NQ_NP_620515-MCO46509097320_062021-O.webp"
+  },
+  {
+    "id": 7,
+    "nombre": "Llave inglesa",
+    "descripcion": "Llave ajustable de acero 10 pulgadas",
+    "precio": 13000.0,
+    "stock": 18,
+    "imagenUrl": "https://http2.mlstatic.com/D_NQ_NP_668797-MCO46437963425_062021-O.webp"
+  },
+  {
+    "id": 8,
+    "nombre": "Nivel",
+    "descripcion": "Nivel burbuja de 30 cm",
+    "precio": 9000.0,
+    "stock": 22,
+    "imagenUrl": "https://http2.mlstatic.com/D_NQ_NP_775488-MCO45409673081_042021-O.webp"
+  }
+]

@@ -21,10 +21,7 @@ class DefaultFirebaseOptions {
     }
     switch (defaultTargetPlatform) {
       case TargetPlatform.android:
-        throw UnsupportedError(
-          'DefaultFirebaseOptions have not been configured for android - '
-          'you can reconfigure this by running the FlutterFire CLI again.',
-        );
+       return android;
       case TargetPlatform.iOS:
         return ios;
       case TargetPlatform.macOS:
@@ -42,6 +39,14 @@ class DefaultFirebaseOptions {
         );
     }
   }
+
+  static const FirebaseOptions android = FirebaseOptions(
+    apiKey: 'AIzaSyCdRbayZlAwYGgFsNHAwzLukzFxZtnIZ9Q',
+    appId: '1:802296915253:android:e8c39c19cea6cdc904987c',
+    messagingSenderId: '802296915253',
+    projectId: 'login-ferreteria',
+    storageBucket: 'login-ferreteria.firebasestorage.app',
+  );
 
   static const FirebaseOptions web = FirebaseOptions(
     apiKey: 'AIzaSyD0B8D5ytWfBNKAQoaxdCg0ma1PFEqOA18',
