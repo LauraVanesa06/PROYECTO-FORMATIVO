@@ -54,41 +54,41 @@
       <h2 class = "h2">¿EN QUÉ PODEMOS AYUDARTE?</h2>
       <p>Aquí puedes contactar al técnico si encuentras errores o dudas sobre la plataforma.</p>
       <div class="orden">
-      <section class="Formulario" >
-      
-        <%= form_with url: send_report_dashboard_index_path, scope: :support_request, local: true do |f| %>
-          <div class="mb-3 "  >
-            <%= f.label :nombre, "Tu nombre" %>
-            <%= f.text_field :user_name, class: "form-control" %>
-          </div>
+        <section class="Formulario" >
         
-          <div class="mb-3">
-            <%= f.label :user_email, "Tu correo" %>
-            <%= f.email_field :user_email, class: "form-control" %>
-          </div>
+          <%= form_with url: send_report_dashboard_index_path, scope: :support_request, local: true do |f| %>
+            <div class="mb-3 "  >
+              <%= f.label :nombre, "Tu nombre" %>
+              <%= f.text_field :user_name, class: "form-control" %>
+            </div>
           
-          <div class="mb-3">
-            <%= f.label :description, "Descripción del error o duda" %>
-            <%= f.text_area :description, class: "form-control" %>
-          </div>
-       
-           <%= f.submit "Enviar al técnico", class: "btn btn-outline-light", id: "hola" %>
-         
-        <% end %>
-      </section>
-      <section>
-      
-       <%= image_tag "f629c052-bfe0-4258-a824-362b82eb5a4e.png", width: "500", height: "350" , class: "forma", alt: "Descripción de la imagen" %>  
+            <div class="mb-3">
+              <%= f.label :user_email, "Tu correo" %>
+              <%= f.email_field :user_email, class: "form-control" %>
+            </div>
+            
+            <div class="mb-3">
+              <%= f.label :description, "Descripción del error o duda" %>
+              <%= f.text_area :description, class: "form-control" %>
+            </div>
+        
+            <%= f.submit "Enviar al técnico", class: "btn btn-outline-light", id: "hola" %>
+          
+          <% end %>
+        </section>
+        <section>
+        
+        <%= image_tag "f629c052-bfe0-4258-a824-362b82eb5a4e.png", width: "500", height: "350" , class: "forma", alt: "Descripción de la imagen" %>  
 
-      </section>  
-   
-      <% if flash[:notice] %>
+        </section>  
+      </div>
+     
+        <% if flash[:notice] %>
       
         <div class="alert alert-success mt-3">
           <%= flash[:notice] %>
         </div>
       <% end %>
-
     </section>
 
   </body>
