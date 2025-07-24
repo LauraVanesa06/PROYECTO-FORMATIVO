@@ -1,0 +1,63 @@
+.Formulario{
+    color: rgb(190, 190, 190);
+    border: solid 3px #565656;
+    background: linear-gradient(to bottom, grey, rgb(57, 57, 57));
+    border-radius: 10% 0%  0% 25% ;
+    margin-bottom: 10px;
+    width: 500px;
+    align-self: anchor-center;
+    padding: 25px;
+    display: flex;
+    justify-content: center;
+}
+
+.forma{
+border-radius: 0%  10% 25% 0% 
+}
+
+.orden{
+    display: flex;
+    justify-content: center;
+    align-items: stretch;
+}
+
+/* seccion geneal*/
+.principal{
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+  height: 670px;
+  background-color: #5b5b5b;
+
+}
+
+
+.contenedor{
+   width: 100%;
+    height: 600px;
+    background-color: rgb(41, 41, 41);
+    padding: 30px;
+    margin: 0;
+    flex-direction: column;
+    gap: 30px;
+    overflow-y: auto;
+    
+}
+
+.h2{
+    align-self: anchor-center;
+    padding: 10px;
+    color: rgb(225, 225, 225);
+
+}
+
+p{
+    color: white;
+    padding-left: 20%;
+    padding-top: 10px;
+}
+
+#Formulario{
+    padding: px;
+}
+
