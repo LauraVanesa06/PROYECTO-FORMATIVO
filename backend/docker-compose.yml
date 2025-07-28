@@ -8,5 +8,5 @@ services:
       - "3000:3000"
     environment:
       RAILS_ENV: development
-      DATABASE_URL: "sqlite3:/app/db/development.sqlite3"
+      # DATABASE_URL: "sqlite3:/app/db/development.sqlite3"
 
