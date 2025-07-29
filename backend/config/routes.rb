@@ -5,6 +5,10 @@ Rails.application.routes.draw do
     registrations: 'usuarios/registrations',
     passwords: 'usuarios/passwords'
   }
+
+
+
+
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
 
   # Reveal health status on /up that returns 200 if the app boots with no exceptions, otherwise 500.
@@ -32,6 +36,7 @@ Rails.application.routes.draw do
   namespace :api do
     namespace :v1 do
       get 'buys/por_tipo', to: 'buys#por_tipo'
+      get 'clientes_por_mes', to: 'dashboard#clientes_por_mes'
     end
   end
 
@@ -40,6 +45,8 @@ Rails.application.routes.draw do
   resources :purchasedetails
 
   get "ventas" => "dashboard#ventas"
+
+  # Rutas graficas
 
 
 

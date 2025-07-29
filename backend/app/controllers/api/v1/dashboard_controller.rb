@@ -1,4 +1,16 @@
 class Api::V1::DashboardController < ApplicationController
+    def clientes_por_mes
+        clientes = Customer.group("strftime('%m', created_at)").count
+
+        datos_ordenados = (1..12).map do |mes|
+            mes_str = mes.to_s.rjust(2, '0')
+            [mes_str, clientes[mes_str] || 0]
+        end.to_h
+
+
+        render json: clientes
+    end
+
     def ventas_por_dia
         ventas = Purchasedetail
         .joins(:buy)

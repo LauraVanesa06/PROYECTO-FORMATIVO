@@ -46,7 +46,7 @@
     <section class="section-1">
       <div class="grafica-1">
         <section class="graf-1">
-          <canvas id="graficoClientes"></canvas>
+          <canvas id="graficoClientesMes"></canvas>
         </section>
         <section class="texto-1">
           <div class="titulo-1">Registros de <div>112</div> clientes nuevos</div>
@@ -168,41 +168,57 @@
   <!-- grfaica de la seccion 1 -->
 <script>
   document.addEventListener('DOMContentLoaded', () => {
-    const ctx1 = document.getElementById('graficoClientes').getContext('2d');
+    fetch('/api/v1/clientes_por_mes')
+      .then(res => res.json())
+      .then(data => {
+        const meses = [
+          'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio',
+          'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'
+        ];
 
-    new Chart(ctx1, {
-      type: 'doughnut',
-      data: {
-        labels: ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio'],
-        datasets: [{
-          data: [30, 45, 50, 40, 60, 55],
-          backgroundColor: [
-            '#0D47A1', '#1565C0', '#1976D2',
-            '#1E88E5', '#2196F3', '#42A5F5'
-          ],
-          borderColor: 'grey',
-          borderWidth: 1,
-          cutout: '40%'  
-        }]
-      },
-      options: {
-        plugins: {
-          legend: { display: false },
-          datalabels: {
-            color: 'white',
-            font: {
-              weight: 'bold',
-              size: 12
-            },
-            formatter: (value, context) =>
-              context.chart.data.labels[context.dataIndex] + ': ' + value
-          }
-        }
-      },
-      plugins: [ChartDataLabels]
-    });
+        const valores = Object.values(data);
+        const etiquetas = Object.keys(data).map(num => meses[parseInt(num) - 1]);
+
+        const ctx = document.getElementById('graficoClientesMes').getContext('2d');
+
+        new Chart(ctx, {
+          type: 'doughnut',
+          data: {
+            labels: etiquetas,
+            datasets: [{
+              data: valores,
+              backgroundColor: [
+                '#0D47A1', '#1565C0', '#1976D2',
+                '#1E88E5', '#2196F3', '#42A5F5',
+                '#64B5F6', '#90CAF9', '#BBDEFB',
+                '#E3F2FD', '#B3E5FC', '#81D4FA'
+              ],
+              borderColor: 'grey',
+              borderWidth: 1,
+              cutout: '40%'
+            }]
+          },
+          options: {
+            plugins: {
+              legend: { display: false },
+              datalabels: {
+                color: 'white',
+                font: {
+                  weight: 'bold',
+                  size: 12
+                },
+                formatter: (value, context) =>
+                  context.chart.data.labels[context.dataIndex] + ': ' + value
+              }
+            }
+          },
+          plugins: [ChartDataLabels]
+        });
+      })
+      .catch(error => console.error("Error cargando clientes por mes:", error));
   });
 </script>
+
 
 <!-- grafica 1 de la seccion 2 -->
 <script>
