@@ -427,7 +427,6 @@
 }
 /* seccion debajo de filtro*/
 .contenedor{
-   width: 99%;
     min-height: 60vh;
     background-color: #e9cfae;
     padding: 0;
@@ -455,14 +454,23 @@
 }
 
   #new-prod {
-    font-size: 18px;
-    padding: 10px 14px;
-    bottom: 10px;
-    right: 10px;
- 
-    right: 0;
-    bottom: 22px
-  }
+    position: fixed;
+    bottom: 19px;
+    right: 1px;
+    z-index: 9999;
+    text-decoration: none;
+    box-shadow: 0 0px 10px rgba(0, 0, 0, 0.3);
+    background-color: black;
+    color: white;
+    font-family: 'inconsolata';
+    font-size: 25px !important;
+    font-weight: bold;
+}
+
+#new-prod:hover {
+    background-color: #313131;
+}
+  
 @media (max-width: 900px) {
   /* aqui empieza*/
   
