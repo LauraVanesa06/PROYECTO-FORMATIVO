@@ -221,7 +221,7 @@
 .div-purchase{
   
     font-size: 13px;
-    width: 342px;
+    width: 260px;
     padding-left: 8px !important;
     padding: 10px;
     color:rgba(0, 0, 0, 0.874);
@@ -321,44 +321,42 @@
 
 }
 
-.ul-nombre {
-      text-decoration: none;
+.ul-nombre{
+    text-decoration: none;
     margin-bottom: 7px;
     margin-left: 15px;
     padding: 0;
     width: 85%;
-
 }
-.ul-nombre:hover {
+.ul-nombre:hover{
     width: 90%;
 }
-.li-nombre {
-  display: flex;
-    justify-content: center;
-    align-items: center;
-      text-decoration: none;
-    margin-bottom: 17px;
-    margin-left: 7px;
-    padding: 10px;
-    justify-self: anchor-center;
-  font-size: 15px;
+.li-nombre{
+    font-size: 15px;
     border-radius: 60px;
-    width: 90%;
-    text-align: center;
- 
+    padding: 0;
+    height: auto;
+    min-height: 40px;
     font-family: 'roboto', sans-serif;
     background-color: grey;
 }
-.li-nombre a {   
-    color: white;
+.li-nombre a{   
+    color:white;
     font-weight: bold;
     font-size: 14px;
     text-decoration: none;
-    height: 100%;
-    width: 100%;
+    width: 90%;
+    text-align: center;
 }
-.li-nombre a:hover {
+.li-nombre a:hover{
     font-size: 16px;
+}
+.li-nombre, .li-nombre a, .new-categ, .btn-categ{
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 /*modal para crear*/ 
 .formulario-proveedor {
@@ -411,7 +409,7 @@
   background-color: white;
     border: solid 1px grey;
     border-radius: 15px;
-    margin: 20px;
+    margin: 10px !important;
     height: 40px;
     display: flex;
     justify-content: space-between;
@@ -443,15 +441,18 @@
 }
 #purcha{
   display: flex;
-  flex-wrap: wrap;
-  gap: 20px;
-  justify-content: flex-start;
-  width: 100%; 
-  padding: 8px;
-  justify-content: space-around;
     align-items: stretch;
+    overflow-y: auto;
+    margin: 0 !important;
+    padding: 0;
+    height: 100%;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    row-gap: 6px;
+    column-gap: 6px;
+    font-size: 30px;
 }
-
 
   #new-prod {
     font-size: 18px;
@@ -529,7 +530,7 @@
 
 }
 .editar2{
-    height: 25px;
+    height: 23px;
     width: 90px;
     border-radius: 10px;
     color: white;
@@ -571,6 +572,11 @@
     flex-wrap: wrap;
     justify-content: space-between;
     align-content: space-between;
+    width: 90%;
+}
+.card-title{
+  margin-bottom: 20px !important;
+  font-size: 18px;
 }
 .hamburger-categorias{
     display: none;

@@ -59,13 +59,13 @@
           </a>
           <div class="div-categ">Proveedores:</div>
         </div>
-        <ul class="ul-nombre">
+        <div>
           <% @suppliers.uniq { |p| p.nombre }.each do |supplier| %>
-            <li class="li-nombre">
-              <%= link_to supplier.nombre, dashboard_suppliers_path(nombre: supplier.nombre) %>
-            </li>
+            <ul class="ul-nombre" id="<%= dom_id supplier %>">
+              <li class="li-nombre"><%= link_to supplier.nombre, dashboard_suppliers_path(nombre: supplier.nombre) %></li>
+            </ul>
           <% end %>
-        </ul>
+        </div>
       </aside>
 
       
