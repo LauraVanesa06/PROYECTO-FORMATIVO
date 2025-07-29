@@ -539,6 +539,7 @@
     align-items: flex-end;
     position: relative;
     font-weight: bold;
+    margin-right: 15px;
 }
 .editar2 a{
     color: white;
