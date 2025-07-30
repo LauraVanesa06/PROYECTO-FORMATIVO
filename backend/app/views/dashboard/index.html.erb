@@ -168,90 +168,108 @@
   <!-- grfaica de la seccion 1 -->
 <script>
   document.addEventListener('DOMContentLoaded', () => {
-    fetch('/api/v1/clientes_por_mes')
-      .then(res => res.json())
-      .then(data => {
-        const meses = [
-          'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio',
-          'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'
-        ];
+  fetch('/api/v1/clientes_por_mes')
+    .then(res => res.json())
+    .then(data => {
+      const meses = [
+        'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio',
+        'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'
+      ];
 
-        const valores = Object.values(data);
-        const etiquetas = Object.keys(data).map(num => meses[parseInt(num) - 1]);
+      const valores = Object.values(data);
+      const etiquetas = Object.keys(data).map(num => meses[parseInt(num) - 1]);
 
-        const ctx = document.getElementById('graficoClientesMes').getContext('2d');
+      const ctx = document.getElementById('graficoClientesMes').getContext('2d');
 
-        new Chart(ctx, {
-          type: 'doughnut',
-          data: {
-            labels: etiquetas,
-            datasets: [{
-              data: valores,
-              backgroundColor: [
-                '#0D47A1', '#1565C0', '#1976D2',
-                '#1E88E5', '#2196F3', '#42A5F5',
-                '#64B5F6', '#90CAF9', '#BBDEFB',
-                '#E3F2FD', '#B3E5FC', '#81D4FA'
-              ],
-              borderColor: 'grey',
-              borderWidth: 1,
-              cutout: '40%'
-            }]
-          },
-          options: {
-            plugins: {
-              legend: { display: false },
-              datalabels: {
-                color: 'white',
-                font: {
-                  weight: 'bold',
-                  size: 12
-                },
-                formatter: (value, context) =>
-                  context.chart.data.labels[context.dataIndex] + ': ' + value
-              }
+      new Chart(ctx, {
+        type: 'doughnut',
+        data: {
+          labels: etiquetas,
+          datasets: [{
+            data: valores,
+            backgroundColor: [
+              '#5D4037', // Marrón chocolate
+              '#6D4C41', // Marrón medio
+              '#795548',
+              '#8D6E63',
+              '#4E342E', // Marrón oscuro
+              '#3E2723',
+              '#A1887F',
+              '#704214',
+              '#654321',
+              '#7B5E57',
+              '#5C4033',
+              '#4B3621'
+            ],
+            borderColor: '#333',
+            borderWidth: 1,
+            cutout: '40%'
+          }]
+        },
+        options: {
+          plugins: {
+            legend: { display: false },
+            datalabels: {
+              color: 'white',
+              font: {
+                weight: 'bold',
+                size: 12
+              },
+              formatter: (value, context) =>
+                context.chart.data.labels[context.dataIndex] + ': ' + value
             }
-          },
-          plugins: [ChartDataLabels]
-        });
-      })
-      .catch(error => console.error("Error cargando clientes por mes:", error));
-  });
+          }
+        },
+        plugins: [ChartDataLabels]
+      });
+    })
+    .catch(error => console.error("Error cargando clientes por mes:", error));
+});
+
 </script>
 
 
 <!-- grafica 1 de la seccion 2 -->
 <script>
-  const porcentaje = 90;
+  document.addEventListener('DOMContentLoaded', () => {
+  fetch('/api/v1/dashboard/porcentaje_stock')
+    .then(res => res.json())
+    .then(data => {
+      const porcentaje = data.porcentaje;
+      const totalSegmentos = 30;
+      const segmentosActivos = Math.round((porcentaje / 100) * totalSegmentos);
+      const datos = Array(totalSegmentos).fill(1);
+      const colores = Array.from({ length: totalSegmentos }, (_, i) =>
+        i < segmentosActivos ? 'white' : '#424242'
+      );
 
-  const totalSegmentos = 30;
-  const segmentosActivos = Math.round((porcentaje / 100) * totalSegmentos);
-  const datos = Array(totalSegmentos).fill(1);
-  const colores = Array.from({ length: totalSegmentos }, (_, i) =>
-    i < segmentosActivos ? 'white' : '#424242'
-  );
+      new Chart(document.getElementById('gaugeSegmentado'), {
+        type: 'doughnut',
+        data: {
+          datasets: [{
+            data: datos,
+            backgroundColor: colores,
+            borderColor: 'grey',
+            borderWidth: 2,
+            hoverOffset: 0
+          }]
+        },
+        options: {
+          cutout: '65%',
+          rotation: -90,
+          circumference: 360,
+          plugins: {
+            legend: { display: false },
+            tooltip: { enabled: false }
+          }
+        }
+      });
 
-  new Chart(document.getElementById('gaugeSegmentado'), {
-    type: 'doughnut',
-    data: {
-      datasets: [{
-        data: datos,
-        backgroundColor: colores,
-        borderColor: 'grey',
-        borderWidth: 2,
-        hoverOffset: 0
-      }]
-    },
-    options: {
-      cutout: '65%',
-      rotation: -90, 
-      circumference: 360,
-      plugins: {
-        legend: { display: false },
-        tooltip: { enabled: false }
-      }
-    }
-  });
+      const valorDiv = document.querySelector('.gauge-value');
+      if (valorDiv) valorDiv.innerHTML = `Stock<br>${porcentaje}%`;
+    })
+    .catch(error => console.error("Error cargando porcentaje de stock:", error));
+});
 </script>
 
 <!-- grafica 2 de la seccion 2 -->

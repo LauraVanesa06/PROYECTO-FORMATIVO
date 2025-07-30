@@ -1,4 +1,11 @@
 class Api::V1::DashboardController < ApplicationController
+    def porcentaje_stock
+        total_stock = Product.sum(:stock)
+        stock_maximo = 1000.0
+        porcentaje = ((total_stock / stock_maximo) * 100).round
+
+        render json: { porcentaje: porcentaje.clamp(0, 100) }
+    end
     def clientes_por_mes
         clientes = Customer.group("strftime('%m', created_at)").count
 
