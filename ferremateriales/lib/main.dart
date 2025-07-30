@@ -1,14 +1,16 @@
+import 'features/auth/bloc/auth_bloc.dart';
+import 'features/auth/bloc/auth_state.dart';
+import 'features/auth/views/login_view.dart';
+import 'firebase_options.dart';
 
-  import 'package:ferremateriales/features/auth/bloc/auth_bloc.dart';
-import 'package:ferremateriales/features/auth/bloc/auth_state.dart';
-import 'package:ferremateriales/features/auth/views/login_view.dart';
-import 'package:ferremateriales/firebase_options.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-  import 'package:flutter_bloc/flutter_bloc.dart';
-  import 'features/productos/bloc/product_bloc.dart';
-  import 'features/productos/views/initial_view.dart';
-  import 'features/productos/views/products_view.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+
+import 'features/productos/bloc/product_bloc.dart';
+import 'features/productos/views/initial_view.dart';
+import 'features/productos/views/products_view.dart';
+
 
 
 void main() async {
