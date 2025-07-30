@@ -1,4 +1,18 @@
 class Api::V1::DashboardController < ApplicationController
+    def ventas_periodo
+        hoy = Time.zone.today
+        ahora = Time.zone.now
+
+        dia = Buy.where(fecha: hoy.all_day).count
+        semana = Buy.where(fecha: ahora.all_week).count
+        mes = Buy.where(fecha: ahora.all_month).count
+
+        render json: {
+          dia: dia,
+          semana: semana,
+          mes: mes
+        }
+    end
     def ventas_por_metodo_pago
         metodos = ['cotizadas', 'efectivo', 'online']
 

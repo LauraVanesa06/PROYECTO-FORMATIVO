@@ -588,22 +588,14 @@ function crearDoughnut(id, cantidad, label) {
     });
   });
 
-crearDoughnut('grafDia', 10, 'Día');
-crearDoughnut('grafSemana', 80, 'Semana');
-crearDoughnut('grafMes', 130, 'Mes');
-
-  btn.addEventListener("click", () => {
-    menu.classList.toggle("active");
-  });
-
-  fetch('/api/v1/dashboard/resumen')
+fetch('/api/v1/ventas_periodo')
   .then(res => res.json())
   .then(data => {
-    document.getElementById('stock').innerText = data.productos_en_stock;
-    document.getElementById('ventas').innerText = `$${data.ventas_hoy}`;
-    document.getElementById('proveedores').innerText = data.proveedores_registrados;
-    document.getElementById('clientes').innerText = data.clientes_registrados;
-  });
+    crearDoughnut('grafDia', data.dia, 'Día');
+    crearDoughnut('grafSemana', data.semana, 'Semana');
+    crearDoughnut('grafMes', data.mes, 'Mes');
+  })
+  .catch(error => console.error('Error al cargar ventas por periodo:', error));
 </script>
 
 </body>

@@ -41,6 +41,7 @@ Rails.application.routes.draw do
       get 'ventas_por_categoria', to: 'dashboard#ventas_por_categoria'
       get 'ventas_por_canal', to: 'dashboard#ventas_por_canal'
       get 'ventas_por_metodo_pago', to: 'dashboard#ventas_por_metodo_pago'
+       get 'ventas_periodo', to: 'dashboard#ventas_periodo'
     end
   end
 
