@@ -1,4 +1,29 @@
 class Api::V1::DashboardController < ApplicationController
+    def ventas_por_metodo_pago
+        metodos = ['cotizadas', 'efectivo', 'online']
+
+        conteos = metodos.map do |metodo|
+            Buy.where('LOWER(metodo_pago) = ?', metodo.downcase).count
+        end
+
+        render json: {
+            etiquetas: metodos,
+            valores: conteos
+        }
+    end
+
+    def ventas_por_canal
+        total = Buy.count.to_f
+        online     = Buy.where('LOWER(metodo_pago) = ?', 'online').count
+        efectivo   = Buy.where('LOWER(metodo_pago) = ?', 'efectivo').count
+        cotizadas  = Buy.where('LOWER(metodo_pago) = ?', 'cotizadas').count
+
+        render json: {
+            online:    ((online / total) * 100).round,
+            efectivo:  ((efectivo / total) * 100).round,
+            cotizadas: ((cotizadas / total) * 100).round
+        }
+    end
      def ventas_por_categoria
         datos = Category
                   .joins(products: :purchasedetails)

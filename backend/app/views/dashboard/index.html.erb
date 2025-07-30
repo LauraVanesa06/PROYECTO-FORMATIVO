@@ -49,7 +49,7 @@
           <canvas id="graficoClientesMes"></canvas>
         </section>
         <section class="texto-1">
-          <div class="titulo-1">Registros de <div>112</div> clientes nuevos</div>
+          <div class="titulo-1">Registros de clientes nuevos</div>
           <div class="texto-1-1">Este dato permite visualizar la evolución del negocio y el ritmo con el que se incrementa la cantidad
              de personas que acceden por primera vez a nuestros productos y servicios.</div>
         </section>
@@ -105,7 +105,7 @@
               <div>
                 <div class="gauge">
                   <canvas id="gaugeOnline"></canvas>
-                  <div class="gauge-label">70%</div>
+                  <div class="gauge-label">0%</div>
                 </div>
                 <div class="gauge-title">Online</div>
               </div>
@@ -114,7 +114,7 @@
               <div>
                 <div class="gauge">
                   <canvas id="gaugeEfectivo"></canvas>
-                  <div class="gauge-label">30%</div>
+                  <div class="gauge-label">0%</div>
                 </div>
                 <div class="gauge-title">Efectivo</div>
               </div>
@@ -123,7 +123,7 @@
               <div>
                 <div class="gauge">
                   <canvas id="gaugeCotizadas"></canvas>
-                  <div class="gauge-label">5%</div>
+                  <div class="gauge-label">0%</div>
                 </div>
                 <div class="gauge-title">Cotizadas</div>
               </div>
@@ -342,7 +342,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 <!-- grafica 1 de la seccion 4 -->
 <script>
-  const crearGauge = (ctxId, porcentaje, color1, color2) => {
+    const crearGauge = (ctxId, porcentaje) => {
     const ctx = document.getElementById(ctxId).getContext('2d');
     new Chart(ctx, {
       type: 'doughnut',
@@ -352,7 +352,7 @@ document.addEventListener('DOMContentLoaded', () => {
           backgroundColor: ['#FF4081', '#383838'],
           borderColor: 'grey',
           borderWidth: 1,
-          cutout: '3%' 
+          cutout: '3%'
         }]
       },
       options: {
@@ -365,9 +365,18 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   };
 
-  crearGauge('gaugeOnline', 70);
-  crearGauge('gaugeEfectivo', 30);
-  crearGauge('gaugeCotizadas', 5);
+  fetch('/api/v1/ventas_por_canal')
+    .then(res => res.json())
+    .then(data => {
+      crearGauge('gaugeOnline', data.online);
+      crearGauge('gaugeEfectivo', data.efectivo);
+      crearGauge('gaugeCotizadas', data.cotizadas);
+
+      document.querySelector('#gaugeOnline + .gauge-label').textContent = `${data.online}%`;
+      document.querySelector('#gaugeEfectivo + .gauge-label').textContent = `${data.efectivo}%`;
+      document.querySelector('#gaugeCotizadas + .gauge-label').textContent = `${data.cotizadas}%`;
+    })
+    .catch(err => console.error('Error al cargar ventas por canal:', err));
 </script>
 
 <!-- grafica 2 de la seccion 4 -->
@@ -385,57 +394,72 @@ document.addEventListener('DOMContentLoaded', () => {
   canvas.style.height = visibleHeight + 'px';
   ctx.scale(scale, scale);
 
-  const gradienteVerde = ctx.createLinearGradient(0, 0, 0, visibleHeight);
-  gradienteVerde.addColorStop(0, '#a8e063');
-  gradienteVerde.addColorStop(1, '#56ab2f');
-
-  const gradienteAmarillo = ctx.createLinearGradient(0, 0, 0, visibleHeight);
-  gradienteAmarillo.addColorStop(0, '#fceabb');
-  gradienteAmarillo.addColorStop(1, '#f8b500');
-
-  const gradienteRojo = ctx.createLinearGradient(0, 0, 0, visibleHeight);
-  gradienteRojo.addColorStop(0, '#ff9966');
-  gradienteRojo.addColorStop(1, '#ff5e62');
-
-  const gradienteAzul = ctx.createLinearGradient(0, 0, 0, visibleHeight);
-  gradienteAzul.addColorStop(0, '#4facfe');
-  gradienteAzul.addColorStop(1, '#00f2fe');
-
-    new Chart(ctx, {
-    type: 'bar',
-    data: {
-      labels: ['Transferencia', 'Efectivo', 'Tarjeta', 'Pago Online'],
-      datasets: [{
-        data: [19, 78, 66, 82],
-        backgroundColor: ['#f8bbd0', '#f06292', '#ec407a', '#e91e63'],
-        borderRadius: 5,
-        borderSkipped: false
-      }]
-    },
-    options: {
-      responsive: false,
-      plugins: {
-        legend: { display: false },
-        tooltip: { enabled: false },
-        datalabels: {
-          anchor: 'end',
-          align: 'top',
-          offset: 4,
-          color: 'white',
-          font: {
-            family: 'Segoe UI',
-            weight: 'bold',
-            size: 30
+  fetch('/api/v1/ventas_por_metodo_pago')
+    .then(res => res.json())
+    .then(data => {
+      new Chart(ctx, {
+        type: 'bar',
+        data: {
+          labels: data.etiquetas,
+          datasets: [{
+            data: data.valores,
+            backgroundColor: ['#f8bbd0', '#f06292', '#ec407a', '#e91e63'],
+            borderRadius: 5,
+            borderSkipped: false
+          }]
+        },
+        options: {
+          responsive: false,
+          plugins: {
+            legend: { display: false },
+            tooltip: { enabled: false },
+            datalabels: {
+              anchor: 'end',
+              align: 'top',
+              offset: 4,
+              color: 'white',
+              font: {
+                family: 'Segoe UI',
+                weight: 'bold',
+                size: 30
+              },
+              formatter: function(value) {
+                return value;
+              }
+            }
           },
-          formatter: function(value) {
-            return value;
+          scales: {
+            y: {
+              beginAtZero: true,
+              max: 100,  // ajusta según tu caso
+              ticks: {
+                color: '#ffffff',
+                font: {
+                  size: 20
+                }
+              },
+              grid: {
+                color: '#666',
+              }
+            },
+            x: {
+              ticks: {
+                color: '#ffffff',
+                font: {
+                  size: 20
+                }
+              },
+              grid: {
+                color: '#666'
+              }
+            }
           }
-        }
-      }
-    },
-    plugins: [ChartDataLabels]
-  });
-  </script>
+        },
+        plugins: [ChartDataLabels]
+      });
+    })
+    .catch(err => console.error('Error al cargar datos:', err));
+</script>
 
 
 <!-- grafica del seccion 5 -->

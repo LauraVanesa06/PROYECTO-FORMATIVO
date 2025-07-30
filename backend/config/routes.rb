@@ -39,6 +39,8 @@ Rails.application.routes.draw do
       get 'clientes_por_mes', to: 'dashboard#clientes_por_mes'
       get 'dashboard/porcentaje_stock', to: 'dashboard#porcentaje_stock'
       get 'ventas_por_categoria', to: 'dashboard#ventas_por_categoria'
+      get 'ventas_por_canal', to: 'dashboard#ventas_por_canal'
+      get 'ventas_por_metodo_pago', to: 'dashboard#ventas_por_metodo_pago'
     end
   end
 
