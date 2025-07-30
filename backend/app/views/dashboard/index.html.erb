@@ -73,7 +73,7 @@
           <div class="ingresos">
             <p class="flecha" id="F1">🡅</p>
             <p class="etiqueta">Ingresos</p>
-            <p class="monto">$25.000.000</p>
+            <p class="monto" id="ingresos">0$</p>
           </div>
           <!--<div class="contenedor-moneda">
             <div class="texto-centro">
@@ -85,7 +85,7 @@
         </section>
         <section>
           <div class="egresos">
-            <p class="monto">$21.100.000</p>
+            <p class="monto" id="egresos">0$</p>
             <p class="etiqueta">Egresos</p>
             <p class="flecha" id="F2">🡇</p>
           </div>
@@ -339,6 +339,19 @@ document.addEventListener('DOMContentLoaded', () => {
 
 <!-- grafica de la seccion 3 -->
 
+<script>
+  function formatearPesos(valor) {
+    return `$${valor.toLocaleString("es-CO")}`;
+  }
+
+  fetch('/api/v1/finanzas')
+    .then(res => res.json())
+    .then(data => {
+      document.getElementById("ingresos").textContent = formatearPesos(data.ingresos);
+      document.getElementById("egresos").textContent = formatearPesos(data.egresos);
+    })
+    .catch(err => console.error("Error al cargar datos financieros", err));
+</script>
 
 <!-- grafica 1 de la seccion 4 -->
 <script>
@@ -349,7 +362,7 @@ document.addEventListener('DOMContentLoaded', () => {
       data: {
         datasets: [{
           data: [porcentaje, 100 - porcentaje],
-          backgroundColor: ['#FF4081', '#383838'],
+          backgroundColor: ['#8A635A', '#383838'],
           borderColor: 'grey',
           borderWidth: 1,
           cutout: '3%'
@@ -403,7 +416,7 @@ document.addEventListener('DOMContentLoaded', () => {
           labels: data.etiquetas,
           datasets: [{
             data: data.valores,
-            backgroundColor: ['#f8bbd0', '#f06292', '#ec407a', '#e91e63'],
+            backgroundColor: ['#8A635A', '#8A635A', '#8A635A', '#8A635A'],
             borderRadius: 5,
             borderSkipped: false
           }]
@@ -492,7 +505,7 @@ function crearDoughnut(id, cantidad, label) {
       labels: ['Dato', 'Restante'],
       datasets: [{
         data: [cantidad, 200 - cantidad],
-        backgroundColor: ['#7E57C2', '#383838'],
+        backgroundColor: ['#8A635A', '#383838'],
         borderColor: ['transparent', 'transparent'],
         borderWidth: 2
       }]

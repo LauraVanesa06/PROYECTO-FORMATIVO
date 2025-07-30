@@ -1,4 +1,18 @@
 class Api::V1::DashboardController < ApplicationController
+
+    def finanzas
+        ingresos = Purchasedetail
+          .joins(:product)
+          .sum('purchasedetails.cantidad * products.precio')
+
+        # Este egreso es simulado
+        egresos = 1000000
+
+        render json: {
+          ingresos: ingresos.to_i,
+          egresos: egresos.to_i
+        }
+    end
     def ventas_periodo
         hoy = Time.zone.today
         ahora = Time.zone.now
