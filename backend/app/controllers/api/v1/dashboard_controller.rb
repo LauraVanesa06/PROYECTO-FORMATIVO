@@ -1,4 +1,15 @@
 class Api::V1::DashboardController < ApplicationController
+     def ventas_por_categoria
+        datos = Category
+                  .joins(products: :purchasedetails)
+                  .group('categories.nombre')
+                  .sum('purchasedetails.cantidad')
+
+        render json: {
+          etiquetas: datos.keys,
+          valores: datos.values
+        }
+      end
     def porcentaje_stock
         total_stock = Product.sum(:stock)
         stock_maximo = 1000.0

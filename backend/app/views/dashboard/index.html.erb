@@ -274,84 +274,67 @@
 
 <!-- grafica 2 de la seccion 2 -->
 <script>
-  document.addEventListener('DOMContentLoaded', () => {
-    const ctx2 = document.getElementById('graficoVentas').getContext('2d');
-    const categorias = [
-      'Herramientas',
-      'Tornillería y Fijaciones',
-      'Plomería',
-      'Electricidad',
-      'Construcción y Materiales',
-      'Pintura y Acabados',
-      'Ferretería para el hogar',
-      'Limpieza y Mantenimiento',
-      'Adhesivos y Selladores',
-      'Jardinería'
-    ];
-    const datos = [150, 120, 80, 100, 200, 90, 110, 70, 60, 50];
-    const colores = [
-      '#4CAF50',
-      '#4CAF50',
-      '#4CAF50',
-      '#4CAF50',
-      '#4CAF50',
-      '#4CAF50',
-      '#4CAF50',
-      '#4CAF50',
-      '#4CAF50',
-      '#4CAF50'
-    ];
+document.addEventListener('DOMContentLoaded', () => {
+  fetch('/api/v1/ventas_por_categoria')
+    .then(res => res.json())
+    .then(data => {
+      const ctx2 = document.getElementById('graficoVentas').getContext('2d');
 
-    new Chart(ctx2, {
-      type: 'bar',
-      data: {
-        labels: categorias,
-        datasets: [{
-          label: 'Ventas (unidades)',
-          data: datos,
-          backgroundColor: colores,
-          borderColor: colores,
-          borderWidth: 1
-        }]
-      },
-      options: {
-        indexAxis: 'y',
-        responsive: true,
-        maintainAspectRatio: false,
-        plugins: {
-          legend: { display: false },
-          datalabels: {
-            align: 'start',
-            anchor: 'end',
-            color: 'white',
-            formatter: (value, context) =>
-              categorias[context.dataIndex] + ' (' + value + ')',
-            font: {
-              size: 12,
-              weight: 'bold'
+      const colores = Array(data.valores.length).fill('#8D6E63'); // marrón medio
+
+      new Chart(ctx2, {
+        type: 'bar',
+        data: {
+          labels: data.etiquetas,
+          datasets: [{
+            label: 'Ventas (unidades)',
+            data: data.valores,
+            backgroundColor: colores,
+            borderColor: colores,
+            borderWidth: 1
+          }]
+        },
+        options: {
+          indexAxis: 'y',
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: { display: false },
+            datalabels: {
+              align: 'start',
+              anchor: 'end',
+              color: 'white',
+              formatter: (value, context) =>
+                context.chart.data.labels[context.dataIndex] + ' (' + value + ')',
+              font: {
+                size: 12,
+                weight: 'bold'
+              }
+            }
+          },
+          scales: {
+            x: {
+              beginAtZero: true,
+              ticks: { color: 'white' },
+              title: {
+                display: true,
+                text: 'Unidades vendidas',
+                color: 'white'
+              },
+              grid: { color: 'rgba(255,255,255,0.1)' }
+            },
+            y: {
+              ticks: { display: false },
+              grid: { display: false }
             }
           }
         },
-        scales: {
-          x: {
-            beginAtZero: true,
-            ticks: { color: 'white' },
-            title: {
-              display: true,
-              text: 'Unidades vendidas',
-              color: 'white'
-            },
-            grid: { color: 'rgba(255,255,255,0.1)' }
-          },
-          y: {
-            ticks: { display: false },
-            grid: { display: false }
-          }
-        }
-      },
-      plugins: [ChartDataLabels]
-    });
-  });
+        plugins: [ChartDataLabels]
+      });
+    })
+    .catch(err => console.error('Error al cargar ventas por categoría:', err));
+});
+
 </script>
 
 <!-- grafica de la seccion 3 -->
