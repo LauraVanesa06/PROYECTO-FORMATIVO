@@ -57,110 +57,6 @@
           <div class="info3"><a class="info2">40</a><a class="info">Año</a></div>
         </div>
         <canvas id="grafica"></canvas>
-        <script>
-  const btn = document.getElementById("hamburger");
-  const menu = document.getElementById("menu");
-
-  btn.addEventListener("click", () => {
-    menu.classList.toggle("active");
-  });
-
-  new Chart(document.getElementById('grafica'), {
-    type: 'bar',
-    data: {
-      labels: ['Hoy', 'Semana', 'Mes', 'Año'],
-      datasets: [
-        {
-          label: 'Minorista',
-          data: [10, 20, 15, 25],
-          backgroundColor: '#4CAF50',
-          tension: 0.2,
-        },
-        {
-          label: 'Mayorista',
-          data: [20, 30, 25, 35],
-          backgroundColor: '#66BB6A',
-          tension: 0.2
-        },
-        {
-          label: 'Contratista/Empresa',
-          data: [5, 15, 10, 18],
-          backgroundColor: '#388E3C',
-          tension: 0.2
-        },
-        {
-          label: 'Online',
-          data: [2, 17, 40, 60],
-          backgroundColor: '#2E7D32',
-          tension: 0.2
-        }
-      ]
-    },
-    options: {
-      responsive: true,
-      maintainAspectRatio: false,
-      plugins: {
-        legend: {
-          labels: {
-            usePointStyle: true,
-            pointStyle: 'circle',
-            color: 'black',
-            font: {
-              family: 'inconsolata',
-              size: 10,
-              weight: 'bold'
-            }
-          },
-          onClick: function (e, legendItem, legend) {
-            const chart = legend.chart;
-            const index = legendItem.datasetIndex;
-
-            const isOnlyVisible = chart.data.datasets.every((ds, i) => {
-              const meta = chart.getDatasetMeta(i);
-              return i === index ? !meta.hidden : meta.hidden;
-            });
-
-            if (isOnlyVisible) {
-              chart.data.datasets.forEach((ds, i) => {
-                chart.getDatasetMeta(i).hidden = false;
-              });
-            } else {
-              chart.data.datasets.forEach((ds, i) => {
-                chart.getDatasetMeta(i).hidden = i !== index;
-              });
-            }
-
-            chart.update();
-          }
-        }
-      },
-      scales: {
-        y: {
-          beginAtZero: true,
-          ticks: {
-            color: 'black',
-            font: {
-              family: 'inconsolata',
-              size: 10,
-              weight: 'bold'
-            }
-          }
-        },
-        x: {
-          ticks: {
-            color: 'black',
-            font: {
-              family: 'inconsolata',
-              size: 10,
-              weight: 'bold'
-            }
-          }
-        }
-      }
-    }
-  });
-</script>
-
       </div>
       <div class="div-white"></div>
     </section>
@@ -242,7 +138,7 @@
             <div class="modal-content2">
               <a href="#" class="close">&times;</a>
               <div class="titulo2 tb">Crear Compra</div>
-              <%= form_with(model: Buy.new, url: buys_path, local: true, html: { multipart: true }, class: 'form-editar') do |form| %>
+              <%= form_with(model: Buy.new, url: ventas_path, data: { remote: true }, html: { multipart: true }, class: 'form-editar') do |form| %>
                 <div class="texto2">
                   <%= form.label :fecha, "Fecha : ", style: "display: block" %>
                   <%= form.date_field :fecha %>
@@ -251,6 +147,11 @@
                 <div class="texto2">
                   <%= form.label :customer_id, "Cliente : " %>
                   <%= form.collection_select :customer_id, Customer.all, :id, :nombre, prompt: "Seleccione un cliente" %>
+                </div>
+
+                <div class="texto2">
+                  <%= form.label :tipo, "Tipo de compra : " %>
+                  <%= form.select :tipo, options_for_select(["Minorista", "Mayorista", "Contratista/Empresa"]), prompt: "Seleccione un tipo" %>
                 </div>
 
                 <div class="btn3">
@@ -265,7 +166,73 @@
     </section>
   </section>
 
-  
+<script>
+  const btn = document.getElementById("hamburger");
+  const menu = document.getElementById("menu");
+
+  btn.addEventListener("click", () => {
+    menu.classList.toggle("active");
+  });
+
+  function cargarGrafica() {
+    fetch('/api/v1/buys/por_tipo')
+    .then(response => response.json())
+    .then(datos => {
+      const labels = datos.labels;
+      const datasets = datos.datasets;
+
+      new Chart(document.getElementById('grafica'), {
+        type: 'bar',
+        data: {
+          labels: labels,
+          datasets: datasets
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: {
+              labels: {
+                usePointStyle: true,
+                pointStyle: 'circle',
+                color: 'black',
+                font: {
+                  family: 'inconsolata',
+                  size: 20,
+                  weight: 'bold'
+                }
+              }
+            }
+          },
+          scales: {
+            y: {
+              beginAtZero: true,
+              ticks: {
+                color: 'black',
+                font: {
+                  family: 'inconsolata',
+                  size: 16,
+                  weight: 'bold'
+                }
+              }
+            },
+            x: {
+              ticks: {
+                color: 'black',
+                font: {
+                  family: 'inconsolata',
+                  size: 18,
+                  weight: 'bold'
+                }
+              }
+            }
+          }
+        }
+      });
+    });
+  }
+  document.addEventListener('DOMContentLoaded', cargarGrafica);
+</script>
 
   <footer>
     &copy; 2025 Ferremateriales el Maestro - v2.3.7
