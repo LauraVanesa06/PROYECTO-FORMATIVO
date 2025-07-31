@@ -35,6 +35,7 @@
         <li><a href="ventas"class="link-menu">Ventas</a></li>
         <li><a href="suppliers"class="link-menu">Proveedores</a></li>
         <li><a href="clientes"class="link-menu">Clientes</a></li>
+        <li><a href="help"class="link-menu">Ayuda</a></li>
       </ul>
       <% if user_signed_in? %>
         <%= button_to "Cerrar sesión", destroy_user_session_path, method: :delete, form: { data: { turbo: true } }, id: "cerrar", class: "logout"%>

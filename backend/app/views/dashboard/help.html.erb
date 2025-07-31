@@ -1,0 +1,99 @@
+<!DOCTYPE  html>
+  <html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <%= favicon_link_tag 'favicon.png' %>
+    <title>Dashboard Ferretería</title>
+   
+    <%= favicon_link_tag 'header-icon.png' %>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Eczar:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Bootstrap CSS CDN -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap JS (opcional, para dropdowns/modals) -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+     <%= stylesheet_link_tag "ayuda", media: "all" %>
+    <%= stylesheet_link_tag "dashboard", media: "all" %>
+  </head>
+  <body>
+    <header>
+      <div class="container-header">
+        <div class="img-empresa">
+          <img src="img/test.png" alt="" width="60px">
+        </div>
+        <button class="hamburger" id="hamburger">&#9776;</button>
+        <p class="pricipal">Ferremateriales el Maestro - Dashboard</p>
+
+        <% if user_signed_in? %>
+          <%= button_to destroy_user_session_path, method: :delete, form: { data: { turbo: true } }, id: "cerrar", class: "logout2" do %>
+          <span><i class="fas fa-sign-out-alt" style="color: white"></i></span>
+          <% end %>
+        <% end %>
+      </div>
+    </header>
+    <nav class="nav-bg">
+      <div class="container-nav">
+        <ul class="menu" id="menu">
+          <li><a href="dashboard"class="link-menu">Inicio</a></li>
+          <li><a href="inventario"class="link-menu">Inventario</a></li>
+          <li><a href="ventas"class="link-menu">Ventas</a></li>
+          <li><a href="suppliers"class="link-menu">Proveedores</a></li>
+          <li><a href="clientes"class="link-menu">Clientes</a></li>
+          <li><a href="help"class="link-menu">Ayuda</a></li>
+
+        </ul>
+        <div>
+          <% if user_signed_in? %>
+            <%= button_to "Cerrar sesión", destroy_user_session_path, method: :delete, form: { data: { turbo: true } }, id: "cerrar", class: "logout"%>
+          <% end %>
+        </div>
+      </div>
+    </nav>
+    <section class="contenedor">
+      <h2 class = "h2">¿EN QUÉ PODEMOS AYUDARTE?</h2>
+      <p>Aquí puedes contactar al técnico si encuentras errores o dudas sobre la plataforma.</p>
+      <div class="orden">
+        <section class="Formulario" >
+        
+          <%= form_with url: send_report_dashboard_index_path, scope: :support_request, local: true do |f| %>
+            <div class="mb-3 "  >
+              <%= f.label :nombre, "Tu nombre" %>
+              <%= f.text_field :user_name, class: "form-control" %>
+            </div>
+          
+            <div class="mb-3">
+              <%= f.label :user_email, "Tu correo" %>
+              <%= f.email_field :user_email, class: "form-control" %>
+            </div>
+            
+            <div class="mb-3">
+              <%= f.label :description, "Descripción del error o duda" %>
+              <%= f.text_area :description, class: "form-control" %>
+            </div>
+        
+            <%= f.submit "Enviar al técnico", class: "btn btn-outline-light", id: "hola" %>
+          
+          <% end %>
+        </section>
+        <section>
+        
+        <%= image_tag "f629c052-bfe0-4258-a824-362b82eb5a4e.png", width: "500", height: "350" , class: "forma", alt: "Descripción de la imagen" %>  
+
+        </section>  
+      </div>
+     
+        <% if flash[:notice] %>
+      
+        <div class="alert alert-success mt-3">
+          <%= flash[:notice] %>
+        </div>
+      <% end %>
+    </section>
+
+  </body>
+</html>
+
+
+
+

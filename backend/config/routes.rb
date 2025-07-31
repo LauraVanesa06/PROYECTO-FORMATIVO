@@ -21,11 +21,17 @@ Rails.application.routes.draw do
   get 'clientes', to: 'dashboard#clientes', as: 'clientes'
   match 'ventas', to: 'dashboard#ventas', via: [:get, :post], as: 'ventas'
 
+  get 'help', to: 'dashboard#help', as: 'help'
+        post 'send_report', to: 'dashboard#send_report', as: :send_report_dashboard_index
+
   resources :categories do
     member do
       get :products
     end
   end
+
+
+  
 
   resources :customers, :buys do
     member do
@@ -79,8 +85,7 @@ end
       get '/registro', to: 'usuarios/registrations#new', as: :custom_signup
       get '/olvide-contrasena', to: 'usuarios/passwords#new', as: :custom_new_password
     end
-      
-  
+
   # Render dynamic PWA files from app/views/pwa/* (remember to link manifest in application.html.erb)
   # get "manifest" => "rails/pwa#manifest", as: :pwa_manifest
   # get "service-worker" => "rails/pwa#service_worker", as: :pwa_service_worker
