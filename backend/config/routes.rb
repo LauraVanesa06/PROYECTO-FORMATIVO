@@ -35,7 +35,7 @@ Rails.application.routes.draw do
 
   namespace :api do
     namespace :v1 do
-      get 'buys/por_tipo', to: 'buys#por_tipo'
+      get 'buys/por_tipo', to: 'buys#ventas_por_tipo'
       get 'clientes_por_mes', to: 'dashboard#clientes_por_mes'
       get 'dashboard/porcentaje_stock', to: 'dashboard#porcentaje_stock'
       get 'ventas_por_categoria', to: 'dashboard#ventas_por_categoria'

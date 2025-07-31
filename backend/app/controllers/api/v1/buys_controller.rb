@@ -1,38 +1,44 @@
 class Api::V1::BuysController < ApplicationController
-  def por_tipo
-    tipos = ['Minorista', 'Mayorista', 'Contratista/Empresa']
+  def ventas_por_tipo
+        hoy = Date.today
+        semana = hoy.beginning_of_week..hoy.end_of_week
+        mes = hoy.beginning_of_month..hoy.end_of_month
+        año = hoy.beginning_of_year..hoy.end_of_year
 
-    hoy     = Time.zone.today.all_day
-    semana  = 1.week.ago.beginning_of_day..Time.zone.now
-    mes     = 1.month.ago.beginning_of_day..Time.zone.now
-    año     = 1.year.ago.beginning_of_day..Time.zone.now
+        tipos = ["Minorista", "Mayorista", "Contratista/Empresa"]
+        datos = {
+          labels: ["Hoy", "Semana", "Mes", "Año"],
+          datasets: []
+        }
 
-    datos = tipos.map do |tipo|
-      {
-        label: tipo,
-        data: [
-          Buy.where(tipo: tipo, fecha: hoy).count,
-          Buy.where(tipo: tipo, fecha: semana).count,
-          Buy.where(tipo: tipo, fecha: mes).count,
-          Buy.where(tipo: tipo, fecha: año).count
-        ],
-        backgroundColor: color_para_tipo(tipo)
-      }
-    end
+        tipos.each do |tipo|
+          datos[:datasets] << {
+            label: tipo,
+            data: [
+              Buy.where(tipo: tipo, fecha: hoy).count,
+              Buy.where(tipo: tipo, fecha: semana).count,
+              Buy.where(tipo: tipo, fecha: mes).count,
+              Buy.where(tipo: tipo, fecha: año).count
+            ],
+            backgroundColor: tipo_color(tipo)
+          }
+        end
 
-    render json: {
-      labels: ['Hoy', 'Semana', 'Mes', 'Año'],
-      datasets: datos
-    }
-  end
+        render json: datos
+      end
 
-  private
+      private
 
-  def color_para_tipo(tipo)
-    {
-      'Minorista' => '#4CAF50',
-      'Mayorista' => '#66BB6A',
-      'Contratista/Empresa' => '#388E3C'
-    }[tipo]
-  end
+      def tipo_color(tipo)
+        case tipo
+        when "Minorista"
+          "#E0A461"       # Verde pasto oscuro
+        when "Mayorista"
+          "#C08D7B"       # Marrón claro
+        when "Contratista/Empresa"
+          "#97683B"       # Gris metálico
+        else
+          "#BDBDBD"       # Gris neutro por defecto
+        end
+      end
 end

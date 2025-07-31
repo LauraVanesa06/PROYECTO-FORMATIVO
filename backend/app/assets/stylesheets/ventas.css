@@ -5,7 +5,7 @@
     padding: 0;
     gap: 0;
     height: 670px;
-    background-color: #e9cfae;
+    background-color: #292929;
 }
 #sect1{
     display:flex;
@@ -31,7 +31,7 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    background: linear-gradient(#66BB6A, white);
+    background: linear-gradient(#000000, white);
 }
 .div-white{
     width: 100%;
