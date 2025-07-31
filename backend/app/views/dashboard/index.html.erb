@@ -188,20 +188,11 @@
           datasets: [{
             data: valores,
             backgroundColor: [
-              '#5D4037', // Marrón chocolate
-              '#6D4C41', // Marrón medio
-              '#795548',
-              '#8D6E63',
-              '#4E342E', // Marrón oscuro
-              '#3E2723',
-              '#A1887F',
-              '#704214',
-              '#654321',
-              '#7B5E57',
-              '#5C4033',
-              '#4B3621'
+              '#3E2723', '#4E342E', '#5D4037', '#6D4C41',
+              '#795548', '#8D6E63', '#A1887F', '#BCAAA4',
+              '#D7CCC8', '#E0E0E0', '#EEEEEE', '#FFFFFF'
             ],
-            borderColor: '#333',
+            borderColor: '#000',
             borderWidth: 1,
             cutout: '40%'
           }]
@@ -240,7 +231,7 @@
       const segmentosActivos = Math.round((porcentaje / 100) * totalSegmentos);
       const datos = Array(totalSegmentos).fill(1);
       const colores = Array.from({ length: totalSegmentos }, (_, i) =>
-        i < segmentosActivos ? 'white' : '#424242'
+        i < segmentosActivos ? '#FFFFFF' : '#616161' // blanco y gris oscuro
       );
 
       new Chart(document.getElementById('gaugeSegmentado'), {
@@ -280,7 +271,7 @@ document.addEventListener('DOMContentLoaded', () => {
     .then(data => {
       const ctx2 = document.getElementById('graficoVentas').getContext('2d');
 
-      const colores = Array(data.valores.length).fill('#8D6E63'); // marrón medio
+      const colores = Array(data.valores.length).fill('#838282');
 
       new Chart(ctx2, {
         type: 'bar',
@@ -362,7 +353,7 @@ document.addEventListener('DOMContentLoaded', () => {
       data: {
         datasets: [{
           data: [porcentaje, 100 - porcentaje],
-          backgroundColor: ['#E0A461', '#383838'],
+          backgroundColor: ['#9B9A9A', '#212121'],
           borderColor: 'grey',
           borderWidth: 1,
           cutout: '3%'
@@ -416,7 +407,7 @@ document.addEventListener('DOMContentLoaded', () => {
           labels: data.etiquetas,
           datasets: [{
             data: data.valores,
-            backgroundColor: ['#8A635A', '#8A635A', '#8A635A', '#8A635A'],
+            backgroundColor: ['white', 'white', 'white', 'white'],
             borderRadius: 5,
             borderSkipped: false
           }]
@@ -505,7 +496,7 @@ function crearDoughnut(id, cantidad, label) {
       labels: ['Dato', 'Restante'],
       datasets: [{
         data: [cantidad, 200 - cantidad],
-        backgroundColor: ['#E0A461', '#383838'],
+        backgroundColor: ['#9B9A9A', '#383838'],
         borderColor: ['transparent', 'transparent'],
         borderWidth: 2
       }]
