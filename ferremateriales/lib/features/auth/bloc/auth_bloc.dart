@@ -7,7 +7,17 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
   final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
 
   AuthBloc() : super(const AuthState()) {
-    // LOGIN
+    // Cuando inicia la app
+    on<AuthStarted>((event, emit) async {
+      final user = _firebaseAuth.currentUser;
+      if (user != null) {
+        emit(state.copyWith(status: AuthStatus.success));
+      } else {
+        emit(const AuthState(status: AuthStatus.initial));
+      }
+    });
+
+    // Cuando se envía el formulario de login
     on<LoginSubmitted>((event, emit) async {
       emit(state.copyWith(status: AuthStatus.loading));
       try {
@@ -24,13 +34,13 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       }
     });
 
-    // LOGOUT
+    // Cuando se solicita el logout
     on<LogoutRequested>((event, emit) async {
       await _firebaseAuth.signOut();
-      emit(const AuthState(status: AuthStatus.initial));
+      emit(const AuthState(status: AuthStatus.loggedOut)); // Aquí el nuevo estado
     });
 
-    // REGISTRO
+    // Cuando se registra un nuevo usuario
     on<RegisterRequested>((event, emit) async {
       emit(state.copyWith(status: AuthStatus.loading));
       try {
