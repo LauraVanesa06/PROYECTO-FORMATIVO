@@ -222,6 +222,7 @@
   
     font-size: 13px;
     width: 260px;
+    height: 303px;
     padding-left: 8px !important;
     padding: 10px;
     color:rgba(0, 0, 0, 0.874);
@@ -231,17 +232,17 @@
     flex-direction: row;
     border-radius: 10px;
     border: 1px solid transparent;
-    box-shadow: 0 0 8px #989898;
+    box-shadow: 0 0 8px #232323;
 }
 
 
 .color{
-  height: auto;
-  width: 5px;
-  border: solid 1px rgb(93, 138, 186);
-  background-color:rgb(93, 138, 186);
-  margin-right: 10px;
-  border-radius: 50%;
+  height: 100%;
+    width: 4px;
+    border: solid 1px rgb(0 110 227);
+    background-color: rgb(0 123 255);
+    margin-right: 10px;
+    border-radius: 50px;
 }
 .ordenar{
   display: flex;
@@ -390,11 +391,11 @@
 .SeccionProveedores{
   width: 80%;
     height: auto;
-    background-color: #e9cfae;
+    background-color: rgb(41, 41, 41);
     padding: 0;
     margin: 0;
-    display: flex
-;
+    display: flex;
+    align-items: center;
     flex-direction: column;
     gap: 0;
 }
@@ -416,6 +417,7 @@
     align-items: center;
     padding: 20px;
      margin-top: 20px;
+    width: 98%;
 }
 
 .p {
@@ -428,15 +430,14 @@
 /* seccion debajo de filtro*/
 .contenedor{
     min-height: 60vh;
-    background-color: #e9cfae;
     padding: 0;
     margin: 0;
     display: ruby;
     flex-direction: column;
     gap: 0;
-    border-radius: 20px;
     overflow-y: auto;
-    
+    height: 100%;
+    width: 95%;
 }
 #purcha{
   display: flex;
@@ -559,11 +560,11 @@
     text-decoration: none;
 }
 .editar2{
-    border: solid 1px #f5a226;
-    background-color: #ffb950;
+    border: solid 1px #ff9317;
+    background-color: #ffc81e;
 }
 .editar2:hover{
-    background-color: #f4a735;
+    background-color: #ffb300;
 }
 
 .body2{

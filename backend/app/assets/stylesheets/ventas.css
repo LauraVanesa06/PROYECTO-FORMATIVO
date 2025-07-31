@@ -489,8 +489,9 @@ input::placeholder {
   background-color: #fff;
   margin: 50px auto;
   padding: 20px;
-  width: 90%;
-  max-width: 450px;
+  padding-top: 7px;
+    width: 90%;
+    max-width: 370px;
   border-radius: 10px;
   position: relative;
   display: flex;
@@ -504,7 +505,7 @@ input::placeholder {
 .titulo2{
     color: #fca123;
     font-size: 30px;
-    margin-bottom: 35px;
+    margin-bottom:25px;
     font-weight: bold;
     font-style: italic;
 }
@@ -528,10 +529,9 @@ input::placeholder {
     display: flex;
     flex-direction: row;
     justify-content: space-between;
-    margin-bottom: 15px;
 }
 .tb{
-    color: limegreen;
+    color: rgb(0, 181, 0);
 }
 .btn4{
     color:white;
@@ -546,7 +546,7 @@ input::placeholder {
     background-color: #f4a735;
 }
 .bb{
-    background-color: limegreen;
+    background-color: rgb(0, 181, 0);
     border: green;
 }
 @media (max-width: 375px) {
