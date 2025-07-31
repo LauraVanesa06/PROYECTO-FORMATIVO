@@ -43,6 +43,7 @@ dependencies:
   firebase_auth: ^4.17.4
   firebase_core: ^2.31.0
   logger: ^2.0.2
+  carousel_slider: ^5.1.1
 
 
 
