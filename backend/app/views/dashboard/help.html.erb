@@ -23,7 +23,10 @@
           <img src="img/test.png" alt="" width="60px">
         </div>
         <button class="hamburger" id="hamburger">&#9776;</button>
-        <p class="pricipal">Ferremateriales el Maestro - Dashboard</p>
+        <div id="control">
+          <div class="panel"><%= image_tag "panel-control.png", class: "c-panel" %></div>
+          <p class="pricipal">Panel de Control</p>
+        </div>
 
         <% if user_signed_in? %>
           <%= button_to destroy_user_session_path, method: :delete, form: { data: { turbo: true } }, id: "cerrar", class: "logout2" do %>
@@ -51,34 +54,41 @@
       </div>
     </nav>
     <section class="contenedor">
-      <h2 class = "h2">¿EN QUÉ PODEMOS AYUDARTE?</h2>
-      <p>Aquí puedes contactar al técnico si encuentras errores o dudas sobre la plataforma.</p>
+      <h2 class = "h2">¿Algo no funciona como debería?</h2>
+      <p>
+        Si durante el uso de la plataforma llegas a encontrar algún error, comportamiento inesperado o simplemente tienes dudas sobre cómo 
+        utilizar alguna de sus funciones, este es el lugar adecuado para contactar al técnico. Él se encargará de brindarte el soporte necesario, 
+        ya sea solucionando problemas técnicos, guiándote en el uso del sistema o respondiendo a cualquier inquietud relacionada con el funcionamiento 
+        general del aplicativo. No dudes en escribir si necesitas ayuda, estamos aquí para apoyarte.
+      </p>
       <div class="orden">
         <section class="Formulario" >
-        
+          <h1 class="soporte">Soporte técnico</h1>
           <%= form_with url: send_report_dashboard_index_path, scope: :support_request, local: true do |f| %>
             <div class="mb-3 "  >
-              <%= f.label :nombre, "Tu nombre" %>
-              <%= f.text_field :user_name, class: "form-control" %>
+              <%= f.label :nombre, "Nombre", class:"l-nombre"%>
+              <%= f.text_field :user_name, class: "nombre", placeholder:"Ej: Laura Rodríguez" %>
             </div>
           
             <div class="mb-3">
-              <%= f.label :user_email, "Tu correo" %>
-              <%= f.email_field :user_email, class: "form-control" %>
+              <%= f.label :user_email, "Correo", class: "l-email"%>
+              <%= f.email_field :user_email, class: "email", placeholder:"Ej: laura.rodriguez@email.com"%>
             </div>
             
             <div class="mb-3">
-              <%= f.label :description, "Descripción del error o duda" %>
-              <%= f.text_area :description, class: "form-control" %>
+              <%= f.label :description, "Descripción de la duda o error", class: "l-descripcion" %>
+              <%= f.text_area :description, class: "descripcion", placeholder:"Ej: Al intentar generar la factura, aparece un mensaje de 'Error 500'. Ocurre cuando selecciono el cliente y doy clic en 'Guardar'."%>
             </div>
-        
-            <%= f.submit "Enviar al técnico", class: "btn btn-outline-light", id: "hola" %>
+
+            <div class="hola">
+              <%= f.submit "Enviar al técnico", class: "btn btn-outline-light", id: "hola" %>
+            </div>
           
           <% end %>
         </section>
         <section>
         
-        <%= image_tag "f629c052-bfe0-4258-a824-362b82eb5a4e.png", width: "500", height: "350" , class: "forma", alt: "Descripción de la imagen" %>  
+        <%= image_tag "soporte.jpg",class: "forma", alt: "Descripción de la imagen" %>  
 
         </section>  
       </div>
@@ -90,7 +100,9 @@
         </div>
       <% end %>
     </section>
-
+    <footer>
+      &copy; 2025 Ferremateriales el Maestro - v2.3.7
+    </footer>
   </body>
 </html>
 

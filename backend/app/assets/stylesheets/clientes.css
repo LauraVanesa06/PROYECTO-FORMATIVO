@@ -3,7 +3,7 @@
     flex-direction: column;
     width: 100%;
     height: 670px;
-    background-color: #5b5b5b;
+    background-color: #494949;
 }
 .filt{
     display: flex;
@@ -107,10 +107,9 @@
     display: flex;
     flex-direction: row;
     border-radius: 0 25px 25px 0;
-    border: solid 1px rgb(250, 250, 250);
+        border: solid 1px rgb(0 0 0 / 0%);
     width: 90%;
     height: 40px;
-    background-color:rgb(238, 238, 238);
     margin-bottom: -1px;
 }
 .compra-info:hover{
@@ -126,19 +125,22 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    background-color: #6876aa;
+    background-color: #ececec;
     font-weight: bold;
-    color: white;
+    color: rgb(80, 80, 80);
 }
 .p-fecha{
-  color: rgb(0, 0, 0);
+  color: white;
+  font-weight: bold;
     display: flex; 
     align-items: center;
     width: 80%;
     padding-left: 30px;
     font-family: Arial, Helvetica, sans-serif;
-    background-color: #cbcdea;
+    background-color: #b9b9b9;
     border-radius: 0 25px 25px 0;
+    border: black solid 1px;
+    height: 38px;
 }
 .p-fecha a{
     width: 100%;
@@ -150,7 +152,7 @@
     text-decoration: none;
 }
 .p-fecha:hover{
-    background-color: #e1e9f2;
+    background-color: #929292;
     width: 100%;
 }
 .btn-customer{
@@ -184,20 +186,41 @@
     background-color: #cfcfcf;
     color: white;
 }
-.cont-facturas{
-    width: 80%;
-    height: 100%;
-    background-color: #e9cfae;
-    background-image: url("clientes-fondo.png");
-    background-repeat: no-repeat;
-    background-position: center center;
-    padding: 0;
-    margin: 0;
-    display: flex;
-    flex-direction: column;
-    gap: 0;
-    border-radius: 20px;
+.cont-facturas {
+  width: 80%;
+  height: 100%;
+  background-color: rgb(41, 41, 41);
+  position: relative; /* Necesario para el pseudo-elemento */
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  border-radius: 30px 0px 0px 0px;
+  overflow: hidden; /* Para que el fondo no se salga del borde redondeado */
 }
+
+.cont-facturas::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image: url("clientes-fondo2.png");
+  background-repeat: no-repeat;
+  background-position: center center;
+  opacity: 0.1; /* Aquí ajustas cuánta transparencia quieres */
+  z-index: 0;
+  border-radius: 30px 0px 0px 0px;
+}
+
+/* Asegúrate que el contenido esté por encima */
+.cont-facturas > * {
+  position: relative;
+  z-index: 1;
+}
+
 .div-purchase{
     font-size: 13px;
     width: 95%;
@@ -296,8 +319,8 @@
     object-fit: contain;
 }
 .editar{
-    border: solid 1px #f5a226;
-    background-color: #ffb950;
+    border: solid 1px #ff9317;
+    background-color: #ffc81e;
     height: 25px;
     width: 90px;
     border-radius: 10px;
@@ -308,8 +331,9 @@
     font-weight: bold;
     margin-top: 20px;
 }
+    
 .editar:hover{
-    background-color: #f4a735;
+    background-color: #ffb300;
 }
 .editar a{
     color: white;

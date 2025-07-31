@@ -16,7 +16,11 @@
   <header>
     <div class="container-header">
       <button class="hamburger" id="hamburger">&#9776;</button>
-      <p class="pricipal">Ferremateriales el Maestro - Dashboard</p>
+      <div id="control">
+        <div class="panel"><%= image_tag "panel-control.png", class: "c-panel" %></div>
+        <p class="pricipal">Panel de Control</p>
+      </div>
+      
       <% if user_signed_in? %>
         <%= button_to destroy_user_session_path, method: :delete, form: { data: { turbo: true } }, id: "cerrar", class: "logout2" do %>
           <span><i class="fas fa-sign-out-alt"style="color: white"></i></span>

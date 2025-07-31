@@ -108,15 +108,38 @@ canvas {
    background-position: center !important;
    overflow: hidden;           
     color: white;
-    padding: 30px;
     text-align: center;
     font-size: 30px;
     background-size: 15%;
     background-position: center;
   }
+  .panel{
+    height: 50px;
+    width: 50px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-left: 5px;
+  }
+  .c-panel{
+    width: 53%;
+    height: 53%;
+  }
+  #control{
+    display: flex;
+    flex-direction: row;
+    height: 50px;
+  }
 .pricipal{
+  width: auto;
+  height: 110%;
   font-family: 'Eczar';
-  font-size: 120%;
+  font-size: 25px;
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  padding: 0;
+  color: white !important;
 }
 .hamburger {
   font-size: 28px;
@@ -462,7 +485,7 @@ canvas {
   }
 
   nav ul li a:hover {
-    color: #eca123;
+    color: grey;
   }
 
   section {
@@ -571,8 +594,9 @@ canvas {
 }
 
   .container-header{
-    margin: auto;
+    height: 50px;
     color: white;
+    width: auto;
 
   }
 
@@ -625,7 +649,7 @@ canvas {
   }
   
   .logout:hover {
-    color: rgb(230, 25, 25);
+    color: rgb(178, 6, 6);
   }
 
   .card {

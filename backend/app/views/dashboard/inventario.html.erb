@@ -24,7 +24,10 @@
         <img src="img/test.png" alt="" width="60px">
       </div>
       <button class="hamburger" id="hamburger">&#9776;</button>
-      <p class="pricipal">Ferremateriales el Maestro - Dashboard</p>
+      <div id="control">
+        <div class="panel"><%= image_tag "panel-control.png", class: "c-panel" %></div>
+        <p class="pricipal">Panel de Control</p>
+      </div>
 
       
       <% if user_signed_in? %>
