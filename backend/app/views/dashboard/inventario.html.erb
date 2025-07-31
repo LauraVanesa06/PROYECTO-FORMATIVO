@@ -60,12 +60,11 @@
     <div class="div-div">
       <a href="/inventario" class="div-categ" style="text-decoration:none;"><i class="fas fa-arrow-left" id="vol"></i></a>
       <div class="div-categ">Categorias:</div>
+      <a href="#modal-new-category" class="new-categ">+</a>
     </div>
       <% @categories.each do |category| %>
         <%= render category %>
       <% end %>
-    <div class="btn-categ">
-  <a href="#modal-new-category" class="new-categ">+</a>
 </div>
 
   </aside>
