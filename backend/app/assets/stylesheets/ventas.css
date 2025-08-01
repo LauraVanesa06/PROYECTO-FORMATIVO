@@ -20,6 +20,7 @@
     padding: 0;
     margin-left: 10px;
     gap: 0;
+    background-color: white;
 }
 #grafica{
     width: 80% !important;
@@ -31,7 +32,7 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    background: linear-gradient(#66BB6A, white);
+    background: linear-gradient(#005ed8, white);
 }
 .div-white{
     width: 100%;

@@ -182,6 +182,14 @@
       const labels = datos.labels;
       const datasets = datos.datasets;
 
+      const bluePalette = ['#2980b9', '#3498db', '#5dade2', '#85c1e9'];
+
+      datasets.forEach((dataset, index) => {
+        dataset.backgroundColor = bluePalette[index % bluePalette.length];
+        dataset.borderColor = '#ffffff';
+        dataset.borderWidth = 2;
+      });
+
       new Chart(document.getElementById('grafica'), {
         type: 'bar',
         data: {
@@ -196,10 +204,10 @@
               labels: {
                 usePointStyle: true,
                 pointStyle: 'circle',
-                color: 'black',
+                color: '#1c1c1cff',
                 font: {
-                  family: 'inconsolata',
-                  size: 20,
+                  family: 'Poppins',
+                  size: 12,
                   weight: 'bold'
                 }
               }
@@ -209,22 +217,28 @@
             y: {
               beginAtZero: true,
               ticks: {
-                color: 'black',
+                color: '#1c1c1cff',
                 font: {
-                  family: 'inconsolata',
-                  size: 16,
-                  weight: 'bold'
+                  family: 'Poppins',
+                  size: 14,
+                  weight: '600'
                 }
+              },
+              grid: {
+                color: '#888888'
               }
             },
             x: {
               ticks: {
-                color: 'black',
+                color: '#1c1c1cff',
                 font: {
-                  family: 'inconsolata',
-                  size: 18,
-                  weight: 'bold'
+                  family: 'Poppins',
+                  size: 14,
+                  weight: '600'
                 }
+              },
+              grid: {
+                color: '#888888'
               }
             }
           }
@@ -232,8 +246,12 @@
       });
     });
   }
+
   document.addEventListener('DOMContentLoaded', cargarGrafica);
 </script>
+ 
+
+
 
   <footer>
     &copy; 2025 Ferremateriales el Maestro - v2.3.7

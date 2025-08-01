@@ -24,11 +24,6 @@ Rails.application.routes.draw do
 
   match 'ventas', to: 'dashboard#ventas', via: [:get, :post], as: 'ventas'
 
-  match 'ventas', to: 'dashboard#ventas', via: [:get, :post], as: 'ventas'
-
-  get 'help', to: 'dashboard#help', as: 'help'
-        post 'send_report', to: 'dashboard#send_report', as: :send_report_dashboard_index
-
   resources :categories do
     member do
       get :products

@@ -172,100 +172,125 @@
   <!-- grfaica de la seccion 1 -->
 <script>
   document.addEventListener('DOMContentLoaded', () => {
-  fetch('/api/v1/clientes_por_mes')
-    .then(res => res.json())
-    .then(data => {
-      const meses = [
-        'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio',
-        'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'
-      ];
+    fetch('/api/v1/clientes_por_mes')
+      .then(res => res.json())
+      .then(data => {
+        const meses = [
+          'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio',
+          'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'
+        ];
 
-      const valores = Object.values(data);
-      const etiquetas = Object.keys(data).map(num => meses[parseInt(num) - 1]);
+        const valores = Object.values(data);
+        const etiquetas = Object.keys(data).map(num => meses[parseInt(num) - 1]);
 
-      const ctx = document.getElementById('graficoClientesMes').getContext('2d');
+        const colores = [
+          '#1e88e5', // Enero
+          '#103f91', // Febrero
+          '#1565c0', // Marzo
+          '#1976d2', // Abril
+          '#2196f3', // Mayo
+          '#3399ff', // Junio
+          '#42a5f5', // Julio
+          '#1e88e5', // Agosto
+          '#64b5f6', // Septiembre
+          '#90caf9', // Octubre
+          '#bbdefb', // Noviembre
+          '#e3f2fd'  // Diciembre
+        ];
 
-      new Chart(ctx, {
-        type: 'doughnut',
-        data: {
-          labels: etiquetas,
-          datasets: [{
-            data: valores,
-            backgroundColor: [
-              '#3E2723', '#4E342E', '#5D4037', '#6D4C41',
-              '#795548', '#8D6E63', '#A1887F', '#BCAAA4',
-              '#D7CCC8', '#E0E0E0', '#EEEEEE', '#FFFFFF'
-            ],
-            borderColor: '#000',
-            borderWidth: 1,
-            cutout: '40%'
-          }]
-        },
-        options: {
-          plugins: {
-            legend: { display: false },
-            datalabels: {
-              color: 'white',
-              font: {
-                weight: 'bold',
-                size: 12
-              },
-              formatter: (value, context) =>
-                context.chart.data.labels[context.dataIndex] + ': ' + value
+        const ctx = document.getElementById('graficoClientesMes').getContext('2d');
+
+        new Chart(ctx, {
+          type: 'doughnut',
+          data: {
+            labels: etiquetas,
+            datasets: [{
+              data: valores,
+              backgroundColor: colores,
+              borderColor: '#bbbbbbff',
+              borderWidth: 2,
+              cutout: '40%'
+            }]
+          },
+          options: {
+            plugins: {
+              legend: { display: false },
+              datalabels: {
+                color: 'white',
+                font: {
+                  weight: 'bold',
+                  size: 12
+                },
+                formatter: (value, context) =>
+                  context.chart.data.labels[context.dataIndex] + ': ' + value
+              }
             }
-          }
-        },
-        plugins: [ChartDataLabels]
-      });
-    })
-    .catch(error => console.error("Error cargando clientes por mes:", error));
-});
-
+          },
+          plugins: [ChartDataLabels]
+        });
+      })
+      .catch(error => console.error("Error cargando clientes por mes:", error));
+  });
 </script>
+
+
 
 
 <!-- grafica 1 de la seccion 2 -->
 <script>
   document.addEventListener('DOMContentLoaded', () => {
-  fetch('/api/v1/dashboard/porcentaje_stock')
-    .then(res => res.json())
-    .then(data => {
-      const porcentaje = data.porcentaje;
-      const totalSegmentos = 30;
-      const segmentosActivos = Math.round((porcentaje / 100) * totalSegmentos);
-      const datos = Array(totalSegmentos).fill(1);
-      const colores = Array.from({ length: totalSegmentos }, (_, i) =>
-        i < segmentosActivos ? '#FFFFFF' : '#616161' // blanco y gris oscuro
-      );
+    fetch('/api/v1/dashboard/porcentaje_stock')
+      .then(res => res.json())
+      .then(data => {
+        const porcentaje = data.porcentaje;
+        const totalSegmentos = 30;
+        const segmentosActivos = Math.round((porcentaje / 100) * totalSegmentos);
+        const datos = Array(totalSegmentos).fill(1);
 
-      new Chart(document.getElementById('gaugeSegmentado'), {
-        type: 'doughnut',
-        data: {
-          datasets: [{
-            data: datos,
-            backgroundColor: colores,
-            borderColor: 'grey',
-            borderWidth: 2,
-            hoverOffset: 0
-          }]
-        },
-        options: {
-          cutout: '65%',
-          rotation: -90,
-          circumference: 360,
-          plugins: {
-            legend: { display: false },
-            tooltip: { enabled: false }
+        const azulClaro = [187, 222, 251]; 
+        const azulOscuro = [13, 71, 161]; 
+
+        const colores = Array.from({ length: totalSegmentos }, (_, i) => {
+          if (i < segmentosActivos) {
+            const t = i / (segmentosActivos - 1 || 1); 
+            const r = Math.round(azulClaro[0] + (azulOscuro[0] - azulClaro[0]) * t);
+            const g = Math.round(azulClaro[1] + (azulOscuro[1] - azulClaro[1]) * t);
+            const b = Math.round(azulClaro[2] + (azulOscuro[2] - azulClaro[2]) * t);
+            return `rgb(${r}, ${g}, ${b})`;
+          } else {
+            return '#616161';
           }
-        }
-      });
+        });
 
-      const valorDiv = document.querySelector('.gauge-value');
-      if (valorDiv) valorDiv.innerHTML = `Stock<br>${porcentaje}%`;
-    })
-    .catch(error => console.error("Error cargando porcentaje de stock:", error));
-});
+        new Chart(document.getElementById('gaugeSegmentado'), {
+          type: 'doughnut',
+          data: {
+            datasets: [{
+              data: datos,
+              backgroundColor: colores,
+              borderColor: '#2b2d3fff',
+              borderWidth: 1.5,
+              hoverOffset: 0
+            }]
+          },
+          options: {
+            cutout: '65%',
+            rotation: -90,
+            circumference: 360,
+            plugins: {
+              legend: { display: false },
+              tooltip: { enabled: false }
+            }
+          }
+        });
+
+        const valorDiv = document.querySelector('.gauge-value');
+        if (valorDiv) valorDiv.innerHTML = `Stock<br>${porcentaje}%`;
+      })
+      .catch(error => console.error("Error cargando porcentaje de stock:", error));
+  });
 </script>
+
 
 <!-- grafica 2 de la seccion 2 -->
 <script>
@@ -275,7 +300,18 @@ document.addEventListener('DOMContentLoaded', () => {
     .then(data => {
       const ctx2 = document.getElementById('graficoVentas').getContext('2d');
 
-      const colores = Array(data.valores.length).fill('#838282');
+
+      const azulClaro = [187, 222, 251];
+      const azulOscuro = [13, 71, 161];
+
+      const total = data.valores.length;
+      const colores = Array.from({ length: total }, (_, i) => {
+        const t = i / (total - 1 || 1);
+        const r = Math.round(azulClaro[0] + (azulOscuro[0] - azulClaro[0]) * t);
+        const g = Math.round(azulClaro[1] + (azulOscuro[1] - azulClaro[1]) * t);
+        const b = Math.round(azulClaro[2] + (azulOscuro[2] - azulClaro[2]) * t);
+        return `rgb(${r}, ${g}, ${b})`;
+      });
 
       new Chart(ctx2, {
         type: 'bar',
@@ -329,8 +365,8 @@ document.addEventListener('DOMContentLoaded', () => {
     })
     .catch(err => console.error('Error al cargar ventas por categoría:', err));
 });
-
 </script>
+
 
 <!-- grafica de la seccion 3 -->
 
@@ -350,16 +386,16 @@ document.addEventListener('DOMContentLoaded', () => {
 
 <!-- grafica 1 de la seccion 4 -->
 <script>
-    const crearGauge = (ctxId, porcentaje) => {
+  const crearGauge = (ctxId, porcentaje, color) => {
     const ctx = document.getElementById(ctxId).getContext('2d');
     new Chart(ctx, {
       type: 'doughnut',
       data: {
         datasets: [{
           data: [porcentaje, 100 - porcentaje],
-          backgroundColor: ['#9B9A9A', '#212121'],
-          borderColor: 'grey',
-          borderWidth: 1,
+          backgroundColor: [color, '#1A1C2D'],
+          borderColor: '#ffffff',
+          borderWidth: 0,
           cutout: '3%'
         }]
       },
@@ -376,9 +412,9 @@ document.addEventListener('DOMContentLoaded', () => {
   fetch('/api/v1/ventas_por_canal')
     .then(res => res.json())
     .then(data => {
-      crearGauge('gaugeOnline', data.online);
-      crearGauge('gaugeEfectivo', data.efectivo);
-      crearGauge('gaugeCotizadas', data.cotizadas);
+      crearGauge('gaugeOnline', data.online, '#1976D2');
+      crearGauge('gaugeEfectivo', data.efectivo, '#03A9F4');
+      crearGauge('gaugeCotizadas', data.cotizadas, '#2196F3');
 
       document.querySelector('#gaugeOnline + .gauge-label').textContent = `${data.online}%`;
       document.querySelector('#gaugeEfectivo + .gauge-label').textContent = `${data.efectivo}%`;
@@ -386,6 +422,8 @@ document.addEventListener('DOMContentLoaded', () => {
     })
     .catch(err => console.error('Error al cargar ventas por canal:', err));
 </script>
+
+
 
 <!-- grafica 2 de la seccion 4 -->
 <script>
@@ -411,7 +449,12 @@ document.addEventListener('DOMContentLoaded', () => {
           labels: data.etiquetas,
           datasets: [{
             data: data.valores,
-            backgroundColor: ['white', 'white', 'white', 'white'],
+            backgroundColor: [
+              '#0d47a1',
+              '#1976d2', 
+              '#42a5f5',
+              '#90caf9' 
+            ],
             borderRadius: 5,
             borderSkipped: false
           }]
@@ -439,7 +482,7 @@ document.addEventListener('DOMContentLoaded', () => {
           scales: {
             y: {
               beginAtZero: true,
-              max: 100,  // ajusta según tu caso
+              max: 100,
               ticks: {
                 color: '#ffffff',
                 font: {
@@ -447,7 +490,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
               },
               grid: {
-                color: '#666',
+                color: '#666'
               }
             },
             x: {
@@ -478,16 +521,14 @@ function crearDoughnut(id, cantidad, label) {
   const centroTexto = {
     id: 'centroTexto',
     beforeDraw(chart) {
-      const { width } = chart;
-      const { height } = chart;
+      const { width, height } = chart;
       const ctx = chart.ctx;
       ctx.restore();
       const fontSize = 16;
       ctx.font = `bold ${fontSize}px Poppins`;
-      ctx.fillStyle = 'white';
+      ctx.fillStyle = '#ffffff';
       ctx.textAlign = 'center';
       ctx.textBaseline = 'middle';
-
       ctx.fillText(label, width / 2, height / 2 - 10);
       ctx.fillText(cantidad, width / 2, height / 2 + 10);
       ctx.save();
@@ -500,7 +541,7 @@ function crearDoughnut(id, cantidad, label) {
       labels: ['Dato', 'Restante'],
       datasets: [{
         data: [cantidad, 200 - cantidad],
-        backgroundColor: ['#9B9A9A', '#383838'],
+        backgroundColor: ['#547AA5', '#1c2735'], // azul-gris elegante
         borderColor: ['transparent', 'transparent'],
         borderWidth: 2
       }]
@@ -516,9 +557,8 @@ function crearDoughnut(id, cantidad, label) {
     plugins: [centroTexto]
   });
 }
-  
 
-  fetch('/api/v1/inventario_por_categoria')
+fetch('/api/v1/inventario_por_categoria')
   .then(res => res.json())
   .then(data => {
     new Chart(document.getElementById('tortaChart'), {
@@ -528,20 +568,22 @@ function crearDoughnut(id, cantidad, label) {
         datasets: [{
           label: 'Inventario por categoría',
           data: data.valores,
-          backgroundColor: ['#4A90E2', '#5DADE2', '#85C1E9', '#AED6F1', '#6FB1FC', '#3A78C5'],
-          borderColor: 'black',
+          backgroundColor: [
+            '#1b2e44', '#2d3f58', '#3f5874', '#547AA5', '#7896BA', '#9FB9D4'
+          ],
+          borderColor: 'transparent',
           borderWidth: 2
         }]
       },
       options: {
-        radius: '90%', // <= más pequeño
+        radius: '90%',
         plugins: {
           legend: {
             position: 'bottom',
             labels: {
               color: '#ffffff',
               font: {
-                size: 10 // <= tamaño de texto más pequeño
+                size: 10
               }
             }
           }
@@ -550,18 +592,18 @@ function crearDoughnut(id, cantidad, label) {
     });
   });
 
-  fetch('/api/v1/ventas_mensuales')
+fetch('/api/v1/ventas_mensuales')
   .then(res => res.json())
   .then(data => {
     new Chart(document.getElementById('lineChart'), {
       type: 'line',
       data: {
-        labels: data.labels, // Asegúrate de que data.labels contenga meses en español
+        labels: data.labels,
         datasets: [{
-          label: 'Ventas mensuales', // Título traducido
+          label: 'Ventas mensuales',
           data: data.valores,
-          borderColor: 'black',
-          backgroundColor: '#3498DB',
+          borderColor: '#579ae1ff',
+          backgroundColor: '#162536ff',
           fill: false,
           tension: 0.3
         }]
@@ -570,7 +612,7 @@ function crearDoughnut(id, cantidad, label) {
         plugins: {
           legend: {
             labels: {
-              color: 'white',
+              color: '#ffffff',
               font: {
                 family: 'sans-serif',
                 size: 14
@@ -582,13 +624,19 @@ function crearDoughnut(id, cantidad, label) {
           x: {
             ticks: {
               color: '#ffffff',
+            },
+            grid: {
+              color: '#162536ff'
             }
           },
           y: {
             beginAtZero: true,
             ticks: {
               color: '#ffffff',
-              callback: value => '$' + value // formato moneda opcional
+              callback: value => '$' + value
+            },
+            grid: {
+              color: '#162536ff'
             }
           }
         }
@@ -605,6 +653,8 @@ fetch('/api/v1/ventas_periodo')
   })
   .catch(error => console.error('Error al cargar ventas por periodo:', error));
 </script>
+
+
 
 </body>
 </html>
