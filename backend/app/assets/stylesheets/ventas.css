@@ -181,20 +181,21 @@ input::placeholder {
 .boton-ver{
     display: flex;
     justify-content: center;
-    align-items: center;  
-    border: solid 1px #212121;
+    align-items: center;
+    border: solid 1px #214898;
     border-radius: 5px;
     height: 25px;
     width: 96px;
-    background-color: #00000042;
+    background-color: #0053ff;
+    border-radius: 20px;
 }
 .show-buy{
     text-decoration: none;
-    color: #b7b7b7;
+    color: #ffffff;
+    font-size: 15px;
 }
 .show-buy:hover, .boton-ver:hover{
-    background-color: #e67b6d;
-    color: #af4537d7;
+    background-color: #1c23ff;
 }
 .new-buy {
     position: fixed;
@@ -250,30 +251,34 @@ input::placeholder {
 
 .modal-content {
   background-color: #fff;
-  margin: 50px auto;
-  padding: 20px;
-  width: 90%;
-  max-width: 450px;
-  border-radius: 10px;
-  position: relative;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  height: auto;
-  max-height: 90vh; /* Máximo 90% del alto de la pantalla */
-  overflow-y: auto; /* Scroll si es necesario */
+    margin: 50px auto;
+    padding: 5px 20px 20px 20px;
+    width: 570px;
+    border-radius: 8px !important;
+    position: relative;
+    display: flex;
+    flex-direction: row-reverse;
+    align-items: center;
+    justify-content: center;
+    max-height: 90vh;
+    min-height: 400px;
+    overflow-y: auto;
+    border-radius: 10px;
 }
 
-
-
 .close {
-  position: absolute;
-  top: 5px;
-  right: 15px;
-  text-decoration: none;
-  font-size: 28px;
-  font-weight: bold;
-  color: #333;
+    position: absolute;
+    top: 5px; right: 5px;
+    text-decoration: none;
+    font-size: 25px;
+    font-weight: bold;
+    color: #aaa;
+    width: 30px;
+    height: 30px;
+    font-family: 'inconsolata';
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 .close:hover{
     background-color: rgb(252, 102, 102);
@@ -281,10 +286,10 @@ input::placeholder {
     color: white;
 }
 .div-foto-model{
-    margin-left: 20px;
     margin-right: 5px;
     width: auto;
     height: auto;
+    margin-top: 45px;
 }
 #foto-model a img, #foto-model{
     width: 230px;
@@ -297,13 +302,25 @@ input::placeholder {
 .texto-model{
     list-style: none;
     margin: 20px;
-    margin-top: 5px;
     display: flex;
     flex-direction: column;
     justify-content: center;
+    width: 330px;
 }
 .texto-model li{
-    font-size: 20px;
+    font-size: 18px;
+    display: flex;
+    flex-direction: column;
+}
+
+.detalles{
+  position: absolute;
+  color: #ffc81e;
+    font-size: 30px;
+    font-weight: bold;
+    font-style: italic;
+    width: 280px;
+    margin: 5px 0px 0px 100px ;
 }
 
 @media (max-width: 900px) {
@@ -503,11 +520,8 @@ input::placeholder {
 }
 
 .titulo2{
-    color: #fca123;
-    font-size: 30px;
-    margin-bottom:25px;
-    font-weight: bold;
-    font-style: italic;
+  position: relative;
+    margin:0px 0px 75px 0px;
 }
 .texto2 label{
     color:#424242;

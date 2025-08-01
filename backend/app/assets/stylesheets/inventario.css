@@ -398,9 +398,10 @@ input::placeholder {
     background: white;
     padding: 20px;
     padding-top: 30px;
+    padding-bottom: 30px;
     margin: 100px auto;
     width: 800px;
-    border-radius: 25px;
+    border-radius: 8px;
     position: relative;
     display: flex;
     flex-direction: row;
@@ -493,7 +494,7 @@ input::placeholder {
 }
 .ps{
     position: absolute;
-    margin-left: 45%;
+    margin-left: 42%;
 }
 .form-editar{
     width: 90%;
@@ -558,8 +559,6 @@ input::placeholder {
     border: 1px solid #939393;
 }
 .editar2{
-    height: 25px;
-    width: 90px;
     border-radius: 20px;
     color: white;
     display: flex;
@@ -568,13 +567,13 @@ input::placeholder {
     position: absolute;
     font-weight: bold;
     margin-left: -50%;
-    margin-top: 45%;
+    margin-top: 47%;
 
 }
 .editar2 a{
     color: white;
-    width: 90px;
-    height: 25px;
+    height: 30px;
+    width: 110px;
     display: flex;
     justify-content: center;
     align-items: center;

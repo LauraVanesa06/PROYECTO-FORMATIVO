@@ -134,7 +134,7 @@ canvas {
   width: auto;
   height: 110%;
   font-family: 'Eczar';
-  font-size: 25px;
+  font-size: 23px;
   display: flex;
   justify-content: flex-start;
   align-items: center;
@@ -597,7 +597,6 @@ canvas {
     height: 50px;
     color: white;
     width: auto;
-
   }
 
   .container-nav {

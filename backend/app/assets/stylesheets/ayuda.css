@@ -26,13 +26,14 @@
 }
 .nombre, .email, .descripcion{
     border-radius: 10px;
+    background-color: lightgray;
 }
 .descripcion{
     height: 120px;
 }
 input::placeholder, textarea::placeholder{
     padding-left: 10px;
-    color: rgb(192, 191, 191);
+    color: rgb(95, 95, 95);
 }
 .hola{
     width: 100%;
