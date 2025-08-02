@@ -22,7 +22,10 @@
           <img src="img/test.png" alt="" width="60px">
         </div>
         <button class="hamburger" id="hamburger">&#9776;</button>
-        <p class="pricipal">Ferremateriales el Maestro - Dashboard</p>
+        <div id="control">
+          <div class="panel"><%= image_tag "panel-control.png", class: "c-panel" %></div>
+          <p class="pricipal">Panel de Control</p>
+        </div>
 
         <% if user_signed_in? %>
           <%= button_to destroy_user_session_path, method: :delete, form: { data: { turbo: true } }, id: "cerrar", class: "logout2" do %>
@@ -59,13 +62,13 @@
           </a>
           <div class="div-categ">Proveedores:</div>
         </div>
-        <ul class="ul-nombre">
+        <div>
           <% @suppliers.uniq { |p| p.nombre }.each do |supplier| %>
-            <li class="li-nombre">
-              <%= link_to supplier.nombre, dashboard_suppliers_path(nombre: supplier.nombre) %>
-            </li>
+            <ul class="ul-nombre" id="<%= dom_id supplier %>">
+              <li class="li-nombre"><%= link_to supplier.nombre, dashboard_suppliers_path(nombre: supplier.nombre) %></li>
+            </ul>
           <% end %>
-        </ul>
+        </div>
       </aside>
 
       
@@ -171,7 +174,7 @@
             <% end %>
           </div>
           <div class="text-end mt-4" id="botonnuevo">
-            <button type="button" class="btn btn-danger rounded-circle" data-bs-toggle="modal" data-bs-target="#modalNuevoProveedor" title="Agregar proveedor" style="width: 50px; height: 50px; font-size: 24px;" id="new-prod">
+            <button type="button" class="btn btn-danger rounded-circle" data-bs-toggle="modal" data-bs-target="#modalNuevoProveedor" title="Agregar proveedor" style="width: 54px; height: 54px;" id="new-prod">
               +
             </button>
                 

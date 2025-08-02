@@ -67,19 +67,17 @@
     width: 100%;
 }
 .new-categ{
-    margin-top: 5px;
-    margin-bottom: 20px;
+    margin-top: -15px;
     width: 20px;
-    height: 37px;
-    padding: 12px 20px;
-    border-radius: 50%;
+    height: 20px;
+    border-radius: 40%;
     text-decoration: none;
-    box-shadow: 0 0 10px #3d3d3d;
-    background-color: white;
-    color: black;
+    background-color: rgb(41, 41, 41);
+    color: #c1c1c1;
     font-family: 'inconsolata';
-    font-size: 25px;
+    font-size: 20px;
     font-weight: bold;
+    margin-inline-start: 150px;
 }
 .new-categ:hover{
     text-decoration: none;
@@ -89,12 +87,12 @@
 
 .categorias{
     width: 20%;
-    background-color: #424242;
+    background-color: rgb(66, 66, 66);
 }
 .section-product{
     width: 80%;
     height: auto;
-    background-color: #e9cfae;
+    background-color: rgb(41, 41, 41);
     padding: 0;
     margin: 0;
     display: flex;
@@ -267,7 +265,7 @@ input::placeholder {
 .ul-prod{
     background-color: #ffffff;
     border: 1px solid transparent;
-    box-shadow: 0 0 8px #989898;
+    box-shadow: 0 0 8px #232323;
     border-radius: 8px;
     width: 200px;
     height: 323.16px;
@@ -338,7 +336,7 @@ input::placeholder {
 .editar, .ver{
     height: 25px;
     width: 90px;
-    border-radius: 10px;
+    border-radius: 20px;
     color: white;
     display: flex;
     justify-content: center;
@@ -346,18 +344,18 @@ input::placeholder {
     font-weight: bold;
 }
 .editar{
-    border: solid 1px #f5a226;
-    background-color: #ffb950;
+    border: solid 1px #ff9317;
+    background-color: #ffc81e;
 }
 .editar:hover{
-    background-color: #f4a735;
+    background-color: #ffb300;
 }
 .ver{
-    border: solid 1px #4482c5;
-    background-color: #5d8aba;
+    border: solid 1px #214898;
+    background-color: #0053ff;
 }
 .ver:hover{
-    background-color: #2f8ef4;
+    background-color: #1c23ff;
 }
 /*NEW PRODUCT BOTTON*/
 .new-prod {
@@ -400,9 +398,10 @@ input::placeholder {
     background: white;
     padding: 20px;
     padding-top: 30px;
+    padding-bottom: 30px;
     margin: 100px auto;
     width: 800px;
-    border-radius: 25px;
+    border-radius: 8px;
     position: relative;
     display: flex;
     flex-direction: row;
@@ -469,6 +468,7 @@ input::placeholder {
   background-color: #fff;
   margin: 50px auto;
   padding: 20px;
+  padding-top: 7px;
   width: 90%;
   max-width: 450px;
   border-radius: 10px;
@@ -481,9 +481,9 @@ input::placeholder {
   overflow-y: auto; /* Scroll si es necesario */
 }
 .titulo2{
-    color: #fca123;
+    color: #ffc81e;
     font-size: 30px;
-    margin-bottom: 35px;
+    margin-bottom: 25px;
     font-weight: bold;
     font-style: italic;
 }
@@ -494,7 +494,7 @@ input::placeholder {
 }
 .ps{
     position: absolute;
-    margin-left: 45%;
+    margin-left: 42%;
 }
 .form-editar{
     width: 90%;
@@ -512,10 +512,9 @@ input::placeholder {
     margin-bottom: 15px;
 }
 .tc{
-    color: limegreen;
+    color: rgb(0, 181, 0);
 }
 .btn3{
-    margin-top: 15px;
     width: 100%;
     display: flex;
     justify-content: center;
@@ -528,13 +527,13 @@ input::placeholder {
     height: 30px;
     width: 110px;
     border: solid 1px #f5a226;
-    background-color: #ffb950;
+    background-color: #ffc81e;
 }
 .btn4:hover{
-    background-color: #f4a735;
+    background-color: #ffb300;
 }
 .bc{
-    background-color: limegreen;
+    background-color: rgb(0, 181, 0);
     border: green;
 }
 .btn5{
@@ -560,9 +559,7 @@ input::placeholder {
     border: 1px solid #939393;
 }
 .editar2{
-    height: 25px;
-    width: 90px;
-    border-radius: 10px;
+    border-radius: 20px;
     color: white;
     display: flex;
     justify-content: center;
@@ -570,24 +567,24 @@ input::placeholder {
     position: absolute;
     font-weight: bold;
     margin-left: -50%;
-    margin-top: 45%;
+    margin-top: 47%;
 
 }
 .editar2 a{
     color: white;
-    width: 90px;
-    height: 25px;
+    height: 30px;
+    width: 110px;
     display: flex;
     justify-content: center;
     align-items: center;
     text-decoration: none;
 }
 .editar2{
-    border: solid 1px #f5a226;
-    background-color: #ffb950;
+    border: solid 1px #ff9317;
+    background-color: #ffc81e;
 }
 .editar2:hover{
-    background-color: #f4a735;
+    background-color: #ffb300;
 }
 
 .hamburger-categorias{

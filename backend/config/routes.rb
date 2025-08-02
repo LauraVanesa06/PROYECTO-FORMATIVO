@@ -19,10 +19,10 @@ Rails.application.routes.draw do
   get 'inventario', to: 'dashboard#inventario', as: 'inventario'
   get "/dashboard/inventario", to: "dashboard#inventario"
   get 'clientes', to: 'dashboard#clientes', as: 'clientes'
-  match 'ventas', to: 'dashboard#ventas', via: [:get, :post], as: 'ventas'
-
   get 'help', to: 'dashboard#help', as: 'help'
         post 'send_report', to: 'dashboard#send_report', as: :send_report_dashboard_index
+
+  match 'ventas', to: 'dashboard#ventas', via: [:get, :post], as: 'ventas'
 
   resources :categories do
     member do
