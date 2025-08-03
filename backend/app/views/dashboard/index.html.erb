@@ -18,7 +18,10 @@
   <header>
     <div class="container-header">
       <button class="hamburger" id="hamburger">&#9776;</button>
-      <p class="pricipal">Ferremateriales el Maestro - Dashboard</p>
+      <div id="control">
+        <div class="panel"><%= image_tag "panel-control.png", class: "c-panel" %></div>
+        <p class="pricipal">Panel de Control</p>
+      </div>
       <% if user_signed_in? %>
         <%= button_to destroy_user_session_path, method: :delete, form: { data: { turbo: true } }, id: "cerrar", class: "logout2" do %>
           <span><i class="fas fa-sign-out-alt"></i></span>
@@ -47,10 +50,10 @@
     <section class="section-1">
       <div class="grafica-1">
         <section class="graf-1">
-          <canvas id="graficoClientes"></canvas>
+          <canvas id="graficoClientesMes"></canvas>
         </section>
         <section class="texto-1">
-          <div class="titulo-1">Registros de <div>112</div> clientes nuevos</div>
+          <div class="titulo-1">Registros de clientes nuevos</div>
           <div class="texto-1-1">Este dato permite visualizar la evolución del negocio y el ritmo con el que se incrementa la cantidad
              de personas que acceden por primera vez a nuestros productos y servicios.</div>
         </section>
@@ -74,7 +77,7 @@
           <div class="ingresos">
             <p class="flecha" id="F1">🡅</p>
             <p class="etiqueta">Ingresos</p>
-            <p class="monto">$25.000.000</p>
+            <p class="monto" id="ingresos">0$</p>
           </div>
           <!--<div class="contenedor-moneda">
             <div class="texto-centro">
@@ -86,7 +89,7 @@
         </section>
         <section>
           <div class="egresos">
-            <p class="monto">$21.100.000</p>
+            <p class="monto" id="egresos">0$</p>
             <p class="etiqueta">Egresos</p>
             <p class="flecha" id="F2">🡇</p>
           </div>
@@ -106,7 +109,7 @@
               <div>
                 <div class="gauge">
                   <canvas id="gaugeOnline"></canvas>
-                  <div class="gauge-label">70%</div>
+                  <div class="gauge-label">0%</div>
                 </div>
                 <div class="gauge-title">Online</div>
               </div>
@@ -115,7 +118,7 @@
               <div>
                 <div class="gauge">
                   <canvas id="gaugeEfectivo"></canvas>
-                  <div class="gauge-label">30%</div>
+                  <div class="gauge-label">0%</div>
                 </div>
                 <div class="gauge-title">Efectivo</div>
               </div>
@@ -124,7 +127,7 @@
               <div>
                 <div class="gauge">
                   <canvas id="gaugeCotizadas"></canvas>
-                  <div class="gauge-label">5%</div>
+                  <div class="gauge-label">0%</div>
                 </div>
                 <div class="gauge-title">Cotizadas</div>
               </div>
@@ -169,174 +172,231 @@
   <!-- grfaica de la seccion 1 -->
 <script>
   document.addEventListener('DOMContentLoaded', () => {
-    const ctx1 = document.getElementById('graficoClientes').getContext('2d');
+    fetch('/api/v1/clientes_por_mes')
+      .then(res => res.json())
+      .then(data => {
+        const meses = [
+          'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio',
+          'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'
+        ];
 
-    new Chart(ctx1, {
-      type: 'doughnut',
-      data: {
-        labels: ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio'],
-        datasets: [{
-          data: [30, 45, 50, 40, 60, 55],
-          backgroundColor: [
-            '#0D47A1', '#1565C0', '#1976D2',
-            '#1E88E5', '#2196F3', '#42A5F5'
-          ],
-          borderColor: 'grey',
-          borderWidth: 1,
-          cutout: '40%'  
-        }]
-      },
-      options: {
-        plugins: {
-          legend: { display: false },
-          datalabels: {
-            color: 'white',
-            font: {
-              weight: 'bold',
-              size: 12
-            },
-            formatter: (value, context) =>
-              context.chart.data.labels[context.dataIndex] + ': ' + value
-          }
-        }
-      },
-      plugins: [ChartDataLabels]
-    });
+        const valores = Object.values(data);
+        const etiquetas = Object.keys(data).map(num => meses[parseInt(num) - 1]);
+
+        const colores = [
+          '#1e88e5', // Enero
+          '#103f91', // Febrero
+          '#1565c0', // Marzo
+          '#1976d2', // Abril
+          '#2196f3', // Mayo
+          '#3399ff', // Junio
+          '#42a5f5', // Julio
+          '#1e88e5', // Agosto
+          '#64b5f6', // Septiembre
+          '#90caf9', // Octubre
+          '#bbdefb', // Noviembre
+          '#e3f2fd'  // Diciembre
+        ];
+
+        const ctx = document.getElementById('graficoClientesMes').getContext('2d');
+
+        new Chart(ctx, {
+          type: 'doughnut',
+          data: {
+            labels: etiquetas,
+            datasets: [{
+              data: valores,
+              backgroundColor: colores,
+              borderColor: '#bbbbbbff',
+              borderWidth: 2,
+              cutout: '40%'
+            }]
+          },
+          options: {
+            plugins: {
+              legend: { display: false },
+              datalabels: {
+                color: 'white',
+                font: {
+                  weight: 'bold',
+                  size: 12
+                },
+                formatter: (value, context) =>
+                  context.chart.data.labels[context.dataIndex] + ': ' + value
+              }
+            }
+          },
+          plugins: [ChartDataLabels]
+        });
+      })
+      .catch(error => console.error("Error cargando clientes por mes:", error));
   });
 </script>
+
+
+
 
 <!-- grafica 1 de la seccion 2 -->
 <script>
-  const porcentaje = 90;
+  document.addEventListener('DOMContentLoaded', () => {
+    fetch('/api/v1/dashboard/porcentaje_stock')
+      .then(res => res.json())
+      .then(data => {
+        const porcentaje = data.porcentaje;
+        const totalSegmentos = 30;
+        const segmentosActivos = Math.round((porcentaje / 100) * totalSegmentos);
+        const datos = Array(totalSegmentos).fill(1);
 
-  const totalSegmentos = 30;
-  const segmentosActivos = Math.round((porcentaje / 100) * totalSegmentos);
-  const datos = Array(totalSegmentos).fill(1);
-  const colores = Array.from({ length: totalSegmentos }, (_, i) =>
-    i < segmentosActivos ? 'white' : '#424242'
-  );
+        const azulClaro = [187, 222, 251]; 
+        const azulOscuro = [13, 71, 161]; 
 
-  new Chart(document.getElementById('gaugeSegmentado'), {
-    type: 'doughnut',
-    data: {
-      datasets: [{
-        data: datos,
-        backgroundColor: colores,
-        borderColor: 'grey',
-        borderWidth: 2,
-        hoverOffset: 0
-      }]
-    },
-    options: {
-      cutout: '65%',
-      rotation: -90, 
-      circumference: 360,
-      plugins: {
-        legend: { display: false },
-        tooltip: { enabled: false }
-      }
-    }
+        const colores = Array.from({ length: totalSegmentos }, (_, i) => {
+          if (i < segmentosActivos) {
+            const t = i / (segmentosActivos - 1 || 1); 
+            const r = Math.round(azulClaro[0] + (azulOscuro[0] - azulClaro[0]) * t);
+            const g = Math.round(azulClaro[1] + (azulOscuro[1] - azulClaro[1]) * t);
+            const b = Math.round(azulClaro[2] + (azulOscuro[2] - azulClaro[2]) * t);
+            return `rgb(${r}, ${g}, ${b})`;
+          } else {
+            return '#616161';
+          }
+        });
+
+        new Chart(document.getElementById('gaugeSegmentado'), {
+          type: 'doughnut',
+          data: {
+            datasets: [{
+              data: datos,
+              backgroundColor: colores,
+              borderColor: '#2b2d3fff',
+              borderWidth: 1.5,
+              hoverOffset: 0
+            }]
+          },
+          options: {
+            cutout: '65%',
+            rotation: -90,
+            circumference: 360,
+            plugins: {
+              legend: { display: false },
+              tooltip: { enabled: false }
+            }
+          }
+        });
+
+        const valorDiv = document.querySelector('.gauge-value');
+        if (valorDiv) valorDiv.innerHTML = `Stock<br>${porcentaje}%`;
+      })
+      .catch(error => console.error("Error cargando porcentaje de stock:", error));
   });
 </script>
+
 
 <!-- grafica 2 de la seccion 2 -->
 <script>
-  document.addEventListener('DOMContentLoaded', () => {
-    const ctx2 = document.getElementById('graficoVentas').getContext('2d');
-    const categorias = [
-      'Herramientas',
-      'Tornillería y Fijaciones',
-      'Plomería',
-      'Electricidad',
-      'Construcción y Materiales',
-      'Pintura y Acabados',
-      'Ferretería para el hogar',
-      'Limpieza y Mantenimiento',
-      'Adhesivos y Selladores',
-      'Jardinería'
-    ];
-    const datos = [150, 120, 80, 100, 200, 90, 110, 70, 60, 50];
-    const colores = [
-      '#4CAF50',
-      '#4CAF50',
-      '#4CAF50',
-      '#4CAF50',
-      '#4CAF50',
-      '#4CAF50',
-      '#4CAF50',
-      '#4CAF50',
-      '#4CAF50',
-      '#4CAF50'
-    ];
+document.addEventListener('DOMContentLoaded', () => {
+  fetch('/api/v1/ventas_por_categoria')
+    .then(res => res.json())
+    .then(data => {
+      const ctx2 = document.getElementById('graficoVentas').getContext('2d');
 
-    new Chart(ctx2, {
-      type: 'bar',
-      data: {
-        labels: categorias,
-        datasets: [{
-          label: 'Ventas (unidades)',
-          data: datos,
-          backgroundColor: colores,
-          borderColor: colores,
-          borderWidth: 1
-        }]
-      },
-      options: {
-        indexAxis: 'y',
-        responsive: true,
-        maintainAspectRatio: false,
-        plugins: {
-          legend: { display: false },
-          datalabels: {
-            align: 'start',
-            anchor: 'end',
-            color: 'white',
-            formatter: (value, context) =>
-              categorias[context.dataIndex] + ' (' + value + ')',
-            font: {
-              size: 12,
-              weight: 'bold'
+
+      const azulClaro = [187, 222, 251];
+      const azulOscuro = [13, 71, 161];
+
+      const total = data.valores.length;
+      const colores = Array.from({ length: total }, (_, i) => {
+        const t = i / (total - 1 || 1);
+        const r = Math.round(azulClaro[0] + (azulOscuro[0] - azulClaro[0]) * t);
+        const g = Math.round(azulClaro[1] + (azulOscuro[1] - azulClaro[1]) * t);
+        const b = Math.round(azulClaro[2] + (azulOscuro[2] - azulClaro[2]) * t);
+        return `rgb(${r}, ${g}, ${b})`;
+      });
+
+      new Chart(ctx2, {
+        type: 'bar',
+        data: {
+          labels: data.etiquetas,
+          datasets: [{
+            label: 'Ventas (unidades)',
+            data: data.valores,
+            backgroundColor: colores,
+            borderColor: colores,
+            borderWidth: 1
+          }]
+        },
+        options: {
+          indexAxis: 'y',
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: { display: false },
+            datalabels: {
+              align: 'start',
+              anchor: 'end',
+              color: 'white',
+              formatter: (value, context) =>
+                context.chart.data.labels[context.dataIndex] + ' (' + value + ')',
+              font: {
+                size: 12,
+                weight: 'bold'
+              }
+            }
+          },
+          scales: {
+            x: {
+              beginAtZero: true,
+              ticks: { color: 'white' },
+              title: {
+                display: true,
+                text: 'Unidades vendidas',
+                color: 'white'
+              },
+              grid: { color: 'rgba(255,255,255,0.1)' }
+            },
+            y: {
+              ticks: { display: false },
+              grid: { display: false }
             }
           }
         },
-        scales: {
-          x: {
-            beginAtZero: true,
-            ticks: { color: 'white' },
-            title: {
-              display: true,
-              text: 'Unidades vendidas',
-              color: 'white'
-            },
-            grid: { color: 'rgba(255,255,255,0.1)' }
-          },
-          y: {
-            ticks: { display: false },
-            grid: { display: false }
-          }
-        }
-      },
-      plugins: [ChartDataLabels]
-    });
-  });
+        plugins: [ChartDataLabels]
+      });
+    })
+    .catch(err => console.error('Error al cargar ventas por categoría:', err));
+});
 </script>
+
 
 <!-- grafica de la seccion 3 -->
 
+<script>
+  function formatearPesos(valor) {
+    return `$${valor.toLocaleString("es-CO")}`;
+  }
+
+  fetch('/api/v1/finanzas')
+    .then(res => res.json())
+    .then(data => {
+      document.getElementById("ingresos").textContent = formatearPesos(data.ingresos);
+      document.getElementById("egresos").textContent = formatearPesos(data.egresos);
+    })
+    .catch(err => console.error("Error al cargar datos financieros", err));
+</script>
 
 <!-- grafica 1 de la seccion 4 -->
 <script>
-  const crearGauge = (ctxId, porcentaje, color1, color2) => {
+  const crearGauge = (ctxId, porcentaje, color) => {
     const ctx = document.getElementById(ctxId).getContext('2d');
     new Chart(ctx, {
       type: 'doughnut',
       data: {
         datasets: [{
           data: [porcentaje, 100 - porcentaje],
-          backgroundColor: ['#FF4081', '#383838'],
-          borderColor: 'grey',
-          borderWidth: 1,
-          cutout: '3%' 
+          backgroundColor: [color, '#1A1C2D'],
+          borderColor: '#ffffff',
+          borderWidth: 0,
+          cutout: '3%'
         }]
       },
       options: {
@@ -349,10 +409,21 @@
     });
   };
 
-  crearGauge('gaugeOnline', 70);
-  crearGauge('gaugeEfectivo', 30);
-  crearGauge('gaugeCotizadas', 5);
+  fetch('/api/v1/ventas_por_canal')
+    .then(res => res.json())
+    .then(data => {
+      crearGauge('gaugeOnline', data.online, '#1976D2');
+      crearGauge('gaugeEfectivo', data.efectivo, '#03A9F4');
+      crearGauge('gaugeCotizadas', data.cotizadas, '#2196F3');
+
+      document.querySelector('#gaugeOnline + .gauge-label').textContent = `${data.online}%`;
+      document.querySelector('#gaugeEfectivo + .gauge-label').textContent = `${data.efectivo}%`;
+      document.querySelector('#gaugeCotizadas + .gauge-label').textContent = `${data.cotizadas}%`;
+    })
+    .catch(err => console.error('Error al cargar ventas por canal:', err));
 </script>
+
+
 
 <!-- grafica 2 de la seccion 4 -->
 <script>
@@ -369,57 +440,77 @@
   canvas.style.height = visibleHeight + 'px';
   ctx.scale(scale, scale);
 
-  const gradienteVerde = ctx.createLinearGradient(0, 0, 0, visibleHeight);
-  gradienteVerde.addColorStop(0, '#a8e063');
-  gradienteVerde.addColorStop(1, '#56ab2f');
-
-  const gradienteAmarillo = ctx.createLinearGradient(0, 0, 0, visibleHeight);
-  gradienteAmarillo.addColorStop(0, '#fceabb');
-  gradienteAmarillo.addColorStop(1, '#f8b500');
-
-  const gradienteRojo = ctx.createLinearGradient(0, 0, 0, visibleHeight);
-  gradienteRojo.addColorStop(0, '#ff9966');
-  gradienteRojo.addColorStop(1, '#ff5e62');
-
-  const gradienteAzul = ctx.createLinearGradient(0, 0, 0, visibleHeight);
-  gradienteAzul.addColorStop(0, '#4facfe');
-  gradienteAzul.addColorStop(1, '#00f2fe');
-
-    new Chart(ctx, {
-    type: 'bar',
-    data: {
-      labels: ['Transferencia', 'Efectivo', 'Tarjeta', 'Pago Online'],
-      datasets: [{
-        data: [19, 78, 66, 82],
-        backgroundColor: ['#f8bbd0', '#f06292', '#ec407a', '#e91e63'],
-        borderRadius: 5,
-        borderSkipped: false
-      }]
-    },
-    options: {
-      responsive: false,
-      plugins: {
-        legend: { display: false },
-        tooltip: { enabled: false },
-        datalabels: {
-          anchor: 'end',
-          align: 'top',
-          offset: 4,
-          color: 'white',
-          font: {
-            family: 'Segoe UI',
-            weight: 'bold',
-            size: 30
+  fetch('/api/v1/ventas_por_metodo_pago')
+    .then(res => res.json())
+    .then(data => {
+      new Chart(ctx, {
+        type: 'bar',
+        data: {
+          labels: data.etiquetas,
+          datasets: [{
+            data: data.valores,
+            backgroundColor: [
+              '#0d47a1',
+              '#1976d2', 
+              '#42a5f5',
+              '#90caf9' 
+            ],
+            borderRadius: 5,
+            borderSkipped: false
+          }]
+        },
+        options: {
+          responsive: false,
+          plugins: {
+            legend: { display: false },
+            tooltip: { enabled: false },
+            datalabels: {
+              anchor: 'end',
+              align: 'top',
+              offset: 4,
+              color: 'white',
+              font: {
+                family: 'Segoe UI',
+                weight: 'bold',
+                size: 30
+              },
+              formatter: function(value) {
+                return value;
+              }
+            }
           },
-          formatter: function(value) {
-            return value;
+          scales: {
+            y: {
+              beginAtZero: true,
+              max: 100,
+              ticks: {
+                color: '#ffffff',
+                font: {
+                  size: 20
+                }
+              },
+              grid: {
+                color: '#666'
+              }
+            },
+            x: {
+              ticks: {
+                color: '#ffffff',
+                font: {
+                  size: 20
+                }
+              },
+              grid: {
+                color: '#666'
+              }
+            }
           }
-        }
-      }
-    },
-    plugins: [ChartDataLabels]
-  });
-  </script>
+        },
+        plugins: [ChartDataLabels]
+      });
+    })
+    .catch(err => console.error('Error al cargar datos:', err));
+</script>
 
 
 <!-- grafica del seccion 5 -->
@@ -430,16 +521,14 @@ function crearDoughnut(id, cantidad, label) {
   const centroTexto = {
     id: 'centroTexto',
     beforeDraw(chart) {
-      const { width } = chart;
-      const { height } = chart;
+      const { width, height } = chart;
       const ctx = chart.ctx;
       ctx.restore();
       const fontSize = 16;
       ctx.font = `bold ${fontSize}px Poppins`;
-      ctx.fillStyle = 'white';
+      ctx.fillStyle = '#ffffff';
       ctx.textAlign = 'center';
       ctx.textBaseline = 'middle';
-
       ctx.fillText(label, width / 2, height / 2 - 10);
       ctx.fillText(cantidad, width / 2, height / 2 + 10);
       ctx.save();
@@ -452,7 +541,7 @@ function crearDoughnut(id, cantidad, label) {
       labels: ['Dato', 'Restante'],
       datasets: [{
         data: [cantidad, 200 - cantidad],
-        backgroundColor: ['#7E57C2', '#383838'],
+        backgroundColor: ['#547AA5', '#1c2735'], // azul-gris elegante
         borderColor: ['transparent', 'transparent'],
         borderWidth: 2
       }]
@@ -468,9 +557,8 @@ function crearDoughnut(id, cantidad, label) {
     plugins: [centroTexto]
   });
 }
-  
 
-  fetch('/api/v1/inventario_por_categoria')
+fetch('/api/v1/inventario_por_categoria')
   .then(res => res.json())
   .then(data => {
     new Chart(document.getElementById('tortaChart'), {
@@ -480,20 +568,22 @@ function crearDoughnut(id, cantidad, label) {
         datasets: [{
           label: 'Inventario por categoría',
           data: data.valores,
-          backgroundColor: ['#4A90E2', '#5DADE2', '#85C1E9', '#AED6F1', '#6FB1FC', '#3A78C5'],
-          borderColor: 'black',
+          backgroundColor: [
+            '#1b2e44', '#2d3f58', '#3f5874', '#547AA5', '#7896BA', '#9FB9D4'
+          ],
+          borderColor: 'transparent',
           borderWidth: 2
         }]
       },
       options: {
-        radius: '90%', // <= más pequeño
+        radius: '90%',
         plugins: {
           legend: {
             position: 'bottom',
             labels: {
               color: '#ffffff',
               font: {
-                size: 10 // <= tamaño de texto más pequeño
+                size: 10
               }
             }
           }
@@ -502,18 +592,18 @@ function crearDoughnut(id, cantidad, label) {
     });
   });
 
-  fetch('/api/v1/ventas_mensuales')
+fetch('/api/v1/ventas_mensuales')
   .then(res => res.json())
   .then(data => {
     new Chart(document.getElementById('lineChart'), {
       type: 'line',
       data: {
-        labels: data.labels, // Asegúrate de que data.labels contenga meses en español
+        labels: data.labels,
         datasets: [{
-          label: 'Ventas mensuales', // Título traducido
+          label: 'Ventas mensuales',
           data: data.valores,
-          borderColor: 'black',
-          backgroundColor: '#3498DB',
+          borderColor: '#579ae1ff',
+          backgroundColor: '#162536ff',
           fill: false,
           tension: 0.3
         }]
@@ -522,7 +612,7 @@ function crearDoughnut(id, cantidad, label) {
         plugins: {
           legend: {
             labels: {
-              color: 'white',
+              color: '#ffffff',
               font: {
                 family: 'sans-serif',
                 size: 14
@@ -534,13 +624,19 @@ function crearDoughnut(id, cantidad, label) {
           x: {
             ticks: {
               color: '#ffffff',
+            },
+            grid: {
+              color: '#162536ff'
             }
           },
           y: {
             beginAtZero: true,
             ticks: {
               color: '#ffffff',
-              callback: value => '$' + value // formato moneda opcional
+              callback: value => '$' + value
+            },
+            grid: {
+              color: '#162536ff'
             }
           }
         }
@@ -548,23 +644,17 @@ function crearDoughnut(id, cantidad, label) {
     });
   });
 
-crearDoughnut('grafDia', 10, 'Día');
-crearDoughnut('grafSemana', 80, 'Semana');
-crearDoughnut('grafMes', 130, 'Mes');
-
-  btn.addEventListener("click", () => {
-    menu.classList.toggle("active");
-  });
-
-  fetch('/api/v1/dashboard/resumen')
+fetch('/api/v1/ventas_periodo')
   .then(res => res.json())
   .then(data => {
-    document.getElementById('stock').innerText = data.productos_en_stock;
-    document.getElementById('ventas').innerText = `$${data.ventas_hoy}`;
-    document.getElementById('proveedores').innerText = data.proveedores_registrados;
-    document.getElementById('clientes').innerText = data.clientes_registrados;
-  });
+    crearDoughnut('grafDia', data.dia, 'Día');
+    crearDoughnut('grafSemana', data.semana, 'Semana');
+    crearDoughnut('grafMes', data.mes, 'Mes');
+  })
+  .catch(error => console.error('Error al cargar ventas por periodo:', error));
 </script>
+
+
 
 </body>
 </html>

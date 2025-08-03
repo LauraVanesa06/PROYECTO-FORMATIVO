@@ -221,7 +221,8 @@
 .div-purchase{
   
     font-size: 13px;
-    width: 342px;
+    width: 260px;
+    height: 303px;
     padding-left: 8px !important;
     padding: 10px;
     color:rgba(0, 0, 0, 0.874);
@@ -231,17 +232,17 @@
     flex-direction: row;
     border-radius: 10px;
     border: 1px solid transparent;
-    box-shadow: 0 0 8px #989898;
+    box-shadow: 0 0 8px #232323;
 }
 
 
 .color{
-  height: auto;
-  width: 5px;
-  border: solid 1px rgb(93, 138, 186);
-  background-color:rgb(93, 138, 186);
-  margin-right: 10px;
-  border-radius: 50%;
+  height: 100%;
+    width: 4px;
+    border: solid 1px rgb(0 110 227);
+    background-color: rgb(0 123 255);
+    margin-right: 10px;
+    border-radius: 50px;
 }
 .ordenar{
   display: flex;
@@ -321,44 +322,42 @@
 
 }
 
-.ul-nombre {
-      text-decoration: none;
+.ul-nombre{
+    text-decoration: none;
     margin-bottom: 7px;
     margin-left: 15px;
     padding: 0;
     width: 85%;
-
 }
-.ul-nombre:hover {
+.ul-nombre:hover{
     width: 90%;
 }
-.li-nombre {
-  display: flex;
-    justify-content: center;
-    align-items: center;
-      text-decoration: none;
-    margin-bottom: 17px;
-    margin-left: 7px;
-    padding: 10px;
-    justify-self: anchor-center;
-  font-size: 15px;
+.li-nombre{
+    font-size: 15px;
     border-radius: 60px;
-    width: 90%;
-    text-align: center;
- 
+    padding: 0;
+    height: auto;
+    min-height: 40px;
     font-family: 'roboto', sans-serif;
     background-color: grey;
 }
-.li-nombre a {   
-    color: white;
+.li-nombre a{   
+    color:white;
     font-weight: bold;
     font-size: 14px;
     text-decoration: none;
-    height: 100%;
-    width: 100%;
+    width: 90%;
+    text-align: center;
 }
-.li-nombre a:hover {
+.li-nombre a:hover{
     font-size: 16px;
+}
+.li-nombre, .li-nombre a, .new-categ, .btn-categ{
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 /*modal para crear*/ 
 .formulario-proveedor {
@@ -392,11 +391,11 @@
 .SeccionProveedores{
   width: 80%;
     height: auto;
-    background-color: #e9cfae;
+    background-color: rgb(41, 41, 41);
     padding: 0;
     margin: 0;
-    display: flex
-;
+    display: flex;
+    align-items: center;
     flex-direction: column;
     gap: 0;
 }
@@ -411,13 +410,14 @@
   background-color: white;
     border: solid 1px grey;
     border-radius: 15px;
-    margin: 20px;
+    margin: 10px !important;
     height: 40px;
     display: flex;
     justify-content: space-between;
     align-items: center;
     padding: 20px;
      margin-top: 20px;
+    width: 98%;
 }
 
 .p {
@@ -429,39 +429,49 @@
 }
 /* seccion debajo de filtro*/
 .contenedor{
-   width: 99%;
     min-height: 60vh;
-    background-color: #e9cfae;
     padding: 0;
     margin: 0;
     display: ruby;
     flex-direction: column;
     gap: 0;
-    border-radius: 20px;
     overflow-y: auto;
-    
+    height: 100%;
+    width: 95%;
 }
 #purcha{
   display: flex;
-  flex-wrap: wrap;
-  gap: 20px;
-  justify-content: flex-start;
-  width: 100%; 
-  padding: 8px;
-  justify-content: space-around;
     align-items: stretch;
+    overflow-y: auto;
+    margin: 0 !important;
+    padding: 0;
+    height: 100%;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    row-gap: 6px;
+    column-gap: 6px;
+    font-size: 30px;
 }
 
-
   #new-prod {
-    font-size: 18px;
-    padding: 10px 14px;
-    bottom: 10px;
-    right: 10px;
- 
-    right: 0;
-    bottom: 22px
-  }
+    position: fixed;
+    bottom: 19px;
+    right: 1px;
+    z-index: 9999;
+    text-decoration: none;
+    box-shadow: 0 0px 10px rgba(0, 0, 0, 0.3);
+    background-color: black;
+    color: white;
+    font-family: 'inconsolata';
+    font-size: 25px !important;
+    font-weight: bold;
+}
+
+#new-prod:hover {
+    background-color: #313131;
+}
+  
 @media (max-width: 900px) {
   /* aqui empieza*/
   
@@ -529,7 +539,7 @@
 
 }
 .editar2{
-    height: 25px;
+    height: 23px;
     width: 90px;
     border-radius: 10px;
     color: white;
@@ -538,6 +548,7 @@
     align-items: flex-end;
     position: relative;
     font-weight: bold;
+    margin-right: 15px;
 }
 .editar2 a{
     color: white;
@@ -549,11 +560,11 @@
     text-decoration: none;
 }
 .editar2{
-    border: solid 1px #f5a226;
-    background-color: #ffb950;
+    border: solid 1px #ff9317;
+    background-color: #ffc81e;
 }
 .editar2:hover{
-    background-color: #f4a735;
+    background-color: #ffb300;
 }
 
 .body2{
@@ -571,6 +582,11 @@
     flex-wrap: wrap;
     justify-content: space-between;
     align-content: space-between;
+    width: 90%;
+}
+.card-title{
+  margin-bottom: 20px !important;
+  font-size: 18px;
 }
 .hamburger-categorias{
     display: none;

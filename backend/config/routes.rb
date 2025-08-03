@@ -5,6 +5,10 @@ Rails.application.routes.draw do
     registrations: 'usuarios/registrations',
     passwords: 'usuarios/passwords'
   }
+
+
+
+
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
 
   # Reveal health status on /up that returns 200 if the app boots with no exceptions, otherwise 500.
@@ -18,6 +22,7 @@ Rails.application.routes.draw do
   get 'help', to: 'dashboard#help', as: 'help'
         post 'send_report', to: 'dashboard#send_report', as: :send_report_dashboard_index
 
+  match 'ventas', to: 'dashboard#ventas', via: [:get, :post], as: 'ventas'
 
   resources :categories do
     member do
@@ -36,16 +41,14 @@ Rails.application.routes.draw do
 
   namespace :api do
     namespace :v1 do
-      resources :productos, only: [:index, :show]
-    end
-  end
-
-  namespace :api do
-    namespace :v1 do
-      get 'ventas_por_dia', to: 'dashboard#ventas_por_dia'
-      get 'inventario_por_categoria', to: 'dashboard#inventario_por_categoria'
-      get 'ventas_mensuales', to: 'dashboard#ventas_mensuales'
-      get 'dashboard/resumen', to: 'dashboard#resumen'
+      get 'buys/por_tipo', to: 'buys#ventas_por_tipo'
+      get 'clientes_por_mes', to: 'dashboard#clientes_por_mes'
+      get 'dashboard/porcentaje_stock', to: 'dashboard#porcentaje_stock'
+      get 'ventas_por_categoria', to: 'dashboard#ventas_por_categoria'
+      get 'ventas_por_canal', to: 'dashboard#ventas_por_canal'
+      get 'ventas_por_metodo_pago', to: 'dashboard#ventas_por_metodo_pago'
+       get 'ventas_periodo', to: 'dashboard#ventas_periodo'
+       get 'finanzas', to: 'dashboard#finanzas'
     end
   end
 
@@ -54,6 +57,8 @@ Rails.application.routes.draw do
   resources :purchasedetails
 
   get "ventas" => "dashboard#ventas"
+
+  # Rutas graficas
 
 
 

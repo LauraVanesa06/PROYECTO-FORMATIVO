@@ -1,4 +1,87 @@
 class Api::V1::DashboardController < ApplicationController
+
+    def finanzas
+        ingresos = Purchasedetail
+          .joins(:product)
+          .sum('purchasedetails.cantidad * products.precio')
+
+        # Este egreso es simulado
+        egresos = 1000000
+
+        render json: {
+          ingresos: ingresos.to_i,
+          egresos: egresos.to_i
+        }
+    end
+    def ventas_periodo
+        hoy = Time.zone.today
+        ahora = Time.zone.now
+
+        dia = Buy.where(fecha: hoy.all_day).count
+        semana = Buy.where(fecha: ahora.all_week).count
+        mes = Buy.where(fecha: ahora.all_month).count
+
+        render json: {
+          dia: dia,
+          semana: semana,
+          mes: mes
+        }
+    end
+    def ventas_por_metodo_pago
+        metodos = ['cotizadas', 'efectivo', 'online']
+
+        conteos = metodos.map do |metodo|
+            Buy.where('LOWER(metodo_pago) = ?', metodo.downcase).count
+        end
+
+        render json: {
+            etiquetas: metodos,
+            valores: conteos
+        }
+    end
+
+    def ventas_por_canal
+        total = Buy.count.to_f
+        online     = Buy.where('LOWER(metodo_pago) = ?', 'online').count
+        efectivo   = Buy.where('LOWER(metodo_pago) = ?', 'efectivo').count
+        cotizadas  = Buy.where('LOWER(metodo_pago) = ?', 'cotizadas').count
+
+        render json: {
+            online:    ((online / total) * 100).round,
+            efectivo:  ((efectivo / total) * 100).round,
+            cotizadas: ((cotizadas / total) * 100).round
+        }
+    end
+     def ventas_por_categoria
+        datos = Category
+                  .joins(products: :purchasedetails)
+                  .group('categories.nombre')
+                  .sum('purchasedetails.cantidad')
+
+        render json: {
+          etiquetas: datos.keys,
+          valores: datos.values
+        }
+      end
+    def porcentaje_stock
+        total_stock = Product.sum(:stock)
+        stock_maximo = 1000.0
+        porcentaje = ((total_stock / stock_maximo) * 100).round
+
+        render json: { porcentaje: porcentaje.clamp(0, 100) }
+    end
+    def clientes_por_mes
+        clientes = Customer.group("strftime('%m', created_at)").count
+
+        datos_ordenados = (1..12).map do |mes|
+            mes_str = mes.to_s.rjust(2, '0')
+            [mes_str, clientes[mes_str] || 0]
+        end.to_h
+
+
+        render json: clientes
+    end
+
     def ventas_por_dia
         ventas = Purchasedetail
         .joins(:buy)
