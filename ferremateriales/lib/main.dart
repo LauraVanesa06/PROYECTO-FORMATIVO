@@ -7,47 +7,54 @@ import 'features/auth/bloc/auth_bloc.dart';
 import 'features/auth/bloc/auth_event.dart';
 import 'features/auth/bloc/auth_state.dart';
 import 'features/auth/views/login_view.dart';
-import 'features/productos/views/main_view.dart'; // MainView ya existe
+import 'features/productos/views/main_view.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
-  runApp(const Ferreteria());
+  runApp(const FerreteriaApp());
 }
 
-class Ferreteria extends StatelessWidget {
-  const Ferreteria({super.key});
+class FerreteriaApp extends StatelessWidget {
+  const FerreteriaApp({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return MultiBlocProvider(
-      providers: [
-        BlocProvider(create: (_) => AuthBloc()..add(AuthStarted())),
-      ],
+    return BlocProvider(
+      create: (_) => AuthBloc()..add(AuthStarted()),
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
-        home: BlocListener<AuthBloc, AuthState>(
-          listener: (context, authState) {
-            if (authState.status == AuthStatus.initial ||
-                authState.status == AuthStatus.failure ||
-                authState.status == AuthStatus.loggedOut) {
-              Navigator.of(context).pushAndRemoveUntil(
-                MaterialPageRoute(builder: (_) => LoginView()),
-                (route) => false,
-              );
+        theme: ThemeData(
+          scaffoldBackgroundColor: Colors.white,
+          textTheme: const TextTheme(
+            bodyMedium: TextStyle(color: Colors.black),
+            bodySmall: TextStyle(color: Colors.black),
+            titleLarge: TextStyle(color: Colors.black),
+          ),
+          bottomNavigationBarTheme: const BottomNavigationBarThemeData(
+            backgroundColor: Colors.white,
+            selectedItemColor: Colors.deepPurple,
+            unselectedItemColor: Colors.grey,
+            showUnselectedLabels: true,
+            type: BottomNavigationBarType.fixed,
+          ),
+        ),
+        home: BlocBuilder<AuthBloc, AuthState>(
+          builder: (context, authState) {
+            switch (authState.status) {
+              case AuthStatus.success:
+                return const MainView(); // Usuario logueado
+              case AuthStatus.failure:
+              case AuthStatus.loggedOut:
+                return  LoginView(); // Usuario no logueado
+              default:
+                return const Scaffold(
+                  body: Center(child: CircularProgressIndicator()),
+                );
             }
           },
-          child: BlocBuilder<AuthBloc, AuthState>(
-            builder: (context, authState) {
-              if (authState.status == AuthStatus.success) {
-                return const MainView(); // Esto ya muestra la barra inferior y todo
-              } else {
-                return LoginView();
-              }
-            },
-          ),
         ),
       ),
     );
