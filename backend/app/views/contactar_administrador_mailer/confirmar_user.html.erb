@@ -1,0 +1,13 @@
+<h1>✅ Su duda fue enviada correctamente</h1>
+
+<p>Hola <%= @user_support.user_name %>,</p>
+
+<p>Gracias por contactarnos. Hemos recibido tu solicitud y el administrador de la ferreteria se pondrá en contacto contigo pronto.</p>
+
+<p><strong>Resumen de tu solicitud:</strong></p>
+<ul>
+  <li><strong>Tu correo:</strong> <%= @user_support.user_email %></li>
+  <li><strong>Descripción:</strong> <%= @user_support.description %></li>
+</ul>
+
+<p>Atentamente,<br>El equipo de administración</p>

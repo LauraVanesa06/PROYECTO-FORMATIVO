@@ -520,12 +520,7 @@ textarea {
   margin-bottom: 10px;
 }
 
-.line {
-  flex: 1;
-  height: 2px;
-  width: 100%;
-  background-color: #000;
-}
+
 
 .footer-icons {
   display: flex;
@@ -535,11 +530,6 @@ textarea {
 }
 
 /* Estilo individual de los íconos */
-.footer-icons a {
-  color: black;
-  text-decoration: none;
-  transition: transform 0.2s ease;
-}
 
 .footer-icons a:hover {
   transform: scale(1.2);

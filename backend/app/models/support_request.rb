@@ -2,7 +2,7 @@ class SupportRequest < ApplicationRecord
     def create
         @support_request = SupportRequest.new(support_request_params)
 
-        if @support_request.save
+        if @support_reques
             ContactarTecnicoMailer.notify_technician(@support_request).deliver_now
             flash[:notice] = "Tu mensaje fue enviado exitosamente."
             redirect_to dashboard_ayuda_path

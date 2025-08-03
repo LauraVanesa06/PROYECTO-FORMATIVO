@@ -61,6 +61,7 @@ Rails.application.routes.draw do
   root "home#index", as: :authenticated_root
   get 'productos', to: 'home#producto'
   get 'contactos', to: 'home#contacto'
+post 'home/contacto/send_report', to: 'home#send_report', as: 'send_report_home_contacto'
 
     # Otras rutas que tengas
     #login
