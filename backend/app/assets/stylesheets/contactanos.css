@@ -84,10 +84,10 @@ label.letra {
          display: flex;
       align-items: center;
      background-color: #565656;
-     width: 80%;
+     width: 64%;
      justify-content: space-around;
    padding: 10px;
-   margin-left: 70px;
+   margin-left: 20px;
 
 
 }
@@ -132,4 +132,29 @@ label.letra {
   width: 24px;
   height: 24px;
   margin-left: 10px;
+}
+
+input::placeholder, textarea::placeholder{
+    padding-left: 10px;
+    color: rgb(95, 95, 95);
+}
+.h2{
+    color: rgb(210, 208, 208);
+    margin: 0;
+    padding: 0;
+    font-size: 25px;
+    margin-top: 30px;
+    margin-bottom: 13px;
+}
+
+p{
+    font-size: 13px;
+    color: rgb(155, 155, 155);
+    padding-left: 20%;
+    padding-top: 10px;
+    text-align: center;
+    margin: 0;
+    padding: 0;
+    width: 1050px;
+    margin-bottom: 25px;
 }
