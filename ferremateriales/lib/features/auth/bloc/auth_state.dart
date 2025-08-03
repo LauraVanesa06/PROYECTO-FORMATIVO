@@ -24,7 +24,10 @@ class AuthState extends Equatable {
   }) {
     return AuthState(
       status: status ?? this.status,
-      error: error,
+      // Limpiar error si el estado es success o loggedOut
+      error: (status == AuthStatus.success || status == AuthStatus.loggedOut)
+          ? null
+          : error ?? this.error,
     );
   }
 

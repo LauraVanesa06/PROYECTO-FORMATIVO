@@ -13,7 +13,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       if (user != null) {
         emit(state.copyWith(status: AuthStatus.success));
       } else {
-        emit(const AuthState(status: AuthStatus.initial));
+        emit(const AuthState(status: AuthStatus.loggedOut)); // ✅ CAMBIO CLAVE
       }
     });
 
@@ -37,7 +37,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     // Cuando se solicita el logout
     on<LogoutRequested>((event, emit) async {
       await _firebaseAuth.signOut();
-      emit(const AuthState(status: AuthStatus.loggedOut)); // Aquí el nuevo estado
+      emit(const AuthState(status: AuthStatus.loggedOut));
     });
 
     // Cuando se registra un nuevo usuario
