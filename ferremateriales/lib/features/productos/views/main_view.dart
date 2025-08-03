@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
-import 'home_view.dart'; // Asegúrate de que este archivo exista
+import 'home_view.dart';
+import 'favorites_view.dart';
+import 'cart_view.dart';
+import 'notifications_view.dart';
+import 'profile_view.dart';
 
 class MainView extends StatefulWidget {
   const MainView({super.key});
@@ -13,10 +17,10 @@ class _MainViewState extends State<MainView> {
 
   final List<Widget> _screens = const [
     HomeView(),
-    Placeholder(), // Aquí puedes poner FavoritesView()
-    Placeholder(), // CartView()
-    Placeholder(), // NotificationsView()
-    Placeholder(), // ProfileView()
+    FavoritesView(),
+    CartView(),
+    NotificationsView(),
+    ProfileView(),
   ];
 
   @override
@@ -27,13 +31,29 @@ class _MainViewState extends State<MainView> {
         currentIndex: _selectedIndex,
         onTap: (index) => setState(() => _selectedIndex = index),
         selectedItemColor: Colors.deepPurple,
-        unselectedItemColor: Colors.grey,
+        unselectedItemColor: Colors.black,
+        type: BottomNavigationBarType.fixed,
         items: const [
-          BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Inicio'),
-          BottomNavigationBarItem(icon: Icon(Icons.favorite), label: 'Favoritos'),
-          BottomNavigationBarItem(icon: Icon(Icons.shopping_cart), label: 'Carrito'),
-          BottomNavigationBarItem(icon: Icon(Icons.notifications), label: 'Notificaciones'),
-          BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Perfil'),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.home),
+            label: 'Inicio',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.favorite),
+            label: 'Favoritos',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.shopping_cart),
+            label: 'Carrito',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.notifications),
+            label: 'Notificaciones',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.person),
+            label: 'Perfil',
+          ),
         ],
       ),
     );
