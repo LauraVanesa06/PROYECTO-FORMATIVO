@@ -27,15 +27,15 @@ class FerreteriaApp extends StatelessWidget {
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
         theme: ThemeData(
-          scaffoldBackgroundColor: Colors.white,
+          scaffoldBackgroundColor: const Color.fromARGB(255, 255, 255, 255),
           textTheme: const TextTheme(
             bodyMedium: TextStyle(color: Colors.black),
             bodySmall: TextStyle(color: Colors.black),
             titleLarge: TextStyle(color: Colors.black),
           ),
           bottomNavigationBarTheme: const BottomNavigationBarThemeData(
-            backgroundColor: Colors.white,
-            selectedItemColor: Colors.deepPurple,
+            backgroundColor: Color.fromARGB(255, 250, 247, 247),
+            selectedItemColor: Color.fromARGB(255, 2, 2, 2),
             unselectedItemColor: Colors.grey,
             showUnselectedLabels: true,
             type: BottomNavigationBarType.fixed,

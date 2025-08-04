@@ -28,17 +28,21 @@ class HomeView extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const Padding(
-                padding: EdgeInsets.all(16),
-                child: Text(
+              // Encabezado con fondo marrón
+              Container(
+                width: double.infinity,
+                color: Colors.brown,
+                padding: const EdgeInsets.all(16),
+                child: const Text(
                   'Ferretería',
                   style: TextStyle(
                     fontSize: 20,
                     fontWeight: FontWeight.bold,
-                    color: Colors.black,
+                    color: Colors.white,
                   ),
                 ),
               ),
+              // Carrusel de imágenes
               CarouselSlider(
                 options: CarouselOptions(
                   height: 120,
@@ -68,6 +72,7 @@ class HomeView extends StatelessWidget {
                 }).toList(),
               ),
               const SizedBox(height: 24),
+              // Lista horizontal de categorías
               SizedBox(
                 height: 100,
                 child: ListView.separated(
@@ -81,10 +86,10 @@ class HomeView extends StatelessWidget {
                       children: [
                         CircleAvatar(
                           radius: 24,
-                          backgroundColor: Colors.deepPurple.shade100,
+                          backgroundColor: Colors.grey.shade300, // Fondo gris claro
                           child: Icon(
                             category['icon'] as IconData,
-                            color: Colors.deepPurple,
+                            color: Colors.black, // Ícono negro
                             size: 20,
                           ),
                         ),
