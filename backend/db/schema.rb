@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_07_30_065527) do
+ActiveRecord::Schema[8.0].define(version: 2025_07_31_191231) do
   create_table "active_storage_attachments", force: :cascade do |t|
     t.string "name", null: false
     t.string "record_type", null: false
@@ -76,16 +76,6 @@ ActiveRecord::Schema[8.0].define(version: 2025_07_30_065527) do
     t.index ["supplier_id"], name: "index_products_on_supplier_id"
   end
 
-  create_table "proveedores", force: :cascade do |t|
-    t.string "nombre"
-    t.string "tipoProducto"
-    t.string "direccion"
-    t.integer "telefono"
-    t.string "correo"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-  end
-
   create_table "purchasedetails", force: :cascade do |t|
     t.integer "buy_id", null: false
     t.integer "product_id", null: false
@@ -106,6 +96,16 @@ ActiveRecord::Schema[8.0].define(version: 2025_07_30_065527) do
 
   create_table "support_requests", force: :cascade do |t|
     t.string "user_name"
+    t.string "user_email"
+    t.text "description"
+    t.string "status"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "user_supports", force: :cascade do |t|
+    t.string "user_name"
+    t.string "user_apellido"
     t.string "user_email"
     t.text "description"
     t.string "status"

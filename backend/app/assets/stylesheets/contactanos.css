@@ -1,0 +1,160 @@
+.contact-container{
+    width: 100%;
+    display: flex;
+        flex-direction: row;
+    flex-wrap: wrap;
+    background-color: rgb(41, 41, 41);
+
+}
+.imagen{
+    width: 60%;
+}
+/* formulario*/
+.form-container {
+    color: rgb(190, 190, 190);
+    border: solid 3px #565656;
+    background: linear-gradient(to bottom, grey, rgb(57, 57, 57));
+    width: 38%;
+    padding: 30px;
+    border-radius: 10px;
+    border-width: 2px;
+   
+    border-image: initial;
+}
+
+#colores{
+    background-color: #565656;
+    border-color: #434343;
+
+}
+.form-container h2 {
+    color: #ffffff;
+    margin-top: 0;
+}
+.form-container input, textarea {
+    padding: 10px;
+    margin-top: 5px;
+    border-radius: 5px;
+    border: 1px solid #9c9378;
+    background-color: #fffdf5;
+    font-family: inherit;
+}
+
+.general{
+background-color: rgb(41, 41, 41);
+}
+.map-responsive{
+
+    overflow:hidden;
+
+    padding-bottom:56.25%;
+
+    position:relative;
+
+    height:0;
+
+}
+
+.map-responsive iframe{
+
+    left:0;
+
+    top:0;
+
+    height:100%;
+
+    width:100%;
+
+    position:absolute;
+
+}
+
+.form .form-container label{
+    color: white;
+  
+}
+label.letra {
+  color: white;
+}
+.telefono-icono {
+  color: white;
+  font-size: 18px;
+  display: flex;
+      align-items: baseline;
+         display: flex;
+      align-items: center;
+     background-color: #565656;
+     width: 64%;
+     justify-content: space-around;
+   padding: 10px;
+   margin-left: 20px;
+
+
+}
+
+.organizarIcons{
+    display: flex;
+   flex-direction: row;
+
+}
+.organizarIcons i {
+
+  text-decoration: none;
+  transition: transform 0.2s ease;
+}
+
+.line {
+  flex: 1;
+  height: 2px;
+  width: 100%;
+  background-color: #000;
+}
+.btn-whatsapp {
+  display: inline-flex;
+  align-items: center;
+  background: white;
+  border: 2px solid #25d366;
+  border-radius: 50px;
+  padding: 8px 15px;
+  font-weight: bold;
+  color: #333;
+  text-decoration: none;
+  box-shadow: 0 0 8px rgba(0,0,0,0.1);
+  transition: all 0.3s ease;
+}
+
+.btn-whatsapp:hover {
+  background: #25d366;
+  color: white;
+}
+
+.btn-whatsapp .icono-wsp {
+  width: 24px;
+  height: 24px;
+  margin-left: 10px;
+}
+
+input::placeholder, textarea::placeholder{
+    padding-left: 10px;
+    color: rgb(95, 95, 95);
+}
+.h2{
+    color: rgb(210, 208, 208);
+    margin: 0;
+    padding: 0;
+    font-size: 25px;
+    margin-top: 30px;
+    margin-bottom: 13px;
+}
+
+p{
+    font-size: 13px;
+    color: rgb(155, 155, 155);
+    padding-left: 20%;
+    padding-top: 10px;
+    text-align: center;
+    margin: 0;
+    padding: 0;
+    width: 1050px;
+    margin-bottom: 25px;
+}
