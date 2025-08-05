@@ -39,18 +39,18 @@ Rails.application.routes.draw do
     end
   end
 
-  namespace :api do
-    namespace :v1 do
-      get 'buys/por_tipo', to: 'buys#ventas_por_tipo'
-      get 'clientes_por_mes', to: 'dashboard#clientes_por_mes'
-      get 'dashboard/porcentaje_stock', to: 'dashboard#porcentaje_stock'
-      get 'ventas_por_categoria', to: 'dashboard#ventas_por_categoria'
-      get 'ventas_por_canal', to: 'dashboard#ventas_por_canal'
-      get 'ventas_por_metodo_pago', to: 'dashboard#ventas_por_metodo_pago'
-       get 'ventas_periodo', to: 'dashboard#ventas_periodo'
-       get 'finanzas', to: 'dashboard#finanzas'
-    end
-  end
+  # namespace :api do
+  #   namespace :v1 do
+  #     get 'buys/por_tipo', to: 'buys#ventas_por_tipo'
+  #     get 'clientes_por_mes', to: 'dashboard#clientes_por_mes'
+  #     get 'dashboard/porcentaje_stock', to: 'dashboard#porcentaje_stock'
+  #     get 'ventas_por_categoria', to: 'dashboard#ventas_por_categoria'
+  #     get 'ventas_por_canal', to: 'dashboard#ventas_por_canal'
+  #     get 'ventas_por_metodo_pago', to: 'dashboard#ventas_por_metodo_pago'
+  #      get 'ventas_periodo', to: 'dashboard#ventas_periodo'
+  #      get 'finanzas', to: 'dashboard#finanzas'
+  #   end
+  # end
 
   resources :products
   resources :buys
@@ -93,4 +93,11 @@ end
 
   # Defines the root path route ("/")
   # root "posts#index"
+
+  # Api conexion a flutter
+  namespace :api do
+    namespace :v1 do
+      resources :products, only: [:index]
+    end
+  end
 end

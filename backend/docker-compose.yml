@@ -9,4 +9,5 @@ services:
     environment:
       RAILS_ENV: development
       DATABASE_URL: "sqlite3:/app/db/development.sqlite3"
+    command: bash -c "rm -f tmp/pids/server.pid && rails s -b 0.0.0.0 -p 3000"
 
