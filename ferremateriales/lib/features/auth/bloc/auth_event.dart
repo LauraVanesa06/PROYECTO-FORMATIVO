@@ -5,8 +5,6 @@ abstract class AuthEvent extends Equatable {
   List<Object> get props => [];
 }
 
-class AuthStarted extends AuthEvent {}
-
 class LoginSubmitted extends AuthEvent {
   final String email;
   final String password;
@@ -27,7 +25,6 @@ class ResetPasswordRequested extends AuthEvent {
   @override
   List<Object> get props => [email];
 }
-
 class RegisterRequested extends AuthEvent {
   final String email;
   final String password;

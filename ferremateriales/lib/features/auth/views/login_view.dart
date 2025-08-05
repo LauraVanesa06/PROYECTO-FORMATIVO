@@ -4,7 +4,7 @@ import 'package:google_fonts/google_fonts.dart';
 import '../bloc/auth_bloc.dart';
 import '../bloc/auth_state.dart';
 import '../widgets/login_form.dart';
-import '../../productos/views/home_view.dart';
+import '../../productos/views/initial_view.dart';
 import 'register_view.dart';
 import 'reset_password_view.dart';
 
@@ -16,7 +16,7 @@ class LoginView extends StatelessWidget {
       listener: (context, state) {
         Navigator.pushReplacement(
           context,
-          MaterialPageRoute(builder: (_) => HomeView()),
+          MaterialPageRoute(builder: (_) => InitialView()),
         );
       },
       child: Scaffold(
