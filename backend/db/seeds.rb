@@ -20,7 +20,6 @@ Product.delete_all
 Category.delete_all
 Supplier.delete_all
 Customer.delete_all
-Proveedor.delete_all
 User.delete_all
 
 reset_sqlite_sequences(
@@ -59,11 +58,6 @@ suppliers = Supplier.create!([
   { nombre: "Grupo Ferrecomex", contacto: "Farith Ortiz" },
   { nombre: "Materiales y Tornillería El Águila", contacto: "Jose Torres" },
   { nombre: "Distribuidora FerrePlus", contacto: "Mario auditore" }
-])
-
-proveedores = Proveedor.create!([
-  { nombre: "Distribuidor A", tipoProducto: "Herramientas", direccion: "Av. Central 123", telefono: 5551234, correo: "a@correo.com" },
-  { nombre: "Distribuidor B", tipoProducto: "Materiales", direccion: "Calle Norte 45", telefono: 5555678, correo: "b@correo.com" }
 ])
 
 products = Product.create!([
