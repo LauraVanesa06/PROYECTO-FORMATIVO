@@ -84,6 +84,7 @@ flutter:
     - assets/json/ferre.json
     - assets/images/oferta.jpg
     - assets/images/oferta2.png
+    - assets/images/madera2.jpg
     - assets/images/oferta3.jpg
   # To add assets to your application, add an assets section, like this:
   # assets:

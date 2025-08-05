@@ -14,6 +14,8 @@ void main() async {
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
+  // 👇 Esta línea oculta los errores visuales rojos (como overflow)
+  ErrorWidget.builder = (FlutterErrorDetails details) => const SizedBox.shrink();
   runApp(const FerreteriaApp());
 }
 
