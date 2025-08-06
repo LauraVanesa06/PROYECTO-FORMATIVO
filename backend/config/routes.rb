@@ -20,7 +20,7 @@ Rails.application.routes.draw do
 
   # Dashboard principal
   get 'dashboard', to: 'dashboard#index'
-  get 'dashboard/productos', to: 'dashboard#productos', as: :inventario
+  get 'dashboard/productos', to: 'products#index', as: :inventario
   get 'dashboard/clientes', to: 'dashboard#clientes', as: :clientes
   get 'dashboard/help', to: 'dashboard#help', as: :help
   match 'dashboard/ventas', to: 'dashboard#ventas', via: [:get, :post], as: :ventas
