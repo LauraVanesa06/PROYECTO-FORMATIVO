@@ -15,17 +15,18 @@ class ProductBloc extends Bloc<ProductEvent, ProductState> {
       try {
         // PETICIÓN HTTP A TU BACKEND RAILS
         final response = await http.get(
-          Uri.parse('http://10.0.2.2:3000/api/v1/products'),
+          Uri.parse('http://localhost:3000/api/v1/products'),
         );
 
         if (response.statusCode == 200) {
           final decoded = jsonDecode(response.body);
 
           if (decoded is List) {
-            final products = decoded
-                .whereType<Map<String, dynamic>>()
-                .map((item) => ProductModel.fromJson(item))
-                .toList();
+            final products =
+                decoded
+                    .whereType<Map<String, dynamic>>()
+                    .map((item) => ProductModel.fromJson(item))
+                    .toList();
 
             emit(ProductLoadSuccess(products));
           } else {
@@ -40,10 +41,6 @@ class ProductBloc extends Bloc<ProductEvent, ProductState> {
         print("ERROR al cargar productos: $e");
         emit(ProductLoadFailure());
       }
-    });
-
-    on<ProductRegresarPressed>((event, emit) {
-      emit(ProductInitial());
     });
   }
 }

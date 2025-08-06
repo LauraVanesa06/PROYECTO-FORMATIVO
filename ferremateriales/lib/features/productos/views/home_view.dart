@@ -4,9 +4,20 @@ import 'package:carousel_slider/carousel_slider.dart';
 import '../bloc/product_bloc.dart';
 import '../widgets/producto_card.dart'; // ProductsList
 
-class HomeView extends StatelessWidget {
+class HomeView extends StatefulWidget {
   const HomeView({super.key});
 
+  @override
+  State<HomeView> createState() => _HomeViewState();
+}
+
+class _HomeViewState extends State<HomeView> {
+  @override
+  void initState() {
+    super.initState();
+    // Solo se ejecuta una vez
+    context.read<ProductBloc>().add(ProductEntrarPressed());
+  }
   @override
   Widget build(BuildContext context) {
     // Lanzar el evento para cargar productos
