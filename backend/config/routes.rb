@@ -27,9 +27,9 @@ Rails.application.routes.draw do
   post 'dashboard/send_report', to: 'dashboard#send_report', as: :send_report_dashboard
 
   # Dashboard - proveedores
-  get 'dashboard/suppliers', to: 'dashboard#suppliers', as: :dashboard_suppliers
-  post 'dashboard/suppliers', to: 'dashboard#crear_supplier'
-  patch 'dashboard/suppliers/:id', to: 'dashboard#actualizar_supplier', as: :dashboard_supplier
+  get 'dashboard/suppliers', to: 'suppliers#index', as: :dashboard_suppliers
+  post 'dashboard/suppliers', to: 'suppliers#crear_supplier'
+  patch 'dashboard/suppliers/:id', to: 'suppliers#actualizar_supplier', as: :dashboard_supplier
 
   # Recursos principales (RESTful)
   resources :products
