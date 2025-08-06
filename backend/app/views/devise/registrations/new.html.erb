@@ -1,6 +1,6 @@
 <div class="login d-flex justify-content-center align-items-center vh-100">
   <div class="hex-wrapper position-relative">
-    <%= image_tag "hexagono.png", alt: "Hexágono", class: "hex-bg" %>
+    <%= image_tag "hexagono.png", alt: "Hexágono", class: "hex-bg"%>
 
     <div class="user-icon position-absolute top-0 start-50 translate-middle">
       <%= image_tag "user.png", alt: "Usuario", class: "rounded-circle user-img" %>
@@ -14,9 +14,10 @@
       <%= render "devise/shared/error_messages", resource: resource %>
 
       <%= form_for(resource, as: resource_name, url: registration_path(resource_name)) do |f| %>
-        <div class="text-sg">
+        <div class="text-sg" id="regis">
           Regístrate
         </div>
+        <p class="info">Complete el siguiente formulario para crear su cuenta.</p>
 
         <div class="input-wrapper">
           <%= image_tag "avatar.png", class: "icon-img", alt: "Usuario" %>
@@ -36,7 +37,7 @@
           <%= f.password_field :password_confirmation, placeholder: "Confirmar Contraseña", autocomplete: "new-password" %>
         </div>
 
-        <div class="hex-button-wrapper mb-3">
+        <div class="hex-button-wrapper mb-3" id="btn-regis">
           <%= f.submit "Registrarse", class: "hex-button" %>
         </div>
       <% end %>

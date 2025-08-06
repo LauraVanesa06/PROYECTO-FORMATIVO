@@ -23,9 +23,10 @@
       <%= render "devise/shared/error_messages", resource: resource %>
 
       <%= form_for(resource, as: resource_name, url: password_path(resource_name), html: { method: :post }) do |f| %>
-        <div class="text-sg mb-3">
+        <div class="text-sg mb-3" id="recupe">
           Recuperar contraseña
         </div>
+        <p class="info">Por favor, ingresa tu correo electrónico. Te enviaremos un mensaje con la clave de acceso.</p>
 
         <div class="input-wrapper iwp">
           <%= image_tag "avatar.png", class: "icon-img", alt: "Email" %>
