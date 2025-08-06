@@ -20,7 +20,7 @@ Rails.application.routes.draw do
 
   # Dashboard principal
   get 'dashboard', to: 'dashboard#index'
-  get 'dashboard/inventario', to: 'dashboard#inventario', as: :inventario
+  get 'dashboard/productos', to: 'dashboard#productos', as: :inventario
   get 'dashboard/clientes', to: 'dashboard#clientes', as: :clientes
   get 'dashboard/help', to: 'dashboard#help', as: :help
   match 'dashboard/ventas', to: 'dashboard#ventas', via: [:get, :post], as: :ventas
@@ -57,7 +57,7 @@ Rails.application.routes.draw do
     get 'products', on: :member
   end
 
-  # API (idealmente deberías mover todo esto a controllers/api/v1/)
+  # API
   namespace :api do
     namespace :v1 do
       get 'buys/por_tipo', to: 'buys#ventas_por_tipo'

@@ -4,7 +4,7 @@ class DashboardController < ApplicationController
   end
 
 
-  def inventario
+  def productos
     # Debug: Muestra los parámetros en la consola
     puts "params: #{params.inspect}"
 
