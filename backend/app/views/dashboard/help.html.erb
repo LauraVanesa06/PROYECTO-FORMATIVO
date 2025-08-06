@@ -38,13 +38,12 @@
     <nav class="nav-bg">
       <div class="container-nav">
         <ul class="menu" id="menu">
-          <li><a href="dashboard"class="link-menu">Inicio</a></li>
-          <li><a href="inventario"class="link-menu">Inventario</a></li>
-          <li><a href="ventas"class="link-menu">Ventas</a></li>
-          <li><a href="suppliers"class="link-menu">Proveedores</a></li>
-          <li><a href="clientes"class="link-menu">Clientes</a></li>
-          <li><a href="help"class="link-menu">Ayuda</a></li>
-
+          <li><a href="../dashboard"class="link-menu">Inicio</a></li>
+          <li><a href="../dashboard/productos"class="link-menu">Productos</a></li>
+          <li><a href="../dashboard/ventas"class="link-menu">Ventas</a></li>
+          <li><a href="../dashboard/suppliers"class="link-menu">Proveedores</a></li>
+          <li><a href="../dashboard/clientes"class="link-menu">Clientes</a></li>
+          <li><a href="../dashboard/help"class="link-menu">Ayuda</a></li>
         </ul>
         <div>
           <% if user_signed_in? %>
@@ -64,7 +63,7 @@
       <div class="orden">
         <section class="Formulario" >
           <h1 class="soporte">Soporte técnico</h1>
-          <%= form_with url: send_report_dashboard_index_path, scope: :support_request, local: true do |f| %>
+          <%= form_with url: send_report_dashboard_path, scope: :support_request, local: true do |f| %>
             <div class="mb-3 "  >
               <%= f.label :nombre, "Nombre", class:"l-nombre"%>
               <%= f.text_field :user_name, class: "nombre", placeholder:"Ej: Laura Rodríguez" %>
