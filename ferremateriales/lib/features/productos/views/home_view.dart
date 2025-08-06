@@ -1,8 +1,10 @@
+import 'package:ferremateriales/features/productos/views/product_view.dart';
+import 'package:ferremateriales/features/productos/widgets/product_list.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import '../bloc/product_bloc.dart';
-import '../widgets/producto_card.dart'; // ProductsList
+
 
 class HomeView extends StatefulWidget {
   const HomeView({super.key});
@@ -18,11 +20,9 @@ class _HomeViewState extends State<HomeView> {
     // Solo se ejecuta una vez
     context.read<ProductBloc>().add(ProductEntrarPressed());
   }
+
   @override
   Widget build(BuildContext context) {
-    // Lanzar el evento para cargar productos
-    context.read<ProductBloc>().add(ProductEntrarPressed());
-
     final bannerImages = [
       'assets/images/oferta.jpg',
       'assets/images/oferta2.png',
@@ -102,27 +102,24 @@ class _HomeViewState extends State<HomeView> {
 
               const SizedBox(height: 24),
 
-              // Sección de productos
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16),
-                child: Text(
-                  'Productos destacados',
-                  style: Theme.of(context).textTheme.titleMedium,
-                ),
-              ),
-
-              const SizedBox(height: 12),
-
+              // Mostrar productos usando BlocBuilder
               BlocBuilder<ProductBloc, ProductState>(
                 builder: (context, state) {
                   if (state is ProductLoadInProgress) {
                     return const Center(child: CircularProgressIndicator());
-                  } else if (state is ProductLoadSuccess) {
-                    return ProductsList(products: state.productos);
+                  } if (state is ProductLoadSuccess) {
+                     return Padding(
+  padding: const EdgeInsets.all(8.0),
+  child: ProductsList(
+    products: state.productos,
+    shrinkWrap: true,
+    physics: const NeverScrollableScrollPhysics(),
+  ),
+);
                   } else if (state is ProductLoadFailure) {
                     return const Center(child: Text('Error al cargar productos'));
                   } else {
-                    return const SizedBox.shrink();
+                    return const ProductsPageView(); // Estado inicial
                   }
                 },
               ),
