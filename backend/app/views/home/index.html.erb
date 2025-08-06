@@ -1,51 +1,57 @@
-
-<section>
-  <div class="banner-wrapper">
-    <%= image_tag 'banner.png', alt: 'logo', class: 'banner-image' %>
+<section class="hero">
+  <div class="hero-content text-center">
+    <h1>Bienvenido a nuestra tienda</h1>
+    <p>Encuentra los mejores productos al mejor precio</p>
+    <a href="#productos" class="btn btn-primary mt-3">Ver productos</a>
   </div>
-
-  <h2 class="titulo"> 🔥 Promociones 🔥</h2>
-
-  <div class="cartas">
-    <div class="cartaa">
-      <%= image_tag "martillo-dewalt.png", alt: 'herramienta' %>
-      <h2>Promo1</h2>
-      <p>precio: 44.900 COP</p>
-      <button>Comprar</button>
-    </div>
-    <div class="cartaa">
-      <%= image_tag "martillo-dewalt.png", alt: 'herramienta' %>
-      <h2>Promo1</h2>
-      <p>precio: 44.900 COP</p>
-      <button>Comprar</button>
-    </div>
-    <div class="cartaa">
-      <%= image_tag "martillo-dewalt.png", alt: 'herramienta' %>
-      <h2>Promo1</h2>
-      <p>precio: 44.900 COP</p>
-      <button>Comprar</button>
-    </div>
-    <div class="cartaa">
-      <%= image_tag "martillo-dewalt.png", alt: 'herramienta' %>
-      <h2>Promo1</h2>
-      <p>precio: 44.900 COP</p>
-      <button>Comprar</button>
-    </div>
-  </div>
-
-  <h2 class="titulo"> Busca tu producto </h2>
-  <div class="categorias">
-    <% @category.each do |categorias| %>
-      <a class="cart-category" src="#"><%= categorias.nombre %></a>
-    <% end %>
-  </div>
-  <h2 class="titulo">Contactanos</h2>
-  <div class = "contacto">
-    <a src="#" target="_blank"><%= image_tag "icons/whatsapp-brands.svg"%> <h3>whatsapp</h3> <p>+57 3012956202</p></a>
-    <a src="#" target="_blank"><%= image_tag "icons/location-dot-solid.svg"%> <h3>Ubicanos</h3> <p>Cl. 6A, Campeche, Baranoa, Atlántico</p></a>
-    <a src="#" target="_blank"><%= image_tag "icons/envelope-solid.svg"%> <h3>Correo</h3> <p>pepito@gmail.com</p></a>
-  </div>
-  
-
 </section>
 
+<!-- 🔥 Promociones / Productos Destacados -->
+<section id="productos" class="productos-destacados mt-5">
+  <h2 class="titulo text-center">🔥 Promociones 🔥</h2>
+  <div class="cartas d-flex flex-wrap justify-content-center gap-4">
+    <% @productos.each do |producto| %>
+      <div class="cartaa text-center p-3">
+        <%= image_tag producto.image_url.presence || "martillo-dewalt.png", alt: producto.name, class: "img-fluid mb-2" %>
+        <h3><%= producto.name %></h3>
+        <p><%= truncate(producto.description, length: 100) %></p>
+        <p><strong><%= number_to_currency(producto.price, unit: "$", separator: ".", delimiter: ",") %></strong></p>
+        <button class="btn btn-outline-success">Comprar</button>
+      </div>
+    <% end %>
+  </div>
+</section>
+
+<!-- 🔍 Categorías -->
+<section class="categorias-section mt-5">
+  <h2 class="titulo text-center">🔍 Busca tu producto</h2>
+  <div class="categorias d-flex justify-content-center flex-wrap gap-3 mt-3">
+    <% @category.each do |categoria| %>
+      <a class="cart-category btn btn-outline-primary" href="#"><%= categoria.nombre %></a>
+    <% end %>
+  </div>
+</section>
+
+<!-- 📞 Contacto -->
+<section class="contacto-section mt-5">
+  <h2 class="titulo text-center">📞 Contáctanos</h2>
+  <div class="contacto d-flex justify-content-center gap-5 mt-4 flex-wrap">
+    <a href="#" class="text-center text-decoration-none text-dark">
+      <%= image_tag "icons/whatsapp-brands.svg", class: "icono-contacto" %>
+      <h3>WhatsApp</h3>
+      <p>+57 3012956202</p>
+    </a>
+
+    <a href="#" class="text-center text-decoration-none text-dark">
+      <%= image_tag "icons/location-dot-solid.svg", class: "icono-contacto" %>
+      <h3>Ubícanos</h3>
+      <p>Cl. 6A, Campeche, Baranoa, Atlántico</p>
+    </a>
+
+    <a href="#" class="text-center text-decoration-none text-dark">
+      <%= image_tag "icons/envelope-solid.svg", class: "icono-contacto" %>
+      <h3>Correo</h3>
+      <p>pepito@gmail.com</p>
+    </a>
+  </div>
+</section>

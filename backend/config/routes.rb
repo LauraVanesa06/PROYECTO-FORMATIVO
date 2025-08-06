@@ -12,11 +12,13 @@ Rails.application.routes.draw do
     get '/olvide-contrasena', to: 'usuarios/passwords#new', as: :custom_new_password
   end
 
-  # Página principal
+# Página principal
   root "home#index", as: :authenticated_root
+  get 'home/index', to: 'home#index', as: :home_index
   get 'productos', to: 'home#producto'
   get 'contactos', to: 'home#contacto'
-  post 'home/contacto/send_report', to: 'home#send_report', as: 'send_report_home_contacto'
+  post '/enviar_contacto', to: 'home#send_report', as: :enviar_contacto
+
 
   # Dashboard principal
   get 'dashboard', to: 'dashboard#index'
