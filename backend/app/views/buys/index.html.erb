@@ -1,16 +1,263 @@
-<p style="color: green"><%= notice %></p>
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Dashboard Ferretería</title>
+  <%= stylesheet_link_tag "ventas", media: "all" %>
+  <%= favicon_link_tag 'favicon.png' %>
+  <%= stylesheet_link_tag "dashboard", media: "all" %>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Eczar:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
 
-<% content_for :title, "Buys" %>
+  <header>
+    <div class="container-header">
+      <button class="hamburger" id="hamburger">&#9776;</button>
+      <div id="control">
+        <div class="panel"><%= image_tag "panel-control.png", class: "c-panel" %></div>
+        <p class="pricipal">Panel de Control</p>
+      </div>
+      
+      <% if user_signed_in? %>
+        <%= button_to destroy_user_session_path, method: :delete, form: { data: { turbo: true } }, id: "cerrar", class: "logout2" do %>
+          <span><i class="fas fa-sign-out-alt"style="color: white"></i></span>
+        <% end %>
+      <% end %>
+    </div>
+  </header>
 
-<h1>Buys</h1>
+  <nav class="nav-bg">
+    <div class="container-nav">
+      <ul class="menu" id="menu">
+        <li><a href="../dashboard"class="link-menu">Inicio</a></li>
+        <li><a href="../dashboard/productos"class="link-menu">Productos</a></li>
+        <li><a href="../dashboard/ventas"class="link-menu">Ventas</a></li>
+        <li><a href="../dashboard/suppliers"class="link-menu">Proveedores</a></li>
+        <li><a href="../dashboard/clientes"class="link-menu">Clientes</a></li>
+        <li><a href="../dashboard/help"class="link-menu">Ayuda</a></li>
+      </ul>
+      <div>
+          <% if user_signed_in? %>
+            <%= button_to "Cerrar sesión", destroy_user_session_path, method: :delete, form: { data: { turbo: true } }, id: "cerrar", class: "logout"%>
+          <% end %>
+        </div>
+    </div>
+  </nav>
 
-<div id="buys">
-  <% @buys.each do |buy| %>
-    <%= render buy %>
-    <p>
-      <%= link_to "Show this buy", buy %>
-    </p>
-  <% end %>
-</div>
+  <section class="container">
+    <div class="cont-volver">
+      <a href="/ventas" class="a-volver" style="text-decoration:none;"><i class="fas fa-arrow-left" style="color:white;"></i></a>
+    </div>
+    <section id=sect1>
+      <div class="degradado">
+        <p class= "titulo-cant">Cantidad total de Ventas:</p>
+        <div class="conten">
+          <div class="info3"><a class="info2">10</a><a class="info">Hoy</a></div>
+          <div class="info3"><a class="info2">20</a><a class="info">Semana</a></div>
+          <div class="info3"><a class="info2">15</a><a class="info">Mes</a></div>
+          <div class="info3"><a class="info2">40</a><a class="info">Año</a></div>
+        </div>
+        <canvas id="grafica"></canvas>
+      </div>
+      <div class="div-white"></div>
+    </section>
+    <section id=sect2>
+      <nav class="nav-filtros">
+        <p class=p><i class="fas fa-filter"></i> Filtros</p>
+        <div class="div">
+          <%= form_tag ventas_path, class:"filtros", method: :get do %>
+            <div class="filtro-id">
+              <%= label_tag :id, "ID:" %>
+              <%= text_field_tag :id, params[:id], placeholder: "Ej: 1", size: 10, style:"border-radius:10px; padding-left: 10px; border:1px solid grey;" %>
+            </div>
+            <div class="filtro-id">
+              <%= label_tag :fecha, "Fecha:" %>
+              <%= text_field_tag :year, params[:year], placeholder: "AAAA", size: 4, style:"border-radius:10px; padding-left: 10px; border:1px solid grey;" %>
+              <%= text_field_tag :month, params[:month], placeholder: "MM", size: 2, style:"border-radius:10px; padding-left: 10px; border:1px solid grey;" %>
+              <%= text_field_tag :day, params[:day], placeholder: "DD", size: 2, style:"border-radius:10px; padding-left: 10px; border:1px solid grey;" %>
+            </div>
+            <div>
+              <%= button_tag type: 'submit', class: 'btn-save' do %>
+                <i class="fas fa-search"></i>
+              <% end %>
+            </div>
+          <% end %>
+        </div>
+      </nav>
+      <div class="cont-ventas">
+        <div id="buys">
+          <% if @buys.present? %>
+            <% @buys.each do |buy| %>
+              <%= render buy %>
 
-<%= link_to "New buy", new_buy_path %>
+              <% buy.purchasedetails.each do |purchasedetail| %>
+                <div id="modal-<%= purchasedetail.id %>" class="modal">
+                  <div class="modal-content">
+                    <a href="#" class="close">&times;</a>
+                    <div class="div-foto-model"><div id="foto-model"><%= link_to image_tag("detalles_compra.png")%></div></div>
+                    <div class="texto-model">
+                      <div class="titulo2"><h1 class="detalles">Detalles de compra</h1></div>
+                      <li>
+                        <strong  class="titulo">Fecha de compra:</strong>
+                        <%= purchasedetail.buy.fecha%>
+                      </li>
+                      <li>
+                        <strong  class="titulo">Nombre del cliente:</strong>
+                        <%= purchasedetail.buy.customer.nombre%>
+                      </li>
+                      <li>
+                        <strong class="titulo">Cantidad:</strong>
+                        <%= purchasedetail.cantidad %>
+                      </li>
+                      <li>
+                        <strong class="titulo">PrecioXunidad:</strong>
+                        <%= purchasedetail.preciounidad %>
+                      </li>
+                      <li>
+                        <strong class="titulo">Nombre del producto:</strong>
+                        <%= purchasedetail.product.nombre %>
+                      </li>
+                      <li>
+                        <strong class="titulo">Categoria del producto:</strong>
+                        <%= purchasedetail.product.category.nombre%>
+                      </li>
+                    </div>
+                  </div>
+                </div>
+              <%end%>
+              
+            <% end %>
+          <% else %>
+            <p>No se encontraron compras.</p>
+          <% end %>
+          <a class="new-buy" href="#modal-new-buy">+</a>
+
+          <div id="modal-new-buy" class="modal">
+            <div class="modal-content2">
+              <a href="#" class="close">&times;</a>
+              <div class="titulo2 tb">Crear Compra</div>
+              <%= form_with(model: Buy.new, url: ventas_path, data: { remote: true }, html: { multipart: true }, class: 'form-editar') do |form| %>
+                <div class="texto2">
+                  <%= form.label :fecha, "Fecha : ", style: "display: block" %>
+                  <%= form.date_field :fecha %>
+                </div>
+
+                <div class="texto2">
+                  <%= form.label :customer_id, "Cliente : " %>
+                  <%= form.collection_select :customer_id, Customer.all, :id, :nombre, prompt: "Seleccione un cliente" %>
+                </div>
+
+                <div class="texto2">
+                  <%= form.label :tipo, "Tipo de compra : " %>
+                  <%= form.select :tipo, options_for_select(["Minorista", "Mayorista", "Contratista/Empresa"]), prompt: "Seleccione un tipo" %>
+                </div>
+
+                <div class="btn3">
+                  <%= form.submit "Guardar", class:'btn4 bb' %>
+                </div>
+              <% end %>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+  </section>
+
+<script>
+  const btn = document.getElementById("hamburger");
+  const menu = document.getElementById("menu");
+
+  btn.addEventListener("click", () => {
+    menu.classList.toggle("active");
+  });
+
+  function cargarGrafica() {
+    fetch('/api/v1/buys/por_tipo')
+    .then(response => response.json())
+    .then(datos => {
+      const labels = datos.labels;
+      const datasets = datos.datasets;
+
+      const bluePalette = ['#2980b9', '#3498db', '#5dade2', '#85c1e9'];
+
+      datasets.forEach((dataset, index) => {
+        dataset.backgroundColor = bluePalette[index % bluePalette.length];
+        dataset.borderColor = '#ffffff';
+        dataset.borderWidth = 2;
+      });
+
+      new Chart(document.getElementById('grafica'), {
+        type: 'bar',
+        data: {
+          labels: labels,
+          datasets: datasets
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: {
+              labels: {
+                usePointStyle: true,
+                pointStyle: 'circle',
+                color: '#1c1c1cff',
+                font: {
+                  family: 'Poppins',
+                  size: 12,
+                  weight: 'bold'
+                }
+              }
+            }
+          },
+          scales: {
+            y: {
+              beginAtZero: true,
+              ticks: {
+                color: '#1c1c1cff',
+                font: {
+                  family: 'Poppins',
+                  size: 14,
+                  weight: '600'
+                }
+              },
+              grid: {
+                color: '#888888'
+              }
+            },
+            x: {
+              ticks: {
+                color: '#1c1c1cff',
+                font: {
+                  family: 'Poppins',
+                  size: 14,
+                  weight: '600'
+                }
+              },
+              grid: {
+                color: '#888888'
+              }
+            }
+          }
+        }
+      });
+    });
+  }
+
+  document.addEventListener('DOMContentLoaded', cargarGrafica);
+</script>
+ 
+
+
+
+  <footer>
+    &copy; 2025 Ferremateriales el Maestro - v2.3.7
+  </footer>
+
+</body>
+</html>
+
+
