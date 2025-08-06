@@ -63,7 +63,7 @@
       <div class="orden">
         <section class="Formulario" >
           <h1 class="soporte">Soporte técnico</h1>
-          <%= form_with url: send_report_dashboard_index_path, scope: :support_request, local: true do |f| %>
+          <%= form_with url: send_report_dashboard_path, scope: :support_request, local: true do |f| %>
             <div class="mb-3 "  >
               <%= f.label :nombre, "Nombre", class:"l-nombre"%>
               <%= f.text_field :user_name, class: "nombre", placeholder:"Ej: Laura Rodríguez" %>
