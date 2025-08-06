@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
-
+import 'features/productos/bloc/product_bloc.dart';
 import 'features/auth/bloc/auth_bloc.dart';
 import 'features/auth/bloc/auth_event.dart';
 import 'features/auth/bloc/auth_state.dart';
@@ -44,20 +44,24 @@ class FerreteriaApp extends StatelessWidget {
           ),
         ),
         home: BlocBuilder<AuthBloc, AuthState>(
-          builder: (context, authState) {
-            switch (authState.status) {
-              case AuthStatus.success:
-                return const MainView(); // Usuario logueado
-              case AuthStatus.failure:
-              case AuthStatus.loggedOut:
-                return  LoginView(); // Usuario no logueado
-              default:
-                return const Scaffold(
-                  body: Center(child: CircularProgressIndicator()),
-                );
-            }
-          },
-        ),
+  builder: (context, authState) {
+    switch (authState.status) {
+      case AuthStatus.success:
+        return BlocProvider(
+          create: (_) => ProductBloc(),
+          child: const MainView(),
+        );
+      case AuthStatus.failure:
+      case AuthStatus.loggedOut:
+        return LoginView();
+      default:
+        return const Scaffold(
+          body: Center(child: CircularProgressIndicator()),
+        );
+    }
+  },
+),
+
       ),
     );
   }
