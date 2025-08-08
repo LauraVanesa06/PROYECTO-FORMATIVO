@@ -1,57 +1,53 @@
-<section class="hero">
-  <div class="hero-content text-center">
-    <h1>Bienvenido a nuestra tienda</h1>
-    <p>Encuentra los mejores productos al mejor precio</p>
-    <a href="#productos" class="btn btn-primary mt-3">Ver productos</a>
+<!-- HERO -->
+<section class="hero-header">
+  <div class="hero-text">
+    <h1>Ferremateriales El Maestro</h1>
+    <p>Todo en herramientas y materiales — calidad y buen precio</p>
+    <a href="#productos" class="btn btn-primary hero-cta">Ver productos</a>
   </div>
 </section>
 
-<!-- 🔥 Promociones / Productos Destacados -->
-<section id="productos" class="productos-destacados mt-5">
-  <h2 class="titulo text-center">🔥 Promociones 🔥</h2>
-  <div class="cartas d-flex flex-wrap justify-content-center gap-4">
-    <% @productos.each do |producto| %>
-      <div class="cartaa text-center p-3">
-        <%= image_tag producto.imagen.presence || "martillo-dewalt.png", alt: producto.nombre %>
-        <h3><%= producto.nombre %></h3>
-        <p><%= truncate(producto.descripcion, length: 100) %></p>
-        <p><strong><%= number_to_currency(producto.precio, unit: "$", separator: ".", delimiter: ",") %></strong></p>
-        <button class="btn btn-outline-success">Comprar</button>
+<!-- CATEGORÍAS -->
+<section class="categories-section container mt-4">
+  <h2 class="titulo">🔍 Categorías</h2>
+  <div class="category-scroll" role="list">
+    <% @category.each do |c| %>
+      <div class="category-card" role="listitem">
+        <%= link_to c.nombre, category_path(c), class: "category-link" %>
       </div>
     <% end %>
   </div>
 </section>
 
-<!-- 🔍 Categorías -->
-<section class="categorias-section mt-5">
-  <h2 class="titulo text-center">🔍 Busca tu producto</h2>
-  <div class="categorias d-flex justify-content-center flex-wrap gap-3 mt-3">
-    <% @category.each do |categoria| %>
-      <a class="cart-category btn btn-outline-primary" href="#"><%= categoria.nombre %></a>
+<!-- PRODUCTOS -->
+<section id="productos" class="productos-destacados container mt-4 mb-5">
+  <h2 class="titulo">🔥 Productos destacados</h2>
+  <div class="product-grid">
+    <% @productos.each do |producto| %>
+      <div class="product-card">
+        <div class="product-thumb">
+          <%= image_tag(producto.imagen.presence || "martillo-dewalt.png", alt: producto.nombre, class: "img-fluid") %>
+          <button class="fav-btn" data-product-id="<%= producto.id %>">
+            <i class="fa-regular fa-heart"></i>
+          </button>
+        </div>
+        <div class="product-body">
+          <h3 class="product-name"><%= producto.nombre %></h3>
+          <p class="product-desc"><%= truncate(producto.descripcion, length: 80) %></p>
+          <div class="product-meta">
+            <span class="price"><%= number_to_currency(producto.precio, unit: "$", separator: ".", delimiter: ",") %></span>
+            <div>
+              <button class="btn btn-sm btn-outline-primary add-cart" data-product-id="<%= producto.id %>" data-product-name="<%= j producto.nombre %>" data-product-price="<%= producto.precio %>">
+                <i class="fa-solid fa-cart-plus"></i>
+              </button>
+              <%= link_to "Ver", product_path(producto), class: "btn btn-sm btn-secondary" %>
+            </div>
+          </div>
+        </div>
+      </div>
     <% end %>
   </div>
 </section>
 
-<!-- 📞 Contacto -->
-<section class="contacto-section mt-5">
-  <h2 class="titulo text-center">📞 Contáctanos</h2>
-  <div class="contacto d-flex justify-content-center gap-5 mt-4 flex-wrap">
-    <a href="#" class="text-center text-decoration-none text-dark">
-      <%= image_tag "icons/whatsapp-brands.svg", class: "icono-contacto" %>
-      <h3>WhatsApp</h3>
-      <p>+57 3012956202</p>
-    </a>
-
-    <a href="#" class="text-center text-decoration-none text-dark">
-      <%= image_tag "icons/location-dot-solid.svg", class: "icono-contacto" %>
-      <h3>Ubícanos</h3>
-      <p>Cl. 6A, Campeche, Baranoa, Atlántico</p>
-    </a>
-
-    <a href="#" class="text-center text-decoration-none text-dark">
-      <%= image_tag "icons/envelope-solid.svg", class: "icono-contacto" %>
-      <h3>Correo</h3>
-      <p>pepito@gmail.com</p>
-    </a>
-  </div>
-</section>
+<!-- TOASTS -->
+<div id="toast-container"></div>
