@@ -12,10 +12,10 @@
   <div class="cartas d-flex flex-wrap justify-content-center gap-4">
     <% @productos.each do |producto| %>
       <div class="cartaa text-center p-3">
-        <%= image_tag producto.image_url.presence || "martillo-dewalt.png", alt: producto.name, class: "img-fluid mb-2" %>
-        <h3><%= producto.name %></h3>
-        <p><%= truncate(producto.description, length: 100) %></p>
-        <p><strong><%= number_to_currency(producto.price, unit: "$", separator: ".", delimiter: ",") %></strong></p>
+        <%= image_tag producto.imagen.presence || "martillo-dewalt.png", alt: producto.nombre %>
+        <h3><%= producto.nombre %></h3>
+        <p><%= truncate(producto.descripcion, length: 100) %></p>
+        <p><strong><%= number_to_currency(producto.precio, unit: "$", separator: ".", delimiter: ",") %></strong></p>
         <button class="btn btn-outline-success">Comprar</button>
       </div>
     <% end %>
