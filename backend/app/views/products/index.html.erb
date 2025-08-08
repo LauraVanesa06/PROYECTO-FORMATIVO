@@ -61,7 +61,7 @@
 
   <aside class="categorias" id="menu-categorias">
     <div class="div-div">
-      <a href="/inventario" class="div-categ" style="text-decoration:none;"><i class="fas fa-arrow-left" id="vol"></i></a>
+      <a href="productos" class="div-categ" style="text-decoration:none;"><i class="fas fa-arrow-left" id="vol"></i></a>
       <div class="div-categ">Categorias:</div>
       <a href="#modal-new-category" class="new-categ">+</a>
     </div>
@@ -77,27 +77,34 @@
     <%= form_with url: inventario_path, method: :get, local: true, class:"form-filtros" do %>
       <ul>
         <li>
-          <%= label_tag :query, "Nombre:" %>
-          <%= text_field_tag :query, params[:query], placeholder: "Ej: Martillo", style:"border-radius:10px; padding-left: 10px; border:1px solid grey;"%> 
+          <%= label_tag :name, "Nombre:" %>
+          <%= text_field_tag :name, params[:name], placeholder: "Ej: Martillo", style:"border-radius:10px; padding-left: 10px; border:1px solid grey;"%> 
         </li>
-        <li class="li-precio"><a class="a-precio" href="">Rango de Precio</a>
+        <li class="li-precio">
+          <label for="toggle-precio" class="a-precio">Rango de Precio ▾</label>
+          <input type="checkbox" id="toggle-precio" hidden>
+
           <ul class="ul-precio">
             <li>
-              <%= label_tag :min_price, "Mínimo:  " %>
-              <%= number_field_tag :min_price, params[:min_price], step: 0.01, style:"width: 80px; border-radius:10px; padding-left: 10px; border: grey"%>
+              <%= label_tag :min, "Mínimo:", class: "preci"%>
+              <%= number_field_tag :min, params[:min], id: "min", max: 99999999, step: 0.01, style:"width: 80px; border-radius:10px; padding-left: 10px; border: grey"%>
             </li>
             <li>
-              <%= label_tag :max_price, "Máximo:  " %>
-              <%= number_field_tag :max_price, params[:max_price], step: 0.01, style:"width: 80px; border-radius:10px; padding-left: 10px; border: grey"%>
+              <%= label_tag :max, "Máximo:", class: "preci"%>
+              <%= number_field_tag :max, params[:max], id: "max", max: 99999999, step: 0.01, style:"width: 80px; border-radius:10px; padding-left: 10px; border: grey"%>
             </li>
           </ul>
         </li>
-        <li class="li-marca"><a class="a-marca" href="">Proveedor</a>
-        <ul class="ul-marca">
-          <% @suppliers.each do |supplier| %>
-            <%= render supplier %>
-          <% end %>
-        </ul>
+        </li>
+        <li class="li-marca">
+          <label for="toggle-marca" class="a-marca">Proveedor ▾</label>
+          <input type="checkbox" id="toggle-marca" hidden>
+
+          <ul class="ul-marca">
+            <% @suppliers.each do |supplier| %>
+              <%= render supplier %>
+            <% end %>
+          </ul>
         </li>
         <li>
           <%= button_tag type: 'submit', class: 'lupa' do %>
@@ -292,6 +299,30 @@
   btnCategorias.addEventListener("click", () => {
     menuCategorias.classList.toggle("active");
   });
+
+    function formatNumber(input) {
+      let value = input.value.replace(/\./g, ''); // Quitar puntos
+      if (value === '') return;
+
+      // Solo permitir números
+      if (!/^\d+$/.test(value)) return;
+
+      // Convertir a número con separadores de miles (colombiano)
+      input.value = value.replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+    }
+
+    document.addEventListener("DOMContentLoaded", function () {
+      const minInput = document.getElementById("min");
+      const maxInput = document.getElementById("max");
+
+      [minInput, maxInput].forEach(function(input) {
+        if (input) {
+          input.addEventListener("input", function () {
+            formatNumber(input);
+          });
+        }
+      });
+    });
   </script>
 
 <!-- MODAL NUEVA CATEGORÍA -->

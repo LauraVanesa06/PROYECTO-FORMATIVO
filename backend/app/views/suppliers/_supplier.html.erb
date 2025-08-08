@@ -13,8 +13,8 @@
 
 -->
     <li class="li-marca">
-      <%= check_box_tag "proveedor_id[]", supplier.id, params[:proveedor_id]&.include?(supplier.id.to_s), class:"aa-check" %>
-      <%= label_tag "proveedor_id_#{supplier.id}", supplier.nombre, class: "aa-marca" %>
+      <%= check_box_tag "supplier_id[]", supplier.id, params[:supplier_id]&.include?(supplier.id.to_s), class:"aa-check" %>
+      <%= label_tag "supplier_id_#{supplier.id}", supplier.nombre, class: "aa-marca" %>
     </li>
 <!--
   <p>

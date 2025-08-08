@@ -7,28 +7,14 @@ class ProductsController < ApplicationController
   def index
     puts "params: #{params.inspect}"
 
-    # Inicializamos los productos y proveedores
     @products = Product.all
     @suppliers = Supplier.all
 
-    # Filtro por nombre (query)
-    if params[:query].present?
-      @products = @products.where("nombre LIKE ?", "%#{params[:query]}%")
-    end
-
-    # Filtro por precio mínimo
-    if params[:min_price].present?
-      @products = @products.where("precio >= ?", params[:min_price])
-    end
-
-    # Filtro por precio máximo
-    if params[:max_price].present?
-      @products = @products.where("precio <= ?", params[:max_price])
-    end
-
-    # Filtro por proveedores (si existe un parámetro de supplier_ids)
-    if params[:supplier_id].present?
-      @products = @products.where(supplier_id: params[:supplier_id])
+    if params[:name].present? || params[:min].present? || params[:max].present? || params[:supplier_id].present?
+      @products = @products.where("nombre LIKE ?", "%#{params[:name]}%") if params[:name].present?
+      @products = @products.where("precio >= ?", params[:min]) if params[:min].present?
+      @products = @products.where("precio <= ?", params[:max]) if params[:max].present?
+      @products = @products.where(supplier_id: params[:supplier_id]) if params[:supplier_id].present?
     end
 
     @categories = Category.all
