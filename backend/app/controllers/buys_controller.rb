@@ -8,14 +8,16 @@ class BuysController < ApplicationController
     @buys = Buy.all
     @purchasedetails = Purchasedetail.all
     @purchasedetails = Purchasedetail.joins("INNER JOIN buys ON buys.id = purchasedetails.buy_id")
+    @cliente = Customer.joins(:buys).distinct
 
-    if params[:id].present?
-      @buys = @buys.where("buys.id = ?", params[:id])
-    end
-
-    if params[:year].present? || params[:month].present? || params[:day].present?
+    if params[:customer].present? || params[:year].present? || params[:month].present? || params[:day].present?
       conditions = []
       values = []
+
+      #@buys = @buys.where(customer_id: params[:customer_id]) if params[:customer_id].present?
+      #@buys = @buys.where("customer_id LIKE ?", "%#{params[:customer_id]}%") if params[:customer_id].present?
+      @cliente = Customer.joins(:buys).distinct.where("nombre LIKE ?", "%#{params[:customer]}%")
+      @buys = @buys.where(customer_id: @cliente.ids)
 
       if params[:year].present?
         conditions << "strftime('%Y', buys.fecha) = ?"

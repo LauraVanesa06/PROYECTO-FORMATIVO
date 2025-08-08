@@ -70,8 +70,8 @@
         <div class="div">
           <%= form_tag ventas_path, class:"filtros", method: :get do %>
             <div class="filtro-id">
-              <%= label_tag :id, "ID:" %>
-              <%= text_field_tag :id, params[:id], placeholder: "Ej: 1", size: 10, style:"border-radius:10px; padding-left: 10px; border:1px solid grey;" %>
+              <%= label_tag :customer, "Cliente:" %>
+              <%= text_field_tag :customer, params[:customer], placeholder: "Ej: juan", size: 10, style:"border-radius:10px; padding-left: 10px; border:1px solid grey;" %>
             </div>
             <div class="filtro-id">
               <%= label_tag :fecha, "Fecha:" %>
@@ -80,7 +80,12 @@
               <%= text_field_tag :day, params[:day], placeholder: "DD", size: 2, style:"border-radius:10px; padding-left: 10px; border:1px solid grey;" %>
             </div>
             <div>
-              <%= button_tag type: 'submit', class: 'btn-save' do %>
+              <button id="limpiar-filtros" type="button" class="btn-save">
+                <i class="fas fa-broom"></i>
+              </button>
+            </div>
+            <div>
+              <%= button_tag type: 'submit', class: 'btn-save', name: '' do %>
                 <i class="fas fa-search"></i>
               <% end %>
             </div>
@@ -248,11 +253,39 @@
   }
 
   document.addEventListener('DOMContentLoaded', cargarGrafica);
-</script>
+
+//borrar filtros
+
+      document.addEventListener("DOMContentLoaded", function () {
+      const botonLimpiar = document.getElementById("limpiar-filtros");
+
+      if (botonLimpiar) {
+        botonLimpiar.addEventListener("click", function () {
+          // Encuentra el formulario que contiene los filtros
+          const form = botonLimpiar.closest("form");
+
+          if (form) {
+            // Limpia todos los campos del formulario
+            const inputs = form.querySelectorAll("input, select, textarea");
+            inputs.forEach((input) => {
+              if (input.type === "checkbox" || input.type === "radio") {
+                input.checked = false;
+              } else {
+                input.value = "";
+              }
+            });
+
+            // Espera un momento antes de recargar sin filtros
+            setTimeout(() => {
+              const urlSinParametros = window.location.origin + window.location.pathname;
+              window.location.href = urlSinParametros;
+            }, 100);
+          }
+        });
+      }
+    });
+  </script>
  
-
-
-
   <footer>
     &copy; 2025 Ferremateriales el Maestro - v2.3.7
   </footer>

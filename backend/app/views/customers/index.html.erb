@@ -65,6 +65,11 @@
               <%= text_field_tag :day, params[:day], placeholder: "DD", size: 2, style:"border-radius:10px; padding-left: 10px; border:1px solid grey;" %>
             </div>
             <div>
+              <button id="limpiar-filtros" type="button" class="btn">
+                <i class="fas fa-broom"></i>
+              </button>
+            </div>
+            <div>
               <%= button_tag type: 'submit', class: 'btn' do %>
                 <i class="fas fa-search"></i>
               <% end %>
@@ -166,6 +171,37 @@
         seleccionado.style.display = 'block';
       }
     }
+
+  //borrar filtros
+
+      document.addEventListener("DOMContentLoaded", function () {
+      const botonLimpiar = document.getElementById("limpiar-filtros");
+
+      if (botonLimpiar) {
+        botonLimpiar.addEventListener("click", function () {
+          // Encuentra el formulario que contiene los filtros
+          const form = botonLimpiar.closest("form");
+
+          if (form) {
+            // Limpia todos los campos del formulario
+            const inputs = form.querySelectorAll("input, select, textarea");
+            inputs.forEach((input) => {
+              if (input.type === "checkbox" || input.type === "radio") {
+                input.checked = false;
+              } else {
+                input.value = "";
+              }
+            });
+
+            // Espera un momento antes de recargar sin filtros
+            setTimeout(() => {
+              const urlSinParametros = window.location.origin + window.location.pathname;
+              window.location.href = urlSinParametros;
+            }, 100);
+          }
+        });
+      }
+    });
   </script>
 </body>
 </html>
