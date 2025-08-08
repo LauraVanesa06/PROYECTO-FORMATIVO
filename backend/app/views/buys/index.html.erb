@@ -49,8 +49,8 @@
 
   <section class="container">
     <div class="cont-volver">
-      <a href="/ventas" class="a-volver" style="text-decoration:none;"><i class="fas fa-arrow-left" style="color:white;"></i></a>
-    </div>
+      <a href="ventas" class="a-volver" style="text-decoration:none;"><i class="fas fa-arrow-left" style="color:white;"></i></a>
+    </div> 
     <section id=sect1>
       <div class="degradado">
         <p class= "titulo-cant">Cantidad total de Ventas:</p>
@@ -94,6 +94,19 @@
       </nav>
       <div class="cont-ventas">
         <div id="buys">
+          <% if flash[:alert] %>
+            <div id="mensaje-alerta" class="alerta-filtro">
+              <%= flash[:alert] %>
+            </div>
+
+            <script>
+              setTimeout(() => {
+                const alerta = document.getElementById("mensaje-alerta");
+                if (alerta) alerta.style.display = "none";
+              }, 4000); // 4 segundos
+            </script>
+          <% end %>
+
           <% if @buys.present? %>
             <% @buys.each do |buy| %>
               <%= render buy %>
@@ -136,7 +149,7 @@
               
             <% end %>
           <% else %>
-            <p>No se encontraron compras.</p>
+          
           <% end %>
           <a class="new-buy" href="#modal-new-buy">+</a>
 

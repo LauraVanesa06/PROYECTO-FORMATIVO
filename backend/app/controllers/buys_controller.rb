@@ -35,6 +35,11 @@ class BuysController < ApplicationController
       end
 
       @buys = @buys.where(conditions.join(" AND "), *values)
+
+      if @buys.empty?
+        flash.now[:alert] = "No se encontraron compras con esos filtros."
+        @buys = Buy.all
+      end
     end
   end
 
