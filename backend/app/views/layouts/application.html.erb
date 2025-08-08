@@ -18,28 +18,39 @@
 <body>
   <main>
     <!-- HEADER -->
-    <header class="header-container" style="background-image: url('<%= asset_path('madera2.jpg') %>');">
+    <header class="header-container d-flex align-items-center justify-content-between px-4" style="background-image: url('<%= asset_path('madera2.jpg') %>'); background-size: cover; background-position: center; height: 80px;">
+      <!-- Logo -->
       <div class="logo">
-        <%= link_to image_tag("logo.png", alt: "Ferremateriales El Maestro"), root_path %>
+        <%= link_to image_tag("logo.png", alt: "Ferremateriales El Maestro", style: "height:50px;"), authenticated_root_path %>
       </div>
 
-      <nav class="main-nav">
-        <%= link_to "Inicio", root_path %>
-        <%= link_to "Productos", products_path %>
-        <%= link_to "Contacto", contact_path %>
+      <!-- Navegación -->
+      <nav class="main-nav d-flex gap-3">
+        <%= link_to "Inicio", authenticated_root_path, class: "text-white fw-bold" %>
+        <%= link_to "Productos", products_path, class: "text-white fw-bold" %>
       </nav>
 
-      <div class="header-icons">
-        <%= link_to image_tag("favorito.png", alt: "Favoritos", class: "icon"), favoritos_path %>
-        <%= link_to image_tag("carrito.png", alt: "Carrito", class: "icon"), carrito_path %>
-        <%= link_to image_tag("notificaciones.png", alt: "Notificaciones", class: "icon"), notificaciones_path %>
+      <!-- Iconos -->
+      <div class="header-icons d-flex align-items-center gap-3 text-white fs-5">
+        <%= link_to favoritos_path, class: "text-white" do %>
+          <i class="fa-solid fa-star"></i>
+        <% end %>
+        <%= link_to carrito_path, class: "text-white" do %>
+          <i class="fa-solid fa-cart-shopping"></i>
+        <% end %>
+        <%= link_to notificaciones_path, class: "text-white" do %>
+          <i class="fa-solid fa-bell"></i>
+        <% end %>
 
-        <div class="user-menu">
-          <%= image_tag("user.png", alt: "Usuario", class: "icon") %>
-          <div class="dropdown-menu">
-            <%= link_to "Iniciar sesión", new_user_session_path %>
-            <%= link_to "Registrarse", new_user_registration_path %>
-          </div>
+        <!-- Usuario con dropdown -->
+        <div class="dropdown">
+          <a href="#" class="text-white dropdown-toggle" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+            <i class="fa-solid fa-user"></i>
+          </a>
+          <ul class="dropdown-menu dropdown-menu-end">
+            <li><%= link_to "Iniciar sesión", new_user_session_path, class: "dropdown-item" %></li>
+            <li><%= link_to "Registrarse", new_user_registration_path, class: "dropdown-item" %></li>
+          </ul>
         </div>
       </div>
     </header>
