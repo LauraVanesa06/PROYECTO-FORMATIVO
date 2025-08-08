@@ -15,6 +15,11 @@ class ProductsController < ApplicationController
       @products = @products.where("precio >= ?", params[:min]) if params[:min].present?
       @products = @products.where("precio <= ?", params[:max]) if params[:max].present?
       @products = @products.where(supplier_id: params[:supplier_id]) if params[:supplier_id].present?
+    
+      if @products.empty?
+        flash.now[:alert] = "¡No se encontraron productos con esos filtros!"
+        @products = Product.all
+      end
     end
 
     @categories = Category.all
