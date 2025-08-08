@@ -107,6 +107,11 @@
           </ul>
         </li>
         <li>
+          <button id="limpiar-filtros" type="button" class="lupa">
+            <i class="fas fa-broom"></i>
+          </button>
+        </li>
+        <li>
           <%= button_tag type: 'submit', class: 'lupa', name: '' do %>
             <i class="fas fa-search"></i>
           <% end %>
@@ -127,6 +132,7 @@
           }, 4000); // 4 segundos
         </script>
       <% end %>
+
       <% if @products.present? %>
         <% @products.each do |product| %>
           <%= render product %>
@@ -312,6 +318,8 @@
     menuCategorias.classList.toggle("active");
   });
 
+    //poner punto cada 3 caracteres en rango de precio
+
     function formatNumber(input) {
       let value = input.value.replace(/\./g, ''); // Quitar puntos
       if (value === '') return;
@@ -334,6 +342,37 @@
           });
         }
       });
+    });
+
+    //borrar filtros
+
+      document.addEventListener("DOMContentLoaded", function () {
+      const botonLimpiar = document.getElementById("limpiar-filtros");
+
+      if (botonLimpiar) {
+        botonLimpiar.addEventListener("click", function () {
+          // Encuentra el formulario que contiene los filtros
+          const form = botonLimpiar.closest("form");
+
+          if (form) {
+            // Limpia todos los campos del formulario
+            const inputs = form.querySelectorAll("input, select, textarea");
+            inputs.forEach((input) => {
+              if (input.type === "checkbox" || input.type === "radio") {
+                input.checked = false;
+              } else {
+                input.value = "";
+              }
+            });
+
+            // Espera un momento antes de recargar sin filtros
+            setTimeout(() => {
+              const urlSinParametros = window.location.origin + window.location.pathname;
+              window.location.href = urlSinParametros;
+            }, 100);
+          }
+        });
+      }
     });
   </script>
 
