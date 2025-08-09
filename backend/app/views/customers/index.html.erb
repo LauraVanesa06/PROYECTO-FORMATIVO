@@ -48,7 +48,7 @@
   <section class="madre">
     <div class="filt">
       <div class="cont-volver">
-        <a href="/clientes" class="a-volver" style="text-decoration:none;"><i class="fas fa-arrow-left" id="vol"></i></a>
+        <a href="clientes" class="a-volver" style="text-decoration:none;"><i class="fas fa-arrow-left" id="vol"></i></a>
       </div>
       <div class="filtro">
         <p class=p><i class="fas fa-filter"></i> Filtros</p>
@@ -70,7 +70,7 @@
               </button>
             </div>
             <div>
-              <%= button_tag type: 'submit', class: 'btn' do %>
+              <%= button_tag type: 'submit', class: 'btn', name: '' do %>
                 <i class="fas fa-search"></i>
               <% end %>
             </div>
@@ -82,6 +82,8 @@
       <aside class="clientes">
         <div class="div-customer">Todas las fechas de compra:</div>
         <article class=compras>
+          
+
           <% if @purchasedetails.present? && @purchasedetails.any? %>
             <% @purchasedetails.each do |p| %>
               <div class="compra-info" onclick="mostrarDetalle('<%= dom_id(p, :vista) %>')">
@@ -92,7 +94,20 @@
           <% end %>
       </aside>
       <section class="cont-facturas">
+        <% if flash[:alert] %>
+            <div id="mensaje-alerta" class="alerta-filtro">
+              <%= flash[:alert] %>
+            </div>
+
+            <script>
+              setTimeout(() => {
+                const alerta = document.getElementById("mensaje-alerta");
+                if (alerta) alerta.style.display = "none";
+              }, 4000); // 4 segundos
+            </script>
+          <% end %>
         <div id="purcha">
+          
           <% @purchasedetails.each do |p| %>
             <div id="<%= dom_id(p, :vista) %>" class="div-purchase" style="display: none;">
               <h1 class=h1>Detalles de la Compra 🛒</h1>
@@ -135,11 +150,6 @@
                   <button class="editar"><%= link_to "Editar", edit_purchasedetail_path(p) %></button>
                 </section>
               </section>
-            </div>
-          <% end %>
-          <% if @purchasedetails.blank? && @filter_result_empty %>
-            <div class="mensaje-vacio" style="margin-top:-570px;">
-              <p style="color:red;">⚠️ No se encontró ningún cliente que coincida con los filtros aplicados.</p>
             </div>
           <% end %>
         </div>

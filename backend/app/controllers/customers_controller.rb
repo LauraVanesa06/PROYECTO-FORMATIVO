@@ -9,19 +9,12 @@ class CustomersController < ApplicationController
     @purchasedetails = []
     @buys = Buy.all
 
-    if params[:documento].present?
-      doc = params[:documento].to_i
-      @customers = @customers.where(documento: doc)
-    end
-
-    if params[:year].present? || params[:month].present? || params[:day].present?
       conditions = []
       values = []
-
-      if params[:year].present?
-        conditions << "strftime('%Y', buys.fecha) = ?"
-        values << params[:year]
-      end
+      doc = params[:documento].to_i
+      @customers = @customers.where("documento LIKE ?", "%#{params[:documento]}%") if params[:documento].present?
+    
+      params[:year].present? && conditions << "strftime('%Y', buys.fecha) = ?" && values << params[:year]
 
       if params[:month].present?
         conditions << "strftime('%m', buys.fecha) = ?"
@@ -33,8 +26,16 @@ class CustomersController < ApplicationController
         values << params[:day].rjust(2, '0')
       end
 
-      @buys = @buys.where(conditions.join(" AND "), *values)
-    end
+      { year: '%y', month: '%m', day: '%d' }.each do |param, format|
+        next unless params[param].present?
+        conditions << "strftime('#{format}', buys.fecha) = ?"
+        values << params[param].rjust(2, '0')
+      end
+
+      if @customers.empty?
+        flash.now[:alert] = "¡No se encontraron clientes con esos filtros!"
+        @customers = Customer.all
+      end
 
     buy_ids = @buys.pluck(:id)
 

@@ -81,11 +81,11 @@
     width: 70%;
 }
 .filtros{
+  height: auto;
     display: flex;
-    justify-content: space-between;
     flex-direction: row;
     align-items: center;
-    width: 370px;
+    gap: 10px;
 }
 
 .p {
@@ -105,7 +105,6 @@
     background-color: transparent;
     border: none !important;
     cursor: pointer;
-    margin-right: 20px;
 }
 .btn, i{
     color:#424242;
@@ -415,11 +414,10 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 20px;
-     margin-top: 20px;
-    width: 98%;
+    padding: 0;
+    width: 95%;
 }
-
+input
 .p {
     margin-left: 20px;
     font-size: 17px;

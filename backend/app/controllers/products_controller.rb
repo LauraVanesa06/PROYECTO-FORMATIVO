@@ -10,8 +10,8 @@ class ProductsController < ApplicationController
     @products = Product.all
     @suppliers = Supplier.all
 
-    if params[:name].present? || params[:min].present? || params[:max].present? || params[:supplier_id].present?
-      @products = @products.where("nombre LIKE ?", "%#{params[:name]}%") if params[:name].present?
+    #if params[:name].present? || params[:min].present? || params[:max].present? || params[:supplier_id].present?
+      @products = @products.where("nombre LIKE ? ", "%#{params[:name]}%") if params[:name].present?
       @products = @products.where("precio >= ?", params[:min]) if params[:min].present?
       @products = @products.where("precio <= ?", params[:max]) if params[:max].present?
       @products = @products.where(supplier_id: params[:supplier_id]) if params[:supplier_id].present?
@@ -20,7 +20,7 @@ class ProductsController < ApplicationController
         flash.now[:alert] = "¡No se encontraron productos con esos filtros!"
         @products = Product.all
       end
-    end
+    #end
 
     @categories = Category.all
     

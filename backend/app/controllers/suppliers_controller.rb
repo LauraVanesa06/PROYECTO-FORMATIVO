@@ -17,8 +17,8 @@ class SuppliersController < ApplicationController
     @categorias = Category.all
     @suppliers = Supplier.includes(:products).all
  
-    if params[:nombre].present?
-      @suppliers = Supplier.where(nombre: params[:nombre])
+    if params[:name].present?
+      @suppliers = Supplier.where("nombre ILIKE ?", "%#{params[:name]}%")
     else
       @suppliers = Supplier.all
     end
