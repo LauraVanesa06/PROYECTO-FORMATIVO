@@ -875,10 +875,11 @@ body {
 
 /* ===== HERO ===== */
 .hero-header {
+  background-image: url(fondo.jpg);
   background-size: cover;
   background-position: center;
   color: #fff;
-  padding: 48px 0;
+  padding: 15% 0;
   text-align: center;
 }
 

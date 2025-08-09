@@ -11,7 +11,7 @@
 <section class="categories-section container mt-4">
   <h2 class="titulo">🔍 Categorías</h2>
   <div class="category-scroll" role="list">
-    <% @category.each do |c| %>
+    <% @categories.each do |c| %>
       <div class="category-card" role="listitem">
         <%= link_to c.nombre, category_path(c), class: "category-link" %>
       </div>

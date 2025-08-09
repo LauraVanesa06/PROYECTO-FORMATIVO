@@ -3,13 +3,23 @@ class HomeController < ApplicationController
   skip_before_action :authenticate_user!
 
   def index
-    @category = Category.all
+    @categories = Category.all
     @productos = Product.limit(4) # Si quieres mostrar productos en la vista pública
   end
 
   def producto
     @categories = Category.includes(:products)
   end
+
+  def favoritos
+  end
+
+  def carrito
+  end
+
+  def notificaciones
+  end
+
 
   def contacto
   end
