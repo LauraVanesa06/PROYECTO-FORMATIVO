@@ -280,6 +280,58 @@ input::placeholder {
     justify-content: center;
     align-items: center;
     margin-top: 10px;
+    position: relative;
+}
+/*Button edit*/
+.button {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 2px;
+  height: 35px;
+  width: 35px;
+  border: none;
+  background: #ffd24935;
+  border-radius: 20px;
+  cursor: pointer;
+  border: solid 1px #ffd85f;
+  position: absolute;
+  margin-left: 70%;
+  margin-top: 65%;
+}
+
+.lable {
+  line-height: 22px;
+  font-size: 30px;
+  color: #A649DA;
+  font-family: sans-serif;
+  letter-spacing: 1px;
+}
+
+.button:hover {
+  background: #ffd1494f;
+}
+
+.button:hover .svg-icon {
+  animation: lr 1s linear infinite;
+}
+
+@keyframes lr {
+  0% {
+    transform: translateX(0);
+  }
+
+  25% {
+    transform: translateX(-1px);
+  }
+
+  75% {
+    transform: translateX(1px);
+  }
+
+  100% {
+    transform: translateX(0);
+  }
 }
 .div-foto img{
     max-width: 90%;
@@ -300,28 +352,19 @@ input::placeholder {
 }
 .li-start{
     margin-top: 5px;
-    height: 30px;
+    height: 25px;
     display: flex;
     align-items: center;
     overflow: hidden;
 }
 .li-center{
     overflow: hidden;
-    height: 50px;
+    height: 40px;
     margin-bottom: 5px;
-    font-size: 12px;
+    font-size: 10px;
 }
 .ul-prod li{
     margin-inline: 5px;
-}
-.ver a, .editar a{
-    color: white;
-    width: 90px;
-    height: 25px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    text-decoration: none;
 }
 .texto{
     margin: 5px;
@@ -340,32 +383,8 @@ input::placeholder {
     display: flex;
     justify-content: space-between;
 }
-.editar, .ver{
-    height: 25px;
-    width: 90px;
-    border-radius: 20px;
-    color: white;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    font-weight: bold;
-}
-.editar{
-    border: solid 1px #ff9317;
-    background-color: #ffc81e;
-}
-.editar:hover{
-    background-color: #ffb300;
-}
-.ver{
-    border: solid 1px #214898;
-    background-color: #0053ff;
-}
-.ver:hover{
-    background-color: #1c23ff;
-}
 .precio{
-    color: #77abe3;
+    color: #2e67a3;
     font-size: 20px;
     font-weight: bold;
 }
@@ -636,35 +655,6 @@ input::placeholder {
     white-space: pre-wrap;
     border: 1px solid #939393;
 }
-.editar2{
-    border-radius: 20px;
-    color: white;
-    display: flex;
-    justify-content: center;
-    align-items: flex-end;
-    position: absolute;
-    font-weight: bold;
-    margin-left: -50%;
-    margin-top: 47%;
-
-}
-.editar2 a{
-    color: white;
-    height: 30px;
-    width: 110px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    text-decoration: none;
-}
-.editar2{
-    border: solid 1px #ff9317;
-    background-color: #ffc81e;
-}
-.editar2:hover{
-    background-color: #ffb300;
-}
-
 .hamburger-categorias{
     display: none;
 }
