@@ -321,7 +321,7 @@ input::placeholder {
     position: relative;
 }
 /*Button edit*/
-.button {
+#button {
   display: flex;
   justify-content: center;
   align-items: center;
@@ -346,11 +346,11 @@ input::placeholder {
   letter-spacing: 1px;
 }
 
-.button:hover {
+#button:hover {
   background: #ffd1494f;
 }
 
-.button:hover .svg-icon {
+#button:hover .svg-icon {
   animation: lr 1s linear infinite;
 }
 

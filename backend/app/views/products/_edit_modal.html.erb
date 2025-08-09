@@ -1,0 +1,83 @@
+<div id="edit-modal" class="modal-editar">
+  <div class="modal-content2">
+    <a href="#" class="close">&times;</a>
+    <div class="titulo2">Editar Producto</div>
+    <%= form_with(model: Product.new, url: '#', method: :patch, local: true, html: { multipart: true, id: "edit-form" }, class: 'form-editar') do |form| %>
+      <div class="texto2">
+        <%= form.label :imagen, "Imagen:", style: "display: block" %>
+        <%= form.file_field :imagen, class: "btn5"%>
+      </div>
+      <div class="texto2">
+        <%= form.label :nombre, "Nombre:", style: "display: block" %>
+        <%= form.text_field :nombre, id: 'edit-nombre' %>
+      </div>
+      <div class="texto2">
+        <%= form.label :descripcion, "Descripción:", style: "display: block" %>
+        <%= form.text_area :descripcion, id: 'edit-descripcion', class: 'descripcion' %>
+      </div>
+      <div class="texto2">
+        <%= form.label :precio, "Precio:", style: "display: block" %>
+        <%= form.text_field :precio, id: 'edit-precio' %>
+      </div>
+      <div class="texto2">
+        <%= form.label :stock, "Stock:", style: "display: block" %>
+        <%= form.number_field :stock, id: 'edit-stock' %>
+      </div>
+      <div class="texto2">
+        <%= form.label :category_id, "Categoría:" %>
+        <%= form.collection_select :category_id, Category.all, :id, :nombre, { prompt: "Seleccione una categoría" }, id: 'edit-categoria' %> 
+      </div>
+      <div class="texto2">
+        <%= form.label :supplier_id, "Proveedor:" %> 
+        <%= form.collection_select :supplier_id, Supplier.all, :id, :nombre, { prompt: "Seleccione un proveedor" }, id: 'edit-proveedor' %> 
+      </div>
+      <div class="btn3">
+        <%= form.submit "Guardar Cambios", class: 'btn4' %>
+      </div>
+    <% end %>
+  </div>
+</div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const modal = document.getElementById('edit-modal');
+    const closeButton = modal.querySelector('.close');
+
+    document.querySelectorAll('.open-edit-modal').forEach(button => {
+        button.addEventListener('click', (event) => {
+        event.preventDefault();
+        
+        const productId = button.dataset.productId;
+        
+        // Obtener los datos directamente del botón
+        const product = button.dataset;
+        
+        // Llenar el formulario del modal
+        const form = modal.querySelector('#edit-form');
+        form.action = `/products/${productId}`; 
+        
+        form.querySelector('#edit-nombre').value = product.nombre;
+        form.querySelector('#edit-descripcion').value = product.descripcion;
+        form.querySelector('#edit-precio').value = product.precio;
+        form.querySelector('#edit-stock').value = product.stock;
+        form.querySelector('#edit-categoria').value = product.categoryId;
+        form.querySelector('#edit-proveedor').value = product.supplierId;
+        
+        // Muestra el modal de forma instantánea
+        modal.style.display = 'block';
+        });
+    });
+
+    // Eventos para cerrar el modal...
+    closeButton.addEventListener('click', (event) => {
+        event.preventDefault();
+        modal.style.display = 'none';
+    });
+
+    window.addEventListener('click', (event) => {
+        if (event.target === modal) {
+        modal.style.display = 'none';
+        }
+    });
+    });
+</script>
