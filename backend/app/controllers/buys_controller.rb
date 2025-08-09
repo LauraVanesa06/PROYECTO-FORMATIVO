@@ -8,32 +8,28 @@ class BuysController < ApplicationController
     @buys = Buy.all
     @purchasedetails = Purchasedetail.all
     @purchasedetails = Purchasedetail.joins("INNER JOIN buys ON buys.id = purchasedetails.buy_id")
+    conditions = []
+    values = []
 
-    if params[:id].present?
-      @buys = @buys.where("buys.id = ?", params[:id])
+    @customer = Customer.joins(:buys).distinct.where("nombre LIKE ?", "%#{params[:customer]}%") if params[:customer].present?
+    @buys = @buys.where(customer_id: @customer.ids) if params[:customer].present?
+
+    { year: '%Y', month: '%m', day: '%d' }.each do |param, format|
+      next unless params[param].present?
+      conditions << "strftime('#{format}', buys.fecha) = ?"
+      values << params[param].rjust(2, '0')
     end
 
-    if params[:year].present? || params[:month].present? || params[:day].present?
-      conditions = []
-      values = []
+    query = Buy.joins(:customer)
+    query = query.where(conditions.join(" AND "), *values) unless conditions.empty?
 
-      if params[:year].present?
-        conditions << "strftime('%Y', buys.fecha) = ?"
-        values << params[:year]
+    @buys = query
+
+      if @buys.empty?
+        flash.now[:alert] = "No se encontraron compras con esos filtros."
+        @buys = Buy.all
       end
 
-      if params[:month].present?
-        conditions << "strftime('%m', buys.fecha) = ?"
-        values << params[:month].rjust(2, '0')
-      end
-
-      if params[:day].present?
-        conditions << "strftime('%d', buys.fecha) = ?"
-        values << params[:day].rjust(2, '0')
-      end
-
-      @buys = @buys.where(conditions.join(" AND "), *values)
-    end
   end
 
   # GET /buys/1 or /buys/1.json

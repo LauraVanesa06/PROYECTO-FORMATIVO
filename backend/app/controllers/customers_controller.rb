@@ -4,69 +4,55 @@ class CustomersController < ApplicationController
 
   # GET /customers or /customers.json
   def index
+  # base
+  @customers = Customer.left_outer_joins(:buys).distinct.includes(:buys)
+  @customer = nil
+  @purchasedetails = []
+  @buys = Buy.all
+
+  # filtro por documento (solo afecta la lista de clientes)
+  @customers = @customers.where("customers.documento LIKE ?", "%#{params[:documento]}%") if params[:documento].present?
+
+  # arma condiciones de fecha (día/mes/año) sobre buys.fecha
+  conditions, values = [], []
+  { day: '%d', month: '%m', year: '%Y' }.each do |p, f|
+    next unless params[p].present?
+    values << (p == :year ? params[p] : params[p].rjust(2, '0'))
+    conditions << "strftime('#{f}', buys.fecha) = ?"
+  end
+
+  # si hay condiciones, filtra both: buys y customers
+  if conditions.any?
+    where_sql = conditions.join(' AND ')
+    @buys = Buy.where(where_sql, *values)
+    @customers = @customers.where(where_sql, *values)
+  end
+
+  buy_ids = @buys.pluck(:id)
+
+  # --- lógica para purchasedetails en el ASIDE ---
+  if @customers.empty? # si el filtro no trajo clientes
+    flash.now[:alert] = "¡No se encontraron clientes con esos filtros!"
     @customers = Customer.all
-    @customer = nil
-    @purchasedetails = []
-    @buys = Buy.all
-
+    @purchasedetails = Purchasedetail.includes(:product, buy: :customer) # todas las compras
+  else
+    # purchasedetails normal, según selección o resultados
     if params[:documento].present?
-      doc = params[:documento].to_i
-      @customers = @customers.where(documento: doc)
-    end
-
-    if params[:year].present? || params[:month].present? || params[:day].present?
-      conditions = []
-      values = []
-
-      if params[:year].present?
-        conditions << "strftime('%Y', buys.fecha) = ?"
-        values << params[:year]
-      end
-
-      if params[:month].present?
-        conditions << "strftime('%m', buys.fecha) = ?"
-        values << params[:month].rjust(2, '0')
-      end
-
-      if params[:day].present?
-        conditions << "strftime('%d', buys.fecha) = ?"
-        values << params[:day].rjust(2, '0')
-      end
-
-      @buys = @buys.where(conditions.join(" AND "), *values)
-    end
-
-    buy_ids = @buys.pluck(:id)
-
-    @customers = @customers.left_outer_joins(:buys).distinct.includes(:buys)
-
-    if params[:customer_id].present?
-      @customer = Customer.find_by(id: params[:customer_id])
-      @purchasedetails = @customer&.purchasedetails&.includes(:product, buy: :customer) || []
-
-    elsif params[:id].blank? && params[:name].blank?
-      @purchasedetails = Purchasedetail.includes(:product, buy: :customer).all
-
+      @customer = Customer.find_by(documento: params[:documento])
+      @purchasedetails = @customer ? @customer.purchasedetails.includes(:product, buy: :customer).where(buy_id: buy_ids) : []
     elsif @customers.size == 1
       @customer = @customers.first
-      @purchasedetails = @customer.purchasedetails.includes(:product, buy: :customer)
-
-      @purchasedetails = @customer&.purchasedetails&.includes(:product, buy: :customer) || []
-      @purchasedetails = @purchasedetails.where(buy_id: buy_ids) if buy_ids.present?
-
-    elsif params[:id].blank? && params[:name].blank? && params[:documento].blank?
+      @purchasedetails = @customer.purchasedetails.includes(:product, buy: :customer).where(buy_id: buy_ids)
+    else
       @purchasedetails = Purchasedetail.includes(:product, buy: :customer)
       @purchasedetails = @purchasedetails.where(buy_id: buy_ids) if buy_ids.present?
-
-    elsif @customers.size == 1
-      @customer = @customers.first
-      @purchasedetails = @customer.purchasedetails.includes(:product, buy: :customer)
-      @purchasedetails = @purchasedetails.where(buy_id: buy_ids) if buy_ids.present?
-
     end
-
-    @filter_result_empty = @customers.blank?
   end
+
+  @filter_result_empty = @customers.blank?
+end
+
+
 
   # GET /customers/1 or /customers/1.json
   def show

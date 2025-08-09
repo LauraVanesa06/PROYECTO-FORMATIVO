@@ -63,10 +63,8 @@
           <div class="div-categ">Proveedores:</div>
         </div>
         <div>
-          <% @suppliers.uniq { |p| p.nombre }.each do |supplier| %>
-            <ul class="ul-nombre" id="<%= dom_id supplier %>">
-              <li class="li-nombre"><%= link_to supplier.nombre, dashboard_suppliers_path(nombre: supplier.nombre) %></li>
-            </ul>
+          <% @suppliers_aside.each do |supplier| %>
+            <%= render supplier %>
           <% end %>
         </div>
       </aside>
@@ -75,102 +73,114 @@
       <section class="SeccionProveedores">
         <nav class="nav-filtros">
           <p class="p"><i class="fas fa-filter"></i> Filtros</p>
-          <div class="div">
             <%= form_tag dashboard_suppliers_path, method: :get, class: "filtros" do %>
               <div class="filtro-id">
-                <%= label_tag :id, "ID:" %>
-                <%= text_field_tag :id, params[:id], placeholder: "Ej: 1", size: 2, style:"border-radius:10px; padding-left: 10px; border:1px solid grey;" %>
-              </div>
-              <div class="filtro-id">
-                <%= label_tag :nombre, "Nombre:" %>
-                <%= text_field_tag :nombre, params[:nombre], placeholder: "Distribuidor A", size: 12, style:"border-radius:10px; padding-left: 10px; border:1px solid grey;" %>
+                <%= label_tag :name, "Nombre:" %>
+                <%= text_field_tag :name, params[:name], placeholder: "Ej: Martillo", style:"border-radius:10px; padding-left: 10px; border:1px solid grey;"%> 
               </div>
               <div>
-                <%= button_tag type: 'submit', class: 'btn' do %>
+                <button id="limpiar-filtros" type="button" class="btn">
+                  <i class="fas fa-broom"></i>
+                </button>
+              </div>
+              <div>
+                <%= button_tag type: 'submit', class: 'btn', name: '' do %>
                   <i class="fas fa-search"></i>
                 <% end %>
               </div>
             <% end %>
-          </div>
         </nav>
 
         <section class="contenedor">
         
           <div id="purcha" class="mt-4">
-            <% suppliers_to_show = params[:nombre].present? ? @suppliers.where(nombre: params[:nombre]) : @suppliers %>
-            <% suppliers_to_show.each do |supplier| %>
-
-              <div class="div-purchase" id="purchasedetail" class="mt-4" >  
-                <div class="color">
-                </div>
-                <div class="card-body" id="card-body">
-                  <div class="body2">  
-                    <h5 class="card-title"><%= supplier.nombre %></h5>
-                    <p class="card-text"> 
-                      <strong>Nombre:</strong> <%= supplier.nombre %><br>
-                      <strong>Contacto:</strong> <%= supplier.contacto %><br>
-                      <% if supplier.products.any? %>
-                        <% supplier.products.order(created_at: :desc).each do |product| %>
-                          <strong>Producto:</strong> <%= product.nombre %><br>
-                          <strong>Stock:</strong> <%= product.stock %><br>
-                        <% end %>
-                      <% else %>
-                        <strong>Producto:</strong> Este proveedor ya fue registrado <br>
-                      <% end %>
-                    </p>
-                  </div>
-                  <div class='edit'>
-                    <button type="button"  data-bs-toggle="modal" data-bs-target="#modalEditarProveedor-<%= supplier.id %>" class="editar2">
-                      Editar
-                    </button>
-                  </div>
-                </div>
+            <% if flash[:alert] %>
+              <div id="mensaje-alerta" class="alerta-filtro">
+                <%= flash[:alert] %>
               </div>
-              <div class="modal fade" id="modalEditarProveedor-<%= supplier.id %>" tabindex="-1" aria-labelledby="editarLabel-<%= supplier.id %>" aria-hidden="true">
-                <div class="modal-dialog">
-                  <div class="modal-content">
-                    <div class="modal-header bg-dark text-white">
-                      <h5 class="modal-title">Editar Proveedor</h5>
-                      <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Cerrar">
+
+              <script>
+                setTimeout(() => {
+                  const alerta = document.getElementById("mensaje-alerta");
+                  if (alerta) alerta.style.display = "none";
+                }, 4000); // 4 segundos
+              </script>
+            <% end %>
+            <% if @suppliers.present? %>
+              <% @suppliers.each do |supplier| %>
+
+                <div class="div-purchase" id="purchasedetail" class="mt-4" >  
+                  <div class="color">
+                  </div>
+                  <div class="card-body" id="card-body">
+                    <div class="body2">  
+                      <h5 class="card-title"><%= supplier.nombre %></h5>
+                      <p class="card-text"> 
+                        <strong>Nombre:</strong> <%= supplier.nombre %><br>
+                        <strong>Contacto:</strong> <%= supplier.contacto %><br>
+                        <% if supplier.products.any? %>
+                          <% supplier.products.order(created_at: :desc).each do |product| %>
+                            <strong>Producto:</strong> <%= product.nombre %><br>
+                            <strong>Stock:</strong> <%= product.stock %><br>
+                          <% end %>
+                        <% else %>
+                          <strong>Producto:</strong> Este proveedor ya fue registrado <br>
+                        <% end %>
+                      </p>
+                    </div>
+                    <div class='edit'>
+                      <button type="button"  data-bs-toggle="modal" data-bs-target="#modalEditarProveedor-<%= supplier.id %>" class="editar2">
+                        Editar
                       </button>
                     </div>
-                    <% product = supplier.products.order(created_at: :desc).first %>
-                      <%= form_with model: supplier, url: dashboard_supplier_path(supplier), local: true do |form| %>
-                      <div class="modal-body">
-                        <div class="mb-3">      
-                          <%= form.label :nombre %>
-                          <%= form.text_field :nombre, class: "form-control" %>
-                        </div>                   
-                        <div class="mb-3">
-                          <%= form.label :contacto %>
-                          <%= form.text_field :contacto, class: "form-control" %>
-                        </div> 
-                        <% if product %>
-                          <div class="mb-3">
-                            <%= label_tag :nombre_product, "Nombre del producto" %>
-                            <%= text_field_tag :nombre_product, product.nombre, class: "form-control" %>
-                          </div>
-
-                          <div class="mb-3">
-                            <%= label_tag :stock, "Stock" %>
-                            <%= number_field_tag :stock, product.stock, class: "form-control" %>
-                          </div>
-
-                          <div class="mb-3">
-                            <%= label_tag :category_id, "Categoría del producto" %>
-                            <%= select_tag :category_id, options_from_collection_for_select(Category.all, :id, :nombre, product.category_id), class: "form-control" %>
-                          </div>
-                        <% end %>
-                        </div>
-                        <div class="modal-footer">
-                          <%= form.submit "Guardar cambios", class: "btn btn-success" %>
-                          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                        </div>
-                      
-                    <% end %>
                   </div>
                 </div>
-              </div>
+                <div class="modal fade" id="modalEditarProveedor-<%= supplier.id %>" tabindex="-1" aria-labelledby="editarLabel-<%= supplier.id %>" aria-hidden="true">
+                  <div class="modal-dialog">
+                    <div class="modal-content">
+                      <div class="modal-header bg-dark text-white">
+                        <h5 class="modal-title">Editar Proveedor</h5>
+                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Cerrar">
+                        </button>
+                      </div>
+                      <% product = supplier.products.order(created_at: :desc).first %>
+                        <%= form_with model: supplier, url: dashboard_supplier_path(supplier), local: true do |form| %>
+                        <div class="modal-body">
+                          <div class="mb-3">      
+                            <%= form.label :nombre %>
+                            <%= form.text_field :nombre, class: "form-control" %>
+                          </div>                   
+                          <div class="mb-3">
+                            <%= form.label :contacto %>
+                            <%= form.text_field :contacto, class: "form-control" %>
+                          </div> 
+                          <% if product %>
+                            <div class="mb-3">
+                              <%= label_tag :nombre_product, "Nombre del producto" %>
+                              <%= text_field_tag :nombre_product, product.nombre, class: "form-control" %>
+                            </div>
+
+                            <div class="mb-3">
+                              <%= label_tag :stock, "Stock" %>
+                              <%= number_field_tag :stock, product.stock, class: "form-control" %>
+                            </div>
+
+                            <div class="mb-3">
+                              <%= label_tag :category_id, "Categoría del producto" %>
+                              <%= select_tag :category_id, options_from_collection_for_select(Category.all, :id, :nombre, product.category_id), class: "form-control" %>
+                            </div>
+                          <% end %>
+                          </div>
+                          <div class="modal-footer">
+                            <%= form.submit "Guardar cambios", class: "btn btn-success" %>
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                          </div>
+                        
+                      <% end %>
+                    </div>
+                  </div>
+                </div>
+              <% end %>
             <% end %>
           </div>
           <div class="text-end mt-4" id="botonnuevo">
@@ -191,7 +201,7 @@
               </div>
 
               <div class="modal-body">
-                <%= form_with model: @supplier, url: dashboard_suppliers_path, method: :post, local: true do |form| %>
+                <%= form_with model: @supplier_form, url: dashboard_suppliers_path, method: :post, local: true do |form| %>
   
                   <div class="form-group">
                     <%= form.label :nombre, "Nombre del proveedor" %>
@@ -227,7 +237,41 @@
           </div>
         </div>
       </section>
-    </section>    
+    </section>
+
+    <script>
+      //borrar filtros
+
+      document.addEventListener("DOMContentLoaded", function () {
+      const botonLimpiar = document.getElementById("limpiar-filtros");
+
+      if (botonLimpiar) {
+        botonLimpiar.addEventListener("click", function () {
+          // Encuentra el formulario que contiene los filtros
+          const form = botonLimpiar.closest("form");
+
+          if (form) {
+            // Limpia todos los campos del formulario
+            const inputs = form.querySelectorAll("input, select, textarea");
+            inputs.forEach((input) => {
+              if (input.type === "checkbox" || input.type === "radio") {
+                input.checked = false;
+              } else {
+                input.value = "";
+              }
+            });
+
+            // Espera un momento antes de recargar sin filtros
+            setTimeout(() => {
+              const urlSinParametros = window.location.origin + window.location.pathname;
+              window.location.href = urlSinParametros;
+            }, 100);
+          }
+        });
+      }
+    });
+    </script>
+
     <footer>
       &copy; 2025 Ferremateriales el Maestro - v2.3.7
     </footer>

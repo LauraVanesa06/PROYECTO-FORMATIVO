@@ -61,7 +61,7 @@
 
   <aside class="categorias" id="menu-categorias">
     <div class="div-div">
-      <a href="/inventario" class="div-categ" style="text-decoration:none;"><i class="fas fa-arrow-left" id="vol"></i></a>
+      <a href="productos" class="div-categ" style="text-decoration:none;"><i class="fas fa-arrow-left" id="vol"></i></a>
       <div class="div-categ">Categorias:</div>
       <a href="#modal-new-category" class="new-categ">+</a>
     </div>
@@ -77,30 +77,42 @@
     <%= form_with url: inventario_path, method: :get, local: true, class:"form-filtros" do %>
       <ul>
         <li>
-          <%= label_tag :query, "Nombre:" %>
-          <%= text_field_tag :query, params[:query], placeholder: "Ej: Martillo", style:"border-radius:10px; padding-left: 10px; border:1px solid grey;"%> 
+          <%= label_tag :name, "Nombre:" %>
+          <%= text_field_tag :name, params[:name], placeholder: "Ej: Martillo", style:"border-radius:10px; padding-left: 10px; border:1px solid grey;"%> 
         </li>
-        <li class="li-precio"><a class="a-precio" href="">Rango de Precio</a>
+        <li class="li-precio">
+          <label for="toggle-precio" class="a-precio">Rango de Precio ▾</label>
+          <input type="checkbox" id="toggle-precio" hidden>
+
           <ul class="ul-precio">
             <li>
-              <%= label_tag :min_price, "Mínimo:  " %>
-              <%= number_field_tag :min_price, params[:min_price], step: 0.01, style:"width: 80px; border-radius:10px; padding-left: 10px; border: grey"%>
+              <%= label_tag :min, "Mínimo:", class: "preci"%>
+              <%= number_field_tag :min, params[:min], id: "min", max: 99999999, step: 0.01, style:"width: 80px; border-radius:10px; padding-left: 10px; border: grey"%>
             </li>
             <li>
-              <%= label_tag :max_price, "Máximo:  " %>
-              <%= number_field_tag :max_price, params[:max_price], step: 0.01, style:"width: 80px; border-radius:10px; padding-left: 10px; border: grey"%>
+              <%= label_tag :max, "Máximo:", class: "preci"%>
+              <%= number_field_tag :max, params[:max], id: "max", max: 99999999, step: 0.01, style:"width: 80px; border-radius:10px; padding-left: 10px; border: grey"%>
             </li>
           </ul>
         </li>
-        <li class="li-marca"><a class="a-marca" href="">Proveedor</a>
-        <ul class="ul-marca">
-          <% @suppliers.each do |supplier| %>
-            <%= render supplier %>
-          <% end %>
-        </ul>
+        </li>
+        <li class="li-marca">
+          <label for="toggle-marca" class="a-marca">Proveedor ▾</label>
+          <input type="checkbox" id="toggle-marca" hidden>
+
+          <ul class="ul-marca">
+            <% @suppliers.each do |supplier| %>
+              <%= render supplier %>
+            <% end %>
+          </ul>
         </li>
         <li>
-          <%= button_tag type: 'submit', class: 'lupa' do %>
+          <button id="limpiar-filtros" type="button" class="lupa">
+            <i class="fas fa-broom"></i>
+          </button>
+        </li>
+        <li>
+          <%= button_tag type: 'submit', class: 'lupa', name: '' do %>
             <i class="fas fa-search"></i>
           <% end %>
         </li>
@@ -108,6 +120,19 @@
     <% end %>
     </nav>
     <section class="section-models">
+      <% if flash[:alert] %>
+        <div id="mensaje-alerta" class="alerta-filtro">
+          <%= flash[:alert] %>
+        </div>
+
+        <script>
+          setTimeout(() => {
+            const alerta = document.getElementById("mensaje-alerta");
+            if (alerta) alerta.style.display = "none";
+          }, 4000); // 4 segundos
+        </script>
+      <% end %>
+
       <% if @products.present? %>
         <% @products.each do |product| %>
           <%= render product %>
@@ -216,58 +241,58 @@
           
         <% end %>
       <% else %>
-        <p>No se encontraron productos.</p>
+      
       <% end %>
       <a href="#modal-new-product" class="new-prod">+</a>
 
       <div id="modal-new-product" class="modal-ver">
-  <div class="modal-content2">
-    <a href="#" class="close">&times;</a>
-    <div class="titulo2 tc" >Crear Producto</div>
-    <%= form_with(model: Product.new, url: products_path, local: true, html: { multipart: true }, class: 'form-editar') do |form| %>
+        <div class="modal-content2">
+          <a href="#" class="close">&times;</a>
+          <div class="titulo2 tc" >Crear Producto</div>
+          <%= form_with(model: Product.new, url: products_path, local: true, html: { multipart: true }, class: 'form-editar') do |form| %>
 
-      <div class="texto2">
-        <%= form.label :imagen, "Imagen : ", style: "display: block" %>
-        <%= form.file_field :imagen, class: "btn5" %>
+            <div class="texto2">
+              <%= form.label :imagen, "Imagen : ", style: "display: block" %>
+              <%= form.file_field :imagen, class: "btn5" %>
+            </div>
+
+            <div class="texto2">
+              <%= form.label :nombre, "Nombre : ", style: "display: block" %>
+              <%= form.text_field :nombre %>
+            </div>
+
+            <div class="texto2">
+              <%= form.label :descripcion, "Descripcion : ", style: "display: block" %>
+              <%= form.text_area :descripcion, class:'descripcion' %>
+            </div>
+
+            <div class="texto2">
+              <%= form.label :precio, "Precio : ", style: "display: block" %>
+              <%= form.text_field :precio %>
+            </div>
+
+            <div class="texto2">
+              <%= form.label :stock, "Stock : ", style: "display: block" %>
+              <%= form.number_field :stock %>
+            </div>
+
+            <div class="texto2">
+              <%= form.label :category_id, "Categoría : " %>
+              <%= form.collection_select :category_id, Category.all, :id, :nombre, prompt: "Seleccione una categoría" %> 
+            </div>
+
+            <div class="texto2">
+              <%= form.label :supplier_id, "Proveedor : " %> 
+              <%= form.collection_select :supplier_id, Supplier.all, :id, :nombre, prompt: "Seleccione un proveedor" %>  
+            </div> 
+
+            <div class="btn3">
+              <%= form.submit "Crear", class:'btn4 bc' %>
+            </div>
+
+          <% end %>
+        </div>
       </div>
-
-      <div class="texto2">
-        <%= form.label :nombre, "Nombre : ", style: "display: block" %>
-        <%= form.text_field :nombre %>
-      </div>
-
-      <div class="texto2">
-        <%= form.label :descripcion, "Descripcion : ", style: "display: block" %>
-        <%= form.text_area :descripcion, class:'descripcion' %>
-      </div>
-
-      <div class="texto2">
-        <%= form.label :precio, "Precio : ", style: "display: block" %>
-        <%= form.text_field :precio %>
-      </div>
-
-      <div class="texto2">
-        <%= form.label :stock, "Stock : ", style: "display: block" %>
-        <%= form.number_field :stock %>
-      </div>
-
-      <div class="texto2">
-        <%= form.label :category_id, "Categoría : " %>
-        <%= form.collection_select :category_id, Category.all, :id, :nombre, prompt: "Seleccione una categoría" %> 
-      </div>
-
-      <div class="texto2">
-        <%= form.label :supplier_id, "Proveedor : " %> 
-        <%= form.collection_select :supplier_id, Supplier.all, :id, :nombre, prompt: "Seleccione un proveedor" %>  
-      </div> 
-
-      <div class="btn3">
-        <%= form.submit "Crear", class:'btn4 bc' %>
-      </div>
-
-    <% end %>
-  </div>
-</div>
 
     </section>
   </section>
@@ -292,6 +317,63 @@
   btnCategorias.addEventListener("click", () => {
     menuCategorias.classList.toggle("active");
   });
+
+    //poner punto cada 3 caracteres en rango de precio
+
+    function formatNumber(input) {
+      let value = input.value.replace(/\./g, ''); // Quitar puntos
+      if (value === '') return;
+
+      // Solo permitir números
+      if (!/^\d+$/.test(value)) return;
+
+      // Convertir a número con separadores de miles (colombiano)
+      input.value = value.replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+    }
+
+    document.addEventListener("DOMContentLoaded", function () {
+      const minInput = document.getElementById("min");
+      const maxInput = document.getElementById("max");
+
+      [minInput, maxInput].forEach(function(input) {
+        if (input) {
+          input.addEventListener("input", function () {
+            formatNumber(input);
+          });
+        }
+      });
+    });
+
+    //borrar filtros
+
+      document.addEventListener("DOMContentLoaded", function () {
+      const botonLimpiar = document.getElementById("limpiar-filtros");
+
+      if (botonLimpiar) {
+        botonLimpiar.addEventListener("click", function () {
+          // Encuentra el formulario que contiene los filtros
+          const form = botonLimpiar.closest("form");
+
+          if (form) {
+            // Limpia todos los campos del formulario
+            const inputs = form.querySelectorAll("input, select, textarea");
+            inputs.forEach((input) => {
+              if (input.type === "checkbox" || input.type === "radio") {
+                input.checked = false;
+              } else {
+                input.value = "";
+              }
+            });
+
+            // Espera un momento antes de recargar sin filtros
+            setTimeout(() => {
+              const urlSinParametros = window.location.origin + window.location.pathname;
+              window.location.href = urlSinParametros;
+            }, 100);
+          }
+        });
+      }
+    });
   </script>
 
 <!-- MODAL NUEVA CATEGORÍA -->

@@ -13,43 +13,21 @@ class SuppliersController < ApplicationController
 
   def index
     @supplier_form = Supplier.new
-    @supplier = Supplier.new
     @categorias = Category.all
+
+    # ASIDE: siempre muestra todos (a menos que no existan en DB)
+    @suppliers_aside = Supplier.all
+
+    # SECTION: se filtra
     @suppliers = Supplier.includes(:products).all
- 
-    if params[:nombre].present?
-      @suppliers = Supplier.where(nombre: params[:nombre])
-    else
+    @suppliers = @suppliers.where("nombre LIKE ?", "%#{params[:name]}%") if params[:name].present?
+    @suppliers = @suppliers.where(id: params[:supplier_id]) if params[:supplier_id].present?
+
+    # Si no hay resultados en el section, mostramos alerta y todos en el aside
+    if @suppliers.empty?
+      flash.now[:alert] = "¡No se encontraron proveedores con esos filtros!"
       @suppliers = Supplier.all
     end
-  
-    # Filtro por ID
-    if params[:id].present? && params[:id] != ""
-      @suppliers = Supplier.where(id: params[:id])
-    elsif params[:name].present? && params[:name] != ""
-      @suppliers = Supplier.where("nombre ILIKE ?", "%#{params[:name]}%")
-    else
-      @suppliers = Supplier.all
-    end
-
-    @products_supplier = Product.where(supplier_id: @suppliers.pluck(:id))
-
-    #Filtro por nombre (desde filtro del nav)
-    if params[:name].present?
-      @suppliers = @suppliers.where("nombre ILIKE ?", "%#{params[:name]}%")
-    end
-
-
-     # Asignación de proveedor específico si se envía un parámetro
- 
-    if @suppliers.size == 1
-        @supplier = @suppliers.first
-        @products_supplier = @supplier.products
-      else
-        @products_supplier = Product.includes(:supplier).all
-      end
-      # Bandera para mostrar mensaje si no hay resultados
-      @filter_result_empty = @suppliers.blank?
   end
 
   def show
