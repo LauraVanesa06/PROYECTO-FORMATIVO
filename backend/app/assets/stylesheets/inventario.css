@@ -100,16 +100,17 @@
     gap: 0;
 }
 .section-models{
-    overflow-y: auto;
+        overflow-y: auto;
     margin: 0;
     padding: 0;
     height: 100%;
+    width: 91%;
     display: flex;
     flex-wrap: wrap;
-    justify-content: center;
     row-gap: 6px;
     column-gap: 6px;
     font-size: 30px;
+    margin-left: 50px;
 }
 
 /*FILTROS*/

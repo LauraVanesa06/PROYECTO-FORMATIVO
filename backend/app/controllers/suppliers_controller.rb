@@ -16,40 +16,12 @@ class SuppliersController < ApplicationController
     @supplier = Supplier.new
     @categorias = Category.all
     @suppliers = Supplier.includes(:products).all
- 
-    if params[:name].present?
-      @suppliers = Supplier.where("nombre ILIKE ?", "%#{params[:name]}%")
-    else
-      @suppliers = Supplier.all
-    end
-  
-    # Filtro por ID
-    if params[:id].present? && params[:id] != ""
-      @suppliers = Supplier.where(id: params[:id])
-    elsif params[:name].present? && params[:name] != ""
-      @suppliers = Supplier.where("nombre ILIKE ?", "%#{params[:name]}%")
-    else
-      @suppliers = Supplier.all
-    end
 
-    @products_supplier = Product.where(supplier_id: @suppliers.pluck(:id))
+    @suppliers = @suppliers.where("nombre LIKE ?", "%#{params[:name]}%") if params[:name].present?
 
-    #Filtro por nombre (desde filtro del nav)
-    if params[:name].present?
-      @suppliers = @suppliers.where("nombre ILIKE ?", "%#{params[:name]}%")
-    end
-
-
-     # Asignación de proveedor específico si se envía un parámetro
- 
-    if @suppliers.size == 1
-        @supplier = @suppliers.first
-        @products_supplier = @supplier.products
-      else
-        @products_supplier = Product.includes(:supplier).all
+      if params[:supplier_id].present?
+        @supplier = Supplier.find(params[:supplier_id])
       end
-      # Bandera para mostrar mensaje si no hay resultados
-      @filter_result_empty = @suppliers.blank?
   end
 
   def show

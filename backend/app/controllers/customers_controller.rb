@@ -4,70 +4,53 @@ class CustomersController < ApplicationController
 
   # GET /customers or /customers.json
   def index
-    @customers = Customer.all
-    @customer = nil
-    @purchasedetails = []
-    @buys = Buy.all
+  # base
+  @customers = Customer.left_outer_joins(:buys).distinct.includes(:buys)
+  @customer = nil
+  @purchasedetails = []
+  @buys = Buy.all
 
-      conditions = []
-      values = []
-      doc = params[:documento].to_i
-      @customers = @customers.where("documento LIKE ?", "%#{params[:documento]}%") if params[:documento].present?
-    
-      params[:year].present? && conditions << "strftime('%Y', buys.fecha) = ?" && values << params[:year]
+  # filtro por documento (solo afecta la lista de clientes)
+  @customers = @customers.where("customers.documento LIKE ?", "%#{params[:documento]}%") if params[:documento].present?
 
-      if params[:month].present?
-        conditions << "strftime('%m', buys.fecha) = ?"
-        values << params[:month].rjust(2, '0')
-      end
-
-      if params[:day].present?
-        conditions << "strftime('%d', buys.fecha) = ?"
-        values << params[:day].rjust(2, '0')
-      end
-
-      { year: '%y', month: '%m', day: '%d' }.each do |param, format|
-        next unless params[param].present?
-        conditions << "strftime('#{format}', buys.fecha) = ?"
-        values << params[param].rjust(2, '0')
-      end
-
-      if @customers.empty?
-        flash.now[:alert] = "¡No se encontraron clientes con esos filtros!"
-        @customers = Customer.all
-      end
-
-    buy_ids = @buys.pluck(:id)
-
-    @customers = @customers.left_outer_joins(:buys).distinct.includes(:buys)
-
-    if params[:customer_id].present?
-      @customer = Customer.find_by(id: params[:customer_id])
-      @purchasedetails = @customer&.purchasedetails&.includes(:product, buy: :customer) || []
-
-    elsif params[:id].blank? && params[:name].blank?
-      @purchasedetails = Purchasedetail.includes(:product, buy: :customer).all
-
-    elsif @customers.size == 1
-      @customer = @customers.first
-      @purchasedetails = @customer.purchasedetails.includes(:product, buy: :customer)
-
-      @purchasedetails = @customer&.purchasedetails&.includes(:product, buy: :customer) || []
-      @purchasedetails = @purchasedetails.where(buy_id: buy_ids) if buy_ids.present?
-
-    elsif params[:id].blank? && params[:name].blank? && params[:documento].blank?
-      @purchasedetails = Purchasedetail.includes(:product, buy: :customer)
-      @purchasedetails = @purchasedetails.where(buy_id: buy_ids) if buy_ids.present?
-
-    elsif @customers.size == 1
-      @customer = @customers.first
-      @purchasedetails = @customer.purchasedetails.includes(:product, buy: :customer)
-      @purchasedetails = @purchasedetails.where(buy_id: buy_ids) if buy_ids.present?
-
-    end
-
-    @filter_result_empty = @customers.blank?
+  # arma condiciones de fecha (día/mes/año) sobre buys.fecha
+  conditions, values = [], []
+  { day: '%d', month: '%m', year: '%Y' }.each do |p, f|
+    next unless params[p].present?
+    values << (p == :year ? params[p] : params[p].rjust(2, '0'))
+    conditions << "strftime('#{f}', buys.fecha) = ?"
   end
+
+  # si hay condiciones, filtra both: buys y customers (clientes que tienen esas buys)
+  if conditions.any?
+    where_sql = conditions.join(' AND ')
+    @buys = Buy.where(where_sql, *values)
+    @customers = @customers.where(where_sql, *values)
+  end
+
+  buy_ids = @buys.pluck(:id)
+
+  # purchasedetails según la selección o resultados
+  if params[:documento].present?
+    @customer = Customer.find_by(documento: params[:documento])
+    @purchasedetails = @customer ? @customer.purchasedetails.includes(:product, buy: :customer).where(buy_id: buy_ids) : []
+  elsif @customers.size == 1
+    @customer = @customers.first
+    @purchasedetails = @customer.purchasedetails.includes(:product, buy: :customer).where(buy_id: buy_ids)
+  else
+    @purchasedetails = Purchasedetail.includes(:product, buy: :customer)
+    @purchasedetails = @purchasedetails.where(buy_id: buy_ids) if buy_ids.present?
+  end
+
+  # mensaje si no hay clientes tras aplicar filtros
+  if @customers.empty?
+    flash.now[:alert] = "¡No se encontraron clientes con esos filtros!"
+    @customers = Customer.all
+  end
+
+  @filter_result_empty = @customers.blank?
+end
+
 
   # GET /customers/1 or /customers/1.json
   def show

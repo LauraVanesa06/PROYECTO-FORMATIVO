@@ -440,13 +440,11 @@ input
 #purcha{
   display: flex;
     align-items: stretch;
-    overflow-y: auto;
     margin: 0 !important;
     padding: 0;
     height: 100%;
     display: flex;
     flex-wrap: wrap;
-    justify-content: center;
     row-gap: 6px;
     column-gap: 6px;
     font-size: 30px;

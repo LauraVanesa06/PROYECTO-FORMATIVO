@@ -11,15 +11,19 @@
   <li class="li-marca"><%= link_to supplier.nombre, inventario_path(proveedor_id: supplier.id), class: "aa-marca" %></li>
 
 
--->
+
     <li class="li-marca">
       <%= check_box_tag "supplier_id[]", supplier.id, params[:supplier_id]&.include?(supplier.id.to_s), class:"aa-check" %>
       <%= label_tag "supplier_id_#{supplier.id}", supplier.nombre, class: "aa-marca" %>
     </li>
-<!--
+
   <p>
     <strong>Contacto:</strong>
     <%= supplier.contacto %>
   </p>
 
 </div>
+-->
+<ul class="ul-nombre" id="<%= dom_id supplier %>">
+  <li class="li-nombre"><%= link_to supplier.nombre, suppliers_path(supplier_id: supplier.id) %></li>
+</ul>
