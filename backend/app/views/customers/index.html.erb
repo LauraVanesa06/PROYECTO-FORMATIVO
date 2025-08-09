@@ -48,7 +48,7 @@
   <section class="madre">
     <div class="filt">
       <div class="cont-volver">
-        <a href="/clientes" class="a-volver" style="text-decoration:none;"><i class="fas fa-arrow-left" id="vol"></i></a>
+        <a href="clientes" class="a-volver" style="text-decoration:none;"><i class="fas fa-arrow-left" id="vol"></i></a>
       </div>
       <div class="filtro">
         <p class=p><i class="fas fa-filter"></i> Filtros</p>
@@ -65,7 +65,12 @@
               <%= text_field_tag :day, params[:day], placeholder: "DD", size: 2, style:"border-radius:10px; padding-left: 10px; border:1px solid grey;" %>
             </div>
             <div>
-              <%= button_tag type: 'submit', class: 'btn' do %>
+              <button id="limpiar-filtros" type="button" class="btn">
+                <i class="fas fa-broom"></i>
+              </button>
+            </div>
+            <div>
+              <%= button_tag type: 'submit', class: 'btn', name: '' do %>
                 <i class="fas fa-search"></i>
               <% end %>
             </div>
@@ -77,6 +82,7 @@
       <aside class="clientes">
         <div class="div-customer">Todas las fechas de compra:</div>
         <article class=compras>
+          
           <% if @purchasedetails.present? && @purchasedetails.any? %>
             <% @purchasedetails.each do |p| %>
               <div class="compra-info" onclick="mostrarDetalle('<%= dom_id(p, :vista) %>')">
@@ -87,7 +93,26 @@
           <% end %>
       </aside>
       <section class="cont-facturas">
+        <% if flash[:alert] %>
+          <div id="mensaje-alerta" class="alerta-filtro">
+            <%= flash[:alert] %>
+          </div>
+
+          <script>
+            function hideAlert() {
+              const alerta = document.getElementById('mensaje-alerta');
+              if (!alerta) return;
+              // esperar 4s y luego remover el nodo
+              setTimeout(() => alerta.remove(), 4000);
+            }
+
+            document.addEventListener('DOMContentLoaded', hideAlert);
+            // Si usás Turbo (Rails 7), también escuchamos su evento
+            document.addEventListener('turbo:load', hideAlert);
+          </script>
+        <% end %>
         <div id="purcha">
+          
           <% @purchasedetails.each do |p| %>
             <div id="<%= dom_id(p, :vista) %>" class="div-purchase" style="display: none;">
               <h1 class=h1>Detalles de la Compra 🛒</h1>
@@ -132,11 +157,6 @@
               </section>
             </div>
           <% end %>
-          <% if @purchasedetails.blank? && @filter_result_empty %>
-            <div class="mensaje-vacio" style="margin-top:-570px;">
-              <p style="color:red;">⚠️ No se encontró ningún cliente que coincida con los filtros aplicados.</p>
-            </div>
-          <% end %>
         </div>
         <%= link_to "+", new_purchasedetail_path, class: "new-pur" %>
       </section>
@@ -166,6 +186,37 @@
         seleccionado.style.display = 'block';
       }
     }
+
+  //borrar filtros
+
+      document.addEventListener("DOMContentLoaded", function () {
+      const botonLimpiar = document.getElementById("limpiar-filtros");
+
+      if (botonLimpiar) {
+        botonLimpiar.addEventListener("click", function () {
+          // Encuentra el formulario que contiene los filtros
+          const form = botonLimpiar.closest("form");
+
+          if (form) {
+            // Limpia todos los campos del formulario
+            const inputs = form.querySelectorAll("input, select, textarea");
+            inputs.forEach((input) => {
+              if (input.type === "checkbox" || input.type === "radio") {
+                input.checked = false;
+              } else {
+                input.value = "";
+              }
+            });
+
+            // Espera un momento antes de recargar sin filtros
+            setTimeout(() => {
+              const urlSinParametros = window.location.origin + window.location.pathname;
+              window.location.href = urlSinParametros;
+            }, 100);
+          }
+        });
+      }
+    });
   </script>
 </body>
 </html>
