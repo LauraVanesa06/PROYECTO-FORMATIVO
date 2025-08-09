@@ -32,7 +32,10 @@ Rails.application.routes.draw do
   patch 'dashboard/suppliers/:id', to: 'suppliers#actualizar_supplier', as: :dashboard_supplier
 
   # Recursos principales (RESTful)
-  resources :products
+  resources :products do
+    patch :update_disponibilidad, on: :collection
+  end
+  
   resources :categories do
     member do
       get :products

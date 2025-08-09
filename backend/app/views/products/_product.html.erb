@@ -11,11 +11,25 @@
     <li class="li-start">
       <strong  class="titulo"><%= product.nombre %></strong>
     </li>
-    <li>
-      Descripcion:
+    <li class="li-center">
       <%= product.descripcion %>
-    </li>
+    </li> 
+    <div class="opciones">
+      <li class="precio">$<%= product.precio %></li>
+
+      <!--formulario para marcar si el producto esta disponible o no-->
+          <%= form_with url: update_disponibilidad_products_path, method: :patch, id: "disponibilidad-form-#{product.id}" do %>
+            <div class="checkbox-apple">
+              <%= hidden_field_tag "product_id", product.id %>
+              <%= hidden_field_tag "disponibles_ids[]", 0, id: "hidden-#{product.id}" %>
+              <%= check_box_tag "disponibles_ids[]", product.id, product.disponible, id: "check-apple-#{product.id}", class: "disponibilidad-checkbox" %>
+              <label for="check-apple-<%= product.id %>"></label>
+            </div>
+          <% end %>
+  
+    </div>
   </div>
+<!--
   <div class="opciones">
     <button class="editar"><%= link_to "Editar", "#modal-edit-#{product.id}" %></button>
     <button class="ver">
@@ -23,3 +37,35 @@
     </button>
   </div>
 </ul>
+
+
+<script>
+  document.addEventListener("DOMContentLoaded", () => {
+    const form = document.getElementById("disponibilidad-form");
+    if (!form) return;
+
+    const checkboxes = form.querySelectorAll('input[type="checkbox"]');
+    checkboxes.forEach(chk => {
+      chk.addEventListener('change', () => {
+        form.requestSubmit();  // Método moderno para enviar formulario
+      });
+    });
+  });
+</script>
+-->
+</ul>
+<script>
+  // Escucha los cambios en el checkbox para enviar el formulario
+  document.addEventListener("DOMContentLoaded", () => {
+    const checkbox = document.getElementById("check-apple-<%= product.id %>");
+    if (!checkbox) return;
+
+    checkbox.addEventListener('change', () => {
+      // Encuentra el formulario padre y lo envía
+      const form = checkbox.closest('form');
+      if (form) {
+        form.requestSubmit();
+      }
+    });
+  });
+</script>

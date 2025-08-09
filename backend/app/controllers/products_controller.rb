@@ -80,6 +80,27 @@ class ProductsController < ApplicationController
     end
   end
 
+  def update_disponibilidad
+    # Obtiene el ID del producto desde el campo oculto
+    product_to_update_id = params[:product_id]
+
+    # Si el product_to_update_id no existe, algo está mal, sal de la acción
+    return unless product_to_update_id.present?
+
+    # Busca el producto
+    product = Product.find(product_to_update_id)
+
+    # El estado de `disponible` será verdadero si el checkbox estaba marcado (su ID está en el array).
+    # `params[:disponibles_ids]` contiene los valores del checkbox y del hidden_field.
+    # Si el checkbox está marcado, el array será ["0", "id_del_producto"].
+    # Si está desmarcado, el array será ["0"].
+    is_checked = params[:disponibles_ids].include?(product.id.to_s)
+    
+    product.update(disponible: is_checked)
+
+    redirect_to inventario_path
+  end
+
   # DELETE /products/1 or /products/1.json
   def destroy
     @product.destroy!
@@ -103,6 +124,6 @@ class ProductsController < ApplicationController
 
     # Only allow a list of trusted parameters through.
     def product_params
-      params.expect(product: [ :nombre, :descripcion, :precio, :stock, :category_id, :supplier_id, :imagen ])
+      params.expect(product: [ :nombre, :descripcion, :disponible, :precio, :stock, :category_id, :supplier_id, :imagen ])
     end
 end

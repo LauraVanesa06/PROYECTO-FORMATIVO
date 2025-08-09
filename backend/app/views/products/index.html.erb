@@ -108,115 +108,117 @@
     <% end %>
     </nav>
     <section class="section-models">
-      <% if @products.present? %>
-        <% @products.each do |product| %>
-          <%= render product %>
+      <%= form_with url: update_disponibilidad_products_path, method: :patch, local: true, class: "form-disponibilidad" do %>
+        <% if @products.present? %>
+          <% @products.each do |product| %>
+            <%= render product %>
 
-          <div id="modal-ver-<%= product.id %>" class="modal-ver">
-            <div class="modal-content">
-              <a href="#" class="close">&times;</a>
-              <div class="titulo2 ps">Producto</div>
-              <div class="div-foto-model">
-                  <% if product.imagen.attached? %>
-                    <%= image_tag url_for(product.imagen), alt: "Imagen del producto" %>
-                  <% else %>
-                    <p>No hay imagen</p>
-                  <% end %>
-              </div>
-              <div class="texto-model">
-                <li>
-                  <strong  class="titulo">Nombre:</strong>
-                  <%= product.nombre %>
-                </li>
-                <li>
-                  <strong class="titulo">Descripcion:</strong>
-                  <%= product.descripcion %>
-                </li>
-                <li>
-                  <strong class="titulo">Precio:</strong>
-                  <%= product.precio %>
-                </li>
-                <li>
-                  <strong class="titulo">Stock:</strong>
-                  <%= product.stock %>
-                </li>
-                <li>
-                  <strong class="titulo">Proveedor:</strong>
-                  <%= product.supplier&.nombre %>
-                </li>
-                <li>
-                  <strong class="titulo">Categoria:</strong>
-                  <%= product.category.nombre %>
-                </li>
-              </div>
-              <div class='edit'>
-              <button class="editar2"><%= link_to "Editar", "#modal-edit-#{product.id}" %></button>
+            <div id="modal-ver-<%= product.id %>" class="modal-ver">
+              <div class="modal-content">
+                <a href="#" class="close">&times;</a>
+                <div class="titulo2 ps">Producto</div>
+                <div class="div-foto-model">
+                    <% if product.imagen.attached? %>
+                      <%= image_tag url_for(product.imagen), alt: "Imagen del producto" %>
+                    <% else %>
+                      <p>No hay imagen</p>
+                    <% end %>
+                </div>
+                <div class="texto-model">
+                  <li>
+                    <strong  class="titulo">Nombre:</strong>
+                    <%= product.nombre %>
+                  </li>
+                  <li>
+                    <strong class="titulo">Descripcion:</strong>
+                    <%= product.descripcion %>
+                  </li>
+                  <li>
+                    <strong class="titulo">Precio:</strong>
+                    <%= product.precio %>
+                  </li>
+                  <li>
+                    <strong class="titulo">Stock:</strong>
+                    <%= product.stock %>
+                  </li>
+                  <li>
+                    <strong class="titulo">Proveedor:</strong>
+                    <%= product.supplier&.nombre %>
+                  </li>
+                  <li>
+                    <strong class="titulo">Categoria:</strong>
+                    <%= product.category.nombre %>
+                  </li>
+                </div>
+                <div class='edit'>
+                <button class="editar2"><%= link_to "Editar", "#modal-edit-#{product.id}" %></button>
+                </div>
               </div>
             </div>
-          </div>
 
-          <div id="modal-edit-<%= product.id %>" class="modal-editar">
-            <div class="modal-content2">
-              <a href="#" class="close">&times;</a>
-              <div class="titulo2">Editar Producto</div>
-              <%= form_with(model: product, local: true, html: { multipart: true }, class: 'form-editar') do |form| %>
-                <% if product.errors.any? %>
-                  <div style="color: red">
-                    <h2><%= pluralize(product.errors.count, "error") %> prohibited this product from being saved:</h2>
+            <div id="modal-edit-<%= product.id %>" class="modal-editar">
+              <div class="modal-content2">
+                <a href="#" class="close">&times;</a>
+                <div class="titulo2">Editar Producto</div>
+                <%= form_with(model: product, local: true, html: { multipart: true }, class: 'form-editar') do |form| %>
+                  <% if product.errors.any? %>
+                    <div style="color: red">
+                      <h2><%= pluralize(product.errors.count, "error") %> prohibited this product from being saved:</h2>
 
-                    <ul>
-                      <% product.errors.each do |error| %>
-                        <li><%= error.full_message %></li>
-                      <% end %>
-                    </ul>
+                      <ul>
+                        <% product.errors.each do |error| %>
+                          <li><%= error.full_message %></li>
+                        <% end %>
+                      </ul>
+                    </div>
+                  <% end %>
+
+                  <div class="texto2">
+                    <%= form.label :imagen, "Imagen : ", style: "display: block" %>
+                    <%= form.file_field :imagen, class: "btn5"%>
+                  </div>
+
+                  <div class="texto2">
+                    <%= form.label :nombre, "Nombre : ", style: "display: block" %>
+                    <%= form.text_field :nombre %>
+                  </div>
+
+                  <div class="texto2">
+                    <%= form.label :descripcion, "Descripcion : ", style: "display: block" %>
+                    <%= form.text_area :descripcion, class:'descripcion' %>
+                  </div>
+
+                  <div class="texto2">
+                    <%= form.label :precio, "Precio : ", style: "display: block" %>
+                    <%= form.text_field :precio %>
+                  </div>
+
+                  <div class="texto2">
+                    <%= form.label :stock, "Stock : ", style: "display: block" %>
+                    <%= form.number_field :stock %>
+                  </div>
+
+                  <div class="texto2">
+                  <%= form.label :category_id, "Categoría : " %>
+                    <%= form.collection_select :category_id, Category.all, 
+                    :id, :nombre, prompt: "Seleccione una categoría" %> 
+                  </div>
+                  <div class="texto2">
+                    <%= form.label :provider_id, "Proveedor : " %> 
+                    <%= form.collection_select :supplier_id, Supplier.all,
+                    :id, :nombre, prompt: "Seleccione un proveedor" %>  
+                  </div> 
+                  <div class="btn3">
+                    <%= form.submit "Editar", class:'btn4' %>
                   </div>
                 <% end %>
-
-                <div class="texto2">
-                  <%= form.label :imagen, "Imagen : ", style: "display: block" %>
-                  <%= form.file_field :imagen, class: "btn5"%>
-                </div>
-
-                <div class="texto2">
-                  <%= form.label :nombre, "Nombre : ", style: "display: block" %>
-                  <%= form.text_field :nombre %>
-                </div>
-
-                <div class="texto2">
-                  <%= form.label :descripcion, "Descripcion : ", style: "display: block" %>
-                  <%= form.text_area :descripcion, class:'descripcion' %>
-                </div>
-
-                <div class="texto2">
-                  <%= form.label :precio, "Precio : ", style: "display: block" %>
-                  <%= form.text_field :precio %>
-                </div>
-
-                <div class="texto2">
-                  <%= form.label :stock, "Stock : ", style: "display: block" %>
-                  <%= form.number_field :stock %>
-                </div>
-
-                <div class="texto2">
-                <%= form.label :category_id, "Categoría : " %>
-                  <%= form.collection_select :category_id, Category.all, 
-                  :id, :nombre, prompt: "Seleccione una categoría" %> 
-                </div>
-                <div class="texto2">
-                  <%= form.label :provider_id, "Proveedor : " %> 
-                  <%= form.collection_select :supplier_id, Supplier.all,
-                  :id, :nombre, prompt: "Seleccione un proveedor" %>  
-                </div> 
-                <div class="btn3">
-                  <%= form.submit "Editar", class:'btn4' %>
-                </div>
-              <% end %>
+              </div>
             </div>
-          </div>
-          
+            
+          <% end %>
+        <% else %>
+          <p>No se encontraron productos.</p>
         <% end %>
-      <% else %>
-        <p>No se encontraron productos.</p>
       <% end %>
       <a href="#modal-new-product" class="new-prod">+</a>
 
