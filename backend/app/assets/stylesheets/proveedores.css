@@ -49,6 +49,24 @@
     justify-content: center;
 }
 
+.alerta-filtro {
+  background-color: #f8a1a8;
+  color: #e32a3c;
+  border-radius: 7px;
+  font-weight: bold;
+  text-align: center;
+  font-size: 15px;
+  height: 45px;
+  width: 75%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding-inline: 5px;
+
+  position: absolute;
+  z-index: 9999;
+}
+
 .cont-volver{
     display: flex;
     align-items: center;

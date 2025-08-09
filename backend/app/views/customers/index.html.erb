@@ -83,7 +83,6 @@
         <div class="div-customer">Todas las fechas de compra:</div>
         <article class=compras>
           
-
           <% if @purchasedetails.present? && @purchasedetails.any? %>
             <% @purchasedetails.each do |p| %>
               <div class="compra-info" onclick="mostrarDetalle('<%= dom_id(p, :vista) %>')">
@@ -95,17 +94,23 @@
       </aside>
       <section class="cont-facturas">
         <% if flash[:alert] %>
-            <div id="mensaje-alerta" class="alerta-filtro">
-              <%= flash[:alert] %>
-            </div>
+          <div id="mensaje-alerta" class="alerta-filtro">
+            <%= flash[:alert] %>
+          </div>
 
-            <script>
-              setTimeout(() => {
-                const alerta = document.getElementById("mensaje-alerta");
-                if (alerta) alerta.style.display = "none";
-              }, 4000); // 4 segundos
-            </script>
-          <% end %>
+          <script>
+            function hideAlert() {
+              const alerta = document.getElementById('mensaje-alerta');
+              if (!alerta) return;
+              // esperar 4s y luego remover el nodo
+              setTimeout(() => alerta.remove(), 4000);
+            }
+
+            document.addEventListener('DOMContentLoaded', hideAlert);
+            // Si usás Turbo (Rails 7), también escuchamos su evento
+            document.addEventListener('turbo:load', hideAlert);
+          </script>
+        <% end %>
         <div id="purcha">
           
           <% @purchasedetails.each do |p| %>

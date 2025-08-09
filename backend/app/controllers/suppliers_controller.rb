@@ -13,15 +13,21 @@ class SuppliersController < ApplicationController
 
   def index
     @supplier_form = Supplier.new
-    @supplier = Supplier.new
     @categorias = Category.all
+
+    # ASIDE: siempre muestra todos (a menos que no existan en DB)
+    @suppliers_aside = Supplier.all
+
+    # SECTION: se filtra
     @suppliers = Supplier.includes(:products).all
-
     @suppliers = @suppliers.where("nombre LIKE ?", "%#{params[:name]}%") if params[:name].present?
+    @suppliers = @suppliers.where(id: params[:supplier_id]) if params[:supplier_id].present?
 
-      if params[:supplier_id].present?
-        @supplier = Supplier.find(params[:supplier_id])
-      end
+    # Si no hay resultados en el section, mostramos alerta y todos en el aside
+    if @suppliers.empty?
+      flash.now[:alert] = "¡No se encontraron proveedores con esos filtros!"
+      @suppliers = Supplier.all
+    end
   end
 
   def show

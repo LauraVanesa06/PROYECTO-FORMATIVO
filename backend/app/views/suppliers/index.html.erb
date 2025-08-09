@@ -63,7 +63,7 @@
           <div class="div-categ">Proveedores:</div>
         </div>
         <div>
-          <% @suppliers.each do |supplier| %>
+          <% @suppliers_aside.each do |supplier| %>
             <%= render supplier %>
           <% end %>
         </div>
@@ -84,7 +84,7 @@
                 </button>
               </div>
               <div>
-                <%= button_tag type: 'submit', class: 'btn' do %>
+                <%= button_tag type: 'submit', class: 'btn', name: '' do %>
                   <i class="fas fa-search"></i>
                 <% end %>
               </div>
@@ -94,6 +94,18 @@
         <section class="contenedor">
         
           <div id="purcha" class="mt-4">
+            <% if flash[:alert] %>
+              <div id="mensaje-alerta" class="alerta-filtro">
+                <%= flash[:alert] %>
+              </div>
+
+              <script>
+                setTimeout(() => {
+                  const alerta = document.getElementById("mensaje-alerta");
+                  if (alerta) alerta.style.display = "none";
+                }, 4000); // 4 segundos
+              </script>
+            <% end %>
             <% if @suppliers.present? %>
               <% @suppliers.each do |supplier| %>
 
@@ -189,7 +201,7 @@
               </div>
 
               <div class="modal-body">
-                <%= form_with model: @supplier, url: dashboard_suppliers_path, method: :post, local: true do |form| %>
+                <%= form_with model: @supplier_form, url: dashboard_suppliers_path, method: :post, local: true do |form| %>
   
                   <div class="form-group">
                     <%= form.label :nombre, "Nombre del proveedor" %>
