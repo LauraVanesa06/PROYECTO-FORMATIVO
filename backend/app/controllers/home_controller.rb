@@ -1,6 +1,6 @@
 class HomeController < ApplicationController
   layout "application"
-  skip_before_action :authenticate_user!
+  skip_before_action :authenticate_user!, only: [:index, :producto]
 
   def index
     @categories = Category.all
@@ -13,7 +13,26 @@ class HomeController < ApplicationController
   end
 
   def producto
-    @categories = Category.includes(:products)
+    @productos = Product.all
+    @categories = Category.all
+    @suppliers  = Supplier.all
+
+    if params[:category_id].present?
+      @productos = @productos.where(category_id: params[:category_id])
+    end
+
+    if params[:query].present?
+      query = params[:query].downcase
+      @productos = @productos.where("LOWER(nombre) LIKE ?", "%#{query}%")
+    end
+
+    if params[:min_price].present?
+      @productos = @productos.where("precio >= ?", params[:min_price])
+    end
+
+    if params[:max_price].present?
+      @productos = @productos.where("precio <= ?", params[:max_price])
+    end
   end
 
   def send_report
