@@ -25,6 +25,14 @@ Rails.application.routes.draw do
   post '/contacto/enviar', to: 'home#send_contact_message', as: :send_contact_message
   post '/enviar_contacto', to: 'home#send_report', as: :enviar_contacto
 
+  # Carrito
+  resource :cart, only: [:show] do
+    post "add_item/:product_id", to: "carts#add_item", as: :add_item
+    delete "remove_item/:id", to: "carts#remove_item", as: :remove_item
+    patch "update_item/:id", to: "carts#update_item", as: :update_item
+  end
+
+
 
   # Dashboard principal
   get 'dashboard', to: 'dashboard#index'
@@ -40,6 +48,8 @@ Rails.application.routes.draw do
   patch 'dashboard/suppliers/:id', to: 'suppliers#actualizar_supplier', as: :dashboard_supplier
 
   # Recursos principales (RESTful)
+  resources :carts, only: [:show]
+  resources :cart_items, only: [:create, :destroy]  
   resources :products
   resources :categories do
     member do

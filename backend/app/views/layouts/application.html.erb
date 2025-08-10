@@ -36,7 +36,7 @@
         <%= link_to favoritos_path, class: "text-white" do %>
           <i class="fa-solid fa-star"></i>
         <% end %>
-        <%= link_to carrito_path, class: "text-white" do %>
+        <%= link_to cart_path, class: "text-white" do %>
           <i class="fa-solid fa-cart-shopping"></i>
         <% end %>
         <%= link_to notificaciones_path, class: "text-white" do %>
@@ -49,8 +49,18 @@
             <i class="fa-solid fa-user"></i>
           </a>
           <ul class="dropdown-menu dropdown-menu-end">
-            <li><%= link_to "Iniciar sesión", new_user_session_path, class: "dropdown-item" %></li>
-            <li><%= link_to "Registrarse", new_user_registration_path, class: "dropdown-item" %></li>
+            <% if user_signed_in? %>
+              <li><%= link_to "Perfil", edit_user_registration_path, class: "dropdown-item" %></li>
+              <li>
+                <%= button_to "Cerrar sesión", destroy_user_session_path, 
+                            method: :delete, 
+                            data: { confirm: "¿Estás seguro de que quieres cerrar sesión?" }, 
+                            class: "dropdown-item text-danger" %>
+              </li>
+            <% else %>
+              <li><%= link_to "Iniciar sesión", new_user_session_path, class: "dropdown-item" %></li>
+              <li><%= link_to "Registrarse", new_user_registration_path, class: "dropdown-item" %></li>
+            <% end %>
           </ul>
         </div>
       </div>

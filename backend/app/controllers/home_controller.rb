@@ -4,7 +4,12 @@ class HomeController < ApplicationController
 
   def index
     @categories = Category.all
-    @productos = Product.limit(4) # Si quieres mostrar productos en la vista pública
+    @productos = Product
+      .joins(:purchasedetails)
+      .select("products.*, SUM(purchasedetails.cantidad) AS total_vendidos")
+      .group("products.id")
+      .order("total_vendidos DESC")
+      .limit(8) # cantidad que quieras mostrar
   end
 
   def producto

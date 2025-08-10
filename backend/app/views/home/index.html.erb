@@ -3,7 +3,7 @@
   <div class="hero-text">
     <h1>Ferremateriales El Maestro</h1>
     <p>Todo en herramientas y materiales — calidad y buen precio</p>
-    <a href="#productos" class="btn btn-primary hero-cta">Ver productos</a>
+    <a href="#productos" class="btn btn-primary hero-cta">Ver Mas</a>
   </div>
 </section>
 
@@ -37,9 +37,9 @@
           <div class="product-meta">
             <span class="price"><%= number_to_currency(producto.precio, unit: "$", separator: ".", delimiter: ",") %></span>
             <div>
-              <button class="btn btn-sm btn-outline-primary add-cart" data-product-id="<%= producto.id %>" data-product-name="<%= j producto.nombre %>" data-product-price="<%= producto.precio %>">
+              <%= button_to add_item_cart_path(producto), method: :post, class: "btn btn-sm btn-outline-primary" do %>
                 <i class="fa-solid fa-cart-plus"></i>
-              </button>
+              <% end %>
               <%= link_to "Ver", product_path(producto), class: "btn btn-sm btn-secondary" %>
             </div>
           </div>
