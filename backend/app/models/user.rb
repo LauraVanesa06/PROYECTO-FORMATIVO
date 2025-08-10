@@ -1,5 +1,9 @@
 class User < ApplicationRecord
 
+  # relacion favoritos
+  has_many :favorites, dependent: :destroy
+  has_many :favorite_products, through: :favorites, source: :product
+
   # relacion con de carrito con usuario
   has_one :cart, dependent: :destroy
 

@@ -1,0 +1,100 @@
+<div class="container mt-4">
+  <h1 class="mb-4">⭐ Mis favoritos</h1>
+
+  <% if @favorites.any? %>
+    <div class="product-grid">
+      <% @favorites.each do |favorite| %>
+        <% product = favorite.product %>
+        <div class="product-card">
+          <div class="product-thumb">
+            <%= image_tag(product.imagen.attached? ? product.imagen : "placeholder.jpg",
+                          alt: product.nombre,
+                          class: "img-fluid") %>
+          </div>
+          <div class="product-body">
+            <h3 class="product-name"><%= product.nombre %></h3>
+            <p class="product-desc"><%= truncate(product.descripcion, length: 80) %></p>
+            <div class="product-meta">
+              <span class="price">
+                <%= number_to_currency(product.precio, unit: "$", separator: ".", delimiter: ",") %>
+              </span>
+              <div>
+                <div class="d-flex flex-wrap gap-2 mt-2">
+                  <!-- Botón comprar -->
+                  <%= button_to add_item_cart_path(favorite.product),
+                                method: :post,
+                                class: "btn btn-sm btn-outline-primary d-flex align-items-center gap-1" do %>
+                    <i class="fa-solid fa-cart-plus"></i>
+                  <% end %>
+
+                  <!-- Botón eliminar de favoritos -->
+                  <%= button_to favorite_path(favorite),
+                                method: :delete,
+                                class: "btn btn-sm btn-warning d-flex align-items-center gap-1" do %>
+                    <i class="fa-solid fa-star"></i>
+                  <% end %>
+
+                  <!-- Botón ver detalles -->
+                  <button class="btn btn-sm btn-secondary d-flex align-items-center gap-1 ver-mas-btn"
+                          data-bs-toggle="modal"
+                          data-bs-target="#productoModal"
+                          data-nombre="<%= favorite.product.nombre %>"
+                          data-descripcion="<%= favorite.product.descripcion %>"
+                          data-precio="<%= number_to_currency(favorite.product.precio, unit: '$', separator: '.', delimiter: ',') %>"
+                          data-imagen="<%= url_for(favorite.product.imagen.presence || 'martillo-dewalt.png') %>"
+                          data-url-compra="<%= add_item_cart_path(favorite.product) %>">
+                    <i class="fa-solid fa-eye"></i>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      <% end %>
+    </div>
+  <% else %>
+    <p>No tienes productos en favoritos.</p>
+  <% end %>
+</div>
+
+<script>
+document.addEventListener("turbo:load", () => {
+  const modal = document.getElementById("productoModal");
+  modal.addEventListener("show.bs.modal", (event) => {
+    const button = event.relatedTarget;
+    document.getElementById("modalProductoNombre").textContent = button.getAttribute("data-nombre");
+    document.getElementById("modalProductoDescripcion").textContent = button.getAttribute("data-descripcion");
+    document.getElementById("modalProductoPrecio").textContent = button.getAttribute("data-precio");
+    document.getElementById("modalProductoImagen").src = button.getAttribute("data-imagen");
+    document.getElementById("modalCompraForm").action = button.getAttribute("data-url-compra");
+  });
+});
+</script>
+
+<!-- Modal -->
+<div class="modal fade" id="productoModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="modalProductoNombre"></h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body d-flex flex-column flex-md-row">
+        <img id="modalProductoImagen" src="" class="img-fluid me-3 mb-3 mb-md-0" style="max-width: 250px;">
+        <div>
+          <p id="modalProductoDescripcion"></p>
+          <p class="fw-bold fs-5" id="modalProductoPrecio"></p>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <form id="modalCompraForm" method="post">
+          <%= hidden_field_tag :authenticity_token, form_authenticity_token %>
+          <button type="submit" class="btn btn-primary">
+            <i class="fa-solid fa-cart-plus"></i> Comprar
+          </button>
+        </form>
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+      </div>
+    </div>
+  </div>
+</div>

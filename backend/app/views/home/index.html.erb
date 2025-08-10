@@ -38,19 +38,47 @@
               <%= number_to_currency(producto.precio, unit: "$", separator: ".", delimiter: ",") %>
             </span>
             <div>
-              <div class="d-flex justify-content-between">
-                <%= button_to add_item_cart_path(producto), method: :post, class: "btn btn-sm btn-outline-primary" do %>
+              <div class="d-flex flex-wrap gap-2 mt-2">
+                <!-- Botón comprar -->
+                <%= button_to add_item_cart_path(producto),
+                              method: :post,
+                              class: "btn btn-sm btn-outline-primary d-flex align-items-center gap-1" do %>
                   <i class="fa-solid fa-cart-plus"></i>
                 <% end %>
-                <button class="btn btn-sm btn-secondary ver-mas-btn"
-                  data-bs-toggle="modal"
-                  data-bs-target="#productoModal"
-                  data-nombre="<%= producto.nombre %>"
-                  data-descripcion="<%= producto.descripcion %>"
-                  data-precio="<%= number_to_currency(producto.precio, unit: '$', separator: '.', delimiter: ',') %>"
-                  data-imagen="<%= url_for(producto.imagen.presence || 'martillo-dewalt.png') %>"
-                  data-url-compra="<%= add_item_cart_path(producto) %>">
-                  Ver detalles
+
+                <!-- Botón favoritos -->
+                <% if current_user %>
+                  <% favorite = current_user.favorites.find_by(product_id: producto.id) %>
+                  <% if favorite %>
+                    <%= button_to favorite_path(favorite),
+                                  method: :delete,
+                                  class: "btn btn-sm btn-warning d-flex align-items-center gap-1" do %>
+                      <i class="fa-solid fa-star"></i>
+                    <% end %>
+                  <% else %>
+                    <%= button_to favorites_path(product_id: producto.id),
+                                  method: :post,
+                                  class: "btn btn-sm btn-outline-warning d-flex align-items-center gap-1" do %>
+                      <i class="fa-regular fa-star"></i>
+                    <% end %>
+                  <% end %>
+                <% else %>
+                  <!-- Si no hay usuario logueado, mostramos el botón deshabilitado -->
+                  <button class="btn btn-sm btn-outline-warning d-flex align-items-center gap-1" disabled>
+                    <i class="fa-regular fa-star"></i>
+                  </button>
+                <% end %>
+
+                <!-- Botón ver detalles -->
+                <button class="btn btn-sm btn-secondary d-flex align-items-center gap-1 ver-mas-btn"
+                        data-bs-toggle="modal"
+                        data-bs-target="#productoModal"
+                        data-nombre="<%= producto.nombre %>"
+                        data-descripcion="<%= producto.descripcion %>"
+                        data-precio="<%= number_to_currency(producto.precio, unit: '$', separator: '.', delimiter: ',') %>"
+                        data-imagen="<%= url_for(producto.imagen.presence || 'martillo-dewalt.png') %>"
+                        data-url-compra="<%= add_item_cart_path(producto) %>">
+                  <i class="fa-solid fa-eye"></i>
                 </button>
               </div>
             </div>

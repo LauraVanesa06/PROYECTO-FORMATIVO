@@ -16,7 +16,7 @@ Rails.application.routes.draw do
   root "home#index", as: :authenticated_root
   get 'home/index', to: 'home#index', as: :home_index
   get 'productos', to: 'home#producto', as: :productos
-  get 'favoritos', to: 'home#favoritos', as: :favoritos
+  get 'favoritos', to: 'favorites#index', as: :favoritos
   get 'carrito', to: 'home#carrito', as: :carrito
   get 'notificaciones', to: 'home#notificaciones', as: :notificaciones
   get 'contactos', to: 'home#contacto', as: :contactos
@@ -49,6 +49,7 @@ Rails.application.routes.draw do
 
   # Recursos principales (RESTful)
   resources :carts, only: [:show]
+  resources :favorites, only: [:index, :create, :destroy]
   resources :cart_items, only: [:create, :destroy]  
   resources :products
   resources :categories do

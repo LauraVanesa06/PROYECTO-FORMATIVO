@@ -16,19 +16,6 @@ class HomeController < ApplicationController
     @categories = Category.includes(:products)
   end
 
-  def favoritos
-  end
-
-  def carrito
-  end
-
-  def notificaciones
-  end
-
-
-  def contacto
-  end
-
   def send_report
     @user_support = UserSupport.new(user_support_params)
 
