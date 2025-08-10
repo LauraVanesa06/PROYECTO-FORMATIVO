@@ -10,19 +10,7 @@ class User < ApplicationRecord
 
   after_create :crear_carrito
 
-  private
-
-  def crear_carrito
-    Cart.create(user: self)
-  end
-  
-  # Include default devise modules. Others available are:
-  # :confirmable, :lockable, :timeoutable, :trackable and :omniauthable
-  devise :database_authenticatable, :registerable,
-         :recoverable, :rememberable, :validatable
-
-
-  ROLES = %w[admin moderator user]
+    ROLES = %w[admin moderator user]
 
   def admin?
     role == "admin"
@@ -35,4 +23,18 @@ class User < ApplicationRecord
   def user?
     role == "user"
   end
+
+  private
+
+  def crear_carrito
+    Cart.create(user: self)
+  end
+  
+  # Include default devise modules. Others available are:
+  # :confirmable, :lockable, :timeoutable, :trackable and :omniauthable
+  devise :database_authenticatable, :registerable,
+         :recoverable, :rememberable, :validatable
+
+
+
 end

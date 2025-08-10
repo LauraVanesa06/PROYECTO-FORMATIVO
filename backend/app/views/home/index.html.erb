@@ -13,7 +13,7 @@
   <div class="category-scroll" role="list">
     <% @categories.each do |c| %>
       <div class="category-card" role="listitem">
-        <%= link_to c.nombre, category_path(c), class: "category-link" %>
+        <%= link_to c.nombre, productos_path(category_id: c.id), class: "category-link" %>
       </div>
     <% end %>
   </div>
