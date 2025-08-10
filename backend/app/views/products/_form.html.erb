@@ -1,4 +1,4 @@
-<%= form_with(model: product, local: true, html: { multipart: true }) do |form| %>
+<%= form_with(model: product, url: product, method: :patch, local: true, html: { multipart: true, id: "edit-form" }, class: 'form-editar') do |form| %>
   <% if product.errors.any? %>
     <div style="color: red">
       <h2><%= pluralize(product.errors.count, "error") %> prohibited this product from being saved:</h2>
@@ -10,7 +10,7 @@
       </ul>
     </div>
   <% end %>
-
+<!--
   <div>
     <%= form.label :imagen, style: "display: block" %>
     <%= form.file_field :imagen %>
@@ -47,9 +47,14 @@
      :id, :nombre, prompt: "Seleccione un proveedor" %>  
   </div> 
 
+  <div class="btn3">
+    <%= form.submit "Guardar", class: 'btn4' %>
+  </div>
+-->
 
-
+<!--
   <div>
     <%= form.submit %>
   </div>
+-->
 <% end %>

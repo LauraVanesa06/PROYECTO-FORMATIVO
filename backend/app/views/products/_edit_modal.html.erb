@@ -1,8 +1,9 @@
-<div id="edit-modal" class="modal-editar">
+<!--<div id="edit-modal" class="modal-editar">
   <div class="modal-content2">
     <a href="#" class="close">&times;</a>
     <div class="titulo2">Editar Producto</div>
     <%= form_with(model: Product.new, url: '#', method: :patch, local: true, html: { multipart: true, id: "edit-form" }, class: 'form-editar') do |form| %>
+      <%= form.hidden_field :authenticity_token, value: form_authenticity_token %>
       <div class="texto2">
         <%= form.label :imagen, "Imagen:", style: "display: block" %>
         <%= form.file_field :imagen, class: "btn5"%>
@@ -37,6 +38,75 @@
     <% end %>
   </div>
 </div>
+-->
+<div id="edit-modal" class="modal-editar">
+  <div class="modal-content2">
+    <a href="#" class="close">&times;</a>
+    <div id="modal-form-content">
+        <section class="container">  
+            <div class="input-box">
+                <label>Nombre</label>
+                <input required="" type="text">
+            </div>
+            <div class="column">
+                <div class="input-box">
+                    <label>Precio</label>
+                    <input required="" type="decimal">
+                </div>
+                <div class="input-box">
+                    <label>Stock</label>
+                    <input required="" type="interge">
+                </div>
+            </div>
+            <div class="gender-box">
+                <label>Gender</label>
+                <div class="gender-option">
+                <div class="gender">
+                    <input checked="" name="gender" id="check-male" type="radio">
+                    <label for="check-male">Male</label>
+                </div>
+                <div class="gender">
+                    <input name="gender" id="check-female" type="radio">
+                    <label for="check-female">Female</label>
+                </div>
+                <div class="gender">
+                    <input name="gender" id="check-other" type="radio">
+                    <label for="check-other">Prefer not to say</label>
+                </div>
+                </div>
+            </div>
+            <div class="input-box address">
+                <label>Descripción</label>
+                <input required="" type="text">
+                <div class="column">
+                <div class="select-box">
+                    <select>
+                    <option hidden="">Categoria</option>
+                    <option>USA</option>
+                    <option>UK</option>
+                    <option>Germany</option>
+                    <option>Japan</option>
+                    </select>
+                </div>
+                <div class="select-box">
+                    <select>
+                    <option hidden="">Proveedor</option>
+                    <option>USA</option>
+                    <option>UK</option>
+                    <option>Germany</option>
+                    <option>Japan</option>
+                    </select>
+                </div>
+                </div>
+            </div>
+            <div class="row">
+                <button>Eliminar</button>
+                <button>Guardar</button>
+            </div>
+        </section>
+    </div>
+  </div>
+</div>
 
 <script>
   document.addEventListener('DOMContentLoaded', () => {
@@ -44,31 +114,29 @@
     const closeButton = modal.querySelector('.close');
 
     document.querySelectorAll('.open-edit-modal').forEach(button => {
-        button.addEventListener('click', (event) => {
+        button.addEventListener('click', async (event) => {
         event.preventDefault();
         
         const productId = button.dataset.productId;
         
-        // Obtener los datos directamente del botón
-        const product = button.dataset;
-        
-        // Llenar el formulario del modal
-        const form = modal.querySelector('#edit-form');
-        form.action = `/products/${productId}`; 
-        
-        form.querySelector('#edit-nombre').value = product.nombre;
-        form.querySelector('#edit-descripcion').value = product.descripcion;
-        form.querySelector('#edit-precio').value = product.precio;
-        form.querySelector('#edit-stock').value = product.stock;
-        form.querySelector('#edit-categoria').value = product.categoryId;
-        form.querySelector('#edit-proveedor').value = product.supplierId;
-        
-        // Muestra el modal de forma instantánea
-        modal.style.display = 'block';
+        try {
+            const response = await fetch(`/products/${productId}/edit`, {
+            headers: {
+                'Accept': 'text/html'
+            }
+            });
+            const html = await response.text();
+            
+            modal.querySelector('#modal-form-content').innerHTML = html;
+            
+            modal.style.display = 'block';
+
+        } catch (error) {
+            console.error('Error al obtener el formulario de edición:', error);
+        }
         });
     });
 
-    // Eventos para cerrar el modal...
     closeButton.addEventListener('click', (event) => {
         event.preventDefault();
         modal.style.display = 'none';

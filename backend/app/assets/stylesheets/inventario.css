@@ -306,6 +306,7 @@ input::placeholder {
     box-shadow: 0 0 8px #232323;
     border-radius: 8px;
     width: 200px;
+    height: 299px;
     display: flex;
     flex-direction: column;
     margin: 5px;
@@ -511,79 +512,6 @@ input::placeholder {
 
 .new-prod:hover {
     background-color: #313131;
-}
-
-/*VENTANA FLOTANTE DE PRODUCTO ID*/
-.modal-ver {
-    display: none;
-    position: fixed;
-    top: 0; left: 0;
-    width: 100%; height: 100%;
-    background: rgba(0, 0, 0, 0.6);
-    z-index: 9999;
-}
-
-.modal-ver:target {
-    display: block;
-}
-
-.modal-content {
-    border: 1px transparent;
-    box-shadow: 0 0px 10px rgba(0, 0, 0, 0.3);
-    background: white;
-    padding: 20px;
-    padding-top: 30px;
-    padding-bottom: 30px;
-    margin: 100px auto;
-    width: 800px;
-    border-radius: 8px;
-    position: relative;
-    display: flex;
-    flex-direction: row;
-}
-
-.close {
-    position: absolute;
-    top: 5px; right: 5px;
-    text-decoration: none;
-    font-size: 25px;
-    font-weight: bold;
-    color: #424242;
-    width: 30px;
-    height: 30px;
-    font-family: 'inconsolata';
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-.close:hover{
-    background-color: rgb(252, 102, 102);
-    border-radius: 50px;
-    color: white;
-}
-.div-foto-model{
-    margin-left: 20px;
-    margin-right: 5px;
-    width: 40%;
-    height: 100%;
-    display: flex;
-    justify-content: center;
-}
-.div-foto-model img{
-    max-width: 100%;
-    height: 400px;
-    object-fit: contain;
-}
-.texto-model{
-    width: 60%;
-    list-style: none;
-    margin: 20px;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-}
-.texto-model li{
-    font-size: 20px;
 }
 
 /*editar*/
