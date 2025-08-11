@@ -44,7 +44,7 @@
 
       <div class="form-container", class="letra">
         <h2  class = "h2">Contáctanos</h2>
-          <%= form_with url: send_report_home_contacto_path, scope: :user_support, local: true do |f| %>
+          <%= form_with url: send_contact_message_path, scope: :user_support, local: true do |f| %>
             <div class="mb-3 " id="letra"  >
               <%= f.label :user_name, "Tu nombre", class:"letra" %>
               <%= f.text_field :user_name, class: "form-control" %>

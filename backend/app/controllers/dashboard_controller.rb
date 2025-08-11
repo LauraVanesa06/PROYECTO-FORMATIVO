@@ -9,7 +9,7 @@ class DashboardController < ApplicationController
   before_action :only_admins
 
   def only_admins
-    redirect_to authenticated_root_path, alert: "No autorizado" unless current_user&.admin?
+    redirect_to authenticated_root_path, alert: "No autorizado" unless current_user&.role == "admin"
   end
 
   def help
