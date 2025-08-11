@@ -22,8 +22,8 @@ class ProductModel extends Equatable {
       id: json['id'] ?? 0,
       nombre: json['nombre'] ?? '',
       descripcion: json['descripcion'] ?? '',
-      precio: double.tryParse(json['precio'].toString()) ?? 0.0,
-      stock: int.tryParse(json['stock'].toString()) ?? 0,
+      precio: (json['precio'] as num?)?.toDouble() ?? 0.0,
+      stock: json['stock'] ?? 0,
       imagenUrl: json['imagenUrl'] ?? '',
     );
 

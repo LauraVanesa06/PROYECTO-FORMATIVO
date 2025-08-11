@@ -1,7 +1,7 @@
 import 'dart:convert';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
-import 'package:http/http.dart' as http;
+import 'package:flutter/services.dart' show rootBundle;
 import '../model/product_model.dart';
 
 part 'product_event.dart';
@@ -13,34 +13,29 @@ class ProductBloc extends Bloc<ProductEvent, ProductState> {
       emit(ProductLoadInProgress());
 
       try {
-        // PETICIÓN HTTP A TU BACKEND RAILS
-        final response = await http.get(
-          Uri.parse('http://localhost:3000/api/v1/products'),
-        );
+        // Leer el archivo JSON desde assets
+        final String jsonString = await rootBundle.loadString('assets/json/ferre.json');
+        final decoded = jsonDecode(jsonString);
 
-        if (response.statusCode == 200) {
-          final decoded = jsonDecode(response.body);
+        if (decoded is List) {
+          final products = decoded
+              .whereType<Map<String, dynamic>>()
+              .map((item) => ProductModel.fromJson(item))
+              .toList();
 
-          if (decoded is List) {
-            final products =
-                decoded
-                    .whereType<Map<String, dynamic>>()
-                    .map((item) => ProductModel.fromJson(item))
-                    .toList();
-
-            emit(ProductLoadSuccess(products));
-          } else {
-            print("ERROR: El JSON no es una lista.");
-            emit(ProductLoadFailure());
-          }
+          emit(ProductLoadSuccess(products));
         } else {
-          print("Error en la respuesta HTTP: ${response.statusCode}");
+          print("ERROR: El JSON no es una lista.");
           emit(ProductLoadFailure());
         }
       } catch (e) {
         print("ERROR al cargar productos: $e");
         emit(ProductLoadFailure());
       }
+    });
+
+    on<ProductRegresarPressed>((event, emit) {
+      emit(ProductInitial());
     });
   }
 }

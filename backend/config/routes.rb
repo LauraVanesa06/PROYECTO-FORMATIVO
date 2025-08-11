@@ -68,67 +68,8 @@ Rails.application.routes.draw do
     member do
       get :purchasedetails
     end
-  # namespace :api do
-  #   namespace :v1 do
-  #     get 'buys/por_tipo', to: 'buys#ventas_por_tipo'
-  #     get 'clientes_por_mes', to: 'dashboard#clientes_por_mes'
-  #     get 'dashboard/porcentaje_stock', to: 'dashboard#porcentaje_stock'
-  #     get 'ventas_por_categoria', to: 'dashboard#ventas_por_categoria'
-  #     get 'ventas_por_canal', to: 'dashboard#ventas_por_canal'
-  #     get 'ventas_por_metodo_pago', to: 'dashboard#ventas_por_metodo_pago'
-  #      get 'ventas_periodo', to: 'dashboard#ventas_periodo'
-  #      get 'finanzas', to: 'dashboard#finanzas'
-  #   end
-  # end
-
-  resources :products
-  resources :buys
-  resources :purchasedetails
-
-  get "ventas" => "dashboard#ventas"
-
-  # Rutas graficas
-
-
-
-
-  root "home#index", as: :authenticated_root
-  get 'productos', to: 'home#producto'
-  get 'contactos', to: 'home#contacto'
-post 'home/contacto/send_report', to: 'home#send_report', as: 'send_report_home_contacto'
-
-    # Otras rutas que tengas
-    #login
-
-  #rutas proveedores
-  get 'dashboard/suppliers', to: 'dashboard#suppliers',  as: 'dashboard_suppliers'
-  post 'dashboard/suppliers', to: 'dashboard#crear_supplier'
-  get "suppliers" => "dashboard#suppliers"
-  patch "dashboard/suppliers/:id", to: "dashboard#actualizar_supplier", as: :dashboard_supplier
-resources :suppliers do
-  get 'products', to: 'suppliers#products'
-end
-
-
-    devise_scope :user do
-      get '/acceso', to: 'usuarios/sessions#new', as: :custom_login
-      get '/registro', to: 'usuarios/registrations#new', as: :custom_signup
-      get '/olvide-contrasena', to: 'usuarios/passwords#new', as: :custom_new_password
-    end
-
-  # Render dynamic PWA files from app/views/pwa/* (remember to link manifest in application.html.erb)
-  # get "manifest" => "rails/pwa#manifest", as: :pwa_manifest
-  # get "service-worker" => "rails/pwa#service_worker", as: :pwa_service_worker
-
-  # Defines the root path route ("/")
-  # root "posts#index"
-
-  # Api conexion a flutter
-  namespace :api do
-    namespace :v1 do
-      resources :products, only: [:index]
-    end
   end
+
   resources :purchasedetails
 
   resources :suppliers do

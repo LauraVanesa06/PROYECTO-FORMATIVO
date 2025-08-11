@@ -9,3 +9,4 @@ sealed class ProductEvent extends Equatable {
 
 final class ProductEntrarPressed extends ProductEvent {}
 
+final class ProductRegresarPressed extends ProductEvent {}
