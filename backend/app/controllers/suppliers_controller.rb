@@ -1,8 +1,8 @@
 class SuppliersController < ApplicationController
   before_action :authenticate_user!
   before_action :only_admins
+  layout false
 
-  private
 
   def only_admins
     unless current_user&.admin?
@@ -12,8 +12,22 @@ class SuppliersController < ApplicationController
 
 
   def index
-    @suppliers = Supplier.all
-    @supplier = Supplier.new
+    @supplier_form = Supplier.new
+    @categorias = Category.all
+
+    # ASIDE: siempre muestra todos (a menos que no existan en DB)
+    @suppliers_aside = Supplier.all
+
+    # SECTION: se filtra
+    @suppliers = Supplier.includes(:products).all
+    @suppliers = @suppliers.where("nombre LIKE ?", "%#{params[:name]}%") if params[:name].present?
+    @suppliers = @suppliers.where(id: params[:supplier_id]) if params[:supplier_id].present?
+
+    # Si no hay resultados en el section, mostramos alerta y todos en el aside
+    if @suppliers.empty?
+      flash.now[:alert] = "¡No se encontraron proveedores con esos filtros!"
+      @suppliers = Supplier.all
+    end
   end
 
   def show
@@ -26,7 +40,7 @@ class SuppliersController < ApplicationController
   end
 
 def crear_supplier
-  @supplier = Supplier.new(supplier_params)
+  @supplier = Supplier.new(suppliers_params)
 
   if @supplier.save
     product_name = params[:nombre_product]
@@ -54,8 +68,37 @@ def crear_supplier
   redirect_to dashboard_suppliers_path
 end
 
+def actualizar_supplier
+  @supplier = Supplier.find(params[:id])
 
-  private
+  if @supplier.update(suppliers_params)
+    product_name = params[:nombre_product].presence
+    stock = params[:stock].to_i
+    category_id = params[:category_id].presence
+    category_id = category_id.to_i if category_id.present?
+
+    if product_name && stock > 0
+      existing_product = Product.find_by(nombre: product_name, supplier_id: @supplier.id)
+
+      if existing_product
+        existing_product.increment!(:stock, stock)
+      else
+        Product.create!(
+          nombre: product_name,
+          stock: stock,
+          supplier_id: @supplier.id,
+          category_id: category_id
+        )
+      end
+    end
+
+    redirect_to dashboard_suppliers_path, notice: "Proveedor y producto actualizados"
+  else
+    redirect_to dashboard_suppliers_path, alert: "Error al actualizar proveedor"
+  end
+end
+
+
 
   def product_params
     params.require(:product).permit(:nombre, :descripcion, :stock, :supplier_id)

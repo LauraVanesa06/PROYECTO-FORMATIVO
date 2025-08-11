@@ -1,10 +1,58 @@
 class CustomersController < ApplicationController
   before_action :set_customer, only: %i[ show edit update destroy ]
+  layout false
 
   # GET /customers or /customers.json
   def index
-    @customers = Customer.all
+  # base
+  @customers = Customer.left_outer_joins(:buys).distinct.includes(:buys)
+  @customer = nil
+  @purchasedetails = []
+  @buys = Buy.all
+
+  # filtro por documento (solo afecta la lista de clientes)
+  @customers = @customers.where("customers.documento LIKE ?", "%#{params[:documento]}%") if params[:documento].present?
+
+  # arma condiciones de fecha (día/mes/año) sobre buys.fecha
+  conditions, values = [], []
+  { day: '%d', month: '%m', year: '%Y' }.each do |p, f|
+    next unless params[p].present?
+    values << (p == :year ? params[p] : params[p].rjust(2, '0'))
+    conditions << "strftime('#{f}', buys.fecha) = ?"
   end
+
+  # si hay condiciones, filtra both: buys y customers
+  if conditions.any?
+    where_sql = conditions.join(' AND ')
+    @buys = Buy.where(where_sql, *values)
+    @customers = @customers.where(where_sql, *values)
+  end
+
+  buy_ids = @buys.pluck(:id)
+
+  # --- lógica para purchasedetails en el ASIDE ---
+  if @customers.empty? # si el filtro no trajo clientes
+    flash.now[:alert] = "¡No se encontraron clientes con esos filtros!"
+    @customers = Customer.all
+    @purchasedetails = Purchasedetail.includes(:product, buy: :customer) # todas las compras
+  else
+    # purchasedetails normal, según selección o resultados
+    if params[:documento].present?
+      @customer = Customer.find_by(documento: params[:documento])
+      @purchasedetails = @customer ? @customer.purchasedetails.includes(:product, buy: :customer).where(buy_id: buy_ids) : []
+    elsif @customers.size == 1
+      @customer = @customers.first
+      @purchasedetails = @customer.purchasedetails.includes(:product, buy: :customer).where(buy_id: buy_ids)
+    else
+      @purchasedetails = Purchasedetail.includes(:product, buy: :customer)
+      @purchasedetails = @purchasedetails.where(buy_id: buy_ids) if buy_ids.present?
+    end
+  end
+
+  @filter_result_empty = @customers.blank?
+end
+
+
 
   # GET /customers/1 or /customers/1.json
   def show

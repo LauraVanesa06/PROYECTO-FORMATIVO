@@ -2,7 +2,14 @@
 
 class Usuarios::RegistrationsController < Devise::RegistrationsController
 
-    layout 'custom_login'
+  layout 'custom_login'
+
+  def create
+    super do |user|
+      # Aquí se crea el carrito apenas se registra
+      Cart.create(user: user) unless user.cart.present?
+    end
+  end
 
   def new
     super
