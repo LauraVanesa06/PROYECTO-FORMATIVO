@@ -36,9 +36,10 @@
         <%= link_to favoritos_path, class: "text-white" do %>
           <i class="fa-solid fa-star"></i>
         <% end %>
-        <%= link_to cart_path, class: "text-white" do %>
+        <%= link_to "#", class: "text-white", data: { bs_toggle: "offcanvas", bs_target: "#carritoOffcanvas" } do %>
           <i class="fa-solid fa-cart-shopping"></i>
         <% end %>
+
         <%= link_to notificaciones_path, class: "text-white" do %>
           <i class="fa-solid fa-bell"></i>
         <% end %>
@@ -73,6 +74,38 @@
     <footer class="bg-dark text-white text-center p-3 mt-auto">
       &copy; 2025 Ferremateriales el Maestro - v2.3.7
     </footer>
+    <!-- Offcanvas Carrito -->
+<div class="offcanvas offcanvas-start" tabindex="-1" id="carritoOffcanvas" aria-labelledby="carritoOffcanvasLabel">
+  <div class="offcanvas-header">
+    <h5 class="offcanvas-title" id="carritoOffcanvasLabel">
+      <i class="fa-solid fa-cart-shopping"></i> Tu carrito
+    </h5>
+    <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Cerrar"></button>
+  </div>
+  <div class="offcanvas-body">
+    <% if @cart_items.present? %>
+      <ul class="list-group mb-3">
+        <% @cart_items.each do |item| %>
+          <li class="list-group-item d-flex justify-content-between align-items-center">
+            <div>
+              <% if item.product.imagen.present? %>
+                <%= image_tag url_for(item.product.imagen), style: "width:50px; height:50px; object-fit:cover;" %>
+              <% else %>
+                <%= image_tag "placeholder.png", style: "width:50px; height:50px; object-fit:cover;" %>
+              <% end %>
+              <span class="ms-2"><%= item.product.nombre %> x <%= item.cantidad %></span>
+            </div>
+            <span><%= number_to_currency(item.product.precio * item.cantidad) %></span>
+          </li>
+        <% end %>
+      </ul>
+      
+    <% else %>
+      <p>No hay productos en el carrito.</p>
+    <% end %>
+  </div>
+</div>
+
   </main>
 
   <%= javascript_include_tag 'application2', "data-turbo-track": "reload" %>

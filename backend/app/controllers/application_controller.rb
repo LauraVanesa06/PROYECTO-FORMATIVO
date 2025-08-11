@@ -4,6 +4,7 @@ class ApplicationController < ActionController::Base
   allow_browser versions: :modern
 
   before_action :set_cart
+  before_action :load_cart_items  # 👈 agregado
 
   private
 
@@ -14,6 +15,16 @@ class ApplicationController < ActionController::Base
       @cart = nil
     end
   end
+
+  # 👇 agregado para que siempre tengamos los items disponibles
+  def load_cart_items
+    if @cart
+      @cart_items = @cart.cart_items.includes(:product)
+    else
+      @cart_items = []
+    end
+  end
+
   def after_sign_in_path_for(resource)
     case resource.role
     when "admin"
@@ -23,3 +34,4 @@ class ApplicationController < ActionController::Base
     end
   end
 end
+
