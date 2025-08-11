@@ -43,67 +43,7 @@
   <div class="modal-content2">
     <a href="#" class="close">&times;</a>
     <div id="modal-form-content">
-        <section class="container">  
-            <div class="input-box">
-                <label>Nombre</label>
-                <input required="" type="text">
-            </div>
-            <div class="column">
-                <div class="input-box">
-                    <label>Precio</label>
-                    <input required="" type="decimal">
-                </div>
-                <div class="input-box">
-                    <label>Stock</label>
-                    <input required="" type="interge">
-                </div>
-            </div>
-            <div class="gender-box">
-                <label>Gender</label>
-                <div class="gender-option">
-                <div class="gender">
-                    <input checked="" name="gender" id="check-male" type="radio">
-                    <label for="check-male">Male</label>
-                </div>
-                <div class="gender">
-                    <input name="gender" id="check-female" type="radio">
-                    <label for="check-female">Female</label>
-                </div>
-                <div class="gender">
-                    <input name="gender" id="check-other" type="radio">
-                    <label for="check-other">Prefer not to say</label>
-                </div>
-                </div>
-            </div>
-            <div class="input-box address">
-                <label>Descripción</label>
-                <input required="" type="text">
-                <div class="column">
-                <div class="select-box">
-                    <select>
-                    <option hidden="">Categoria</option>
-                    <option>USA</option>
-                    <option>UK</option>
-                    <option>Germany</option>
-                    <option>Japan</option>
-                    </select>
-                </div>
-                <div class="select-box">
-                    <select>
-                    <option hidden="">Proveedor</option>
-                    <option>USA</option>
-                    <option>UK</option>
-                    <option>Germany</option>
-                    <option>Japan</option>
-                    </select>
-                </div>
-                </div>
-            </div>
-            <div class="row">
-                <button>Eliminar</button>
-                <button>Guardar</button>
-            </div>
-        </section>
+        
     </div>
   </div>
 </div>
@@ -131,6 +71,31 @@
             
             modal.style.display = 'block';
 
+            const deleteBtn = modal.querySelector('.eliminar');
+              if (deleteBtn) {
+                deleteBtn.type = "button"; // Para que no envíe el form
+                deleteBtn.addEventListener('click', async () => {
+                  if (confirm('¿Seguro que quieres eliminar este producto?')) {
+                    try {
+                      const delResponse = await fetch(`/products/${productId}`, {
+                        method: 'DELETE',
+                        headers: {
+                          'X-CSRF-Token': document.querySelector('meta[name="csrf-token"]').content
+                        }
+                      });
+                      if (delResponse.ok) {
+                        modal.style.display = 'none';
+                        location.reload(); // Refresca la lista
+                      } else {
+                        alert('Error al eliminar el producto.');
+                      }
+                    } catch (err) {
+                      console.error('Error:', err);
+                    }
+                  }
+                });
+              }
+
         } catch (error) {
             console.error('Error al obtener el formulario de edición:', error);
         }
@@ -148,4 +113,27 @@
         }
     });
     });
+
+  //cargar imagen 
+  document.addEventListener('change', (event) => {
+  if (event.target.id === 'file-input') {
+    const file = event.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = e => {
+        let preview = document.querySelector('#image-preview');
+        if (!preview) {
+          preview = document.createElement('img');
+          preview.id = 'image-preview';
+          preview.style.maxWidth = '150px';
+          preview.style.display = 'block';
+          event.target.closest('.drop-container').appendChild(preview);
+        }
+        preview.src = e.target.result;
+      };
+      reader.readAsDataURL(file);
+    }
+  }
+});
 </script>
+

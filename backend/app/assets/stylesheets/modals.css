@@ -1,38 +1,59 @@
-.container {
-  position: relative;
-  max-width: 500px;
-  width: 100%;
-  background: #FCEDDA;
-  padding: 25px;
-  border-radius: 15px;
-  box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+.titu-editar{
+  font-size: 23px;
+  font-weight: bold;
+  background-image: none;
+  color: #96bfeb;
 }
-
-.container{
-  margin-top: 15px;
+.previa-imagen{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+}
+.drop-img{
+  color: #aba9a9;
+    font-size: 15px;
+    text-align: center;
+}
+/*form*/
+.form-edit-new {
+    position: relative;
+    width: 350px;
+    background: #ffffff;
+    border: 1px solid #eeeeee;
+    padding: 25px;
+    border-radius: 15px;
+    display: flex;
+    flex-direction: column;
+    font-size: 12px;
 }
 
 .input-box {
   width: 100%;
-  margin-top: 10px;
+  margin-top: 5px;
 }
 
 .input-box label {
-  color: #000;
+  color: #000000;
+  font-weight: bold;
 }
 
-:where(.input-box input, .select-box) {
+:where(.input-box input, .select-box, .descripcion) {
   position: relative;
-  height: 35px;
-  width: 100%;
-  outline: none;
-  font-size: 1rem;
-  color: #808080;
-  margin-top: 5px;
-  border: 1px solid #EE4E34;
-  border-radius: 6px;
-  padding: 0 15px;
-  background: #FCEDDA;
+    height: 25px;
+    width: 100%;
+    outline: none;
+    font-size: 12px;
+    color: #181818;
+    margin-top: 5px;
+    padding-left: 8px !important;
+    border: 1px solid #dbdbdb;
+    border-radius: 6px;
+    padding: 0 15px;
+}
+
+.descripcion{
+  height: 80px !important;
 }
 
 .input-box input:focus {
@@ -79,33 +100,131 @@
 }
 
 .address :where(input, .select-box) {
-  margin-top: 10px;
 }
 
 .select-box select {
   height: 100%;
-  width: 100%;
-  outline: none;
-  border: none;
-  color: #808080;
-  font-size: 1rem;
-  background: #FCEDDA;
+    width: 100%;
+    outline: none;
+    border: none;
+    color: #9c9c9c;
+    font-size: 12px;
 }
 
-button {
-  height: 40px;
-  width: 100%;
-  color: #000;
-  font-size: 1rem;
-  font-weight: 400;
-  margin-top: 15px;
-  border: none;
-  border-radius: 6px;
+.eliminar, .guardar {
+  height: 30px;
+    width: 40%;
+    color: #000;
+    font-size: 1rem;
+    font-weight: 400;
+    margin-top: 15px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.eliminar {
+    text-decoration: none;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: white;
+    background: linear-gradient(to bottom, #ff2828, #bc1b1b);
+}
+.eliminar:hover {
+  background: #bc1b1b;
   cursor: pointer;
-  transition: all 0.2s ease;
-  background: #EE4E34;
+}
+.guardar {
+  background: linear-gradient(to bottom, #35ee55, #2bbc1b);
+  color: white;
+}
+input.guardar:hover {
+  background-color: #2bbc1b !important;
+  cursor: pointer;
 }
 
-button:hover {
-  background: #EE3E34;
+/*agregar imagen*/
+.form {
+    background-color: #fff;
+    /* box-shadow: 0 10px 60px rgb(218, 229, 255); */
+    /* border: 1px solid rgb(159, 159, 160); */
+    border-radius: 20px;
+    padding: 20px;
+    text-align: center;
+    font-size: 12px;
+    max-width: 320px;
+    display: flex;
+    flex-direction: column;
+}
+
+.form-title {
+  color: #000000;
+  font-size: 20px;
+  font-weight: 500;
+}
+
+.form-paragraph {
+  margin-top: 10px;
+  font-size: 0.9375rem;
+  color: rgb(105, 105, 105);
+}
+
+.drop-container {
+  background-color: #fff;
+  position: relative;
+  display: flex;
+  gap: 10px;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 10px;
+  margin-top: 15px;
+  border-radius: 10px;
+  border: 2px dashed #96bfeb;
+  color: #444;
+  cursor: pointer;
+  overflow: hidden;
+  height: 150px;
+}
+
+.drop-container:hover {
+  background: rgba(111, 118, 123, 0.164);
+  border-color: rgba(43, 43, 43, 0.616);
+}
+
+.drop-container:hover .drop-title {
+  color: #444444;
+}
+
+.drop-title {
+    color: #c9c9c9;
+    font-size: 15px;
+    text-align: center;
+    transition: color .2s ease-in-out;
+}
+
+#file-input {
+  width: 350px;
+  max-width: 100%;
+  color: #444;
+  padding: 2px;
+  background: #fff;
+  border-radius: 10px;
+  border: 1px solid rgba(8, 8, 8, 0.288);
+}
+
+#file-input::file-selector-button {
+  margin-right: 20px;
+  border: none;
+  background: #6ea7e4;
+  padding: 10px 20px;
+  border-radius: 10px;
+  color: #fff;
+  cursor: pointer;
+}
+
+#file-input::file-selector-button:hover {
+  background: #96bfeb;
 }

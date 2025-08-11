@@ -533,15 +533,14 @@ input::placeholder {
   padding: 20px;
   padding-top: 7px;
   width: 90%;
-  max-width: 450px;
+  max-width: 700px;
   border-radius: 10px;
   position: relative;
   display: flex;
   flex-direction: column;
   align-items: center;
-  height: auto;
+  height: 450px;
   max-height: 90vh; /* Máximo 90% del alto de la pantalla */
-  overflow-y: auto; /* Scroll si es necesario */
 }
 .titulo2{
     color: #ffc81e;
@@ -560,11 +559,11 @@ input::placeholder {
     margin-left: 42%;
 }
 .form-editar{
-    width: 90%;
+    width: auto;
     height: auto;
     display: flex;
     align-items: center;
-    flex-direction: column;
+    flex-direction: row;
     justify-content: center;
 }
 .texto2{
@@ -612,14 +611,6 @@ input::placeholder {
     border: solid 1px grey;
     width: 250px;
     border-radius: 5px;
-}
-.descripcion{
-    height: 100px;
-    width: 250px;
-    padding-inline: 5px;
-    overflow-wrap: break-word;
-    white-space: pre-wrap;
-    border: 1px solid #939393;
 }
 .hamburger-categorias{
     display: none;
@@ -893,10 +884,25 @@ input::placeholder {
 
 
 .close {
-  color: #aaa;
-  float: right;
-  font-size: 24px;
-  font-weight: bold;
-  text-decoration: none;
+    color: #aaa;
+    float: right;
+    font-size: 22px;
+    font-family: 'inconsolata';
+    font-weight: bold;
+    text-decoration: none;
+    position: absolute;
+    margin-left: 670px;
+    margin-top: -5px;
+    z-index: 9999;
+    border-radius: 50%;
+    width: 25px;
+    height: 25px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.close:hover {
+  background-color: rgba(255, 0, 0, 0.249);
+    color: #767676;
 }
 

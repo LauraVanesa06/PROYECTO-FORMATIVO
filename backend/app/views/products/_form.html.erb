@@ -1,4 +1,4 @@
-<%= form_with(model: product, url: product, method: :patch, local: true, html: { multipart: true, id: "edit-form" }, class: 'form-editar') do |form| %>
+<%= form_with(model: product, url: product_path(product), method: :patch, local: true, html: { multipart: true, id: "edit-form" }, class: 'form-editar') do |form| %>
   <% if product.errors.any? %>
     <div style="color: red">
       <h2><%= pluralize(product.errors.count, "error") %> prohibited this product from being saved:</h2>
@@ -10,6 +10,79 @@
       </ul>
     </div>
   <% end %>
+
+  <section class="form">
+    <% if @product.imagen.attached? %>
+      <div class="previa-imagen">
+        <span class="drop-img">Imagen actual</span>
+        <img id="preview" src="<%= url_for(@product.imagen) %>" alt="Imagen actual" style="max-width: 90%; height: 200px; object-fit: contain;">
+      </div>
+    <% else %>
+      <div class="previa-imagen">
+        <span class="drop-img">Imagen nueva</span>
+        <img id="preview" src="" alt="Imagen actual" style="display:none; max-width: 90%; height: 200px; object-fit: contain;">
+      </div>
+    <% end %>
+
+    <label for="file-input" class="drop-container">
+      <span class="form-title">Agregar imagen</span>
+      <span class="drop-title">Arrastra y suelta aquí<br>o</span>
+      <%= form.file_field :imagen, accept: "image/*", id: "file-input" %>
+    </label>
+  </section>
+
+  <script>
+    document.getElementById('file-input').addEventListener('change', function(event) {
+      const file = event.target.files[0];
+      const preview = document.getElementById('preview');
+
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+          preview.src = e.target.result;
+          preview.style.display = 'block';
+        }
+        reader.readAsDataURL(file);
+      }
+    });
+  </script>
+
+
+          <section class="form-edit-new">
+            <header class="titu-editar">Editar Producto</header>
+            <div class="input-box">
+                <label>Nombre</label>
+                <%= form.text_field :nombre, id: 'edit-nombre' %>
+            </div>
+            <div class="column">
+                <div class="input-box">
+                    <label>Precio</label>
+                    <%= form.text_field :precio, id: 'edit-precio' %>
+                </div>
+                <div class="input-box">
+                    <label>Stock</label>
+                    <%= form.number_field :stock, id: 'edit-stock' %>
+                </div>
+            </div>
+            <div class="input-box">
+              <label>Descripción</label>
+              <%= form.text_area :descripcion, id: 'edit-descripcion', class: 'descripcion' %>
+            </div>
+            <div class="input-box address">
+                <div class="input-box">
+                  <label>Categoria</label>
+                  <%= form.collection_select :category_id, Category.all, :id, :nombre, { prompt: "Categoría" }, id: 'edit-categoria', class:'select-box' %>
+                </div>
+                <div class="input-box">
+                  <label>Proveedor</label>
+                  <%= form.collection_select :supplier_id, Supplier.all, :id, :nombre, { prompt: "Seleccione un proveedor" }, id: 'edit-proveedor', class:'select-box' %>
+                </div>
+            </div>
+            <div class="row">
+                <%= link_to "Eliminar", product_path(product), method: :delete, data: { confirm: "¿Estás segura que quieres eliminar este producto?" }, class: "eliminar" %>
+                <%= form.submit "Guardar", class: 'guardar' %>
+            </div>
+          </section>
 <!--
   <div>
     <%= form.label :imagen, style: "display: block" %>
