@@ -108,14 +108,13 @@ class _HomeViewState extends State<HomeView> {
                   if (state is ProductLoadInProgress) {
                     return const Center(child: CircularProgressIndicator());
                   } if (state is ProductLoadSuccess) {
-                     return Padding(
-  padding: const EdgeInsets.all(8.0),
-  child: ProductsList(
-    products: state.productos,
-    shrinkWrap: true,
-    physics: const NeverScrollableScrollPhysics(),
-  ),
-);
+                return SizedBox(
+                height: 500,
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: ProductsList(products: state.productos),
+                ),
+              );
                   } else if (state is ProductLoadFailure) {
                     return const Center(child: Text('Error al cargar productos'));
                   } else {
