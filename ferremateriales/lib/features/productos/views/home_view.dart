@@ -1,8 +1,25 @@
+import 'package:ferremateriales/features/productos/views/product_view.dart';
+import 'package:ferremateriales/features/productos/widgets/product_list.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:carousel_slider/carousel_slider.dart';
+import '../bloc/product_bloc.dart';
 
-class HomeView extends StatelessWidget {
+
+class HomeView extends StatefulWidget {
   const HomeView({super.key});
+
+  @override
+  State<HomeView> createState() => _HomeViewState();
+}
+
+class _HomeViewState extends State<HomeView> {
+  @override
+  void initState() {
+    super.initState();
+    // Solo se ejecuta una vez
+    context.read<ProductBloc>().add(ProductEntrarPressed());
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -84,6 +101,30 @@ class HomeView extends StatelessWidget {
               ),
 
               const SizedBox(height: 24),
+
+              // Mostrar productos usando BlocBuilder
+              BlocBuilder<ProductBloc, ProductState>(
+                builder: (context, state) {
+                  if (state is ProductLoadInProgress) {
+                    return const Center(child: CircularProgressIndicator());
+                  } if (state is ProductLoadSuccess) {
+                     return Padding(
+  padding: const EdgeInsets.all(8.0),
+  child: ProductsList(
+    products: state.productos,
+    shrinkWrap: true,
+    physics: const NeverScrollableScrollPhysics(),
+  ),
+);
+                  } else if (state is ProductLoadFailure) {
+                    return const Center(child: Text('Error al cargar productos'));
+                  } else {
+                    return const ProductsPageView(); // Estado inicial
+                  }
+                },
+              ),
+
+              const SizedBox(height: 20),
             ],
           ),
         ),

@@ -3,7 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../views/failure_view.dart';
 import '../../../views/loading_view.dart';
 import '../bloc/product_bloc.dart';
-import '../widgets/producto_card.dart'; 
+import '../widgets/product_list.dart';
 
 class ProductsPageView extends StatefulWidget {
   const ProductsPageView({super.key});
@@ -15,7 +15,6 @@ class ProductsPageView extends StatefulWidget {
 class _ProductsPageViewState extends State<ProductsPageView> {
   String selectedCategory = 'Todos';
 
-  // Ejemplo de categorías:
   final List<String> categories = [
     'Todos',
     'Herramientas',
@@ -36,10 +35,13 @@ class _ProductsPageViewState extends State<ProductsPageView> {
         automaticallyImplyLeading: false,
         actions: [
           ElevatedButton(
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Colors.white,
+              foregroundColor: const Color(0xFFE2714D),
+            ),
             onPressed: () {
-  context.read<ProductBloc>().add(ProductRegresarPressed());
-  Navigator.of(context).pop(); // Esto te regresa a la vista anterior
-},
+              Navigator.pop(context);
+            },
             child: const Text('Regresar al Inicio'),
           ),
         ],
@@ -49,12 +51,9 @@ class _ProductsPageViewState extends State<ProductsPageView> {
           if (state is ProductLoadInProgress) {
             return const Center(child: LoadingView());
           } else if (state is ProductLoadSuccess) {
-            // FILTRADO DE PRODUCTOS según categoría seleccionada 
             final productos = state.productos.where((product) {
               if (selectedCategory == 'Todos') return true;
-              // Aquí podrías usar product.categoria si existiera:
-              // return product.categoria == selectedCategory;
-              return true; 
+              return true; // Cambiar esto cuando el modelo tenga categoría
             }).toList();
 
             return Column(
@@ -98,7 +97,7 @@ class _ProductsPageViewState extends State<ProductsPageView> {
                   ),
                 ),
                 Expanded(
-                  child: ProductsList(products: productos), // MOSTRAR PRODUCTOS
+                  child: ProductsList(products: productos),
                 ),
               ],
             );
