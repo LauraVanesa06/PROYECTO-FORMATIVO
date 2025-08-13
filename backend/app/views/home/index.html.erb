@@ -40,11 +40,13 @@
             <div>
               <div class="d-flex flex-wrap gap-2 mt-2">
                 <!-- Botón comprar -->
-                <%= button_to add_item_cart_path(producto),
-                              method: :post,
-                              class: "btn btn-sm btn-outline-primary d-flex align-items-center gap-1" do %>
-                  <i class="fa-solid fa-cart-plus"></i>
-                <% end %>
+                <button class="btn btn-outline-primary position-relative" type="button" data-bs-toggle="offcanvas" data-bs-target="#cartSidebar" aria-controls="cartSidebar">
+                  <i class="fa-solid fa-cart-shopping"></i>
+                  <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" id="cart_count">
+                    <%= @cart_items.sum(&:quantity) %>
+                  </span>
+                </button>
+
 
                 <!-- Botón favoritos -->
                 <% if current_user %>

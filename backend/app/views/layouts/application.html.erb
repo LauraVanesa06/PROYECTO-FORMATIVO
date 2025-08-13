@@ -110,5 +110,17 @@
 
   <%= javascript_include_tag 'application2', "data-turbo-track": "reload" %>
   <%= javascript_include_tag 'mi_script', "data-turbo-track": "reload" %>
+  <div class="offcanvas offcanvas-end" tabindex="-1" id="cartSidebar" aria-labelledby="cartSidebarLabel">
+  <div class="offcanvas-header">
+    <h5 class="offcanvas-title" id="cartSidebarLabel">Tu carrito</h5>
+    <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Cerrar"></button>
+  </div>
+  <div class="offcanvas-body">
+    <%= turbo_frame_tag "cart_items" do %>
+      <%= render partial: "carts/cart_items", locals: { cart_items: @cart_items } %>
+    <% end %>
+  </div>
+</div>
+
 </body>
 </html>

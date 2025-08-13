@@ -1,0 +1,20 @@
+<%= turbo_stream.replace "cart_items" do %>
+  <%= render partial: "carts/cart_items", locals: { cart_items: @cart.cart_items.includes(:product) } %>
+<% end %>
+
+<%= turbo_stream.replace "cart_count" do %>
+  <%= @cart.cart_items.sum(:quantity) %>
+<% end %>
+
+<%= turbo_stream.append "alerts" do %>
+  <div class="alert alert-success">Producto agregado al carrito</div>
+<% end %>
+
+<%= turbo_stream.after "cart_items" do %>
+  <script>
+    document.addEventListener("turbo:load", function() {
+      var cartSidebar = new bootstrap.Offcanvas(document.getElementById('cartSidebar'));
+      cartSidebar.show();
+    });
+  </script>
+<% end %>
