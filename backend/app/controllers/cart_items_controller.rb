@@ -88,5 +88,6 @@ class CartItemsController < ApplicationController
 
   def set_cart
     @cart = current_user.cart
+    
   end
 end
