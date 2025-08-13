@@ -1,6 +1,6 @@
 class HomeController < ApplicationController
   layout "application"
-  skip_before_action :authenticate_user!, only: [:index, :producto]
+  skip_before_action :authenticate_user!, only: [:index, :producto, :contacto]
 
   def index
     @categories = Category.all
