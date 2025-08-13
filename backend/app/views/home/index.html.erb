@@ -40,12 +40,11 @@
             <div>
               <div class="d-flex flex-wrap gap-2 mt-2">
                 <!-- Botón comprar -->
-                <button class="btn btn-outline-primary position-relative" type="button" data-bs-toggle="offcanvas" data-bs-target="#cartSidebar" aria-controls="cartSidebar">
-                  <i class="fa-solid fa-cart-shopping"></i>
-                  <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" id="cart_count">
-                    <%= @cart_items.sum(&:quantity) %>
-                  </span>
-                </button>
+                <%= button_to "Agregar al carrito", cart_items_path(product_id: producto.id), 
+                  method: :post, 
+                  remote: true, 
+                class: "btn btn-primary" %>
+
 
 
                 <!-- Botón favoritos -->
