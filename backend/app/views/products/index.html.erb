@@ -6,7 +6,6 @@
   <%= favicon_link_tag 'favicon.png' %>
   <title>Dashboard Ferretería</title>
   <%= stylesheet_link_tag "inventario", media: "all" %>
-  <%= stylesheet_link_tag "modals", media: "all" %>
 
   <link href="https://fonts.googleapis.com/css2?family=Eczar:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
@@ -141,58 +140,8 @@
           <% end %>
       
       <% end %>
-      <%= render partial: 'products/edit_modal', locals: { product: Product.new } %>
-      
-      <a href="#modal-new-product" class="new-prod">+</a>
 
-      <div id="modal-new-product" class="modal-ver">
-        <div class="modal-content2">
-          <a href="#" class="close">&times;</a>
-          <div class="titulo2 tc" >Crear Producto</div>
-          <%= form_with(model: Product.new, url: products_path, local: true, html: { multipart: true }, class: 'form-editar') do |form| %>
-
-            <div class="texto2">
-              <%= form.label :imagen, "Imagen : ", style: "display: block" %>
-              <%= form.file_field :imagen, class: "btn5" %>
-            </div>
-
-            <div class="texto2">
-              <%= form.label :nombre, "Nombre : ", style: "display: block" %>
-              <%= form.text_field :nombre %>
-            </div>
-
-            <div class="texto2">
-              <%= form.label :descripcion, "Descripcion : ", style: "display: block" %>
-              <%= form.text_area :descripcion, class:'descripcion' %>
-            </div>
-
-            <div class="texto2">
-              <%= form.label :precio, "Precio : ", style: "display: block" %>
-              <%= form.text_field :precio %>
-            </div>
-
-            <div class="texto2">
-              <%= form.label :stock, "Stock : ", style: "display: block" %>
-              <%= form.number_field :stock %>
-            </div>
-
-            <div class="texto2">
-              <%= form.label :category_id, "Categoría : " %>
-              <%= form.collection_select :category_id, Category.all, :id, :nombre, prompt: "Seleccione una categoría" %> 
-            </div>
-
-            <div class="texto2">
-              <%= form.label :supplier_id, "Proveedor : " %> 
-              <%= form.collection_select :supplier_id, Supplier.all, :id, :nombre, prompt: "Seleccione un proveedor" %>  
-            </div> 
-
-            <div class="btn3">
-              <%= form.submit "Crear", class:'btn4 bc' %>
-            </div>
-
-          <% end %>
-        </div>
-      </div>
+      <%= link_to "+", new_product_path, class: "new-prod" %>
 
     </section>
   </section>

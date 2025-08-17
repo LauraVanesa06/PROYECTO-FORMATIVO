@@ -1,3 +1,45 @@
+body{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  height: 100vh;
+  margin: 0;
+  padding: 0;
+  background-image: url("madera2_big.jpg");
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center; 
+}
+h1.new{
+    position: absolute;
+    z-index: 9999;
+    margin-bottom: 505px;
+    font-size: 25px;
+    margin-left: 422px;
+    font-family: 'Segoe UI', sans-serif;
+    color: #8ea6ff;
+}
+div.opc{
+  position: absolute;
+  z-index: 9999;
+  margin-right: -406px;
+  margin-bottom: -484px;
+}
+.opc a{
+  text-decoration: none;
+  font-size: 15px;
+  color:#e4cf96;;
+  cursor: pointer;
+}
+.form-form{
+  width: 1100px;
+  height: 550px;
+  display: flex;
+  flex-direction: row-reverse;
+  position: relative;
+  align-items: center;
+}
 .titu-editar{
   font-size: 23px;
   font-weight: bold;
@@ -11,45 +53,62 @@
   flex-direction: column;
 }
 .drop-img{
-  color: #aba9a9;
+  color: #5f5f5f;
+    font-family: 'Segoe UI', sans-serif;
+    font-weight: bold;
     font-size: 15px;
     text-align: center;
 }
 /*form*/
 .form-edit-new {
-    position: relative;
-    width: 350px;
+        position: relative;
+    width: 70%;
+    height: 80%;
     background: #ffffff;
     border: 1px solid #eeeeee;
-    padding: 25px;
-    border-radius: 15px;
+    padding: 25px 25px 25px 25px;
+    /* margin-left: 100px; */
+    border-radius: 5px;
     display: flex;
     flex-direction: column;
-    font-size: 12px;
+    align-items: end;
+    font-size: 16px;
+    font-family: 'Segoe UI', sans-serif;
+    border: #e8dddd 1px solid;
+}
+.end{
+  width: 80%;
+  margin: 10px
 }
 
 .input-box {
   width: 100%;
-  margin-top: 5px;
+  margin-top: 10px;
+}
+
+#edit-precio, #edit-stock{
+  width: 300px;
 }
 
 .input-box label {
-  color: #000000;
+  color: #848484;
   font-weight: bold;
 }
 
 :where(.input-box input, .select-box, .descripcion) {
-  position: relative;
-    height: 25px;
+    position: relative;
+    height: 30px;
     width: 100%;
     outline: none;
-    font-size: 12px;
-    color: #181818;
-    margin-top: 5px;
+    font-size: 16px;
+    font-family: 'Segoe UI', sans-serif;
+    color: #272727;
+    margin-bottom: 8px;
     padding-left: 8px !important;
     border: 1px solid #dbdbdb;
     border-radius: 6px;
     padding: 0 15px;
+    overflow: hidden;
 }
 
 .descripcion{
@@ -102,13 +161,29 @@
 .address :where(input, .select-box) {
 }
 
+select:focus {
+  outline: none;  
+  border-color: #468dff;
+  box-shadow: 0 0 5px rgb(89, 128, 255);
+}
+option {
+  background-color: #cfcfcf;
+  border-radius: 10px;
+  color: #000000;
+}
+option:hover, option:active{
+  background-color: rgb(89, 128, 255);
+}
+
 .select-box select {
-  height: 100%;
-    width: 100%;
+    width: 300px;
     outline: none;
     border: none;
     color: #9c9c9c;
     font-size: 12px;
+    font-family: Arial, sans-serif;
+  cursor: pointer;
+  border-radius: 8px;
 }
 
 .eliminar, .guardar {
@@ -147,16 +222,20 @@ input.guardar:hover {
 
 /*agregar imagen*/
 .form {
-    background-color: #fff;
+    background-color: #a8baff;
     /* box-shadow: 0 10px 60px rgb(218, 229, 255); */
     /* border: 1px solid rgb(159, 159, 160); */
-    border-radius: 20px;
+    border-radius: 10px;
     padding: 20px;
     text-align: center;
     font-size: 12px;
-    max-width: 320px;
+    max-width: 300px;
     display: flex;
     flex-direction: column;
+    position: absolute;
+    z-index: 9999;
+    margin-right: 700px;
+    height: 480px;
 }
 
 .form-title {
@@ -190,8 +269,8 @@ input.guardar:hover {
 }
 
 .drop-container:hover {
-  background: rgba(111, 118, 123, 0.164);
-  border-color: rgba(43, 43, 43, 0.616);
+  background: rgb(237, 237, 237);
+  border-color: rgb(158, 158, 158);
 }
 
 .drop-container:hover .drop-title {
@@ -227,4 +306,29 @@ input.guardar:hover {
 
 #file-input::file-selector-button:hover {
   background: #96bfeb;
+}
+
+#error_explanation {
+  background: #ffe6e6;
+  border: 1px solid #ff4d4d;
+  border-radius: 8px;
+  padding: 12px 16px;
+  margin-bottom: 20px;
+  font-size: 14px;
+  color: #b30000;
+  max-width: 600px; /* para que no se estire más que el form */
+}
+
+#error_explanation h2 {
+  font-size: 16px;
+  margin: 0 0 10px;
+}
+
+#error_explanation ul {
+  margin: 0;
+  padding-left: 18px;
+}
+
+#error_explanation li {
+  list-style: disc;
 }

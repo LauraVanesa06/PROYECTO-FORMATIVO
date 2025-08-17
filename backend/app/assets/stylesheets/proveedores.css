@@ -468,17 +468,19 @@ input
     font-size: 30px;
 }
 
-  #new-prod {
+#new-prod {
     position: fixed;
-    bottom: 19px;
-    right: 1px;
+    bottom: 20px;
+    right: 20px;
     z-index: 9999;
+    padding: 12px 20px;
+    border-radius: 50%;
     text-decoration: none;
     box-shadow: 0 0px 10px rgba(0, 0, 0, 0.3);
     background-color: black;
     color: white;
     font-family: 'inconsolata';
-    font-size: 25px !important;
+    font-size: 25px;
     font-weight: bold;
 }
 

@@ -19,7 +19,7 @@
   <div class="boton-ver">
     <% buy.purchasedetails.each do |purchasedetail| %>
       <p>
-        <%= link_to "Ver detalles", "#modal-#{purchasedetail.id}", class: "show-buy" %>
+        <%= link_to "Ver compra", buy_path(buy), class: "show-buy" %>
       </p>
     <% end %>
   </div>
