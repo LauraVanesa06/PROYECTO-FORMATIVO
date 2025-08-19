@@ -47,11 +47,14 @@ Rails.application.routes.draw do
   post 'dashboard/suppliers', to: 'suppliers#crear_supplier'
   patch 'dashboard/suppliers/:id', to: 'suppliers#actualizar_supplier', as: :dashboard_supplier
 
-  # Recursos principales (RESTful)
+  # Recursos principale
+  resources :products do
+    patch :update_disponibilidad, on: :collection
+  end
   resources :carts, only: [:show]
   resources :favorites, only: [:index, :create, :destroy]
   resources :cart_items, only: [:create, :destroy]  
-  resources :products
+  
   resources :categories do
     member do
       get :products

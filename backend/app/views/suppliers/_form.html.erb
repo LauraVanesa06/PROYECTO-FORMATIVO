@@ -1,27 +1,81 @@
-<%= form_with(model: supplier) do |form| %>
-  <% if supplier.errors.any? %>
-    <div style="color: red">
-      <h2><%= pluralize(supplier.errors.count, "error") %> prohibited this supplier from being saved:</h2>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <%= stylesheet_link_tag "modals", media: "all" %>
+</head>
+<body>
+  <div class="contact-container">
+    <%= form_with(model: supplier, local: true, html: { multipart: true}, class: 'form-form') do |form| %>
+      <% if supplier.errors.any? %>
+        <div id="error_explanation">
+          <h2><%= pluralize(supplier.errors.count, "error") %> prohibited this supplier from being saved:</h2>
 
-      <ul>
-        <% supplier.errors.each do |error| %>
-          <li><%= error.full_message %></li>
+          <ul>
+            <% supplier.errors.each do |error| %>
+              <li><%= error.full_message %></li> 
+            <% end %>
+          </ul>
+        </div>
+      <% end %>
+      <section class="form">
+        <% if @supplier.persisted? && @supplier.imagen.attached? %>
+          <div class="previa-imagen">
+            <span class="drop-img">Imagen</span>
+            <img id="preview" src="<%= url_for(@supplier.imagen) %>" alt="Imagen actual" style="max-width: 90%; height: 200px; object-fit: contain;">
+          </div>
+        <% else %>
+          <div class="previa-imagen">
+            <span class="drop-img">Imagen</span>
+            <img id="preview" src="" alt="Imagen seleccionada" style="display:none; max-width: 90%; height: 200px; object-fit: contain;">
+          </div>
         <% end %>
-      </ul>
-    </div>
-  <% end %>
 
-  <div>
-    <%= form.label :nombre, style: "display: block" %>
-    <%= form.text_field :nombre %>
-  </div>
+        <label for="file-input" class="drop-container">
+          <span class="form-title">Agregar imagen</span>
+          <span class="drop-title">Arrastra y suelta aquí<br>o</span>
+          <%= form.file_field :imagen, accept: "image/*", id: "file-input" %>
+        </label>
+      </section>
 
-  <div>
-    <%= form.label :contacto, style: "display: block" %>
-    <%= form.text_field :contacto %>
+      <section class="form-edit-new">
+        <div class= "end">
+          <div class="input-box">
+            <label>Nombre</label>
+            <%= form.text_field :nombre, id: 'edit-nombre' %>
+          </div>
+          <div class="column">
+            <div class="input-box">
+              <label>Precio</label>
+              <%= form.text_field :precio, id: 'edit-precio' %>
+            </div>
+            <div class="input-box">
+              <label>Stock</label>
+              <%= form.number_field :stock, id: 'edit-stock' %>
+            </div>
+          </div>
+          <div class="input-box">
+            <label>Descripción</label>
+            <%= form.text_area :descripcion, id: 'edit-descripcion', class: 'descripcion' %>
+          </div>
+          <div class="input-box address">
+            <div class="input-box">
+              <label>Categoria</label>
+              <%= form.collection_select :category_id, Category.all, :id, :nombre, { prompt: "Seleccione una categoría" }, id: 'edit-categoria', class:'select-box' %>
+            </div>
+            <div class="input-box">
+              <label>Proveedor</label>
+              <%= form.collection_select :supplier_id, Supplier.all, :id, :nombre, { prompt: "Seleccione un proveedor" }, id: 'edit-proveedor', class:'select-box' %>
+            </div>
+          </div>
+          <div class="row">
+            <%# link_to "Eliminar", supplier_path(supplier), method: :delete, data: { confirm: "¿Estás segura que quieres eliminar este suppliero?" }, class: "eliminar" %>
+            <%= form.submit "Guardar", class: 'guardar' %>
+          </div>
+        </div>
+      </section>
+    <% end %>
   </div>
-
-  <div>
-    <%= form.submit %>
-  </div>
-<% end %>
+</body>
+</html>

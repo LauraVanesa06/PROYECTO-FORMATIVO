@@ -9,3 +9,7 @@ es:
       updated: "Tu cuenta ha sido actualizada"
     passwords:
       send_instructions: "Recibirás un correo con instrucciones para recuperar tu contraseña"
+  errors:
+    messages:
+      taken: "ya está en uso"
+      blank: "no puede estar vacío"

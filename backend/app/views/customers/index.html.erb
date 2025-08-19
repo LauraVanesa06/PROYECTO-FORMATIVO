@@ -85,7 +85,24 @@
           
           <% if @purchasedetails.present? && @purchasedetails.any? %>
             <% @purchasedetails.each do |p| %>
-              <div class="compra-info" onclick="mostrarDetalle('<%= dom_id(p, :vista) %>')">
+              <div class="compra-info open-detail-btn" 
+                data-cliente-id="<%= p.buy.customer.id %>"
+                data-cliente-nombre="<%= p.buy.customer.nombre %>"
+                data-cliente-documento="<%= p.buy.customer.documento %>"
+                data-cliente-telefono="<%= p.buy.customer.telefono %>"
+                data-producto-id="<%= p.product.id %>"
+                data-producto-nombre="<%= p.product.nombre %>"
+                data-producto-descripcion="<%= p.product.descripcion %>"
+                data-producto-precio="<%= p.product.precio %>"
+                data-producto-precioxunidad="<%= p.preciounidad %>"
+                data-producto-categoria="<%= p.product.category.nombre %>"
+                data-producto-proveedor="<%= p.product.supplier.nombre %>"
+                data-compra-id="<%= p.buy_id %>"
+                data-compra-fecha="<%= p.buy.fecha %>"
+                data-compra-cantidad="<%= p.cantidad %>"
+                data-compra-proveedor="<%= p.product.supplier.contacto %>"
+                data-edit-url="<%= edit_purchasedetail_path(p) %>"
+                data-producto-img-url="<%= p.product.imagen.attached? ? url_for(p.product.imagen) : '' %>">
                 <p class=p-id><strong>ID:</strong> <%= p.buy_id %></p>
                 <p class=p-fecha><%= p.buy.fecha.strftime("%d/%m/%Y") %></p>
               </div>
@@ -112,53 +129,10 @@
           </script>
         <% end %>
         <div id="purcha">
-          
-          <% @purchasedetails.each do |p| %>
-            <div id="<%= dom_id(p, :vista) %>" class="div-purchase" style="display: none;">
-              <h1 class=h1>Detalles de la Compra 🛒</h1>
-              <section class=n1>
-                <section class=n2>
-                  <h1 class=h11>Datos del Cliente</h1>
-                  <div class=deta-cliente>
-                    <p><strong>Id del usuario cliente:</strong> <%= p.buy.customer.id %></p>
-                    <p><strong>Nombre:</strong> <%= p.buy.customer.nombre %></p>
-                    <p><strong>Numero de identificacion:</strong> <%= p.buy.customer.documento %></p>
-                    <p><strong>Contacto/telefono:</strong> <%= p.buy.customer.telefono %></p>
-                  </div>
-                  <h1 class=h11>Datos del Producto</h1>
-                  <div class=deta-produ>
-                    <p><strong>Id del producto:</strong> <%= p.product.id %></p>
-                    <p><strong>Nombre:</strong> <%= p.product.nombre %></p>
-                    <p><strong>Descripcion:</strong> <%= p.product.descripcion %></p>
-                    <p><strong>Precio:</strong> <%= p.product.precio %></p>
-                    <p><strong>PrecioXunidad:</strong> <%= p.preciounidad %></p>
-                    <p><strong>Categoria del producto:</strong> <%= p.product.category.nombre %></p>
-                    <p><strong>Proveedor del producto:</strong> <%= p.product.supplier.nombre %></p>
-                  </div>
-                  <h1 class=h11>Datos de la Compra</h1>
-                  <div class=deta-compra>
-                    <p><strong>Id de la compra:</strong> <%= p.buy_id %></p>
-                    <p><strong>Fecha:</strong> <%= p.buy.fecha %></p>
-                    <p><strong>Cantidad total de los productos comprados:</strong> <%= p.cantidad %></p>
-                    <p><strong>Contacto/telefono del proveedor:</strong> <%= p.product.supplier.contacto%></p>
-                  </div>
-                </section>
-                <section class=n3>
-                  <h1 class=h11>Imagen del Producto</h1>
-                  <div class="div-foto">
-                    <% if p.product.imagen.attached? %>
-                      <%= image_tag url_for(p.product.imagen), alt: "Imagen del producto" %>
-                    <% else %>
-                      <p>No hay imagen</p>
-                    <% end %>
-                  </div>
-                  <button class="editar"><%= link_to "Editar", edit_purchasedetail_path(p) %></button>
-                </section>
-              </section>
+            <div class="div-purchase" style="display: none;">
+              <%= render 'purchasedetails/modal' %>
             </div>
-          <% end %>
         </div>
-        <%= link_to "+", new_purchasedetail_path, class: "new-pur" %>
       </section>
     </section>
   </section>
@@ -187,7 +161,7 @@
       }
     }
 
-  //borrar filtros
+    //borrar filtros
 
       document.addEventListener("DOMContentLoaded", function () {
       const botonLimpiar = document.getElementById("limpiar-filtros");
@@ -218,5 +192,52 @@
       }
     });
   </script>
+
+  <script>
+    //modal reutilizable
+    document.addEventListener("DOMContentLoaded", () => {
+      const modalContainer = document.getElementById("purcha");
+      const modal = modalContainer.querySelector(".div-purchase");
+      const editarBtn = document.getElementById("modal-editar-btn");
+      const fotoDiv = document.getElementById("modal-producto-foto");
+
+      document.querySelectorAll(".open-detail-btn").forEach(div => {
+        div.addEventListener("click", () => {
+          // Datos del cliente
+          document.getElementById("modal-cliente-id").textContent = div.dataset.clienteId;
+          document.getElementById("modal-cliente-nombre").textContent = div.dataset.clienteNombre;
+          document.getElementById("modal-cliente-documento").textContent = div.dataset.clienteDocumento;
+          document.getElementById("modal-cliente-telefono").textContent = div.dataset.clienteTelefono;
+
+          // Datos del producto
+          document.getElementById("modal-producto-id").textContent = div.dataset.productoId;
+          document.getElementById("modal-producto-nombre").textContent = div.dataset.productoNombre;
+          document.getElementById("modal-producto-descripcion").textContent = div.dataset.productoDescripcion;
+          document.getElementById("modal-producto-precio").textContent = div.dataset.productoPrecio;
+          document.getElementById("modal-producto-precioxunidad").textContent = div.dataset.productoPrecioxunidad;
+          document.getElementById("modal-producto-categoria").textContent = div.dataset.productoCategoria;
+          document.getElementById("modal-producto-proveedor").textContent = div.dataset.productoProveedor;
+
+          // Datos de la compra
+          document.getElementById("modal-compra-id").textContent = div.dataset.compraId;
+          document.getElementById("modal-compra-fecha").textContent = div.dataset.compraFecha;
+          document.getElementById("modal-compra-cantidad").textContent = div.dataset.compraCantidad;
+          document.getElementById("modal-compra-proveedor").textContent = div.dataset.compraProveedor;
+
+          // Cargar imagen
+          const imgUrl = div.dataset.productoImgUrl;
+          fotoDiv.innerHTML = imgUrl ? `<img src="${imgUrl}" alt="Imagen del producto">` : "<p>No hay imagen</p>";
+
+          // Mostrar el modal
+          modal.style.display = "block";
+        });
+      });
+
+      // Cerrar al hacer click fuera del modal
+      window.addEventListener("click", (e) => {
+        if (e.target === modalContainer) modal.style.display = "none";
+      });
+    });
+</script>
 </body>
 </html>

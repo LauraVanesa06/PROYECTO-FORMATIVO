@@ -211,6 +211,8 @@ input::placeholder {
     text-decoration: none;
     color: #ffffff;
     font-size: 15px;
+    background-color: transparent;
+    border: none;
 }
 .show-buy:hover, .boton-ver:hover{
     background-color: #1c23ff;
@@ -257,15 +259,13 @@ input::placeholder {
   padding-top: 50px;
   left: 0;
   top: 0;
+  padding-left: 38%;
   width: 100%;
   height: 100%;
-  overflow: auto;
+  overflow: hidden;
   background-color: rgba(0,0,0,0.6);
 }
 
-.modal:target {
-    display: block;
-}
 
 .modal-content {
   background-color: #fff;
@@ -304,11 +304,19 @@ input::placeholder {
     color: white;
 }
 .div-foto-model{
-    margin-right: 5px;
-    width: auto;
-    height: auto;
-    margin-top: 45px;
+    width: 100%;
+    height: 200px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
+
+.div-foto-model img{
+  max-width: 90%;
+    height: 170px;
+    object-fit: contain;
+}
+
 #foto-model a img, #foto-model{
     width: 230px;
     height: 250px;
