@@ -24,13 +24,26 @@ div.opc{
   position: absolute;
   z-index: 9999;
   margin-right: -406px;
-  margin-bottom: -484px;
+  width: 150px;
+  margin-bottom: -499px;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+  
 }
 .opc a{
   text-decoration: none;
   font-size: 15px;
-  color:#e4cf96;;
+  color:#e4cf96;
   cursor: pointer;
+}
+.opc button{
+  background: none;
+  border: none;
+  color:#c50d0d;
+  padding: 0;
+  cursor: pointer;
+  font: inherit; 
 }
 .form-form{
   width: 1100px;
