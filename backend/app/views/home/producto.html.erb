@@ -1,34 +1,156 @@
-<% if @categories.present? %>
-  <% @categories.each do |categoria| %>
-    <% productos = categoria.products.order(:id) %>
-    <% if productos.any? %>
-      <div class="categoria">
-        <h2><%= categoria.nombre %></h2>
+<!-- PRODUCTOS -->
+<section id="productos" class="productos-destacados container mt-4 mb-5">
+  <h2 class="titulo">🛠️ Todos los Productos</h2>
+  <br>
+  <!-- FILTRO -->
+  <div class="mb-4">
+    <%= form_with url: productos_path, method: :get, local: true do %>
+      <div class="row align-items-center g-3">
 
-        <div class="slider-wrapper">
-          <button class="botonL" onclick="moverSlider('slider-<%= categoria.id %>', -1)">←</button>
+        <div class="col-md-3">
+          <%= label_tag :category_id, "Filtrar por categoría:" %>
+          <%= select_tag :category_id, options_from_collection_for_select(@categories, :id, :nombre, params[:category_id]),
+                        include_blank: "Todas las categorías",
+                        class: "form-select" %>
+        </div>
 
-          <div class="slider-container" id="slider-<%= categoria.id %>">
-            <% productos.each do |producto| %>
-              <div class="carta">
-                <%= image_tag("header-icon2.png", alt: "logo")%>
-                <h4><%= producto.nombre %></h4> 
-                <p><strong><%= number_to_currency(producto.precio, unit: "COP ", separator: ",", delimiter: ".", precision: 0) %> $</strong></p>
-                <div class="botones-compra">
-                  <%= link_to "Comprar ahora", class: 'boton-compra' %>
-                </div>
-              </div>
-            <% end %>
+        <div class="col-md-3">
+          <%= label_tag :query, "Buscar por nombre:" %>
+          <%= text_field_tag :query, params[:query], class: "form-control", placeholder: "Nombre del producto" %>
+        </div>
+
+        <div class="col-md-2">
+          <%= label_tag :min_price, "Precio mínimo:" %>
+          <%= number_field_tag :min_price, params[:min_price], min: 0, step: 0.01, class: "form-control" %>
+        </div>
+
+        <div class="col-md-2">
+          <%= label_tag :max_price, "Precio máximo:" %>
+          <%= number_field_tag :max_price, params[:max_price], min: 0, step: 0.01, class: "form-control" %>
+        </div>
+
+        <div class="col-md-2 d-flex align-items-end">
+          <%= submit_tag "Filtrar", class: "btn btn-primary w-100" %>
+        </div>
+
+      </div>
+    <% end %>
+  </div>
+
+  <div class="product-grid">
+    <% @productos.each do |producto| %>
+      <div class="product-card">
+
+        <!-- Imagen del producto -->
+        <div class="product-thumb">
+          <% if producto.imagen.attached? %>
+            <%= image_tag(producto.imagen.presence || "martillo-dewalt.png", 
+                        alt: producto.nombre, 
+                        class: "img-fluid") %>
+          <% else %>
+            <%= image_tag "ProductoNoDisponible.png",
+                          alt: "Sin imagen",
+                          class: "img-fluid" %>
+          <% end %>
+        </div>
+
+        <!-- Detalles del producto -->
+        <div class="product-body">
+          <h3 class="product-name"><%= producto.nombre %></h3>
+          <p class="product-desc"><%= truncate(producto.descripcion, length: 80) %></p>
+          <div class="product-meta">
+            <span class="price">
+              <%= number_to_currency(producto.precio, unit: "$", separator: ".", delimiter: ",") %>
+            </span>
+            <div class="d-flex flex-wrap gap-2 mt-2">
+
+              <!-- Botón comprar -->
+              <%= button_to add_item_cart_path(producto),
+                            method: :post,
+                            class: "btn btn-sm btn-outline-primary d-flex align-items-center gap-1" do %>
+                <i class="fa-solid fa-cart-plus"></i>
+              <% end %>
+
+              <!-- Botón favoritos -->
+              <% if current_user %>
+                <% favorite = current_user.favorites.find_by(product_id: producto.id) %>
+                <% if favorite %>
+                  <%= button_to favorite_path(favorite),
+                                method: :delete,
+                                class: "btn btn-sm btn-warning d-flex align-items-center gap-1" do %>
+                    <i class="fa-solid fa-star"></i>
+                  <% end %>
+                <% else %>
+                  <%= button_to favorites_path(product_id: producto.id),
+                                method: :post,
+                                class: "btn btn-sm btn-outline-warning d-flex align-items-center gap-1" do %>
+                    <i class="fa-regular fa-star"></i>
+                  <% end %>
+                <% end %>
+              <% else %>
+                <button class="btn btn-sm btn-outline-warning d-flex align-items-center gap-1" disabled>
+                  <i class="fa-regular fa-star"></i>
+                </button>
+              <% end %>
+
+              <!-- Botón ver detalles -->
+              <button class="btn btn-sm btn-secondary d-flex align-items-center gap-1 ver-mas-btn"
+                      data-bs-toggle="modal"
+                      data-bs-target="#productoModal"
+                      data-nombre="<%= producto.nombre %>"
+                      data-descripcion="<%= producto.descripcion %>"
+                      data-precio="<%= number_to_currency(producto.precio, unit: '$', separator: '.', delimiter: ',') %>"
+                      data-imagen="<%= producto.imagen.attached? ? url_for(producto.imagen) : asset_path('ProductoNoDisponible.png') %>"
+                      data-url-compra="<%= add_item_cart_path(producto) %>">
+                <i class="fa-solid fa-eye"></i>
+              </button>
+
+            </div>
           </div>
-
-          <button class="botonR" onclick="moverSlider('slider-<%= categoria.id %>', 1)">→</button>
         </div>
       </div>
     <% end %>
-  <% end %>
-<% else %>
-  <div class="sin-productos">
-    <%= image_tag "ProductoNoDisponible.png", alt: "Producto No Disponible" %>
-    <h2>No hay productos disponibles por ahora.</h2>
   </div>
-<% end %>
+</section>
+
+<script>
+document.addEventListener("turbo:load", () => {
+  const modal = document.getElementById("productoModal");
+  modal.addEventListener("show.bs.modal", (event) => {
+    const button = event.relatedTarget;
+    document.getElementById("modalProductoNombre").textContent = button.getAttribute("data-nombre");
+    document.getElementById("modalProductoDescripcion").textContent = button.getAttribute("data-descripcion");
+    document.getElementById("modalProductoPrecio").textContent = button.getAttribute("data-precio");
+    document.getElementById("modalProductoImagen").src = button.getAttribute("data-imagen");
+    document.getElementById("modalCompraForm").action = button.getAttribute("data-url-compra");
+  });
+});
+</script>
+
+<!-- Modal -->
+<div class="modal fade" id="productoModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="modalProductoNombre"></h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body d-flex flex-column flex-md-row">
+        <img id="modalProductoImagen" src="" class="img-fluid me-3 mb-3 mb-md-0" style="max-width: 250px;">
+        <div>
+          <p id="modalProductoDescripcion"></p>
+          <p class="fw-bold fs-5" id="modalProductoPrecio"></p>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <form id="modalCompraForm" method="post">
+          <%= hidden_field_tag :authenticity_token, form_authenticity_token %>
+          <button type="submit" class="btn btn-primary">
+            <i class="fa-solid fa-cart-plus"></i> Comprar
+          </button>
+        </form>
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+      </div>
+    </div>
+  </div>
+</div>

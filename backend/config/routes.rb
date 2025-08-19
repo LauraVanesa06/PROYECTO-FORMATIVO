@@ -14,9 +14,25 @@ Rails.application.routes.draw do
 
   # Página principal
   root "home#index", as: :authenticated_root
-  get 'productos', to: 'home#producto'
-  get 'contactos', to: 'home#contacto'
-  post 'home/contacto/send_report', to: 'home#send_report', as: 'send_report_home_contacto'
+  get 'home/index', to: 'home#index', as: :home_index
+  get 'productos', to: 'home#producto', as: :productos
+  get 'favoritos', to: 'favorites#index', as: :favoritos
+  get 'carrito', to: 'home#carrito', as: :carrito
+  get 'notificaciones', to: 'home#notificaciones', as: :notificaciones
+  get 'contactos', to: 'home#contacto', as: :contactos
+
+  # soporte pagina principal
+  post '/contacto/enviar', to: 'home#send_contact_message', as: :send_contact_message
+  post '/enviar_contacto', to: 'home#send_report', as: :enviar_contacto
+
+  # Carrito
+  resource :cart, only: [:show] do
+    post "add_item/:product_id", to: "carts#add_item", as: :add_item
+    delete "remove_item/:id", to: "carts#remove_item", as: :remove_item
+    patch "update_item/:id", to: "carts#update_item", as: :update_item
+  end
+
+
 
   # Dashboard principal
   get 'dashboard', to: 'dashboard#index'
@@ -31,10 +47,13 @@ Rails.application.routes.draw do
   post 'dashboard/suppliers', to: 'suppliers#crear_supplier'
   patch 'dashboard/suppliers/:id', to: 'suppliers#actualizar_supplier', as: :dashboard_supplier
 
-  # Recursos principales (RESTful)
+  # Recursos principale
   resources :products do
     patch :update_disponibilidad, on: :collection
   end
+  resources :carts, only: [:show]
+  resources :favorites, only: [:index, :create, :destroy]
+  resources :cart_items, only: [:create, :destroy]  
   
   resources :categories do
     member do
@@ -71,6 +90,12 @@ Rails.application.routes.draw do
       get 'ventas_por_metodo_pago', to: 'dashboard#ventas_por_metodo_pago'
       get 'ventas_periodo', to: 'dashboard#ventas_periodo'
       get 'finanzas', to: 'dashboard#finanzas'
+    end
+  end
+
+  namespace :api do
+    namespace :v1 do
+      resources :products, only: [ :index ]
     end
   end
 

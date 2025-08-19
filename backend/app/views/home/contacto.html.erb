@@ -20,31 +20,16 @@
   
     <section class="contact-container">
 
-      <div class="imagen" class="map-responsive">
-        <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3920.1601203327414!2d-74.91765568946417!3d10.722130489379245!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x8ef5d91f34c3a047%3A0xddd0f12284c199e0!2sCl.%206A%20%23%2011-32%2C%20Campeche%2C%20Baranoa%2C%20Atl%C3%A1ntico!5e0!3m2!1ses-419!2sco!4v1753996537904!5m2!1ses-419!2sco" width="60%" height="450" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>  
-        <br>
-        <br>
-        <br>
-        <br> 
-          <div class="organizarIcons">
-          <div>
-            <a href="https://wa.me/573116547681?text=Hola%2C+quiero+hablar+con+un+experto" target="_blank" class="btn-whatsapp">
-              <span>Compra con un Experto</span>
-              <img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg" alt="WhatsApp" class="icono-wsp">
-            </a>
-            </div>  
-          <div class="telefono-icono">
-              <i class="fas fa-phone"></i>  310 730 6745 - 300 433 4132
-              &nbsp; &nbsp;
-              <i class="fas fa-at"></i>ferrecampeche@hotmail.com
-            </div>
-            
-          </div>
+<div class="imagen map-responsive">
+
+    <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3920.1601203327414!2d-74.91765568946417!3d10.722130489379245!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x8ef5d91f34c3a047%3A0xddd0f12284c199e0!2sCl.%206A%20%23%2011-32%2C%20Campeche%2C%20Baranoa%2C%20Atl%C3%A1ntico!5e0!3m2!1ses-419!2sco!4v1753996537904!5m2!1ses-419!2sco" width="60%" height="450" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade" class="centrar"></iframe>  
+        
       </div>
 
       <div class="form-container", class="letra">
+      
         <h2  class = "h2">Contáctanos</h2>
-          <%= form_with url: send_report_home_contacto_path, scope: :user_support, local: true do |f| %>
+          <%= form_with url: send_contact_message_path, scope: :user_support, local: true do |f| %>
             <div class="mb-3 " id="letra"  >
               <%= f.label :user_name, "Tu nombre", class:"letra" %>
               <%= f.text_field :user_name, class: "form-control" %>
@@ -65,10 +50,33 @@
               <%= f.text_area :description, class: "form-control" %>
             </div>
                 
-            <%= f.submit "Enviar al administrador", class: "btn btn-outline-light", id: "colores" %>
+            <%= f.submit "Enviar al administrador", class: "btn btn-light", id: "colores" %>
                 
           <% end %>
+           <br>
+          
+           <div class="organizarIcons">
+           <div class="telefono-icono">
+              <i class="fas fa-phone"></i>  310 730 6745 - 300 433 4132
+              &nbsp; &nbsp;
+              <i class="fas fa-at"></i>ferrecampeche@hotmail.com
+            </div>
+            <br>
+            <br>
+            <br>
+            
+          <div class="whats">
+            <a href="https://wa.me/573116547681?text=Hola%2C+quiero+hablar+con+un+experto" target="_blank" class="btn-whatsapp">
+              <span>Compra con un experto</span>
+              <img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg" alt="WhatsApp" class="icono-wsp">
+            </a>
+            </div>  
+          
+          </div>
       </div>
+      
+         
+        
     </section>
   </body>
 </html>
