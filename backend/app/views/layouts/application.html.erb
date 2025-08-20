@@ -42,11 +42,9 @@
                     class: "text-white position-relative",
                     data: { bs_toggle: "offcanvas", bs_target: "#cartSidebar" } do %>
           <i class="fa-solid fa-cart-shopping"></i>
-          <span id="cart_count"
-                class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
-            <%= @cart_items.sum(&:cantidad) %>
-          </span>
+          <%= render partial: "carts/cart_count", locals: { count: @cart_items.sum(&:cantidad) } %>
         <% end %>
+
 
         <%= link_to notificaciones_path, class: "text-white" do %>
           <i class="fa-solid fa-bell"></i>
