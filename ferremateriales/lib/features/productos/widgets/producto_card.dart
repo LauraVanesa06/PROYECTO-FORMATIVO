@@ -26,7 +26,8 @@ class ProductCard extends StatelessWidget {
                 child: (product.imagenUrl != null && product.imagenUrl!.isNotEmpty)
                     ? Image.network(
                         product.imagenUrl!,
-                        fit: BoxFit.contain
+                        fit: BoxFit.contain,
+                        errorBuilder: (context, error, stackTracer) => const Icon(Icons.broken_image, size: 100, color: Colors.grey),
                       )
                     : Image.asset(
                         'assets/images/Default_not_img.png',
