@@ -153,160 +153,65 @@
   </section>
 
 <script>
-  const btn = document.getElementById("hamburger");
-  const menu = document.getElementById("menu");
+let grafica = null;
 
-  btn.addEventListener("click", () => {
-    menu.classList.toggle("active");
-  });
-
-  function cargarGrafica() {
-    fetch('/api/v1/buys/por_tipo')
+function cargarGrafica() {
+  fetch('/api/v1/buys/ventas_por_tipo')
     .then(response => response.json())
     .then(datos => {
-      const labels = datos.labels;
-      const datasets = datos.datasets;
-
-      const bluePalette = ['#2980b9', '#3498db', '#5dade2', '#85c1e9'];
-
-      datasets.forEach((dataset, index) => {
-        dataset.backgroundColor = bluePalette[index % bluePalette.length];
-        dataset.borderColor = '#ffffff';
-        dataset.borderWidth = 2;
-      });
-
-      new Chart(document.getElementById('grafica'), {
-        type: 'bar',
-        data: {
-          labels: labels,
-          datasets: datasets
-        },
-        options: {
-          responsive: true,
-          maintainAspectRatio: false,
-          plugins: {
-            legend: {
-              labels: {
-                usePointStyle: true,
-                pointStyle: 'circle',
-                color: '#1c1c1cff',
-                font: {
-                  family: 'Poppins',
-                  size: 12,
-                  weight: 'bold'
-                }
-              }
-            }
+      if (grafica) {
+        grafica.data.labels = datos.labels;
+        grafica.data.datasets = datos.datasets;
+        grafica.update();
+      } else {
+        grafica = new Chart(document.getElementById('grafica'), {
+          type: 'bar',
+          data: {
+            labels: datos.labels,
+            datasets: datos.datasets
           },
-          scales: {
-            y: {
-              beginAtZero: true,
-              ticks: {
-                color: '#1c1c1cff',
-                font: {
-                  family: 'Poppins',
-                  size: 14,
-                  weight: '600'
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+              legend: {
+                labels: {
+                  usePointStyle: true,
+                  pointStyle: 'circle',
+                  color: '#1c1c1cff',
+                  font: {
+                    family: 'Poppins',
+                    size: 12,
+                    weight: 'bold'
+                  }
                 }
-              },
-              grid: {
-                color: '#888888'
               }
             },
-            x: {
-              ticks: {
-                color: '#1c1c1cff',
-                font: {
-                  family: 'Poppins',
-                  size: 14,
-                  weight: '600'
-                }
+            scales: {
+              y: {
+                beginAtZero: true,
+                ticks: {
+                  color: '#1c1c1cff',
+                  font: { family: 'Poppins', size: 14, weight: '600' }
+                },
+                grid: { color: '#888888' }
               },
-              grid: {
-                color: '#888888'
+              x: {
+                ticks: {
+                  color: '#1c1c1cff',
+                  font: { family: 'Poppins', size: 14, weight: '600' }
+                },
+                grid: { color: '#888888' }
               }
             }
           }
-        }
-      });
-    });
-  }
-
-  document.addEventListener('DOMContentLoaded', cargarGrafica);
-
-//borrar filtros
-
-      document.addEventListener("DOMContentLoaded", function () {
-      const botonLimpiar = document.getElementById("limpiar-filtros");
-
-      if (botonLimpiar) {
-        botonLimpiar.addEventListener("click", function () {
-          // Encuentra el formulario que contiene los filtros
-          const form = botonLimpiar.closest("form");
-
-          if (form) {
-            // Limpia todos los campos del formulario
-            const inputs = form.querySelectorAll("input, select, textarea");
-            inputs.forEach((input) => {
-              if (input.type === "checkbox" || input.type === "radio") {
-                input.checked = false;
-              } else {
-                input.value = "";
-              }
-            });
-
-            // Espera un momento antes de recargar sin filtros
-            setTimeout(() => {
-              const urlSinParametros = window.location.origin + window.location.pathname;
-              window.location.href = urlSinParametros;
-            }, 100);
-          }
         });
       }
     });
-      //modal reutilizable
-    document.addEventListener("DOMContentLoaded", () => {
-      
-      const modal = document.getElementById("modal-reutilizable");
-      const closeBtn = document.getElementById("modal-close");
+}
 
-      document.querySelectorAll(".show-buy").forEach(btn => {
-        btn.addEventListener("click", () => {
-          // 4.a) Leer dataset (nota: data-nombre-producto -> dataset.nombreProducto)
-          modal.querySelector(".modal-nombre-producto").textContent = btn.dataset.nombreProducto;
-          modal.querySelector(".modal-categoria-producto").textContent = btn.dataset.categoriaProducto;
-          modal.querySelector(".modal-proveedor-producto").textContent = btn.dataset.proveedorProducto;
-          modal.querySelector(".modal-precio-producto").textContent = btn.dataset.precioProducto;
+document.addEventListener("DOMContentLoaded", cargarGrafica);
 
-          modal.querySelector(".modal-nombre-cliente").textContent = btn.dataset.nombreCliente;
-          modal.querySelector(".modal-documento-cliente").textContent = btn.dataset.documentoCliente;
-          modal.querySelector(".modal-fecha-compra").textContent = btn.dataset.fechaCompra;
-          modal.querySelector(".modal-tipo-compra").textContent = btn.dataset.tipoCompra;
-          modal.querySelector(".modal-metodo-compra").textContent = btn.dataset.metodoCompra;
-
-          // 4.b) Imagen
-          const fotoModel = modal.querySelector(".foto-model");
-          fotoModel.innerHTML = btn.dataset.imgUrl
-            ? `<img src="${btn.dataset.imgUrl}" alt="Imagen del producto" style="max-width:100%;">`
-            : "<p>No hay imagen</p>";
-
-          // 4.c) Mostrar modal
-          modal.style.display = "block";
-        });
-      });
-
-      // 5) Cierre
-      if (closeBtn) {
-        closeBtn.addEventListener("click", (e) => {
-          e.preventDefault();
-          modal.style.display = "none";
-        });
-      }
-      window.addEventListener("click", (e) => {
-        if (e.target === modal) modal.style.display = "none";
-      });
-      
-    });
 
   </script>
  
