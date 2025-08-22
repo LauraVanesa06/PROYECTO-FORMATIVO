@@ -10,6 +10,7 @@ class Product < ApplicationRecord
   belongs_to :supplier
   has_many :purchasedetails, dependent: :destroy
   validates :nombre, uniqueness: { scope: :supplier_id }
+  validates :precio, numericality: { greater_than_or_equal_to: 0 }, presence: true
   
   has_one_attached :imagen, dependent: :purge
 end

@@ -31,6 +31,7 @@ Rails.application.routes.draw do
     delete "remove_item/:id", to: "carts#remove_item", as: :remove_item
     patch "update_item/:id", to: "carts#update_item", as: :update_item
   end
+  
 
 
 
@@ -53,12 +54,14 @@ Rails.application.routes.draw do
   end
   resources :carts, only: [:show]
   resources :favorites, only: [:index, :create, :destroy]
-  resources :cart_items, only: [:create, :destroy]  
-  
+
+  resources :cart_items, only: [:create, :update, :destroy] 
+  resources :products
+ 
   resources :categories do
     member do
       get :products
-    end
+    end 
   end
 
   resources :customers do

@@ -40,11 +40,13 @@
             <div>
               <div class="d-flex flex-wrap gap-2 mt-2">
                 <!-- Botón comprar -->
-                <%= button_to add_item_cart_path(producto),
-                              method: :post,
-                              class: "btn btn-sm btn-outline-primary d-flex align-items-center gap-1" do %>
-                  <i class="fa-solid fa-cart-plus"></i>
-                <% end %>
+              <%= button_to cart_items_path(product_id: producto.id),
+              method: :post,
+              remote: true,
+              class: "btn btn-sm btn-outline-primary d-flex align-items-center justify-content-center" do %>
+                <i class="fa-solid fa-cart-plus"></i>
+              <% end %>
+
 
                 <!-- Botón favoritos -->
                 <% if current_user %>

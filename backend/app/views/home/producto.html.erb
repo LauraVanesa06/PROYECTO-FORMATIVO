@@ -5,7 +5,7 @@
   <!-- FILTRO -->
   <div class="mb-4">
     <%= form_with url: productos_path, method: :get, local: true do %>
-      <div class="row align-items-center g-3">
+      <div class="row align-items-center g-3">  
 
         <div class="col-md-3">
           <%= label_tag :category_id, "Filtrar por categoría:" %>
@@ -65,11 +65,13 @@
             <div class="d-flex flex-wrap gap-2 mt-2">
 
               <!-- Botón comprar -->
-              <%= button_to add_item_cart_path(producto),
+              <%= button_to cart_items_path(product_id: producto.id),
                             method: :post,
-                            class: "btn btn-sm btn-outline-primary d-flex align-items-center gap-1" do %>
+                            remote: true,
+                            class: "btn btn-sm btn-outline-primary d-flex align-items-center justify-content-center" do %>
                 <i class="fa-solid fa-cart-plus"></i>
               <% end %>
+
 
               <!-- Botón favoritos -->
               <% if current_user %>

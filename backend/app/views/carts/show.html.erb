@@ -1,56 +1,7 @@
 <div class="container mt-5">
   <h1><i class="fa-solid fa-cart-shopping"></i> Tu carrito</h1>
 
-  <% if @cart_items.any? %>
-    <table class="table align-middle">
-      <thead>
-        <tr>
-          <th>Producto</th>
-          <th>Precio</th>
-          <th>Cantidad</th>
-          <th>Total</th>
-          <th></th>
-        </tr>
-      </thead>
-      <tbody>
-        <% @cart_items.each do |item| %>
-          <tr>
-            <td>
-              <% if item.product.imagen.present? %>
-                <%= image_tag url_for(item.product.imagen), alt: item.product.nombre, class: "img-thumbnail", style: "width: 70px; height: 70px; object-fit: cover;" %>
-              <% else %>
-                <%= image_tag "placeholder.png", class: "img-thumbnail", style: "width: 70px; height: 70px; object-fit: cover;" %>
-              <% end %>
-              <strong><%= item.product.nombre %></strong>
-            </td>
-            <td><%= number_to_currency(item.product.precio) %></td>
-            <td>
-              <%= form_with url: update_item_cart_path(item), method: :patch, local: true, class: "d-inline" do %>
-                <div class="input-group" style="width: 120px;">
-                  <%= number_field_tag :cantidad, item.cantidad, min: 1, class: "form-control text-center" %>
-                  <button class="btn btn-outline-primary" type="submit">
-                    <i class="fa-solid fa-rotate"></i>
-                  </button>
-                </div>
-              <% end %>
-            </td>
-            <td><%= number_to_currency(item.product.precio * item.cantidad) %></td>
-            <td>
-              <%= button_to remove_item_cart_path(item), method: :delete, data: { confirm: "¿Eliminar este producto?" }, class: "btn btn-outline-danger btn-sm" do %>
-                <i class="fa-solid fa-trash"></i>
-              <% end %>
-            </td>
-          </tr>
-        <% end %>
-      </tbody>
-    </table>
-
-    <div class="text-end">
-      <h4>
-        Total general: <%= number_to_currency(@cart_items.sum { |i| i.product.precio * i.cantidad }) %>
-      </h4>
-    </div>
-  <% else %>
-    <p>No hay productos en el carrito.</p>
+  <%= turbo_frame_tag "cart_items" do %>
+    <%= render partial: "carts/cart_items", locals: { cart_items: @cart_items } %>
   <% end %>
 </div>
