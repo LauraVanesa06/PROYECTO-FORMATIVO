@@ -6,16 +6,38 @@
     <% else %>
       <p>No hay imagen</p>
     <% end %>
+    <!--boton editar que llena el parcial con los datos del producto-->
+    <%= link_to edit_product_path(product), id: "button" do %>
+      <svg class="svg-icon" fill="none" height="22" viewBox="0 0 24 24" width="22" 
+          xmlns="http://www.w3.org/2000/svg"><g stroke="#ffd85f" stroke-linecap="round" 
+          stroke-width="2"><path d="m20 20h-16"></path><path clip-rule="evenodd" d="m14.5858
+          4.41422c.781-.78105 2.0474-.78105 2.8284 0 .7811.78105.7811 2.04738 0 2.82843l-8.28322 
+          8.28325-3.03046.202.20203-3.0304z" fill-rule="evenodd"></path></g></svg>
+    <%end%>
   </div>
   <div class="texto">
     <li class="li-start">
       <strong  class="titulo"><%= product.nombre %></strong>
     </li>
-    <li>
-      Descripcion:
+    <li class="li-center">
       <%= product.descripcion %>
-    </li>
+    </li> 
+    <div class="opciones">
+      <li class="precio">$<%= product.precio %></li>
+
+      <!--formulario para marcar si el producto esta disponible o no-->
+          <%= form_with url: update_disponibilidad_products_path, method: :patch, id: "disponibilidad-form-#{product.id}" do %>
+            <div class="checkbox-apple">
+              <%= hidden_field_tag "product_id", product.id %>
+              <%= hidden_field_tag "disponibles_ids[]", 0, id: "hidden-#{product.id}" %>
+              <%= check_box_tag "disponibles_ids[]", product.id, product.disponible, id: "check-apple-#{product.id}", class: "disponibilidad-checkbox" %>
+              <label for="check-apple-<%= product.id %>"></label>
+            </div>
+          <% end %>
+  
+    </div>
   </div>
+<!--
   <div class="opciones">
     <button class="editar"><%= link_to "Editar", "#modal-edit-#{product.id}" %></button>
     <button class="ver">
@@ -23,3 +45,35 @@
     </button>
   </div>
 </ul>
+
+
+<script>
+  document.addEventListener("DOMContentLoaded", () => {
+    const form = document.getElementById("disponibilidad-form");
+    if (!form) return;
+
+    const checkboxes = form.querySelectorAll('input[type="checkbox"]');
+    checkboxes.forEach(chk => {
+      chk.addEventListener('change', () => {
+        form.requestSubmit();  // Método moderno para enviar formulario
+      });
+    });
+  });
+</script>
+-->
+</ul>
+<script>
+  // Escucha los cambios en el checkbox para enviar el formulario
+  document.addEventListener("DOMContentLoaded", () => {
+    const checkbox = document.getElementById("check-apple-<%= product.id %>");
+    if (!checkbox) return;
+
+    checkbox.addEventListener('change', () => {
+      // Encuentra el formulario padre y lo envía
+      const form = checkbox.closest('form');
+      if (form) {
+        form.requestSubmit();
+      }
+    });
+  });
+</script>

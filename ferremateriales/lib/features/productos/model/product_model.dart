@@ -24,7 +24,7 @@ class ProductModel extends Equatable {
       descripcion: json['descripcion'] ?? '',
       precio: double.tryParse(json['precio'].toString()) ?? 0.0,
       stock: int.tryParse(json['stock'].toString()) ?? 0,
-      imagenUrl: json['imagenUrl'] ?? '',
+      imagenUrl: json['imagen_url'] ?? '',
     );
 
   @override

@@ -1,0 +1,347 @@
+body{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  height: 100vh;
+  margin: 0;
+  padding: 0;
+  background-image: url("madera2_big.jpg");
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center; 
+}
+h1.new{
+    position: absolute;
+    z-index: 9999;
+    margin-bottom: 505px;
+    font-size: 25px;
+    margin-left: 422px;
+    font-family: 'Segoe UI', sans-serif;
+    color: #8ea6ff;
+}
+div.opc{
+  position: absolute;
+  z-index: 9999;
+  margin-right: -406px;
+  width: 150px;
+  margin-bottom: -499px;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+  
+}
+.opc a{
+  text-decoration: none;
+  font-size: 15px;
+  color:#e4cf96;
+  cursor: pointer;
+}
+.opc button{
+  background: none;
+  border: none;
+  color:#c50d0d;
+  padding: 0;
+  cursor: pointer;
+  font: inherit; 
+}
+.form-form{
+  width: 1100px;
+  height: 550px;
+  display: flex;
+  flex-direction: row-reverse;
+  position: relative;
+  align-items: center;
+}
+.titu-editar{
+  font-size: 23px;
+  font-weight: bold;
+  background-image: none;
+  color: #96bfeb;
+}
+.previa-imagen{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+}
+.drop-img{
+  color: #5f5f5f;
+    font-family: 'Segoe UI', sans-serif;
+    font-weight: bold;
+    font-size: 15px;
+    text-align: center;
+}
+/*form*/
+.form-edit-new {
+        position: relative;
+    width: 70%;
+    height: 80%;
+    background: #ffffff;
+    border: 1px solid #eeeeee;
+    padding: 25px 25px 25px 25px;
+    /* margin-left: 100px; */
+    border-radius: 5px;
+    display: flex;
+    flex-direction: column;
+    align-items: end;
+    font-size: 16px;
+    font-family: 'Segoe UI', sans-serif;
+    border: #e8dddd 1px solid;
+}
+.end{
+  width: 80%;
+  margin: 10px
+}
+
+.input-box {
+  width: 100%;
+  margin-top: 10px;
+}
+
+#edit-precio, #edit-stock{
+  width: 300px;
+}
+
+.input-box label {
+  color: #848484;
+  font-weight: bold;
+}
+
+:where(.input-box input, .select-box, .descripcion) {
+    position: relative;
+    height: 30px;
+    width: 100%;
+    outline: none;
+    font-size: 16px;
+    font-family: 'Segoe UI', sans-serif;
+    color: #272727;
+    margin-bottom: 8px;
+    padding-left: 8px !important;
+    border: 1px solid #dbdbdb;
+    border-radius: 6px;
+    padding: 0 15px;
+    overflow: hidden;
+}
+
+.descripcion{
+  height: 80px !important;
+}
+
+.input-box input:focus {
+  box-shadow: 0 1px 0 rgba(0, 0, 0, 0.1);
+}
+
+.column {
+  display: flex;
+  column-gap: 15px;
+}
+
+.row{
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+}
+
+
+.gender-box {
+  margin-top: 10px;
+}
+
+:where(.gender-option, .gender) {
+  display: flex;
+  align-items: center;
+  column-gap: 50px;
+  flex-wrap: wrap;
+}
+
+.gender {
+  column-gap: 5px;
+}
+
+.gender input {
+  accent-color: #EE4E34;
+}
+
+:where(.gender input, .gender label) {
+  cursor: pointer;
+}
+
+.gender label {
+  color: #000;
+}
+
+.address :where(input, .select-box) {
+}
+
+select:focus {
+  outline: none;  
+  border-color: #468dff;
+  box-shadow: 0 0 5px rgb(89, 128, 255);
+}
+option {
+  background-color: #cfcfcf;
+  border-radius: 10px;
+  color: #000000;
+}
+option:hover, option:active{
+  background-color: rgb(89, 128, 255);
+}
+
+.select-box select {
+    width: 300px;
+    outline: none;
+    border: none;
+    color: #9c9c9c;
+    font-size: 12px;
+    font-family: Arial, sans-serif;
+  cursor: pointer;
+  border-radius: 8px;
+}
+
+.eliminar, .guardar {
+  height: 30px;
+    width: 40%;
+    color: #000;
+    font-size: 1rem;
+    font-weight: 400;
+    margin-top: 15px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.eliminar {
+    text-decoration: none;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: white;
+    background: linear-gradient(to bottom, #ff2828, #bc1b1b);
+}
+.eliminar:hover {
+  background: #bc1b1b;
+  cursor: pointer;
+}
+.guardar {
+  background: linear-gradient(to bottom, #35ee55, #2bbc1b);
+  color: white;
+}
+input.guardar:hover {
+  background-color: #2bbc1b !important;
+  cursor: pointer;
+}
+
+/*agregar imagen*/
+.form {
+    background-color: #a8baff;
+    /* box-shadow: 0 10px 60px rgb(218, 229, 255); */
+    /* border: 1px solid rgb(159, 159, 160); */
+    border-radius: 10px;
+    padding: 20px;
+    text-align: center;
+    font-size: 12px;
+    max-width: 300px;
+    display: flex;
+    flex-direction: column;
+    position: absolute;
+    z-index: 9999;
+    margin-right: 700px;
+    height: 480px;
+}
+
+.form-title {
+  color: #000000;
+  font-size: 20px;
+  font-weight: 500;
+}
+
+.form-paragraph {
+  margin-top: 10px;
+  font-size: 0.9375rem;
+  color: rgb(105, 105, 105);
+}
+
+.drop-container {
+  background-color: #fff;
+  position: relative;
+  display: flex;
+  gap: 10px;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 10px;
+  margin-top: 15px;
+  border-radius: 10px;
+  border: 2px dashed #96bfeb;
+  color: #444;
+  cursor: pointer;
+  overflow: hidden;
+  height: 150px;
+}
+
+.drop-container:hover {
+  background: rgb(237, 237, 237);
+  border-color: rgb(158, 158, 158);
+}
+
+.drop-container:hover .drop-title {
+  color: #444444;
+}
+
+.drop-title {
+    color: #c9c9c9;
+    font-size: 15px;
+    text-align: center;
+    transition: color .2s ease-in-out;
+}
+
+#file-input {
+  width: 350px;
+  max-width: 100%;
+  color: #444;
+  padding: 2px;
+  background: #fff;
+  border-radius: 10px;
+  border: 1px solid rgba(8, 8, 8, 0.288);
+}
+
+#file-input::file-selector-button {
+  margin-right: 20px;
+  border: none;
+  background: #6ea7e4;
+  padding: 10px 20px;
+  border-radius: 10px;
+  color: #fff;
+  cursor: pointer;
+}
+
+#file-input::file-selector-button:hover {
+  background: #96bfeb;
+}
+
+#error_explanation {
+  background: #ffe6e6;
+  border: 1px solid #ff4d4d;
+  border-radius: 8px;
+  padding: 12px 16px;
+  margin-bottom: 20px;
+  font-size: 14px;
+  color: #b30000;
+  max-width: 600px; /* para que no se estire más que el form */
+}
+
+#error_explanation h2 {
+  font-size: 16px;
+  margin: 0 0 10px;
+}
+
+#error_explanation ul {
+  margin: 0;
+  padding-left: 18px;
+}
+
+#error_explanation li {
+  list-style: disc;
+}

@@ -1,12 +1,13 @@
+
 <% content_for :title, "Editing product" %>
 
-<h1>Editar producto</h1>
+<h1 class="new">Editar producto</h1>
 
 <%= render "form", product: @product %>
-
 <br>
 
-<div>
-  <%= link_to "Show this product", @product %> |
-  <%= link_to "Back to products", products_path %>
+
+<div class="opc">
+  <%= link_to "Volver", products_path %>
+  <%= button_to "Eliminar", @product, method: :delete, data: { confirm: "¿Estás segura que quieres eliminar este producto?" } %>
 </div>

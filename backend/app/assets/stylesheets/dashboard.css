@@ -652,10 +652,9 @@ canvas {
   }
 
   .card {
-    padding: 50px;
     border-radius: 10px;
-    box-shadow: 0 2px 6px rgba(0,0,0,0.1);
-    background-color: rgba(0, 0, 0, 0.4);
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+    background-color: rgb(255 255 255);
     text-align: center;
     transition: transform 0.2s;
     background-size: 100%;

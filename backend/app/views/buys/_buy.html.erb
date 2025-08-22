@@ -12,15 +12,25 @@
 
     <p>
       <strong>Fecha de la compra:</strong>
-      <%= buy.fecha %>
+      <%= buy.fecha.strftime("%d/%m/%Y") %>
     </p>
 
   </div>
   <div class="boton-ver">
-    <% buy.purchasedetails.each do |purchasedetail| %>
-      <p>
-        <%= link_to "Ver detalles", "#modal-#{purchasedetail.id}", class: "show-buy" %>
-      </p>
-    <% end %>
-  </div>
+      <% buy.purchasedetails.each do |p| %>
+        <button class="show-buy"
+          data-nombre-producto="<%= p.product.nombre %>"
+          data-categoria-producto="<%= p.product.category.nombre %>"
+          data-proveedor-producto="<%= p.product.supplier.nombre %>"
+          data-precio-producto="<%= p.product.precio %>"
+          data-nombre-cliente="<%= p.buy.customer.nombre %>"
+          data-documento-cliente="<%= p.buy.customer.documento %>"
+          data-fecha-compra="<%= p.buy.fecha.strftime("%d/%m/%Y") %>"
+          data-tipo-compra="<%= p.buy.tipo %>"
+          data-metodo-compra="<%= p.buy.metodo_pago %>"
+          data-img-url="<%= p.product.imagen.attached? ? url_for(p.product.imagen) : '' %>">
+          Ver compra
+        </button>
+      <% end %>
+    </div>
 </div>
