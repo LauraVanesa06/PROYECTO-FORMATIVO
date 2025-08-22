@@ -31,7 +31,8 @@
               </div>
             <% end %>
           </td>
-          <td><%= number_to_currency(item.product.precio * item.quantity) %></td>
+          <td><%= number_to_currency((item.product.precio || 0) * item.quantity.to_i) %></td>
+
           <td>
             <%= button_to cart_item_path(item), method: :delete, data: { turbo_stream: true, confirm: "¿Eliminar este producto?" }, class: "btn btn-outline-danger btn-sm" do %>
               <i class="fa-solid fa-trash"></i>
