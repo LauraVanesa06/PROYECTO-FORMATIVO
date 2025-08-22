@@ -5,7 +5,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import '../bloc/product_bloc.dart';
 
-
 class HomeView extends StatefulWidget {
   const HomeView({super.key});
 
@@ -42,15 +41,16 @@ class _HomeViewState extends State<HomeView> {
       {'icon': Icons.grass, 'label': 'Jardinería'},
     ];
 
-    final categoryItems = categories.map((category) {
-      return _HoverCategoryButton(
-        icon: category['icon'] as IconData,
-        label: category['label'] as String,
-        onTap: () {
-          print('Clic en: ${category['label']}');
-        },
-      );
-    }).toList();
+    final categoryItems =
+        categories.map((category) {
+          return _HoverCategoryButton(
+            icon: category['icon'] as IconData,
+            label: category['label'] as String,
+            onTap: () {
+              print('Clic en: ${category['label']}');
+            },
+          );
+        }).toList();
 
     return Scaffold(
       backgroundColor: Colors.white,
@@ -69,20 +69,21 @@ class _HomeViewState extends State<HomeView> {
                   autoPlay: true,
                   enlargeCenterPage: true,
                 ),
-                items: bannerImages.map((path) {
-                  return Builder(
-                    builder: (BuildContext context) {
-                      return ClipRRect(
-                        borderRadius: BorderRadius.circular(12),
-                        child: Image.asset(
-                          path,
-                          fit: BoxFit.cover,
-                          width: double.infinity,
-                        ),
+                items:
+                    bannerImages.map((path) {
+                      return Builder(
+                        builder: (BuildContext context) {
+                          return ClipRRect(
+                            borderRadius: BorderRadius.circular(12),
+                            child: Image.asset(
+                              path,
+                              fit: BoxFit.cover,
+                              width: double.infinity,
+                            ),
+                          );
+                        },
                       );
-                    },
-                  );
-                }).toList(),
+                    }).toList(),
               ),
 
               const SizedBox(height: 28),
@@ -107,16 +108,23 @@ class _HomeViewState extends State<HomeView> {
                 builder: (context, state) {
                   if (state is ProductLoadInProgress) {
                     return const Center(child: CircularProgressIndicator());
-                  } if (state is ProductLoadSuccess) {
-                return SizedBox(
-                height: 500,
-                child: Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: ProductsList(products: state.productos),
-                ),
-              );
+                  }
+                  if (state is ProductLoadSuccess) {
+                    return Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: ProductsList(products: state.productos),
+                    );
+                    // return SizedBox(
+                    //   height: 1000,
+                    //   child: Padding(
+                    //     padding: const EdgeInsets.all(8.0),
+                    //     child: ProductsList(products: state.productos),
+                    //   ),
+                    // );
                   } else if (state is ProductLoadFailure) {
-                    return const Center(child: Text('Error al cargar productos'));
+                    return const Center(
+                      child: Text('Error al cargar productos'),
+                    );
                   } else {
                     return const ProductsPageView(); // Estado inicial
                   }
@@ -167,9 +175,10 @@ class _HoverCategoryButtonState extends State<_HoverCategoryButton> {
                   _isHovered ? Colors.brown.shade100 : Colors.grey.shade200,
               child: Icon(
                 widget.icon,
-                color: _isHovered
-                    ? Colors.brown.shade800
-                    : const Color.fromARGB(255, 130, 204, 238),
+                color:
+                    _isHovered
+                        ? Colors.brown.shade800
+                        : const Color.fromARGB(255, 130, 204, 238),
                 size: 22,
               ),
             ),
