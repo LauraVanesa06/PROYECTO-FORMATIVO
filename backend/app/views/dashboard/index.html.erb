@@ -125,15 +125,6 @@
                 </div>
                 <div class="gauge-title">Efectivo</div>
               </div>
-
-              <!-- Cotizadas -->
-              <div>
-                <div class="gauge">
-                  <canvas id="gaugeCotizadas"></canvas>
-                  <div class="gauge-label">0%</div>
-                </div>
-                <div class="gauge-title">Cotizadas</div>
-              </div>
             </div>
         </section>
         <section class="graf-4-2">
@@ -417,11 +408,9 @@ document.addEventListener('DOMContentLoaded', () => {
     .then(data => {
       crearGauge('gaugeOnline', data.online, '#1976D2');
       crearGauge('gaugeEfectivo', data.efectivo, '#03A9F4');
-      crearGauge('gaugeCotizadas', data.cotizadas, '#2196F3');
 
       document.querySelector('#gaugeOnline + .gauge-label').textContent = `${data.online}%`;
       document.querySelector('#gaugeEfectivo + .gauge-label').textContent = `${data.efectivo}%`;
-      document.querySelector('#gaugeCotizadas + .gauge-label').textContent = `${data.cotizadas}%`;
     })
     .catch(err => console.error('Error al cargar ventas por canal:', err));
 </script>

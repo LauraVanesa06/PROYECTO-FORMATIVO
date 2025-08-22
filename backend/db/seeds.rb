@@ -29,7 +29,6 @@ reset_sqlite_sequences(
   'categories',
   'suppliers',
   'customers',
-  'proveedores',
   'users'
 )
 

@@ -28,7 +28,7 @@ class Api::V1::DashboardController < ApplicationController
         }
     end
     def ventas_por_metodo_pago
-        metodos = ['cotizadas', 'efectivo', 'online']
+        metodos = ['efectivo', 'online']
 
         conteos = metodos.map do |metodo|
             Buy.where('LOWER(metodo_pago) = ?', metodo.downcase).count
@@ -81,6 +81,53 @@ class Api::V1::DashboardController < ApplicationController
 
         render json: clientes
     end
+
+    def por_tipo
+        hoy     = Buy.where(fecha: Date.current).count
+        semana  = Buy.where(fecha: Date.current.beginning_of_week..Date.current.end_of_week).count
+        mes     = Buy.where(fecha: Date.current.beginning_of_month..Date.current.end_of_month).count
+        anio    = Buy.where(fecha: Date.current.beginning_of_year..Date.current.end_of_year).count
+
+        render json: {
+            labels: ["Hoy", "Semana", "Mes", "Año"],
+            datasets: [
+            {
+                label: "Minorista",
+                data: [
+                Buy.where(fecha: Date.current, tipo: "Minorista").count,
+                Buy.where(fecha: Date.current.beginning_of_week..Date.current.end_of_week, tipo: "Minorista").count,
+                Buy.where(fecha: Date.current.beginning_of_month..Date.current.end_of_month, tipo: "Minorista").count,
+                Buy.where(fecha: Date.current.beginning_of_year..Date.current.end_of_year, tipo: "Minorista").count
+                ]
+            },
+            {
+                label: "Mayorista",
+                data: [
+                Buy.where(fecha: Date.current, tipo: "Mayorista").count,
+                Buy.where(fecha: Date.current.beginning_of_week..Date.current.end_of_week, tipo: "Mayorista").count,
+                Buy.where(fecha: Date.current.beginning_of_month..Date.current.end_of_month, tipo: "Mayorista").count,
+                Buy.where(fecha: Date.current.beginning_of_year..Date.current.end_of_year, tipo: "Mayorista").count
+                ]
+            },
+            {
+                label: "Contratista/Empresa",
+                data: [
+                Buy.where(fecha: Date.current, tipo: "Contratista/Empresa").count,
+                Buy.where(fecha: Date.current.beginning_of_week..Date.current.end_of_week, tipo: "Contratista/Empresa").count,
+                Buy.where(fecha: Date.current.beginning_of_month..Date.current.end_of_month, tipo: "Contratista/Empresa").count,
+                Buy.where(fecha: Date.current.beginning_of_year..Date.current.end_of_year, tipo: "Contratista/Empresa").count
+                ]
+            }
+            ],
+            totales: {
+            hoy: hoy,
+            semana: semana,
+            mes: mes,
+            anio: anio
+            }
+        }
+    end
+
 
     def ventas_por_dia
         ventas = Purchasedetail

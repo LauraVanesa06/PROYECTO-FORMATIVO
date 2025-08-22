@@ -1,33 +1,33 @@
 class Api::V1::BuysController < ApplicationController
   def ventas_por_tipo
-        hoy = Date.today
-        semana = hoy.beginning_of_week..hoy.end_of_week
-        mes = hoy.beginning_of_month..hoy.end_of_month
-        año = hoy.beginning_of_year..hoy.end_of_year
+    hoy     = Time.zone.today
+    semana  = hoy.beginning_of_week..hoy.end_of_week
+    mes     = hoy.beginning_of_month..hoy.end_of_month
+    anio    = hoy.beginning_of_year..hoy.end_of_year
 
-        tipos = ["Minorista", "Mayorista", "Contratista/Empresa"]
-        datos = {
-          labels: ["Hoy", "Semana", "Mes", "Año"],
-          datasets: []
-        }
+    tipos = ["Minorista", "Mayorista", "Contratista/Empresa"]
+    datos = {
+      labels: ["Hoy", "Semana", "Mes", "Año"],
+      datasets: []
+    }
 
-        tipos.each do |tipo|
-          datos[:datasets] << {
-            label: tipo,
-            data: [
-              Buy.where(tipo: tipo, fecha: hoy).count,
-              Buy.where(tipo: tipo, fecha: semana).count,
-              Buy.where(tipo: tipo, fecha: mes).count,
-              Buy.where(tipo: tipo, fecha: año).count
-            ],
-            backgroundColor: tipo_color(tipo)
-          }
-        end
+    tipos.each do |tipo|
+      datos[:datasets] << {
+        label: tipo,
+        data: [
+          Buy.where(tipo: tipo, fecha: hoy.all_day).count,
+          Buy.where(tipo: tipo, fecha: semana).count,
+          Buy.where(tipo: tipo, fecha: mes).count,
+          Buy.where(tipo: tipo, fecha: anio).count
+        ],
+        backgroundColor: tipo_color(tipo)
+      }
+    end
 
-        render json: datos
-      end
+    render json: datos
+  end
 
-      private
+  private
 
       def tipo_color(tipo)
         case tipo
