@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'features/productos/bloc/cart_bloc.dart';
 import 'firebase_options.dart';
 import 'features/productos/bloc/product_bloc.dart';
 import 'features/auth/bloc/auth_bloc.dart';
@@ -14,8 +15,10 @@ void main() async {
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
-  // 👇 Esta línea oculta los errores visuales rojos (como overflow)
+
+  // 👇 Ocultar errores visuales rojos (como overflow)
   ErrorWidget.builder = (FlutterErrorDetails details) => const SizedBox.shrink();
+
   runApp(const FerreteriaApp());
 }
 
@@ -24,8 +27,12 @@ class FerreteriaApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (_) => AuthBloc()..add(AuthStarted()),
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider(create: (_) => AuthBloc()..add(AuthStarted())),
+        BlocProvider(create: (_) => CartBloc()),       // 👈 Ahora el carrito está disponible en toda la app
+        BlocProvider(create: (_) => ProductBloc()),    // 👈 También los productos
+      ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
         theme: ThemeData(
@@ -44,24 +51,20 @@ class FerreteriaApp extends StatelessWidget {
           ),
         ),
         home: BlocBuilder<AuthBloc, AuthState>(
-  builder: (context, authState) {
-    switch (authState.status) {
-      case AuthStatus.success:
-        return BlocProvider(
-          create: (_) => ProductBloc(),
-          child: const MainView(),
-        );
-      case AuthStatus.failure:
-      case AuthStatus.loggedOut:
-        return LoginView();
-      default:
-        return const Scaffold(
-          body: Center(child: CircularProgressIndicator()),
-        );
-    }
-  },
-),
-
+          builder: (context, authState) {
+            switch (authState.status) {
+              case AuthStatus.success:
+                return const MainView(); // 👈 Aquí ya tienes acceso al carrito
+              case AuthStatus.failure:
+              case AuthStatus.loggedOut:
+                return LoginView();
+              default:
+                return const Scaffold(
+                  body: Center(child: CircularProgressIndicator()),
+                );
+            }
+          },
+        ),
       ),
     );
   }
