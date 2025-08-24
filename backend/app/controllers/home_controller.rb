@@ -10,6 +10,8 @@ class HomeController < ApplicationController
       .group("products.id")
       .order("total_vendidos DESC")
       .limit(8) # cantidad que quieras mostrar
+
+       
   end
 
   def producto
