@@ -874,11 +874,13 @@ body {
 }
 
 /* carrusel*/
+
 .hero-header {
   width: 100%;
   overflow: hidden;
   background-color: #efe809;
 }
+
 .carousel,
 .carousel-inner,
 .carousel-item {
@@ -890,9 +892,10 @@ body {
   height: 380px;
 }
 
-.carousel-item {
-  background-color: transparent !important; 
-}
+ 
+
+
+
  .carousel-item img {
    max-height: 380px;
   width: auto;          
@@ -912,6 +915,7 @@ body {
     background-color: #000;
 
 }
+
 .carousel-control-next-icon{
     background-color: #000;
 
