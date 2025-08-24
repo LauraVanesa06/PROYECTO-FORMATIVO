@@ -20,10 +20,17 @@
         </div>
       <% end %>
       <section class="form">
+
+        <label for="file-input" class="drop-container">
+          <span class="form-title">Agregar imagen</span>
+          <span class="drop-title">Arrastra y suelta aquí<br>o</span>
+          <%= f.file_field :images, multiple: true, accept: "image/*", direct_upload: true %>
+        </label>
+<!--
         <% if @product.persisted? && @product.imagen.attached? %>
           <div class="previa-imagen">
             <span class="drop-img">Imagen</span>
-            <img id="preview" src="<%= url_for(@product.imagen) %>" alt="Imagen actual" style="max-width: 90%; height: 200px; object-fit: contain;">
+            <img id="preview" src="<%# url_for(@product.imagen) %>" alt="Imagen actual" style="max-width: 90%; height: 200px; object-fit: contain;">
           </div>
         <% else %>
           <div class="previa-imagen">
@@ -31,12 +38,23 @@
             <img id="preview" src="" alt="Imagen seleccionada" style="display:none; max-width: 90%; height: 200px; object-fit: contain;">
           </div>
         <% end %>
-
-        <label for="file-input" class="drop-container">
-          <span class="form-title">Agregar imagen</span>
-          <span class="drop-title">Arrastra y suelta aquí<br>o</span>
-          <%= form.file_field :imagen, accept: "image/*", id: "file-input" %>
-        </label>
+-->
+        <% if product.persisted? && product.images.attached? %>
+          <div style="margin-top:1rem;">
+            <p><strong>Imágenes actuales (marca para eliminar):</strong></p>
+            <div style="display:flex; flex-wrap:wrap; gap:10px;">
+              <% product.images.each do |img| %>
+                <div style="border:1px solid #ddd; padding:8px; border-radius:8px; text-align:center;">
+                  <%= image_tag img.variant(resize_to_limit: [160, 160]).processed, style: "display:block; margin:0 auto 6px;" %>
+                  <label style="display:block;">
+                    <input type="checkbox" name="product[remove_image_ids][]" value="<%= img.id %>">
+                    Quitar
+                  </label>
+                </div>
+              <% end %>
+            </div>
+          </div>
+        <% end %>
 
         <script>
           document.getElementById('file-input').addEventListener('change', function(event) {

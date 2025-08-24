@@ -39,14 +39,14 @@
 
   <div class="product-grid">
     <% @productos.each do |producto| %>
-      <div class="product-card">
+      <div class="product-card" onclick="window.location='<%= product_path(producto) %>'" style="cursor:pointer;">
 
         <!-- Imagen del producto -->
         <div class="product-thumb">
-          <% if producto.imagen.attached? %>
-            <%= image_tag(producto.imagen.presence || "martillo-dewalt.png", 
+          <% if producto.images.attached? %>
+            <%= image_tag(producto.images.first, 
                         alt: producto.nombre, 
-                        class: "img-fluid") %>
+                        class: "img-fluid")%>
           <% else %>
             <%= image_tag "ProductoNoDisponible.png",
                           alt: "Sin imagen",
@@ -60,7 +60,7 @@
           <p class="product-desc"><%= truncate(producto.descripcion, length: 80) %></p>
           <div class="product-meta">
             <span class="price">
-              <%= number_to_currency(producto.precio, unit: "$", separator: ".", delimiter: ",") %>
+              <%= producto.precio %>
             </span>
             <div class="d-flex flex-wrap gap-2 mt-2">
 
@@ -101,8 +101,8 @@
                       data-bs-target="#productoModal"
                       data-nombre="<%= producto.nombre %>"
                       data-descripcion="<%= producto.descripcion %>"
-                      data-precio="<%= number_to_currency(producto.precio, unit: '$', separator: '.', delimiter: ',') %>"
-                      data-imagen="<%= producto.imagen.attached? ? url_for(producto.imagen) : asset_path('ProductoNoDisponible.png') %>"
+                      data-precio="<%= producto.precio %>"
+                      data-imagen="<%= producto.images.attached? ? url_for(producto.images.first) : asset_path('ProductoNoDisponible.png') %>"
                       data-url-compra="<%= add_item_cart_path(producto) %>">
                 <i class="fa-solid fa-eye"></i>
               </button>

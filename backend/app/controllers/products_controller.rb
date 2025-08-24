@@ -49,6 +49,9 @@ class ProductsController < ApplicationController
     @product = Product.new(product_params)
 
     if @product.save
+      if params[:product][:images]
+        @product.images.attach(params[:product][:images])
+      end
       redirect_to products_path
     else
       render :new, status: :unprocessable_entity
@@ -59,12 +62,30 @@ class ProductsController < ApplicationController
   def update
     respond_to do |format|
       if @product.update(product_params)
-        format.html { redirect_to inventario_path, notice: "Product was successfully updated." }
+        format.html { redirect_to inventario_path}
         format.json { render :show, status: :ok, location: @product }
       else
         format.html { render :edit, status: :unprocessable_entity }
         format.json { render json: @product.errors, status: :unprocessable_entity }
       end
+    end
+
+    # Adjuntar nuevas imágenes (si el usuario subió más)
+    if params[:product][:images]
+      @product.images.attach(params[:product][:images])
+    end
+
+    # Borrar las seleccionadas
+    if params[:product][:remove_image_ids].present?
+      params[:product][:remove_image_ids].each do |image_id|
+        @product.images.find(image_id).purge_later
+      end
+    end
+
+    if @product.update(product_params.except(:images))
+      redirect_to @product
+    else
+      render :edit, status: :unprocessable_entity
     end
   end
 
@@ -107,11 +128,11 @@ class ProductsController < ApplicationController
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_product
-      @product = Product.find(params.expect(:id))
+      @product = Product.find(params[:id])
     end
 
     # Only allow a list of trusted parameters through.
     def product_params
-      params.expect(product: [ :nombre, :descripcion, :disponible, :precio, :stock, :category_id, :supplier_id, :imagen ])
+      params.require(:product).permit(:nombre, :descripcion, :disponible, :precio, :stock, :category_id, :supplier_id, :images [], remove_image_ids: [])
     end
 end

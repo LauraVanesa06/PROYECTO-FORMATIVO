@@ -14,13 +14,20 @@ def reset_sqlite_sequences(*tables)
   end
 end
 
+# desactivar temporalmente las llaves foraneas
+ActiveRecord::Base.connection.execute("PRAGMA foreign_keys = OFF")
+
+puts "🧹 Limpiando base de datos..."
 Purchasedetail.delete_all
 Buy.delete_all
-Product.delete_all
 Category.delete_all
 Supplier.delete_all
 Customer.delete_all
 User.delete_all
+Product.delete_all
+
+ActiveRecord::Base.connection.execute("PRAGMA foreign_keys = ON")
+puts "guardando datos de la semilla"
 
 reset_sqlite_sequences(
   'purchasedetails',
@@ -153,8 +160,7 @@ products = Product.create!([
 ])
 
 products.each do |product|
-  # Lista de extensiones posibles
-  extensiones = [".jpg", ".jpeg", ".png", ".webp", "avif"]
+  extensiones = [".jpg", ".jpeg", ".png", ".webp", ".avif"]
 
   imagen_encontrada = false
 
@@ -163,16 +169,17 @@ products.each do |product|
     ruta_imagen = Rails.root.join("db/seeds-img", nombre_archivo)
 
     if File.exist?(ruta_imagen)
-      product.imagen.attach(
+      product.images.attach(
         io: File.open(ruta_imagen),
         filename: nombre_archivo,
         content_type: Marcel::MimeType.for(ruta_imagen)
       )
-      puts "✅ Imagen cargada para #{product.nombre} (#{ext})"
+      puts "✅ Imagen cargada para #{product.nombre}"
       imagen_encontrada = true
       break
     end
   end
+
   puts "⚠️  Imagen no encontrada para #{product.nombre}" unless imagen_encontrada
 end
 

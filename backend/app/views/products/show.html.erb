@@ -1,10 +1,59 @@
 <p style="color: green"><%= notice %></p>
 
-<%= render @product %>
-
 <div>
-  <%= link_to "Edit this product", edit_product_path(@product) %> |
   <%= link_to "Back to products", inventario_path %>
-
-  <%= button_to "Destroy this product", @product, method: :delete %>
 </div>
+
+<h1><%= @product.nombre %></h1>
+<p><%= @product.descripcion %></p>
+<p><strong>Precio:</strong> <%= @product.precio %></p>
+
+<% if @product.images.attached? %>
+  <div id="carousel" class="carousel" data-current="0" style="max-width:600px; position:relative;">
+    <button type="button" class="prev" aria-label="Anterior" style="position:absolute; left:0; top:45%;">‹</button>
+    <div class="viewport" style="overflow:hidden;">
+      <% @product.images.each_with_index do |img, i| %>
+        <%= image_tag img.variant(resize_to_limit: [1000, 1000]).processed,
+                      class: (i == 0 ? "slide active" : "slide"),
+                      data: { index: i },
+                      style: "display:#{i == 0 ? 'block' : 'none'}; width:100%;" %>
+      <% end %>
+    </div>
+    <button type="button" class="next" aria-label="Siguiente" style="position:absolute; right:0; top:45%;">›</button>
+
+    <div class="thumbs" style="display:flex; gap:8px; margin-top:8px; flex-wrap:wrap;">
+      <% @product.images.each_with_index do |img, i| %>
+        <%= image_tag img.variant(resize_to_limit: [100, 100]).processed,
+                      data: { thumb_index: i },
+                      style: "cursor:pointer; border:1px solid #ddd; border-radius:6px; padding:2px;" %>
+      <% end %>
+    </div>
+  </div>
+<% else %>
+  <p>Este producto aún no tiene imágenes.</p>
+<% end %>
+
+<script>
+  document.addEventListener("DOMContentLoaded", () => {
+  const root = document.getElementById("carousel");
+  if (!root) return;
+
+  const slides = Array.from(root.querySelectorAll(".slide"));
+  const prevBtn = root.querySelector(".prev");
+  const nextBtn = root.querySelector(".next");
+  const thumbs  = Array.from(root.querySelectorAll("[data-thumb-index]"));
+  let current = 0;
+
+  const show = (i) => {
+    if (slides.length === 0) return;
+    current = (i + slides.length) % slides.length;
+    slides.forEach((s, idx) => s.style.display = idx === current ? "block" : "none");
+  };
+
+  prevBtn?.addEventListener("click", () => show(current - 1));
+  nextBtn?.addEventListener("click", () => show(current + 1));
+  thumbs.forEach(t => t.addEventListener("click", () => show(parseInt(t.dataset.thumbIndex, 10))));
+
+  show(0);
+});
+</script>
