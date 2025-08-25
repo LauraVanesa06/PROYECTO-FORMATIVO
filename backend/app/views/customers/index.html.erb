@@ -93,16 +93,16 @@
                 data-producto-id="<%= p.product.id %>"
                 data-producto-nombre="<%= p.product.nombre %>"
                 data-producto-descripcion="<%= p.product.descripcion %>"
-                data-producto-precio="<%= p.product.precio %>"
+                data-producto-precio="<%= p.product.precio_cop %>"
                 data-producto-precioxunidad="<%= p.preciounidad %>"
                 data-producto-categoria="<%= p.product.category.nombre %>"
                 data-producto-proveedor="<%= p.product.supplier.nombre %>"
                 data-compra-id="<%= p.buy_id %>"
-                data-compra-fecha="<%= p.buy.fecha %>"
+                data-compra-fecha="<%= p.buy.fecha.strftime("%d/%m/%Y") %>"
                 data-compra-cantidad="<%= p.cantidad %>"
                 data-compra-proveedor="<%= p.product.supplier.contacto %>"
                 data-edit-url="<%= edit_purchasedetail_path(p) %>"
-                data-producto-img-url="<%= p.product.imagen.attached? ? url_for(p.product.imagen) : '' %>">
+                data-producto-img-url="<%= p.product.images.attached? ? url_for(p.product.images.first) : '' %>">
                 <p class=p-id><strong>ID:</strong> <%= p.buy_id %></p>
                 <p class=p-fecha><%= p.buy.fecha.strftime("%d/%m/%Y") %></p>
               </div>

@@ -118,34 +118,6 @@
           <% else %>
           
           <% end %>
-          <a class="new-buy" href="#modal-new-buy">+</a>
-
-          <div id="modal-new-buy" class="modal">
-            <div class="modal-content2">
-              <a href="#" class="close">&times;</a>
-              <div class="titulo2 tb">Crear Compra</div>
-              <%= form_with(model: Buy.new, url: ventas_path, data: { remote: true }, html: { multipart: true }, class: 'form-editar') do |form| %>
-                <div class="texto2">
-                  <%= form.label :fecha, "Fecha : ", style: "display: block" %>
-                  <%= form.date_field :fecha %>
-                </div>
-
-                <div class="texto2">
-                  <%= form.label :customer_id, "Cliente : " %>
-                  <%= form.collection_select :customer_id, Customer.all, :id, :nombre, prompt: "Seleccione un cliente" %>
-                </div>
-
-                <div class="texto2">
-                  <%= form.label :tipo, "Tipo de compra : " %>
-                  <%= form.select :tipo, options_for_select(["Minorista", "Mayorista", "Contratista/Empresa"]), prompt: "Seleccione un tipo" %>
-                </div>
-
-                <div class="btn3">
-                  <%= form.submit "Guardar", class:'btn4 bb' %>
-                </div>
-              <% end %>
-            </div>
-          </div>
 
         </div>
       </div>
@@ -153,67 +125,125 @@
   </section>
 
 <script>
-let grafica = null;
+  let grafica = null;
 
-function cargarGrafica() {
-  fetch('/api/v1/buys/ventas_por_tipo')
-    .then(response => response.json())
-    .then(datos => {
-      if (grafica) {
-        grafica.data.labels = datos.labels;
-        grafica.data.datasets = datos.datasets;
-        grafica.update();
-      } else {
-        grafica = new Chart(document.getElementById('grafica'), {
-          type: 'bar',
-          data: {
-            labels: datos.labels,
-            datasets: datos.datasets
-          },
-          options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            plugins: {
-              legend: {
-                labels: {
-                  usePointStyle: true,
-                  pointStyle: 'circle',
-                  color: '#1c1c1cff',
-                  font: {
-                    family: 'Poppins',
-                    size: 12,
-                    weight: 'bold'
+  function cargarGrafica() {
+    fetch('/api/v1/buys/ventas_por_tipo')
+      .then(response => response.json())
+      .then(datos => {
+        if (grafica) {
+          grafica.data.labels = datos.labels;
+          grafica.data.datasets = datos.datasets;
+          grafica.update();
+        } else {
+          grafica = new Chart(document.getElementById('grafica'), {
+            type: 'bar',
+            data: {
+              labels: datos.labels,
+              datasets: datos.datasets
+            },
+            options: {
+              responsive: true,
+              maintainAspectRatio: false,
+              plugins: {
+                legend: {
+                  labels: {
+                    usePointStyle: true,
+                    pointStyle: 'circle',
+                    color: '#1c1c1cff',
+                    font: {
+                      family: 'Poppins',
+                      size: 12,
+                      weight: 'bold'
+                    }
                   }
                 }
-              }
-            },
-            scales: {
-              y: {
-                beginAtZero: true,
-                ticks: {
-                  color: '#1c1c1cff',
-                  font: { family: 'Poppins', size: 14, weight: '600' }
-                },
-                grid: { color: '#888888' }
               },
-              x: {
-                ticks: {
-                  color: '#1c1c1cff',
-                  font: { family: 'Poppins', size: 14, weight: '600' }
+              scales: {
+                y: {
+                  beginAtZero: true,
+                  ticks: {
+                    color: '#1c1c1cff',
+                    font: { family: 'Poppins', size: 14, weight: '600' }
+                  },
+                  grid: { color: '#888888' }
                 },
-                grid: { color: '#888888' }
+                x: {
+                  ticks: {
+                    color: '#1c1c1cff',
+                    font: { family: 'Poppins', size: 14, weight: '600' }
+                  },
+                  grid: { color: '#888888' }
+                }
               }
             }
-          }
-        });
+          });
+        }
+      });
+  }
+
+  document.addEventListener("DOMContentLoaded", cargarGrafica);
+
+  // btn vver comprar (para abrir el modal)
+  document.addEventListener("DOMContentLoaded", () => {
+    const modal = document.getElementById("modal-reutilizable");
+    const closeBtn = modal.querySelector("#modal-close");
+
+    // Abrir modal al hacer click en botones
+    document.querySelectorAll(".show-buy").forEach(button => {
+      button.addEventListener("click", () => {
+        const data = {
+          nombreProducto: button.dataset.nombreProducto,
+          categoria: button.dataset.categoriaProducto,
+          proveedor: button.dataset.proveedorProducto,
+          precio: button.dataset.precioProducto,
+          cliente: button.dataset.nombreCliente,
+          documento: button.dataset.documentoCliente,
+          fecha: button.dataset.fechaCompra,
+          tipoCompra: button.dataset.tipoCompra,
+          metodo: button.dataset.metodoCompra,
+          imagen: button.dataset.imgUrl
+        };
+
+        // Llenar datos en modal
+        modal.querySelector(".modal-nombre-producto").textContent = data.nombreProducto;
+        modal.querySelector(".modal-categoria-producto").textContent = data.categoria;
+        modal.querySelector(".modal-proveedor-producto").textContent = data.proveedor;
+        modal.querySelector(".modal-precio-producto").textContent = data.precio;
+        modal.querySelector(".modal-nombre-cliente").textContent = data.cliente;
+        modal.querySelector(".modal-documento-cliente").textContent = data.documento;
+        modal.querySelector(".modal-fecha-compra").textContent = data.fecha;
+        modal.querySelector(".modal-tipo-compra").textContent = data.tipoCompra;
+        modal.querySelector(".modal-metodo-compra").textContent = data.metodo;
+
+        // Imagen
+        const fotoModel = modal.querySelector(".foto-model");
+        if (data.imagen) {
+          fotoModel.innerHTML = `<img src="${data.imagen}" alt="Imagen producto" style="max-width: 150px; border-radius:8px;">`;
+        } else {
+          fotoModel.innerHTML = `<span>Sin imagen</span>`;
+        }
+
+        // Mostrar modal
+        modal.style.display = "flex";
+      });
+    });
+
+    // Cerrar modal
+    closeBtn.addEventListener("click", (e) => {
+      e.preventDefault();
+      modal.style.display = "none";
+    });
+
+    // También cerrar si clickea afuera
+    modal.addEventListener("click", (e) => {
+      if (e.target === modal) {
+        modal.style.display = "none";
       }
     });
-}
+  });
+</script>
 
-document.addEventListener("DOMContentLoaded", cargarGrafica);
-
-
-  </script>
  
   <footer>
     &copy; 2025 Ferremateriales el Maestro - v2.3.7

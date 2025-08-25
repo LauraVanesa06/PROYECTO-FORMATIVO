@@ -15,6 +15,11 @@ class Product < ApplicationRecord
   has_many_attached :images, dependent: :purge
   validate :acceptable_images
 
+  
+  def precio_cop
+    ApplicationController.helpers.number_to_currency(precio, unit: "", separator: ",", delimiter:".")
+  end
+
   # esto es para validar el formato y el tamaño de la imagen
   private
 
@@ -30,4 +35,5 @@ class Product < ApplicationRecord
       end
     end
   end
+
 end

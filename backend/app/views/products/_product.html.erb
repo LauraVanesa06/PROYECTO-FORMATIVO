@@ -23,7 +23,7 @@
       <%= product.descripcion %>
     </li> 
     <div class="opciones">
-      <li class="precio"><%= product.precio %></li>
+      <li class="precio"><%= product.precio_cop %></li>
 
       <!--formulario para marcar si el producto esta disponible o no-->
           <%= form_with url: update_disponibilidad_products_path, method: :patch, id: "disponibilidad-form-#{product.id}" do %>
