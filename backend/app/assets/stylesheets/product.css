@@ -10,7 +10,7 @@ body{
     align-items: center;
     width: 90%;
     height: 450px;
-    box-shadow: 0 0 8px rgba(151, 200, 249, 0.8);
+    border: solid 1px #8fa0e0;
     border-radius: 20px;
 }
 
@@ -29,6 +29,14 @@ body{
     height: 370px;
     border: solid 1px rgb(221, 221, 221);
     border-radius: 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.first-img img{
+    height: 350px;
+    max-width: 350px;
 }
 
 .set-info{
@@ -49,7 +57,8 @@ body{
 .d2, .d7{
     font-size: 15px;
     color: rgb(34, 34, 34);
-    margin-top: -7px;
+    margin-top: -5px;
+    margin-left: 7px;
 }
 
 .d3{
@@ -68,12 +77,23 @@ body{
     display: flex;
     flex-direction: column;
     justify-content: center;
+    margin-right: 30px;
 }
 
 .cont-img{
     width: 35px;
     height: 50px;
     background-image: url("stock.png");
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: contain;
+}
+
+.cont-img2{
+    width: 23px;
+    height: 50px;
+    margin-right: 7px;
+    background-image: url("unidad.png");
     background-position: center;
     background-repeat: no-repeat;
     background-size: contain;
@@ -91,6 +111,14 @@ body{
     height: 64px;
     border: solid 1px rgb(221, 221, 221);
     border-radius: 5px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.all-img img{
+    height: 60px;
+    max-width: 60px;
 }
 
 .set-info article{
@@ -195,13 +223,100 @@ body{
 }
 
 .metodo{
-    border: solid 1px red;
-    height: 40%;
+    height: 160px;
     width: 100%;
+    font-family: 'Arial', 'Helvetica';
+    display:flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    border: solid 1px rgb(221, 221, 221);
+    border-radius: 10px;
+    margin-bottom: 8px;
+}
+
+.metodo p{
+    margin: 0;
+}
+
+.credito{
+  background-image: url("credito.avif");
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: contain; 
+  width: 100%;
+  height: 40px;
+}
+
+.transferencia{
+  background-image: url("transferencia.png");
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: contain; 
+  width: 100%;
+  height: 40px;
+}
+
+.p1{
+    font-size: 20px;
+    font-weight: bold;
+    color: #185ea9;
 }
 
 .direccion{
-    border: solid 1px red;
-    height: 25%;
-    width: 100%;
+    border: solid 1px rgb(221, 221, 221);
+    border-radius: 10px;
+    height: auto;
+    font-weight: bold;
+    color: #185ea9;
+    font-family: 'Arial', 'Helvetica';
+    line-height: 16px;
+    padding: 10px;
+}
+
+/*Carrusel img first*/
+.carousel {
+  position: relative;
+  width: 100%;
+  max-width: 400px;
+  overflow: hidden;
+}
+.carousel-item {
+  display: none;
+  width: 100%;
+}
+.carousel-item.active {
+  display: block;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.carousel button {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background: transparent;
+    color: #02229e;
+    font-weight: bold;
+    font-size: 17px;
+    border: none;
+    padding: 10px;
+    cursor: pointer;
+}
+
+.carousel button:hover{
+    font-size: 20px;
+}
+
+.carousel .prev { left: 10px; }
+.carousel .next { right: 10px; }
+
+/*Carrusel img all*/
+.carousel-container {
+  display: flex;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  gap: 10px;
+  padding: 10px;
+  max-width: 100%;
 }

@@ -70,7 +70,33 @@
   <section class="container-product">
     <section class="set-img">
       <article>
-        <div class="first-img"></div>
+        <div class="first-img">
+          <div class="carousel">
+            <% if @product.images.attached? %>
+              <% @product.images.each_with_index do |img, i| %>
+                <div class="carousel-item <%= 'active' if i == 0 %>">
+                  <%= image_tag img, alt: @product.nombre %>
+                </div>
+              <% end %>
+            <% else %>
+              <div class="carousel-item active">
+                <%= image_tag "ProductoNoDisponible.png", alt: "Sin imagen" %>
+              </div>
+            <% end %>
+
+            <button class="prev" onclick="moveSlide(-1)">&#10094;</button>
+            <button class="next" onclick="moveSlide(1)">&#10095;</button>
+          </div>
+          <script>
+            let currentIndex = 0;
+            function moveSlide(step) {
+              const items = document.querySelectorAll(".carousel-item");
+              items[currentIndex].classList.remove("active");
+              currentIndex = (currentIndex + step + items.length) % items.length;
+              items[currentIndex].classList.add("active");
+            }
+          </script>
+        </div>
       </article>
     </section>
     <section class="set-info">
@@ -79,14 +105,23 @@
         <div class="d2"><p><%= @product.category.nombre %></p></div>
         <div class="d3"><p><%= @product.descripcion %></p></div>
         <div class="cont-stock">
+          <div class="cont-img2"></div>
+          <div class="stock">
+            <div class="d4"><p>Compras</p></div>
+            <div class="d5"><p>100 Usuarios</p></div>
+          </div>
           <div class="cont-img"></div>
           <div class="stock">
             <div class="d4"><p>Stock</p></div>
             <div class="d5"><p><%= @product.stock %> Unidades</p></div>
           </div>
         </div>
-        <article>
-          <div class="all-img"></div>
+        <article class="carousel-container">
+          <% @product.images.drop(1).each do |img| %>
+            <div class="all-img">
+              <%= image_tag img, alt: @product.nombre %>
+            </div>
+          <% end %>
         </article>
         <div class="d6"><p>$ <%= @product.precio_cop %> COP</p></div>
         <div class="d7"><p><%= @product.disponible? ? "Disponible" : "No disponible" %></p></div>
@@ -113,7 +148,11 @@
           <button class="btn-buy">¡Comprar!</button>
         </div>
         <div class="metodo">
-
+          <p class="p1">Metodos de pago</p>
+          <p>Tarjeta de Crédito/Débito</p>
+          <div class="credito"></div>
+          <p>Pago por Tranferencia</p>
+          <div class="transferencia"></div>
         </div>
         <div class="direccion">
           <div>dirección:</div>

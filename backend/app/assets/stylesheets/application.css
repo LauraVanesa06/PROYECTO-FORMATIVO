@@ -931,12 +931,14 @@ body {
 }
 
 .product-card {
-  background: #fff;
-  border-radius: 10px;
-  box-shadow: 0 6px 18px rgba(0,0,0,0.06);
-  overflow: hidden;
-  display: flex;
-  flex-direction: column;
+    background: #ffffff;
+    border-radius: 10px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    width: 244px;
+    height: 340px;
+        border: solid 2px #e9e9e9;
 }
 
 .product-thumb {
@@ -945,12 +947,18 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
-  background: #f8f8f8;
+  background: #ffffff;
 }
 
 .product-thumb img {
   max-height: 100%;
   object-fit: contain;
+}
+
+.info-product{
+  border: solid 1px #e9e9e9;
+  border-radius: 10px;
+  padding: 5px;
 }
 
 .fav-btn {
@@ -973,7 +981,7 @@ body {
 }
 
 .product-body {
-  padding: 12px;
+  padding: 5px;
   flex: 1;
   display: flex;
   flex-direction: column;
@@ -983,6 +991,7 @@ body {
 .product-name {
   font-size: 16px;
   margin-bottom: 6px;
+  font-weight: bold;
 }
 
 .product-desc {
@@ -998,8 +1007,9 @@ body {
 }
 
 .price {
-  font-weight: 700;
-  color: #2d2d2d;
+  font-weight: bold;
+  color: #185ea9;
+  font-size: 16px;
 }
 
 /* ===== TOASTS ===== */
