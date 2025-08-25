@@ -35,8 +35,9 @@ body{
 }
 
 .first-img img{
+    max-width: 90%;
     height: 350px;
-    max-width: 350px;
+    object-fit: contain;
 }
 
 .set-info{
@@ -118,7 +119,8 @@ body{
 
 .all-img img{
     height: 60px;
-    max-width: 60px;
+    max-width: 90%;
+    object-fit: contain;
 }
 
 .set-info article{

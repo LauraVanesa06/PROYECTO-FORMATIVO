@@ -60,32 +60,30 @@ class ProductsController < ApplicationController
 
   # PATCH/PUT /products/1 or /products/1.json
   def update
+  # Adjuntar nuevas imágenes (si el usuario subió más)
+    if params[:product][:images].present?
+      params[:product][:images].each do |img|
+        @product.images.attach(img)  # 👉 esto las acumula en lugar de reemplazar
+      end
+    end
+
+    # Borrar imágenes si se marcaron
+    if params[:product][:remove_image_ids].present?
+      params[:product][:remove_image_ids].each do |id|
+        image = @product.images.find(id)
+        image.purge
+      end
+    end
+
+    # Actualizar solo los demás atributos (sin tocar :images)
     respond_to do |format|
-      if @product.update(product_params)
-        format.html { redirect_to inventario_path}
+      if @product.update(product_params.except(:images, :remove_image_ids))
+        format.html { redirect_to inventario_path, notice: "Producto actualizado correctamente." }
         format.json { render :show, status: :ok, location: @product }
       else
         format.html { render :edit, status: :unprocessable_entity }
         format.json { render json: @product.errors, status: :unprocessable_entity }
       end
-    end
-
-    # Adjuntar nuevas imágenes (si el usuario subió más)
-    if params[:product][:images]
-      @product.images.attach(params[:product][:images])
-    end
-
-    # Borrar las seleccionadas
-    if params[:product][:remove_image_ids].present?
-      params[:product][:remove_image_ids].each do |image_id|
-        @product.images.find(image_id).purge_later
-      end
-    end
-
-    if @product.update(product_params.except(:images))
-      redirect_to @product
-    else
-      render :edit, status: :unprocessable_entity
     end
   end
 
@@ -133,6 +131,6 @@ class ProductsController < ApplicationController
 
     # Only allow a list of trusted parameters through.
     def product_params
-      params.require(:product).permit(:nombre, :descripcion, :disponible, :precio, :stock, :category_id, :supplier_id, :images [], remove_image_ids: [])
+      params.require(:product).permit(:nombre, :descripcion, :disponible, :precio, :stock, :category_id, :supplier_id, images: [], remove_image_ids: [])
     end
 end
