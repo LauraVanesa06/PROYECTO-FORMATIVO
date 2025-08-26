@@ -315,7 +315,8 @@ body{
 
 /*Carrusel img all*/
 .carousel-container {
-  display: flex;
+  display: flex !important;
+  flex-direction: row !important;
   overflow-x: auto;
   scroll-snap-type: x mandatory;
   gap: 10px;
