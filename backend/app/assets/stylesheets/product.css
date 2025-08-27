@@ -131,6 +131,7 @@ body{
 
 .set-info article{
     margin-top: 30px;
+    padding-right: 0px;
 }
 
 .d4{
@@ -330,6 +331,18 @@ body{
   max-width: 85%;
   position: relative;
   overflow: hidden;
+  position: relative;
+}
+
+.carousel-container::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 60px;
+  height: 100%;
+  pointer-events: none;
+  background: linear-gradient(to left, white, transparent);
 }
 
 .carousel-track {

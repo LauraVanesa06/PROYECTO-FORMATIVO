@@ -79,6 +79,7 @@
         </div>
       </div>
     </header>
+    
   <section class="view-product">
     <section class="container-product">
       <section class="set-img">
@@ -214,50 +215,44 @@
     </section>
   </section>
 
+<!--Importante: modifica la imagenes de acuerdo a la miniatura seleccionada-->
   <script>
-  document.addEventListener("DOMContentLoaded", () => {
-    const thumbs = document.querySelectorAll(".all-img img");
-    const mainItems = document.querySelectorAll(".first-img .carousel-item"); // si tienes carrusel arriba
-    const mainSingleImg = mainItems.length ? null : document.querySelector(".first-img img"); // o una sola imagen
+    document.addEventListener("DOMContentLoaded", () => {
+      const thumbs = document.querySelectorAll(".all-img img");
+      const mainItems = document.querySelectorAll(".first-img .carousel-item");
+      const mainSingleImg = mainItems.length ? null : document.querySelector(".first-img img"); 
 
-    let currentIndex = 0;
-
-    // Inicializa el índice según lo que esté activo/visible arriba
-    if (mainItems.length) {
-      const activeIdx = Array.from(mainItems).findIndex(el => el.classList.contains("active"));
-      currentIndex = activeIdx >= 0 ? activeIdx : 0;
-    } else if (mainSingleImg) {
-      const idx = Array.from(thumbs).findIndex(t => t.src === mainSingleImg.src);
-      currentIndex = idx >= 0 ? idx : 0;
-    }
-
-    function setActive(i) {
-      if (!thumbs.length) return;
-      // mover en círculo
-      i = (i + thumbs.length) % thumbs.length;
-      currentIndex = i;
+      let currentIndex = 0;
 
       if (mainItems.length) {
-        // Modo carrusel (div.carousel-item)
-        mainItems.forEach(el => el.classList.remove("active"));
-        if (mainItems[i]) mainItems[i].classList.add("active");
+        const activeIdx = Array.from(mainItems).findIndex(el => el.classList.contains("active"));
+        currentIndex = activeIdx >= 0 ? activeIdx : 0;
       } else if (mainSingleImg) {
-        // Modo imagen única
-        mainSingleImg.src = thumbs[i].src;
+        const idx = Array.from(thumbs).findIndex(t => t.src === mainSingleImg.src);
+        currentIndex = idx >= 0 ? idx : 0;
       }
-    }
 
-    // Click en miniaturas: mostrar en first-img y actualizar índice global
-    thumbs.forEach((thumb, i) => {
-      thumb.addEventListener("click", () => setActive(i));
+      function setActive(i) {
+        if (!thumbs.length) return;
+        i = (i + thumbs.length) % thumbs.length;
+        currentIndex = i;
+
+        if (mainItems.length) {
+          mainItems.forEach(el => el.classList.remove("active"));
+          if (mainItems[i]) mainItems[i].classList.add("active");
+        } else if (mainSingleImg) {
+          mainSingleImg.src = thumbs[i].src;
+        }
+      }
+
+      thumbs.forEach((thumb, i) => {
+        thumb.addEventListener("click", () => setActive(i));
+      });
+
+      window.moveSlide = function(step) {
+        setActive(currentIndex + step);
+      };
     });
-
-    // Sobrescribe la función usada por tus flechas del carrusel de first-img
-    // (<button class="prev" onclick="moveSlide(-1)">...)
-    window.moveSlide = function(step) {
-      setActive(currentIndex + step);
-    };
-  });
 </script>
 
 </body>
