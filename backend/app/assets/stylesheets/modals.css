@@ -364,6 +364,7 @@ input.guardar:hover {
 .style img{
   height: 80px;
   max-width: 90%;
+  object-fit: contain;
 }
 
 .style-check{

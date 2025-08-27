@@ -30,8 +30,14 @@
         <% if product.persisted? && product.images.attached? %>
           <div id="preview-container" style="display:flex; flex-wrap:wrap;">
             <% product.images.each do |img| %>
-              <div class="style">
-                <%= image_tag img.variant(resize_to_limit: [160, 160]).processed, style: "display:block; margin:0 auto 6px;" %>
+              <div class="style" style="position: relative;">
+                <% if img.blob.present? && (img.blob.service.exist?(img.blob.key) rescue false) %>
+                  <%= image_tag img.variant(resize_to_limit: [160, 160]), style: "display:block; margin:0 auto 6px;" %>
+                <% else %>
+                  <div class="error-overlay">
+                    ⚠ Imagen no encontrada
+                  </div>
+                <% end %>
                 <label class="style-check">
                   <input type="checkbox" name="product[remove_image_ids][]" value="<%= img.id %>">
                 </label>
@@ -85,12 +91,12 @@
             });
           }
 
-          // 👉 input por click
+          // input por click
           fileInput.addEventListener('change', function(event) {
             handleFiles(event.target.files);
           });
 
-          // 👉 arrastrar y soltar
+          // arrastrar y soltar
           dropContainer.addEventListener('dragover', function(event) {
             event.preventDefault();
             dropContainer.classList.add("dragover");
