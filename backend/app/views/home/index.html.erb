@@ -1,11 +1,47 @@
-<!-- HERO -->
 <section class="hero-header">
-  <div class="hero-text">
-    <h1>Ferremateriales El Maestro</h1>
-    <p>Todo en herramientas y materiales — calidad y buen precio</p>
-    <a href="#productos" class="btn btn-primary hero-cta">Ver Mas</a>
+
+  <div id="carouselExampleIndicators" class="carousel slide" data-bs-ride="carousel" data-bs-interval="2000">
+    
+    <div class="carousel-inner">
+
+      <div class="carousel-item active">
+        <%= image_tag "promo1.png", class: "d-block w-100 carousel-img" %>
+      </div>
+
+      <div class="carousel-item">
+        <%= image_tag "promo2.jpeg", class: "d-block w-100 carousel-img" %>
+      </div>
+
+      <div class="carousel-item">
+        <%= image_tag "promo3.jpeg", class: "d-block w-100 carousel-img" %>
+      </div>
+
+      <div class="carousel-item">
+        <%= image_tag "promo4.jpg", class: "d-block w-100 carousel-img" %>
+      </div>
+    </div>
+
   </div>
+
+
+   
+  <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="prev">
+    <span class="carousel-control-prev-icon" aria-hidden="true">
+    </span>
+
+    <span class="visually-hidden">Anterior
+    </span>
+  </button>
+
+   
+  <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="next">
+    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+    <span class="visually-hidden">Siguiente</span>
+  </button>
+  
+  
 </section>
+
 
 <!-- CATEGORÍAS -->
 <section class="categories-section container mt-4">
