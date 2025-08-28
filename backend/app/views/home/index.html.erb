@@ -1,51 +1,36 @@
 <section class="hero-header">
 
   <div id="carouselExampleIndicators" class="carousel slide" data-bs-ride="carousel" data-bs-interval="2000">
-    
     <div class="carousel-inner">
-
       <div class="carousel-item active">
         <%= image_tag "promo1.png", class: "d-block w-100 carousel-img" %>
       </div>
-
       <div class="carousel-item">
         <%= image_tag "promo2.jpeg", class: "d-block w-100 carousel-img" %>
       </div>
-
       <div class="carousel-item">
         <%= image_tag "promo3.jpeg", class: "d-block w-100 carousel-img" %>
       </div>
-
       <div class="carousel-item">
         <%= image_tag "promo4.jpg", class: "d-block w-100 carousel-img" %>
       </div>
     </div>
-
   </div>
 
-
-   
   <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="prev">
-    <span class="carousel-control-prev-icon" aria-hidden="true">
-    </span>
-
-    <span class="visually-hidden">Anterior
-    </span>
+    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+    <span class="visually-hidden"><%= t("hero.prev") %></span>
   </button>
 
-   
   <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="next">
     <span class="carousel-control-next-icon" aria-hidden="true"></span>
-    <span class="visually-hidden">Siguiente</span>
+    <span class="visually-hidden"><%= t("hero.next") %></span>
   </button>
-  
-  
 </section>
-
 
 <!-- CATEGORÍAS -->
 <section class="categories-section container mt-4">
-  <h2 class="titulo">🔍 Categorías</h2>
+  <h2 class="titulo"><%= t("categories.title") %></h2>
   <div class="category-scroll" role="list">
     <% @categories.each do |c| %>
       <div class="category-card" role="listitem">
@@ -57,14 +42,12 @@
 
 <!-- PRODUCTOS -->
 <section id="productos" class="productos-destacados container mt-4 mb-5">
-  <h2 class="titulo">🔥 Productos destacados</h2>
+  <h2 class="titulo"><%= t("products.title") %></h2>
   <div class="product-grid">
     <% @productos.each do |producto| %>
       <div class="product-card">
         <div class="product-thumb">
-          <%= image_tag(producto.imagen.presence || "martillo-dewalt.png", 
-                        alt: producto.nombre, 
-                        class: "img-fluid") %>
+          <%= image_tag(producto.imagen.presence || "martillo-dewalt.png", alt: producto.nombre, class: "img-fluid") %>
         </div>
         <div class="product-body">
           <h3 class="product-name"><%= producto.nombre %></h3>
@@ -75,14 +58,14 @@
             </span>
             <div>
               <div class="d-flex flex-wrap gap-2 mt-2">
-                <!-- Botón comprar -->
-              <%= button_to cart_items_path(product_id: producto.id),
-              method: :post,
-              remote: true,
-              class: "btn btn-sm btn-outline-primary d-flex align-items-center justify-content-center" do %>
-                <i class="fa-solid fa-cart-plus"></i>
-              <% end %>
 
+                <!-- Botón comprar -->
+                <%= button_to cart_items_path(product_id: producto.id),
+                    method: :post,
+                    remote: true,
+                    class: "btn btn-sm btn-outline-primary d-flex align-items-center justify-content-center" do %>
+                  <i class="fa-solid fa-cart-plus"></i>
+                <% end %>
 
                 <!-- Botón favoritos -->
                 <% if current_user %>
@@ -92,16 +75,18 @@
                                   method: :delete,
                                   class: "btn btn-sm btn-warning d-flex align-items-center gap-1" do %>
                       <i class="fa-solid fa-star"></i>
+                      <%= t("products.favorites.remove") %>
                     <% end %>
                   <% else %>
                     <%= button_to favorites_path(product_id: producto.id),
                                   method: :post,
                                   class: "btn btn-sm btn-outline-warning d-flex align-items-center gap-1" do %>
                       <i class="fa-regular fa-star"></i>
+                      <%= t("products.favorites.add") %>
                     <% end %>
                   <% end %>
                 <% else %>
-                  <!-- Si no hay usuario logueado, mostramos el botón deshabilitado -->
+                  <!-- Si no hay usuario logueado -->
                   <button class="btn btn-sm btn-outline-warning d-flex align-items-center gap-1" disabled>
                     <i class="fa-regular fa-star"></i>
                   </button>
@@ -127,23 +112,6 @@
   </div>
 </section>
 
-<script>
-
-document.addEventListener("turbo:load", () => {
-  const modal = document.getElementById("productoModal");
-  modal.addEventListener("show.bs.modal", (event) => {
-    const button = event.relatedTarget;
-    document.getElementById("modalProductoNombre").textContent = button.getAttribute("data-nombre");
-    document.getElementById("modalProductoDescripcion").textContent = button.getAttribute("data-descripcion");
-    document.getElementById("modalProductoPrecio").textContent = button.getAttribute("data-precio");
-    document.getElementById("modalProductoImagen").src = button.getAttribute("data-imagen");
-    document.getElementById("modalCompraForm").action = button.getAttribute("data-url-compra");
-  });
-});
-
-</script>
-
-
 <!-- Modal -->
 <div class="modal fade" id="productoModal" tabindex="-1" aria-hidden="true">
   <div class="modal-dialog modal-lg modal-dialog-centered">
@@ -163,15 +131,43 @@ document.addEventListener("turbo:load", () => {
         <form id="modalCompraForm" method="post">
           <%= hidden_field_tag :authenticity_token, form_authenticity_token %>
           <button type="submit" class="btn btn-primary">
-            <i class="fa-solid fa-cart-plus"></i> Comprar
+            <i class="fa-solid fa-cart-plus"></i> <%= t("products.buy") %>
           </button>
         </form>
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"><%= t("products.close") %></button>
       </div>
     </div>
   </div>
 </div>
 
-
 <!-- TOASTS -->
 <div id="toast-container"></div>
+
+<script>
+
+function initProductoModal() {
+  const modal = document.getElementById("productoModal");
+  if (!modal) return;
+
+  const nombreEl = document.getElementById("modalProductoNombre");
+  const descEl = document.getElementById("modalProductoDescripcion");
+  const precioEl = document.getElementById("modalProductoPrecio");
+  const imgEl = document.getElementById("modalProductoImagen");
+  const formEl = document.getElementById("modalCompraForm");
+
+  document.querySelectorAll(".ver-mas-btn").forEach(btn => {
+    btn.addEventListener("click", () => {
+      nombreEl.textContent = btn.dataset.nombre || "";
+      descEl.textContent = btn.dataset.descripcion || "";
+      precioEl.textContent = btn.dataset.precio || "";
+      imgEl.src = btn.dataset.imagen || "";
+      formEl.action = btn.dataset.urlCompra || "#";
+    });
+  });
+}
+
+// Funciona tanto con Turbo como sin él
+document.addEventListener("turbo:load", initProductoModal);
+document.addEventListener("DOMContentLoaded", initProductoModal);
+
+</script>

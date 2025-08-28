@@ -116,17 +116,30 @@
 </section>
 
 <script>
-document.addEventListener("turbo:load", () => {
+function initProductoModal() {
   const modal = document.getElementById("productoModal");
-  modal.addEventListener("show.bs.modal", (event) => {
-    const button = event.relatedTarget;
-    document.getElementById("modalProductoNombre").textContent = button.getAttribute("data-nombre");
-    document.getElementById("modalProductoDescripcion").textContent = button.getAttribute("data-descripcion");
-    document.getElementById("modalProductoPrecio").textContent = button.getAttribute("data-precio");
-    document.getElementById("modalProductoImagen").src = button.getAttribute("data-imagen");
-    document.getElementById("modalCompraForm").action = button.getAttribute("data-url-compra");
+  if (!modal) return;
+
+  const nombreEl = document.getElementById("modalProductoNombre");
+  const descEl = document.getElementById("modalProductoDescripcion");
+  const precioEl = document.getElementById("modalProductoPrecio");
+  const imgEl = document.getElementById("modalProductoImagen");
+  const formEl = document.getElementById("modalCompraForm");
+
+  document.querySelectorAll(".ver-mas-btn").forEach(btn => {
+    btn.addEventListener("click", () => {
+      nombreEl.textContent = btn.dataset.nombre || "";
+      descEl.textContent = btn.dataset.descripcion || "";
+      precioEl.textContent = btn.dataset.precio || "";
+      imgEl.src = btn.dataset.imagen || "";
+      formEl.action = btn.dataset.urlCompra || "#";
+    });
   });
-});
+}
+
+// Funciona tanto con Turbo como sin él
+document.addEventListener("turbo:load", initProductoModal);
+document.addEventListener("DOMContentLoaded", initProductoModal);
 </script>
 
 <!-- Modal -->

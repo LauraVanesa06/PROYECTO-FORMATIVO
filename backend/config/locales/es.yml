@@ -13,3 +13,32 @@ es:
     messages:
       taken: "ya está en uso"
       blank: "no puede estar vacío"
+  nav:
+    home: "Inicio"
+    products: "Productos"
+    contacts: "Contactos"
+  languages:
+    spanish: "Español"
+    english: "Inglés"
+  cart:
+    title: "Tu carrito"
+  user:
+    profile: "Perfil"
+    logout: "Cerrar sesión"
+    logout_confirm: "¿Estás seguro de que quieres cerrar sesión?"
+    login: "Iniciar sesión"
+    register: "Registrarse"
+  app:
+    name: "Ferremateriales el Maestro"
+  hero:
+    prev: "Anterior"
+    next: "Siguiente"
+  categories:
+    title: "🔍 Categorías"
+  products:
+    title: "🔥 Productos destacados"
+    buy: "Comprar"
+    close: "Cerrar"
+    favorites:
+      add: "Agregar a favoritos"
+      remove: "Quitar de favoritos"

@@ -28,4 +28,32 @@
 #       enabled: "ON"
 
 en:
-  hello: "Hello world"
+  hero:
+    prev: "Previous"
+    next: "Next"
+  categories:
+    title: "🔍 Categories"
+  products:
+    title: "🔥 Featured Products"
+    buy: "Buy"
+    close: "Close"
+    favorites:
+      add: "Add to favorites"
+      remove: "Remove from favorites"
+  nav:
+    home: "Home"
+    products: "Products"
+    contacts: "Contacts"
+  languages:
+    spanish: "Spanish"
+    english: "English"
+  cart:
+    title: "Your cart"
+  user:
+    profile: "Profile"
+    logout: "Log out"
+    logout_confirm: "Are you sure you want to log out?"
+    login: "Login"
+    register: "Register"
+  app:
+    name: "Ferremateriales El Maestro"
