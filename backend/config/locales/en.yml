@@ -75,3 +75,11 @@ en:
       quitar_favorito: "Remove from favorites"
       inicia_sesion_favoritos: "Log in to add to favorites"
       ver_detalles: "View details"
+  contact:
+    title: "Contact Us"
+    name: "Your name"
+    lastname: "Your last name"
+    email: "Your email"
+    description: "Description of your question"
+    submit: "Send to administrator"
+    whatsapp: "Buy with an expert"

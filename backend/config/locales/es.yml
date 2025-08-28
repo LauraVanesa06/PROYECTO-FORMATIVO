@@ -60,3 +60,11 @@ es:
       quitar_favorito: "Quitar de favoritos"
       inicia_sesion_favoritos: "Inicia sesión para agregar a favoritos"
       ver_detalles: "Ver detalles"
+  contact:
+    title: "Contáctanos"
+    name: "Tu nombre"
+    lastname: "Tu apellido"
+    email: "Tu correo"
+    description: "Descripción de la duda presentada"
+    submit: "Enviar al administrador"
+    whatsapp: "Compra con un experto"
