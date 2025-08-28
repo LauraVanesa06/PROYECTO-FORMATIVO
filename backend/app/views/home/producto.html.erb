@@ -1,6 +1,6 @@
 <!-- PRODUCTOS -->
 <section id="productos" class="productos-destacados container mt-4 mb-5">
-  <h2 class="titulo">🛠️ Todos los Productos</h2>
+  <h2 class="titulo">🛠️ <%= t('productos.titulo') %></h2>
   <br>
   <!-- FILTRO -->
   <div class="mb-4">
@@ -8,29 +8,29 @@
       <div class="row align-items-center g-3">  
 
         <div class="col-md-3">
-          <%= label_tag :category_id, "Filtrar por categoría:" %>
+          <%= label_tag :category_id, t('productos.filtro.categoria') %>
           <%= select_tag :category_id, options_from_collection_for_select(@categories, :id, :nombre, params[:category_id]),
-                        include_blank: "Todas las categorías",
+                        include_blank: t('productos.filtro.todas_categorias'),
                         class: "form-select" %>
         </div>
 
         <div class="col-md-3">
-          <%= label_tag :query, "Buscar por nombre:" %>
-          <%= text_field_tag :query, params[:query], class: "form-control", placeholder: "Nombre del producto" %>
+          <%= label_tag :query, t('productos.filtro.buscar_nombre') %>
+          <%= text_field_tag :query, params[:query], class: "form-control", placeholder: t('productos.filtro.placeholder_nombre') %>
         </div>
 
         <div class="col-md-2">
-          <%= label_tag :min_price, "Precio mínimo:" %>
+          <%= label_tag :min_price, t('productos.filtro.precio_minimo') %>
           <%= number_field_tag :min_price, params[:min_price], min: 0, step: 0.01, class: "form-control" %>
         </div>
 
         <div class="col-md-2">
-          <%= label_tag :max_price, "Precio máximo:" %>
+          <%= label_tag :max_price, t('productos.filtro.precio_maximo') %>
           <%= number_field_tag :max_price, params[:max_price], min: 0, step: 0.01, class: "form-control" %>
         </div>
 
         <div class="col-md-2 d-flex align-items-end">
-          <%= submit_tag "Filtrar", class: "btn btn-primary w-100" %>
+          <%= submit_tag t('productos.filtro.boton_filtrar'), class: "btn btn-primary w-100" %>
         </div>
 
       </div>
@@ -49,7 +49,7 @@
                         class: "img-fluid") %>
           <% else %>
             <%= image_tag "ProductoNoDisponible.png",
-                          alt: "Sin imagen",
+                          alt: t('productos.sin_imagen'),
                           class: "img-fluid" %>
           <% end %>
         </div>
@@ -68,10 +68,10 @@
               <%= button_to cart_items_path(product_id: producto.id),
                             method: :post,
                             remote: true,
-                            class: "btn btn-sm btn-outline-primary d-flex align-items-center justify-content-center" do %>
+                            class: "btn btn-sm btn-outline-primary d-flex align-items-center justify-content-center",
+                            title: t('productos.boton.comprar') do %>
                 <i class="fa-solid fa-cart-plus"></i>
               <% end %>
-
 
               <!-- Botón favoritos -->
               <% if current_user %>
@@ -79,18 +79,21 @@
                 <% if favorite %>
                   <%= button_to favorite_path(favorite),
                                 method: :delete,
-                                class: "btn btn-sm btn-warning d-flex align-items-center gap-1" do %>
+                                class: "btn btn-sm btn-warning d-flex align-items-center gap-1",
+                                title: t('productos.boton.quitar_favorito') do %>
                     <i class="fa-solid fa-star"></i>
                   <% end %>
                 <% else %>
                   <%= button_to favorites_path(product_id: producto.id),
                                 method: :post,
-                                class: "btn btn-sm btn-outline-warning d-flex align-items-center gap-1" do %>
+                                class: "btn btn-sm btn-outline-warning d-flex align-items-center gap-1",
+                                title: t('productos.boton.agregar_favorito') do %>
                     <i class="fa-regular fa-star"></i>
                   <% end %>
                 <% end %>
               <% else %>
-                <button class="btn btn-sm btn-outline-warning d-flex align-items-center gap-1" disabled>
+                <button class="btn btn-sm btn-outline-warning d-flex align-items-center gap-1" disabled
+                        title="<%= t('productos.boton.inicia_sesion_favoritos') %>">
                   <i class="fa-regular fa-star"></i>
                 </button>
               <% end %>
@@ -103,7 +106,8 @@
                       data-descripcion="<%= producto.descripcion %>"
                       data-precio="<%= number_to_currency(producto.precio, unit: '$', separator: '.', delimiter: ',') %>"
                       data-imagen="<%= producto.imagen.attached? ? url_for(producto.imagen) : asset_path('ProductoNoDisponible.png') %>"
-                      data-url-compra="<%= add_item_cart_path(producto) %>">
+                      data-url-compra="<%= add_item_cart_path(producto) %>"
+                      title="<%= t('productos.boton.ver_detalles') %>">
                 <i class="fa-solid fa-eye"></i>
               </button>
 
@@ -137,7 +141,6 @@ function initProductoModal() {
   });
 }
 
-// Funciona tanto con Turbo como sin él
 document.addEventListener("turbo:load", initProductoModal);
 document.addEventListener("DOMContentLoaded", initProductoModal);
 </script>
@@ -161,10 +164,10 @@ document.addEventListener("DOMContentLoaded", initProductoModal);
         <form id="modalCompraForm" method="post">
           <%= hidden_field_tag :authenticity_token, form_authenticity_token %>
           <button type="submit" class="btn btn-primary">
-            <i class="fa-solid fa-cart-plus"></i> Comprar
+            <i class="fa-solid fa-cart-plus"></i> <%= t('productos.boton.comprar') %>
           </button>
         </form>
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"><%= t('productos.boton.cerrar') %></button>
       </div>
     </div>
   </div>

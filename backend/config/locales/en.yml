@@ -57,3 +57,21 @@ en:
     register: "Register"
   app:
     name: "Ferremateriales El Maestro"
+  productos:
+    titulo: "All Products"
+    sin_imagen: "No image available"
+    filtro:
+      categoria: "Filter by category:"
+      todas_categorias: "All categories"
+      buscar_nombre: "Search by name:"
+      placeholder_nombre: "Product name"
+      precio_minimo: "Minimum price:"
+      precio_maximo: "Maximum price:"
+      boton_filtrar: "Filter"
+    boton:
+      comprar: "Buy"
+      cerrar: "Close"
+      agregar_favorito: "Add to favorites"
+      quitar_favorito: "Remove from favorites"
+      inicia_sesion_favoritos: "Log in to add to favorites"
+      ver_detalles: "View details"

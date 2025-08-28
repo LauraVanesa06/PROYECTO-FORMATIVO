@@ -22,8 +22,7 @@ Rails.application.routes.draw do
   get 'contactos', to: 'home#contacto', as: :contactos
 
   # soporte pagina principal
-  post '/contacto/enviar', to: 'home#send_contact_message', as: :send_contact_message
-  post '/enviar_contacto', to: 'home#send_report', as: :enviar_contacto
+  post '/contacto/enviar', to: 'home#send_report', as: :send_report
 
   # Carrito
   resource :cart, only: [:show] do
