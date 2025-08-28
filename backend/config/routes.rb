@@ -48,6 +48,14 @@ Rails.application.routes.draw do
   post 'dashboard/suppliers', to: 'suppliers#crear_supplier'
   patch 'dashboard/suppliers/:id', to: 'suppliers#actualizar_supplier', as: :dashboard_supplier
 
+
+  # Traduccion
+
+  scope "(:locale)", locale: /en|es/ do
+    root "home#index"
+    resources :products
+  end
+
   # Recursos principale
   resources :products do
     patch :update_disponibilidad, on: :collection

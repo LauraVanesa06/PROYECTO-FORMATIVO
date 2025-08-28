@@ -8,7 +8,21 @@ class ApplicationController < ActionController::Base
 
   helper_method :current_cart     # 👈 para usar current_cart en vistas/partials
 
+  before_action :set_locale
+
   private
+
+  def set_locale
+    locale = params[:locale] || session[:locale] || I18n.default_locale
+    locale = locale.to_sym
+    I18n.locale = I18n.available_locales.include?(locale) ? locale : I18n.default_locale
+    session[:locale] = I18n.locale
+  end
+
+  # Para que TODOS los links mantengan ?locale= o /:locale
+  def default_url_options
+    { locale: I18n.locale }
+  end
 
   # 👇 carrito actual (usuario o sesión)
   def current_cart
