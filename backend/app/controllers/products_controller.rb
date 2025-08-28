@@ -49,6 +49,9 @@ class ProductsController < ApplicationController
     @product = Product.new(product_params)
 
     if @product.save
+      if params[:product][:images]
+        @product.images.attach(params[:product][:images])
+      end
       redirect_to products_path
     else
       render :new, status: :unprocessable_entity
@@ -57,9 +60,25 @@ class ProductsController < ApplicationController
 
   # PATCH/PUT /products/1 or /products/1.json
   def update
+  # Adjuntar nuevas imágenes (si el usuario subió más)
+    if params[:product][:images].present?
+      params[:product][:images].each do |img|
+        @product.images.attach(img)  # 👉 esto las acumula en lugar de reemplazar
+      end
+    end
+
+    # Borrar imágenes si se marcaron
+    if params[:product][:remove_image_ids].present?
+      params[:product][:remove_image_ids].each do |id|
+        image = @product.images.attachments.find(id)
+        image.purge
+      end
+    end
+
+    # Actualizar solo los demás atributos (sin tocar :images)
     respond_to do |format|
-      if @product.update(product_params)
-        format.html { redirect_to inventario_path, notice: "Product was successfully updated." }
+      if @product.update(product_params.except(:images, :remove_image_ids))
+        format.html { redirect_to inventario_path, notice: "Producto actualizado correctamente." }
         format.json { render :show, status: :ok, location: @product }
       else
         format.html { render :edit, status: :unprocessable_entity }
@@ -107,11 +126,11 @@ class ProductsController < ApplicationController
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_product
-      @product = Product.find(params.expect(:id))
+      @product = Product.find(params[:id])
     end
 
     # Only allow a list of trusted parameters through.
     def product_params
-      params.expect(product: [ :nombre, :descripcion, :disponible, :precio, :stock, :category_id, :supplier_id, :imagen ])
+      params.require(:product).permit(:nombre, :descripcion, :disponible, :precio, :stock, :category_id, :supplier_id, images: [], remove_image_ids: [])
     end
 end
