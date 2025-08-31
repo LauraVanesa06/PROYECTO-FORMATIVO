@@ -22,13 +22,13 @@
           data-nombre-producto="<%= p.product.nombre %>"
           data-categoria-producto="<%= p.product.category.nombre %>"
           data-proveedor-producto="<%= p.product.supplier.nombre %>"
-          data-precio-producto="<%= p.product.precio %>"
+          data-precio-producto="<%= p.product.precio_cop %>"
           data-nombre-cliente="<%= p.buy.customer.nombre %>"
           data-documento-cliente="<%= p.buy.customer.documento %>"
           data-fecha-compra="<%= p.buy.fecha.strftime("%d/%m/%Y") %>"
           data-tipo-compra="<%= p.buy.tipo %>"
           data-metodo-compra="<%= p.buy.metodo_pago %>"
-          data-img-url="<%= p.product.imagen.attached? ? url_for(p.product.imagen) : '' %>">
+          data-img-url="<%= p.product.images.attached? ? url_for(p.product.images.first) : '' %>">
           Ver compra
         </button>
       <% end %>

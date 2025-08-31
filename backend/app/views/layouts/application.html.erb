@@ -59,7 +59,7 @@
                     class: "text-white position-relative",
                     data: { bs_toggle: "offcanvas", bs_target: "#cartSidebar" } do %>
           <i class="fa-solid fa-cart-shopping"></i>
-          <%= render partial: "carts/cart_count", locals: { count: @cart_items.sum(&:cantidad) } %>
+          <%# render partial: "carts/cart_count", locals: { count: @cart_items.sum(&:cantidad) } %>
         <% end %>
 
 

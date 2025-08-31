@@ -13,14 +13,14 @@
       <% cart_items.each do |item| %>
         <tr id="<%= dom_id(item) %>">
           <td>
-            <% if item.product.imagen.present? %>
-              <%= image_tag url_for(item.product.imagen), alt: item.product.nombre, class: "img-thumbnail", style: "width: 70px; height: 70px; object-fit: cover;" %>
+            <% if item.product.images.present? %>
+              <%= image_tag url_for(item.product.images.first), alt: item.product.nombre, class: "img-thumbnail", style: "width: 70px; height: 70px; object-fit: cover;" %>
             <% else %>
-              <%= image_tag "placeholder.png", class: "img-thumbnail", style: "width: 70px; height: 70px; object-fit: cover;" %>
+              <%# image_tag "placeholder.png", class: "img-thumbnail", style: "width: 70px; height: 70px; object-fit: cover;" %>
             <% end %>
             <strong><%= item.product.nombre %></strong>
           </td>
-          <td><%= number_to_currency(item.product.precio) %></td>
+          <td><%= item.product.precio %></td>
           <td>
             <%= form_with url: cart_item_path(item), method: :patch, data: { turbo_stream: true }, class: "d-inline" do %>
               <div class="input-group" style="width: 120px;">

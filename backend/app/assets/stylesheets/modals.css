@@ -242,7 +242,7 @@ input.guardar:hover {
     padding: 20px;
     text-align: center;
     font-size: 12px;
-    max-width: 300px;
+    max-width: 315px;
     display: flex;
     flex-direction: column;
     position: absolute;
@@ -281,13 +281,13 @@ input.guardar:hover {
   height: 150px;
 }
 
-.drop-container:hover {
-  background: rgb(237, 237, 237);
-  border-color: rgb(158, 158, 158);
+.drop-container.dragover {
+  background: #c7cee7;
+  border-color: rgb(155, 155, 155);
 }
 
-.drop-container:hover .drop-title {
-  color: #444444;
+.drop-container.dragover .drop-title {
+  color: #838383;
 }
 
 .drop-title {
@@ -318,7 +318,7 @@ input.guardar:hover {
 }
 
 #file-input::file-selector-button:hover {
-  background: #96bfeb;
+  background: #6ea7e4;
 }
 
 #error_explanation {
@@ -329,7 +329,7 @@ input.guardar:hover {
   margin-bottom: 20px;
   font-size: 14px;
   color: #b30000;
-  max-width: 600px; /* para que no se estire más que el form */
+  max-width: 600px;
 }
 
 #error_explanation h2 {
@@ -344,4 +344,96 @@ input.guardar:hover {
 
 #error_explanation li {
   list-style: disc;
+}
+/*img*/
+.style{
+  border: 1px solid rgb(133, 163, 233);
+  border-radius: 3px;
+  width: 81px;
+  height: 81px;
+  padding: 5px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+  gap: 0px;
+  margin: 5px;
+  
+}
+
+.style img{
+  height: 80px;
+  max-width: 90%;
+  object-fit: contain;
+}
+
+.style-check{
+  position: absolute;
+  margin-top: -80px;
+  margin-right: 81px;
+}
+
+#preview-container{
+  height: 260px;
+  width: 100%;
+  overflow-y: auto;
+  margin: 0;
+  padding: 0;
+}
+
+/*scroll diseño*/
+::-webkit-scrollbar {
+  width: 5px;               /* ancho de la barra */
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;      /* color del fondo */
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #80afe2;         /* color de la barra */
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #7eb6f3;
+}
+
+/*check diseño*/
+.style-check input[type="checkbox"] {
+  appearance: none;        /* quita el estilo por defecto */
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  width: 15px;
+  height: 15px;
+  border-radius: 4px;
+  background-color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  border: none;
+  position: relative;
+}
+
+/* X blanca por defecto */
+.style-check input[type="checkbox"]::before {
+  content: "✕";
+  color: grey;
+  font-size: 10px;
+  font-weight: bold;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+/* cuando se marca */
+.style-check input[type="checkbox"]:checked {
+  background-color: red;
+}
+
+.style-check input[type="checkbox"]:checked::before{
+  color: white;
 }

@@ -1,8 +1,8 @@
 <ul class="ul-prod">
   <div id="<%= dom_id product %>"></div>
   <div class="div-foto">
-    <% if product.imagen.attached? %>
-      <%= image_tag url_for(product.imagen), alt: "Imagen del producto" %>
+    <% if product.images.attached? %>
+      <%= image_tag url_for(product.images.first), alt: "Imagen del producto" %>
     <% else %>
       <p>No hay imagen</p>
     <% end %>
@@ -23,7 +23,7 @@
       <%= product.descripcion %>
     </li> 
     <div class="opciones">
-      <li class="precio">$<%= product.precio %></li>
+      <li class="precio"><%= product.precio_cop %></li>
 
       <!--formulario para marcar si el producto esta disponible o no-->
           <%= form_with url: update_disponibilidad_products_path, method: :patch, id: "disponibilidad-form-#{product.id}" do %>

@@ -14,13 +14,20 @@ def reset_sqlite_sequences(*tables)
   end
 end
 
+# desactivar temporalmente las llaves foraneas
+ActiveRecord::Base.connection.execute("PRAGMA foreign_keys = OFF")
+
+puts "🧹 Limpiando base de datos..."
 Purchasedetail.delete_all
 Buy.delete_all
-Product.delete_all
 Category.delete_all
 Supplier.delete_all
 Customer.delete_all
 User.delete_all
+Product.delete_all
+
+ActiveRecord::Base.connection.execute("PRAGMA foreign_keys = ON")
+puts "guardando datos de la semilla"
 
 reset_sqlite_sequences(
   'purchasedetails',
@@ -64,7 +71,7 @@ products = Product.create!([
     nombre: "Martillo",
     descripcion: "Martillo de alta resistencia con mango ergonómico y cabeza de acero forjado,
     ideal para trabajos de carpintería, construcción y reparaciones generales.",
-    precio: 25.000,
+    precio: 25000.9,
     stock: 50,
     category: categories[1],
     supplier: suppliers[1]
@@ -73,7 +80,7 @@ products = Product.create!([
     nombre: "Llave stilson",
     descripcion: "Llave Stilson de acero forjado con mango antideslizante y mordazas ajustables,
     ideal para sujetar y girar tuberías metálicas con firmeza y seguridad.",
-    precio: 40.000,
+    precio: 40000,
     stock: 30,
     category: categories[1],
     supplier: suppliers[2]
@@ -82,7 +89,7 @@ products = Product.create!([
     nombre: "Sierra",
     descripcion: "Sierra manual con hoja de acero templado y mango ergonómico,
     ideal para cortes precisos en madera, plástico o metal.",
-    precio: 19.900,
+    precio: 19900,
     stock: 25,
     category: categories[3],
     supplier: suppliers[3]
@@ -91,7 +98,7 @@ products = Product.create!([
     nombre: "Tijera para lamina",
     descripcion: "Tijera corta hojalata con hojas de acero endurecido y mangos ergonómicos,
     ideal para cortar láminas de metal, aluminio y otros materiales delgados.",
-    precio: 35.000,
+    precio: 35000,
     stock: 12,
     category: categories[5],
     supplier: suppliers[4]
@@ -100,7 +107,7 @@ products = Product.create!([
     nombre: "Pala de punta",
     descripcion: "Pala de punta con hoja de acero resistente y mango corto de madera con agarradera en “D”,
     ideal para cavar, remover tierra y trabajos de jardinería o construcción.",
-    precio: 25.000,
+    precio: 25000,
     stock: 50,
     category: categories[2],
     supplier: suppliers[0]
@@ -109,7 +116,7 @@ products = Product.create!([
     nombre: "Lima plana manual",
     descripcion: "Lima plana de acero templado con mango ergonómico,
     ideal para desbastar y dar forma a superficies metálicas o de madera.",
-    precio: 8.000,
+    precio: 8000,
     stock: 150,
     category: categories[6],
     supplier: suppliers[1]
@@ -118,7 +125,7 @@ products = Product.create!([
     nombre: "Llave combinada",
     descripcion: "Llave combinada de acero cromado con boca fija y estrella,
     ideal para ajustar o aflojar tuercas y pernos de forma segura y eficiente.",
-    precio: 6.000,
+    precio: 6000,
     stock: 80,
     category: categories[2],
     supplier: suppliers[0]
@@ -127,7 +134,7 @@ products = Product.create!([
     nombre: "Pinza de presión",
     descripcion: "Pinza de presión de acero con mecanismo de bloqueo ajustable,
     ideal para sujetar firmemente piezas sin esfuerzo continuo.",
-    precio: 15.000,
+    precio: 15000,
     stock: 10,
     category: categories[3],
     supplier: suppliers[3]
@@ -136,7 +143,7 @@ products = Product.create!([
     nombre: "Taladro atornillador inalámbrico",
     descripcion: "Taladro atornillador inalámbrico compacto Milwaukee,
     ideal para perforar y atornillar con potencia y precisión sin necesidad de cables.",
-    precio: 900.000,
+    precio: 900000,
     stock: 8,
     category: categories[4],
     supplier: suppliers[4]
@@ -145,7 +152,7 @@ products = Product.create!([
     nombre: "Esmeriladora angular inalámbrica",
     descripcion: "Esmeriladora angular inalámbrica ideal para cortar,
     desbastar y pulir materiales como metal, piedra o cerámica, sin depender de cables.",
-    precio: 350.000,
+    precio: 350000,
     stock: 34,
     category: categories[1],
     supplier: suppliers[2]
@@ -153,8 +160,7 @@ products = Product.create!([
 ])
 
 products.each do |product|
-  # Lista de extensiones posibles
-  extensiones = [".jpg", ".jpeg", ".png", ".webp", "avif"]
+  extensiones = [".jpg", ".jpeg", ".png", ".webp", ".avif"]
 
   imagen_encontrada = false
 
@@ -163,16 +169,17 @@ products.each do |product|
     ruta_imagen = Rails.root.join("db/seeds-img", nombre_archivo)
 
     if File.exist?(ruta_imagen)
-      product.imagen.attach(
+      product.images.attach(
         io: File.open(ruta_imagen),
         filename: nombre_archivo,
         content_type: Marcel::MimeType.for(ruta_imagen)
       )
-      puts "✅ Imagen cargada para #{product.nombre} (#{ext})"
+      puts "✅ Imagen cargada para #{product.nombre}"
       imagen_encontrada = true
       break
     end
   end
+
   puts "⚠️  Imagen no encontrada para #{product.nombre}" unless imagen_encontrada
 end
 

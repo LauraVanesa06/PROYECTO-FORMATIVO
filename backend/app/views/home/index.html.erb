@@ -1,3 +1,5 @@
+
+ <!-- HERO -->
 <section class="hero-header">
 
   <div id="carouselExampleIndicators" class="carousel slide" data-bs-ride="carousel" data-bs-interval="2000">
@@ -45,16 +47,18 @@
   <h2 class="titulo"><%= t("products.title") %></h2>
   <div class="product-grid">
     <% @productos.each do |producto| %>
-      <div class="product-card">
+      <div class="product-card" onclick="window.location='<%= product_path(producto.id) %>'" style="cursor:pointer;">
         <div class="product-thumb">
           <%= image_tag(producto.imagen.presence || "martillo-dewalt.png", alt: producto.nombre, class: "img-fluid") %>
         </div>
         <div class="product-body">
-          <h3 class="product-name"><%= producto.nombre %></h3>
-          <p class="product-desc"><%= truncate(producto.descripcion, length: 80) %></p>
+          <div class="info-product">
+            <h3 class="product-name"><%= producto.nombre %></h3>
+            <p class="product-desc"><%= truncate(producto.descripcion, length: 80) %></p>
+          </div>
           <div class="product-meta">
             <span class="price">
-              <%= number_to_currency(producto.precio, unit: "$", separator: ".", delimiter: ",") %>
+              $ <%= producto.precio_cop %> COP
             </span>
             <div>
               <div class="d-flex flex-wrap gap-2 mt-2">
@@ -89,18 +93,6 @@
                     <i class="fa-regular fa-star"></i>
                   </button>
                 <% end %>
-
-                <!-- Botón ver detalles -->
-                <button class="btn btn-sm btn-secondary d-flex align-items-center gap-1 ver-mas-btn"
-                        data-bs-toggle="modal"
-                        data-bs-target="#productoModal"
-                        data-nombre="<%= producto.nombre %>"
-                        data-descripcion="<%= producto.descripcion %>"
-                        data-precio="<%= number_to_currency(producto.precio, unit: '$', separator: '.', delimiter: ',') %>"
-                        data-imagen="<%= url_for(producto.imagen.presence || 'martillo-dewalt.png') %>"
-                        data-url-compra="<%= add_item_cart_path(producto) %>">
-                  <i class="fa-solid fa-eye"></i>
-                </button>
               </div>
             </div>
           </div>
