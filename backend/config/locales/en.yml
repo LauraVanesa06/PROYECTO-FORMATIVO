@@ -83,3 +83,20 @@ en:
     description: "Description of your question"
     submit: "Send to administrator"
     whatsapp: "Buy with an expert"
+  favorites:
+    title: "My favorites"
+    empty: "You have no products in favorites."
+    add: "Add to favorites"
+    remove: "Remove from favorites"
+  cart:
+    title: "Your cart"
+    table:
+      product: "Product"
+      price: "Price"
+      quantity: "Quantity"
+      total: "Total"
+    total: "Grand total"
+    update_quantity: "Update quantity"
+    confirm_remove: "Remove this product?"
+    empty: "Your cart is empty."
+

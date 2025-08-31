@@ -75,14 +75,12 @@
                                   method: :delete,
                                   class: "btn btn-sm btn-warning d-flex align-items-center gap-1" do %>
                       <i class="fa-solid fa-star"></i>
-                      <%= t("products.favorites.remove") %>
                     <% end %>
                   <% else %>
                     <%= button_to favorites_path(product_id: producto.id),
                                   method: :post,
                                   class: "btn btn-sm btn-outline-warning d-flex align-items-center gap-1" do %>
                       <i class="fa-regular fa-star"></i>
-                      <%= t("products.favorites.add") %>
                     <% end %>
                   <% end %>
                 <% else %>

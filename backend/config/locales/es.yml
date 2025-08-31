@@ -68,3 +68,19 @@ es:
     description: "Descripción de la duda presentada"
     submit: "Enviar al administrador"
     whatsapp: "Compra con un experto"
+  favorites:
+    title: "Mis favoritos"
+    empty: "No tienes productos en favoritos."
+    add: "Agregar a favoritos"
+    remove: "Quitar de favoritos"
+  cart:
+    title: "Tu carrito"
+    table:
+      product: "Producto"
+      price: "Precio"
+      quantity: "Cantidad"
+      total: "Total"
+    total: "Total general"
+    update_quantity: "Actualizar cantidad"
+    confirm_remove: "¿Eliminar este producto?"
+    empty: "No hay productos en el carrito."    

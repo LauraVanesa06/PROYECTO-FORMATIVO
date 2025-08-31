@@ -2,10 +2,10 @@
   <table class="table align-middle">
     <thead>
       <tr>
-        <th>Producto</th>
-        <th>Precio</th>
-        <th>Cantidad</th>
-        <th>Total</th>
+        <th><%= t("cart.table.product") %></th>
+        <th><%= t("cart.table.price") %></th>
+        <th><%= t("cart.table.quantity") %></th>
+        <th><%= t("cart.table.total") %></th>
         <th></th>
       </tr>
     </thead>
@@ -25,7 +25,7 @@
             <%= form_with url: cart_item_path(item), method: :patch, data: { turbo_stream: true }, class: "d-inline" do %>
               <div class="input-group" style="width: 120px;">
                 <%= number_field_tag :quantity, item.quantity, min: 1, class: "form-control text-center" %>
-                <button class="btn btn-outline-primary" type="submit">
+                <button class="btn btn-outline-primary" type="submit" title="<%= t('cart.update_quantity') %>">
                   <i class="fa-solid fa-rotate"></i>
                 </button>
               </div>
@@ -34,7 +34,10 @@
           <td><%= number_to_currency((item.product.precio || 0) * item.quantity.to_i) %></td>
 
           <td>
-            <%= button_to cart_item_path(item), method: :delete, data: { turbo_stream: true, confirm: "¿Eliminar este producto?" }, class: "btn btn-outline-danger btn-sm" do %>
+            <%= button_to cart_item_path(item), 
+                          method: :delete, 
+                          data: { turbo_stream: true, confirm: t("cart.confirm_remove") }, 
+                          class: "btn btn-outline-danger btn-sm" do %>
               <i class="fa-solid fa-trash"></i>
             <% end %>
           </td>
@@ -44,8 +47,8 @@
   </table>
 
   <div class="text-end">
-    <h4>Total general: <%= number_to_currency(cart_items.sum { |i| i.product.precio * i.quantity }) %></h4>
+    <h4><%= t("cart.total") %>: <%= number_to_currency(cart_items.sum { |i| i.product.precio * i.quantity }) %></h4>
   </div>
 <% else %>
-  <p>No hay productos en el carrito.</p>
+  <p><%= t("cart.empty") %></p>
 <% end %>
