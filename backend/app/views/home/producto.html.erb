@@ -106,7 +106,7 @@
                       data-nombre="<%= producto.nombre %>"
                       data-descripcion="<%= producto.descripcion %>"
                       data-precio="<%= number_to_currency(producto.precio, unit: '$', separator: '.', delimiter: ',') %>"
-                      data-imagen="<%= producto.imagen.attached? ? url_for(producto.imagen) : asset_path('ProductoNoDisponible.png') %>"
+                      data-imagen="<%= producto.images.attached? ? url_for(producto.images.first) : asset_path('ProductoNoDisponible.png') %>"
                       data-url-compra="<%= add_item_cart_path(producto) %>"
                       title="<%= t('productos.boton.ver_detalles') %>">
                 <i class="fa-solid fa-eye"></i>

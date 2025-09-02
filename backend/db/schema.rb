@@ -89,16 +89,6 @@ ActiveRecord::Schema[8.0].define(version: 2025_08_24_191643) do
     t.index ["user_id"], name: "index_favorites_on_user_id"
   end
 
-  create_table "pedidos", force: :cascade do |t|
-    t.datetime "fecha"
-    t.json "productos"
-    t.string "descripcion_entrega"
-    t.integer "supplier_id", null: false
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["supplier_id"], name: "index_pedidos_on_supplier_id"
-  end
-
   create_table "products", force: :cascade do |t|
     t.string "nombre"
     t.string "descripcion"
@@ -171,7 +161,6 @@ ActiveRecord::Schema[8.0].define(version: 2025_08_24_191643) do
   add_foreign_key "carts", "users"
   add_foreign_key "favorites", "products"
   add_foreign_key "favorites", "users"
-  add_foreign_key "pedidos", "suppliers"
   add_foreign_key "products", "categories"
   add_foreign_key "products", "suppliers"
   add_foreign_key "purchasedetails", "buys", on_delete: :cascade
