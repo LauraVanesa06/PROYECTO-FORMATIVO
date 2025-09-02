@@ -9,8 +9,11 @@ Bundler.require(*Rails.groups)
 module Appsena
   class Application < Rails::Application
     config.load_defaults 7.0
-    config.i18n.available_locales = [:en, :es]
+    config.i18n.available_locales = [:es, :en]
     config.i18n.default_locale = :es
+    # Cargar también subcarpetas dentro de locales/
+    config.i18n.load_path += Dir[Rails.root.join("config", "locales", "**", "*.{rb,yml}")]
+
 
 
     # Initialize configuration defaults for originally generated Rails version.

@@ -33,13 +33,23 @@
 
       <!-- Navegación -->
       <nav class="main-nav d-flex gap-3">
-        <%= link_to "Inicio", authenticated_root_path, class: "text-white fw-bold" %>
-        <%= link_to "Productos", productos_path, class: "text-white fw-bold" %>
-        <%= link_to "contactos", contactos_path, class: "text-white fw-bold" %>
+        <%= link_to t("nav.home"), authenticated_root_path, class: "text-white fw-bold" %>
+        <%= link_to t("nav.products"), productos_path, class: "text-white fw-bold" %>
+        <%= link_to t("nav.contacts"), contactos_path, class: "text-white fw-bold" %>
       </nav>
 
       <!-- Iconos -->
+      
       <div class="header-icons d-flex align-items-center gap-3 text-white fs-5">
+        <div class="dropdown">
+          <button class="btn btn-sm btn-outline-light dropdown-toggle" type="button" data-bs-toggle="dropdown">
+            🌐 <%= I18n.locale.upcase %>
+          </button>
+          <ul class="dropdown-menu">
+            <li><%= link_to t("languages.spanish"), url_for(locale: :es), class: "dropdown-item" %></li>
+            <li><%= link_to t("languages.english"), url_for(locale: :en), class: "dropdown-item" %></li>
+          </ul>
+        </div>
         <%= link_to favoritos_path, class: "text-white" do %>
           <i class="fa-solid fa-star"></i>
         <% end %>
@@ -64,16 +74,16 @@
           </a>
           <ul class="dropdown-menu dropdown-menu-end">
             <% if user_signed_in? %>
-              <li><%= link_to "Perfil", edit_user_registration_path, class: "dropdown-item" %></li>
+              <li><%= link_to t("user.profile"), edit_user_registration_path, class: "dropdown-item" %></li>
               <li>
-                <%= button_to "Cerrar sesión", destroy_user_session_path,
+                <%= button_to t("user.logout"), destroy_user_session_path,
                               method: :delete,
-                              data: { confirm: "¿Estás seguro de que quieres cerrar sesión?" },
+                              data: { confirm: t("user.logout_confirm") },
                               class: "dropdown-item text-danger" %>
               </li>
             <% else %>
-              <li><%= link_to "Iniciar sesión", new_user_session_path, class: "dropdown-item" %></li>
-              <li><%= link_to "Registrarse", new_user_registration_path, class: "dropdown-item" %></li>
+              <li><%= link_to t("user.login"), new_user_session_path, class: "dropdown-item" %></li>
+              <li><%= link_to t("user.register"), new_user_registration_path, class: "dropdown-item" %></li>
             <% end %>
           </ul>
         </div>
@@ -85,7 +95,7 @@
 
     <!-- FOOTER -->
     <footer class="bg-dark text-white text-center p-3 mt-auto">
-      &copy; 2025 Ferremateriales el Maestro - v2.3.7
+      &copy; 2025 <%= t("app.name") %> - v2.3.7
     </footer>
   </main>
 
@@ -95,7 +105,7 @@
   <!-- Offcanvas DERECHO (ÚNICO) -->
   <div class="offcanvas offcanvas-end" tabindex="-1" id="cartSidebar" aria-labelledby="cartSidebarLabel">
     <div class="offcanvas-header">
-      <h5 class="offcanvas-title" id="cartSidebarLabel">Tu carrito</h5>
+      <h5 class="offcanvas-title" id="cartSidebarLabel"><%= t("cart.title") %></h5>
       <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Cerrar"></button>
     </div>
     <div class="offcanvas-body">

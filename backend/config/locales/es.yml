@@ -13,3 +13,74 @@ es:
     messages:
       taken: "ya está en uso"
       blank: "no puede estar vacío"
+  nav:
+    home: "Inicio"
+    products: "Productos"
+    contacts: "Contactos"
+  languages:
+    spanish: "Español"
+    english: "Inglés"
+  cart:
+    title: "Tu carrito"
+  user:
+    profile: "Perfil"
+    logout: "Cerrar sesión"
+    logout_confirm: "¿Estás seguro de que quieres cerrar sesión?"
+    login: "Iniciar sesión"
+    register: "Registrarse"
+  app:
+    name: "Ferremateriales el Maestro"
+  hero:
+    prev: "Anterior"
+    next: "Siguiente"
+  categories:
+    title: "🔍 Categorías"
+  products:
+    title: "🔥 Productos destacados"
+    buy: "Comprar"
+    close: "Cerrar"
+    favorites:
+      add: "Agregar a favoritos"
+      remove: "Quitar de favoritos"
+  productos:
+    titulo: "Todos los Productos"
+    sin_imagen: "Sin imagen"
+    filtro:
+      categoria: "Filtrar por categoría:"
+      todas_categorias: "Todas las categorías"
+      buscar_nombre: "Buscar por nombre:"
+      placeholder_nombre: "Nombre del producto"
+      precio_minimo: "Precio mínimo:"
+      precio_maximo: "Precio máximo:"
+      boton_filtrar: "Filtrar"
+    boton:
+      comprar: "Comprar"
+      cerrar: "Cerrar"
+      agregar_favorito: "Agregar a favoritos"
+      quitar_favorito: "Quitar de favoritos"
+      inicia_sesion_favoritos: "Inicia sesión para agregar a favoritos"
+      ver_detalles: "Ver detalles"
+  contact:
+    title: "Contáctanos"
+    name: "Tu nombre"
+    lastname: "Tu apellido"
+    email: "Tu correo"
+    description: "Descripción de la duda presentada"
+    submit: "Enviar al administrador"
+    whatsapp: "Compra con un experto"
+  favorites:
+    title: "Mis favoritos"
+    empty: "No tienes productos en favoritos."
+    add: "Agregar a favoritos"
+    remove: "Quitar de favoritos"
+  cart:
+    title: "Tu carrito"
+    table:
+      product: "Producto"
+      price: "Precio"
+      quantity: "Cantidad"
+      total: "Total"
+    total: "Total general"
+    update_quantity: "Actualizar cantidad"
+    confirm_remove: "¿Eliminar este producto?"
+    empty: "No hay productos en el carrito."    
