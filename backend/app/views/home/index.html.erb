@@ -49,7 +49,11 @@
     <% @productos.each do |producto| %>
       <div class="product-card" onclick="window.location='<%= product_path(producto.id) %>'" style="cursor:pointer;">
         <div class="product-thumb">
-          <%= image_tag(producto.imagen.presence || "martillo-dewalt.png", alt: producto.nombre, class: "img-fluid") %>
+          <%= image_tag(
+      producto.images.attached? ? url_for(producto.images.first) : "martillo-dewalt.png",
+      alt: producto.nombre,
+      class: "img-fluid"
+    ) %>
         </div>
         <div class="product-body">
           <div class="info-product">
