@@ -70,8 +70,8 @@ class ProductsController < ApplicationController
     # Borrar imágenes si se marcaron
     if params[:product][:remove_image_ids].present?
       params[:product][:remove_image_ids].each do |id|
-        image = @product.images.attachments.find_by(id)
-        image&.purge
+        image = @product.images.attachments.find(id)
+        image.purge
       end
     end
 
