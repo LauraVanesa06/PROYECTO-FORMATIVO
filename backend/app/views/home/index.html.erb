@@ -8,13 +8,13 @@
         <%= image_tag "promo1.png", class: "d-block w-100 carousel-img" %>
       </div>
       <div class="carousel-item">
-        <%= image_tag "promo2.jpeg", class: "d-block w-100 carousel-img" %>
+        <%= image_tag "promo2.png", class: "d-block w-100 carousel-img" %>
       </div>
       <div class="carousel-item">
-        <%= image_tag "promo3.jpeg", class: "d-block w-100 carousel-img" %>
+        <%= image_tag "promo3.png", class: "d-block w-100 carousel-img" %>
       </div>
       <div class="carousel-item">
-        <%= image_tag "promo4.jpg", class: "d-block w-100 carousel-img" %>
+        <%= image_tag "promo4.png", class: "d-block w-100 carousel-img" %>
       </div>
     </div>
   </div>
@@ -31,80 +31,101 @@
 </section>
 
 <!-- CATEGORÍAS -->
-<section class="categories-section container mt-4">
-  <h2 class="titulo"><%= t("categories.title") %></h2>
+<section class="categories-section mt-4">
+  <div class="section-header">
+    <h2 class="titulo"><%= t("categories.title") %></h2>
+    <center>
+    <hr class="linea-bonita">
+    </center>  
+  </div>
+  
   <div class="category-scroll" role="list">
     <% @categories.each do |c| %>
       <div class="category-card" role="listitem">
-        <%= link_to c.nombre, productos_path(category_id: c.id), class: "category-link" %>
+        <%= link_to productos_path(category_id: c.id), class: "category-link d-flex flex-column align-items-center" do %>
+          <% if c.imagen.attached? %>
+            <%= image_tag c.imagen.variant(resize_to_limit: [80, 80]), class: "mb-2 rounded-circle" %>
+          <% else %>
+            <i class="fa-solid fa-tag fa-2x mb-2"></i> <!-- Ícono por defecto si no hay imagen -->
+          <% end %>
+          <span><%= c.nombre %></span>
+        <% end %>
       </div>
     <% end %>
   </div>
 </section>
 
+
+
 <!-- PRODUCTOS -->
-<section id="productos" class="productos-destacados container mt-4 mb-5">
-  <h2 class="titulo"><%= t("products.title") %></h2>
+<section id="productos" class="productos-destacados mt-4 mb-5">
+  <div class="section-header">
+    <h2 class="titulo"> <%= t("products.title") %></h2>
+    <center>
+    <hr class="linea-bonita">
+    </center>  
+  </div>
   <div class="product-grid">
     <% @productos.each do |producto| %>
-      <div class="product-card" onclick="window.location='<%= product_path(producto.id) %>'" style="cursor:pointer;">
-        <div class="product-thumb">
-          <%= image_tag(
-      producto.images.attached? ? url_for(producto.images.first) : "martillo-dewalt.png",
-      alt: producto.nombre,
-      class: "img-fluid"
-    ) %>
-        </div>
-        <div class="product-body">
-          <div class="info-product">
-            <h3 class="product-name"><%= producto.nombre %></h3>
-            <p class="product-desc"><%= truncate(producto.descripcion, length: 80) %></p>
+        <div class="product-card" onclick="window.location='<%= product_path(producto.id) %>'" style="cursor:pointer;">
+          <div class="product-thumb">
+            <%= image_tag(
+                producto.images.attached? ? url_for(producto.images.first) : "martillo-dewalt.png",
+                alt: producto.nombre,
+                class: "img-fluid"
+              ) %>
           </div>
-          <div class="product-meta">
-            <span class="price">
-              $ <%= producto.precio_cop %> COP
-            </span>
-            <div>
-              <div class="d-flex flex-wrap gap-2 mt-2">
+          <div class="product-body">
+            <div class="info-product">
+              <h3 class="product-name"><%= producto.nombre %></h3>
+              <p class="product-desc"><%= truncate(producto.descripcion, length: 80) %></p>
+            </div>
+            <div class="product-meta">
+              <span class="price">
+                $ <%= producto.precio_cop %> COP
+              </span>
+              <div>
+                <div class="d-flex flex-wrap gap-2 mt-2">
 
-                <!-- Botón comprar -->
-                <%= button_to cart_items_path(product_id: producto.id),
-                    method: :post,
-                    remote: true,
-                    class: "btn btn-sm btn-outline-primary d-flex align-items-center justify-content-center" do %>
-                  <i class="fa-solid fa-cart-plus"></i>
-                <% end %>
+                  <!-- Botón comprar -->
+                  <%= button_to cart_items_path(product_id: producto.id),
+                      method: :post,
+                      remote: true,
+                      class: "btn btn-sm btn-outline-primary d-flex align-items-center justify-content-center" do %>
+                    <i class="fa-solid fa-cart-plus"></i>
+                  <% end %>
 
-                <!-- Botón favoritos -->
-                <% if current_user %>
-                  <% favorite = current_user.favorites.find_by(product_id: producto.id) %>
-                  <% if favorite %>
-                    <%= button_to favorite_path(favorite),
-                                  method: :delete,
-                                  class: "btn btn-sm btn-warning d-flex align-items-center gap-1" do %>
-                      <i class="fa-solid fa-star"></i>
+                  <!-- Botón favoritos -->
+                  <% if current_user %>
+                    <% favorite = current_user.favorites.find_by(product_id: producto.id) %>
+                    <% if favorite %>
+                      <%= button_to favorite_path(favorite),
+                                    method: :delete,
+                                    class: "btn btn-sm btn-warning d-flex align-items-center gap-1" do %>
+                        <i class="fa-solid fa-star"></i>
+                      <% end %>
+                    <% else %>
+                      <%= button_to favorites_path(product_id: producto.id),
+                                    method: :post,
+                                    class: "btn btn-sm btn-outline-warning d-flex align-items-center gap-1" do %>
+                        <i class="fa-regular fa-star"></i>
+                      <% end %>
                     <% end %>
                   <% else %>
-                    <%= button_to favorites_path(product_id: producto.id),
-                                  method: :post,
-                                  class: "btn btn-sm btn-outline-warning d-flex align-items-center gap-1" do %>
+                    <button class="btn btn-sm btn-outline-warning d-flex align-items-center gap-1" disabled>
                       <i class="fa-regular fa-star"></i>
-                    <% end %>
+                    </button>
                   <% end %>
-                <% else %>
-                  <!-- Si no hay usuario logueado -->
-                  <button class="btn btn-sm btn-outline-warning d-flex align-items-center gap-1" disabled>
-                    <i class="fa-regular fa-star"></i>
-                  </button>
-                <% end %>
+                </div>
               </div>
             </div>
           </div>
         </div>
-      </div>
-    <% end %>
+      <% end %>
+    </div>
   </div>
 </section>
+
 
 <!-- Modal -->
 <div class="modal fade" id="productoModal" tabindex="-1" aria-hidden="true">
