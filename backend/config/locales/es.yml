@@ -34,9 +34,9 @@ es:
     prev: "Anterior"
     next: "Siguiente"
   categories:
-    title: "🔍 Categorías"
+    title: "Categorías"
   products:
-    title: "🔥 Productos destacados"
+    title: "Productos destacados"
     buy: "Comprar"
     close: "Cerrar"
     favorites:

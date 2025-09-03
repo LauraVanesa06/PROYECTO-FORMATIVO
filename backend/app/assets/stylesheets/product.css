@@ -201,7 +201,7 @@ body{
 }
 
 .btn-agg, .btn-buy{
-    width: 95%;
+    width: 350px;
     height: 50px;
     border: solid 2px #4286cf;
     margin-bottom: 7px;
@@ -219,7 +219,7 @@ body{
 }
 
 .btn-agg:hover, .btn-buy:hover{
-    width: 100%;
+    width: 370px;
     border-radius: 10px;
 }
 

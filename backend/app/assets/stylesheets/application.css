@@ -121,7 +121,7 @@ main {
   font-size: 3.75vh;
   color: white;
   margin: 0;
-  padding: 5px 5px 5px 5px; 
+  padding: 5px 5px 5px 18px; 
   border-radius: 20px;
 }
 
@@ -954,7 +954,7 @@ hr{
 .section-header .titulo {
   font-size: 18px;
   font-weight: 700;
-  color: #1e3c72;
+  color: #4f545d;
   margin: 0;
   letter-spacing: 0.5px;
 }
