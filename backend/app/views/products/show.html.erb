@@ -25,59 +25,65 @@
 </head>
 <body>
   <!-- HEADER -->
-    <header class="header-container d-flex align-items-center justify-content-between px-4" style="background-image: url('<%= asset_path('madera2.jpg') %>'); background-size: cover; background-position: center; height: 80px;">
-      <!-- Logo -->
-      <div class="logo">
-        <%= link_to image_tag("logo.png", alt: "Ferremateriales El Maestro", style: "height:50px;"), authenticated_root_path %>
-      </div>
+    <!-- HEADER -->
+    <header class="container-header"> 
+        <!-- Navegación -->
+        <nav class="main-nav d-flex gap-3">
+          <%= link_to t("nav.home"), authenticated_root_path, class: "text-white fw-bold" %>
+          <%= link_to t("nav.products"), productos_path, class: "text-white fw-bold" %>
+          <%= link_to t("nav.contacts"), contactos_path, class: "text-white fw-bold" %>
+        </nav>
 
-      <!-- Navegación -->
-      <nav class="main-nav d-flex gap-3">
-        <%= link_to "Inicio", authenticated_root_path, class: "text-white fw-bold" %>
-        <%= link_to "Productos", productos_path, class: "text-white fw-bold" %>
-        <%= link_to "contactos", contactos_path, class: "text-white fw-bold" %>
-      </nav>
+        <!-- Iconos -->
+        
+        <div class="header-icons d-flex align-items-center gap-3 text-white fs-5">
+          <div class="dropdown">
+            <button class="btn btn-sm btn-outline-light dropdown-toggle" type="button" data-bs-toggle="dropdown">
+              🌐 <%= I18n.locale.upcase %>
+            </button>
+            <ul class="dropdown-menu">
+              <li><%= link_to t("languages.spanish"), url_for(locale: :es), class: "dropdown-item" %></li>
+              <li><%= link_to t("languages.english"), url_for(locale: :en), class: "dropdown-item" %></li>
+            </ul>
+          </div>
+          <%= link_to favoritos_path, class: "text-white" do %>
+            <i class="fa-solid fa-star"></i>
+          <% end %>
 
-      <!-- Iconos -->
-      <div class="header-icons d-flex align-items-center gap-3 text-white fs-5">
-        <%= link_to favoritos_path, class: "text-white" do %>
-          <i class="fa-solid fa-star"></i>
-        <% end %>
-
-        <!-- Carrito: abre SIEMPRE el offcanvas derecho y muestra contador -->
-        <%= link_to "#",
-                    class: "text-white position-relative",
-                    data: { bs_toggle: "offcanvas", bs_target: "#cartSidebar" } do %>
-          <i class="fa-solid fa-cart-shopping"></i>
-          <%# render partial: "carts/cart_count", locals: { count: @cart_items.sum(&:cantidad) } %>
-        <% end %>
+          <!-- Carrito: abre SIEMPRE el offcanvas derecho y muestra contador -->
+          <%= link_to "#",
+                      class: "text-white position-relative",
+                      data: { bs_toggle: "offcanvas", bs_target: "#cartSidebar" } do %>
+            <i class="fa-solid fa-cart-shopping"></i>
+            <%# render partial: "carts/cart_count", locals: { count: @cart_items.sum(&:cantidad) } %>
+          <% end %>
 
 
-        <%= link_to notificaciones_path, class: "text-white" do %>
-          <i class="fa-solid fa-bell"></i>
-        <% end %>
+          <%= link_to notificaciones_path, class: "text-white" do %>
+            <i class="fa-solid fa-bell"></i>
+          <% end %>
 
-        <!-- Usuario con dropdown -->
-        <div class="dropdown">
-          <a href="#" class="text-white dropdown-toggle" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-            <i class="fa-solid fa-user"></i>
-          </a>
-          <ul class="dropdown-menu dropdown-menu-end">
-            <% if user_signed_in? %>
-              <li><%= link_to "Perfil", edit_user_registration_path, class: "dropdown-item" %></li>
-              <li>
-                <%= button_to "Cerrar sesión", destroy_user_session_path,
-                              method: :delete,
-                              data: { confirm: "¿Estás seguro de que quieres cerrar sesión?" },
-                              class: "dropdown-item text-danger" %>
-              </li>
-            <% else %>
-              <li><%= link_to "Iniciar sesión", new_user_session_path, class: "dropdown-item" %></li>
-              <li><%= link_to "Registrarse", new_user_registration_path, class: "dropdown-item" %></li>
-            <% end %>
-          </ul>
+          <!-- Usuario con dropdown -->
+          <div class="dropdown">
+            <a href="#" class="text-white dropdown-toggle" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+              <i class="fa-solid fa-user"></i>
+            </a>
+            <ul class="dropdown-menu dropdown-menu-end">
+              <% if user_signed_in? %>
+                <li><%= link_to t("user.profile"), edit_user_registration_path, class: "dropdown-item" %></li>
+                <li>
+                  <%= button_to t("user.logout"), destroy_user_session_path,
+                                method: :delete,
+                                data: { confirm: t("user.logout_confirm") },
+                                class: "dropdown-item text-danger" %>
+                </li>
+              <% else %>
+                <li><%= link_to t("user.login"), new_user_session_path, class: "dropdown-item" %></li>
+                <li><%= link_to t("user.register"), new_user_registration_path, class: "dropdown-item" %></li>
+              <% end %>
+            </ul>
+          </div>
         </div>
-      </div>
     </header>
     
   <section class="view-product">
@@ -194,7 +200,13 @@
       <section class="set-pago">
         <article class="pago">
           <div class="btns">
-            <button class="btn-agg">Agregar al carrito</button>
+            <%= button_to cart_items_path(product_id: @product.id),
+              method: :post,
+              remote: true,
+              class: "btn-agg" do %>
+              Agregar al carrito
+            <% end %>
+
             <button class="btn-buy">¡Comprar!</button>
           </div>
           <div class="metodo">

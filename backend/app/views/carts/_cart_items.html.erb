@@ -47,7 +47,8 @@
   </table>
 
   <div class="text-end">
-    <h4><%= t("cart.total") %>: <%= number_to_currency(cart_items.sum { |i| i.product.precio * i.quantity }) %></h4>
+    <h4><%= t("cart.total") %>: <%= number_to_currency(cart_items.sum { |i| (i.product&.precio || 0) * (i.quantity || 0) }) %>
+</h4>
   </div>
 <% else %>
   <p><%= t("cart.empty") %></p>
