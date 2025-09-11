@@ -99,18 +99,6 @@
                   <i class="fa-regular fa-star"></i>
                 </button>
               <% end %>
-              <!-- Botón ver detalles -->
-              <button class="btn btn-sm btn-secondary d-flex align-items-center gap-1 ver-mas-btn"
-                      data-bs-toggle="modal"
-                      data-bs-target="#productoModal"
-                      data-nombre="<%= producto.nombre %>"
-                      data-descripcion="<%= producto.descripcion %>"
-                      data-precio="<%= number_to_currency(producto.precio, unit: '$', separator: '.', delimiter: ',') %>"
-                      data-imagen="<%= producto.images.attached? ? url_for(producto.images.first) : asset_path('ProductoNoDisponible.png') %>"
-                      data-url-compra="<%= add_item_cart_path(producto) %>"
-                      title="<%= t('productos.boton.ver_detalles') %>">
-                <i class="fa-solid fa-eye"></i>
-              </button>
             </div>
           </div>
         </div>
