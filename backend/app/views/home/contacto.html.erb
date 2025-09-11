@@ -1,4 +1,5 @@
 <head>
+  <%= javascript_include_tag "https://cdn.jsdelivr.net/npm/sweetalert2@11" %>
   <%= stylesheet_link_tag "contactanos", media: "all" %>
 </head>
 
@@ -64,3 +65,23 @@
 </section>
 
 </body>
+
+<script>
+  <% if flash[:notice] %>
+    Swal.fire({
+      icon: 'success',
+      title: '¡Mensaje enviado!',
+      text: '<%= flash[:notice] %>',
+      timer: 3000,          // ⏳ se cierra solo en 3 segundos
+      showConfirmButton: false
+    });
+  <% elsif flash[:alert] %>
+    Swal.fire({
+      icon: 'error',
+      title: 'Error',
+      text: '<%= flash[:alert] %>',
+      timer: 4000,          // ⏳ se cierra en 4 segundos
+      showConfirmButton: false
+    });
+  <% end %>
+</script>
