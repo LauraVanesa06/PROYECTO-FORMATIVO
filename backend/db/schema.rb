@@ -10,8 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_08_24_191643) do
-  
+ActiveRecord::Schema[8.0].define(version: 2025_08_22_025317) do
   create_table "active_storage_attachments", force: :cascade do |t|
     t.string "name", null: false
     t.string "record_type", null: false
@@ -97,6 +96,8 @@ ActiveRecord::Schema[8.0].define(version: 2025_08_24_191643) do
     t.integer "supplier_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.integer "stock"
+    t.string "proveedor"
     t.index ["supplier_id"], name: "index_pedidos_on_supplier_id"
   end
 
@@ -110,7 +111,12 @@ ActiveRecord::Schema[8.0].define(version: 2025_08_24_191643) do
     t.integer "category_id", null: false
     t.integer "supplier_id", null: false
     t.boolean "disponible", default: true
+    t.string "codigo_producto"
+    t.integer "cantidad"
+    t.string "modelo"
+    t.string "marca"
     t.index ["category_id"], name: "index_products_on_category_id"
+    t.index ["codigo_producto"], name: "index_products_on_codigo_producto", unique: true
     t.index ["supplier_id"], name: "index_products_on_supplier_id"
   end
 
@@ -130,6 +136,8 @@ ActiveRecord::Schema[8.0].define(version: 2025_08_24_191643) do
     t.string "contacto"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "codigo_proveedor"
+    t.index ["codigo_proveedor"], name: "index_suppliers_on_codigo_proveedor", unique: true
   end
 
   create_table "support_requests", force: :cascade do |t|

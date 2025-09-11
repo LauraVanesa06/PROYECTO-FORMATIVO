@@ -12,6 +12,9 @@ class Product < ApplicationRecord
   validates :nombre, uniqueness: { scope: :supplier_id }
   validates :precio, numericality: { greater_than_or_equal_to: 0 }, presence: true
   
+  before_create :generate_code
+  validates :codigo_producto_producto, uniqueness: true
+
   has_many_attached :images, dependent: :purge
   validate :acceptable_images
 
@@ -20,9 +23,10 @@ class Product < ApplicationRecord
     ApplicationController.helpers.number_to_currency(precio, unit: "", separator: ",", delimiter:".")
   end
 
-  # esto es para validar el formato y el tamaño de la imagen
+  
   private
 
+  # esto es para validar el formato y el tamaño de la imagen
   def acceptable_images
     return unless images.attached?
 
@@ -34,6 +38,21 @@ class Product < ApplicationRecord
         errors.add(:images, "cada archivo debe pesar menos de 5 MB")
       end
     end
-  end
+  end  
+  
+  # esto es para generar el codigo del producto automaticamente
+  def generate_code
+    loop do
+      initials = nombre.split.map { |word| word[0] }.join.upcase
+      last_product = Product.where("codigo_producto LIKE ?", "#{initials}%").order(:codigo_producto).last
+      last_number = last_product.present? ? last_product.codigo_producto.gsub(initials, "").to_i : 0
+      next_number = last_number + 1
+      candidate = "#{initials}#{next_number.to_s.rjust(3, '0')}"
 
+      unless Product.exists?(codigo_producto: candidate)
+        self.codigo_producto = candidate
+        break
+      end
+    end
+  end
 end
