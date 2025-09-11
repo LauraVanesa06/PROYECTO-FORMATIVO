@@ -7,9 +7,10 @@
         <% product = favorite.product %>
         <div class="product-card">
           <div class="product-thumb">
-            <%= image_tag(product.imagen.attached? ? product.imagen : "placeholder.jpg",
-                          alt: product.nombre,
-                          class: "img-fluid") %>
+           <%= image_tag(product.images.attached? ? url_for(product.images.first) : "placeholder.jpg",
+              alt: product.nombre,
+              class: "img-fluid") %>
+
           </div>
           <div class="product-body">
             <h3 class="product-name"><%= product.nombre %></h3>
@@ -41,7 +42,8 @@
                           data-nombre="<%= favorite.product.nombre %>"
                           data-descripcion="<%= favorite.product.descripcion %>"
                           data-precio="<%= number_to_currency(favorite.product.precio, unit: '$', separator: '.', delimiter: ',') %>"
-                          data-imagen="<%= url_for(favorite.product.imagen.presence || 'martillo-dewalt.png') %>"
+                          data-imagen="<%= favorite.product.images.attached? ? url_for(favorite.product.images.first) : asset_path('martillo-dewalt.png') %>"
+
                           data-url-compra="<%= add_item_cart_path(favorite.product) %>">
                     <i class="fa-solid fa-eye"></i> <%= t("productos.boton.ver_detalles") %>
                   </button>
