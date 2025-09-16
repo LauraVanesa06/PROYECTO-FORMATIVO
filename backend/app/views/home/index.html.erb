@@ -67,7 +67,7 @@
   </div>
   <div class="product-grid">
     <% @productos.each do |producto| %>
-        <div class="product-card" onclick="window.location='<%= product_path(producto.id) %>'" style="cursor:pointer;">
+        <div class="product-card" data-url="<%= product_path(producto.id) %>" style="cursor:pointer;">
           <div class="product-thumb">
             <%= image_tag(
                 producto.images.attached? ? url_for(producto.images.first) : "martillo-dewalt.png",
@@ -88,12 +88,11 @@
                 <div class="d-flex flex-wrap gap-2 mt-2">
 
                   <!-- Botón comprar listo --> 
-                  <%= button_to cart_items_path(product_id: producto.id),
-                      method: :post,
-                      remote: true,
-                      class: "btn btn-sm btn-outline-primary d-flex align-items-center justify-content-center" do %>
+                  <button 
+                    class="btn btn-sm btn-outline-primary d-flex align-items-center justify-content-center add-to-cart-btn" 
+                    data-url="<%= cart_items_path(product_id: producto.id) %>">
                     <i class="fa-solid fa-cart-plus"></i>
-                  <% end %>
+                  </button>
 
                   <!-- Botón favoritos -->
                   <% if current_user %>
@@ -158,31 +157,62 @@
 <!-- TOASTS -->
 <div id="toast-container"></div>
 
+
+
 <script>
 
-function initProductoModal() {
-  const modal = document.getElementById("productoModal");
-  if (!modal) return;
+document.addEventListener("click", async (e) => {
+  if (e.target.closest(".add-to-cart-btn")) {
+    e.preventDefault();
+    e.stopPropagation();
 
-  const nombreEl = document.getElementById("modalProductoNombre");
-  const descEl = document.getElementById("modalProductoDescripcion");
-  const precioEl = document.getElementById("modalProductoPrecio");
-  const imgEl = document.getElementById("modalProductoImagen");
-  const formEl = document.getElementById("modalCompraForm");
+    const btn = e.target.closest(".add-to-cart-btn");
+    const url = btn.dataset.url;
 
-  document.querySelectorAll(".ver-mas-btn").forEach(btn => {
-    btn.addEventListener("click", () => {
-      nombreEl.textContent = btn.dataset.nombre || "";
-      descEl.textContent = btn.dataset.descripcion || "";
-      precioEl.textContent = btn.dataset.precio || "";
-      imgEl.src = btn.dataset.imagen || "";
-      formEl.action = btn.dataset.urlCompra || "#";
+    await fetch(url, {
+      method: "POST",
+      headers: {
+        "X-CSRF-Token": document.querySelector("meta[name='csrf-token']").content
+      }
     });
-  });
-}
 
-// Funciona tanto con Turbo como sin él
-document.addEventListener("turbo:load", initProductoModal);
-document.addEventListener("DOMContentLoaded", initProductoModal);
+    // Crear toast
+    const toast = document.createElement("div");
+    toast.className = "toast align-items-center text-bg-success border-0 show mb-2 shadow";
+    toast.setAttribute("role", "alert");
+    toast.style.minWidth = "250px"; // un poco más ancho
+    toast.innerHTML = `
+      <div class="d-flex">
+        <div class="toast-body text-center w-100">Producto agregado al carrito ✅</div>
+        <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
+      </div>`;
+
+    // Insertar en el contenedor
+    document.querySelector("#toast-container").appendChild(toast);
+
+    // Desaparecer automáticamente después de 3 segundos
+    setTimeout(() => {
+      toast.classList.remove("show");
+      toast.classList.add("fade");
+      setTimeout(() => toast.remove(), 500); // espera la animación fade
+    }, 3000);
+  }
+});
+
+document.addEventListener("click", (e) => {
+  const card = e.target.closest(".product-card");
+  if (!card) return;
+
+  if (
+    e.target.closest(".add-to-cart-btn") ||
+    e.target.closest("form") ||
+    e.target.closest("button") ||
+    e.target.closest("i")
+  ) return;
+
+  window.location = card.dataset.url;
+});
+
+
 
 </script>
