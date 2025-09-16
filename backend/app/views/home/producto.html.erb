@@ -96,17 +96,7 @@
               <% end %>
 
 
-              <!-- Botón ver detalles -->
-              <button class="btn btn-sm btn-secondary d-flex align-items-center gap-1 ver-mas-btn"
-                      data-bs-toggle="modal"
-                      data-bs-target="#productoModal"
-                      data-nombre="<%= producto.nombre %>"
-                      data-descripcion="<%= producto.descripcion %>"
-                      data-precio="<%= number_to_currency(producto.precio, unit: '$', separator: '.', delimiter: ',') %>"
-                      data-imagen="<%= producto.images.attached? ? url_for(producto.images.first) : asset_path('ProductoNoDisponible.png') %>"
-                      data-url-compra="<%= add_item_cart_path(producto) %>">
-                <i class="fa-solid fa-eye"></i>
-              </button>
+
             </div>
           </div>
         </div>
@@ -213,4 +203,21 @@ function showToast(message, type) {
     setTimeout(() => toast.remove(), 500);
   }, 3000);
 }
+
+// Navegación al hacer click en la tarjeta (excepto botones internos)
+document.addEventListener("click", (e) => {
+  const card = e.target.closest(".product-card");
+
+  if (card) {
+    // Si el click vino desde un botón interno => no navegamos
+    if (e.target.closest("button")) return;
+
+    // Redirigir al show del producto
+    const url = card.dataset.url;
+    if (url) {
+      window.location.href = url;
+    }
+  }
+});
+
 </script>

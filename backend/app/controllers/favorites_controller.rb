@@ -6,14 +6,21 @@ class FavoritesController < ApplicationController
   end
 
   def create
-    product = Product.find(params[:product_id])
-    current_user.favorites.find_or_create_by(product: product)
-    redirect_back fallback_location: productos_path, notice: "Producto agregado a favoritos"
+    favorite = current_user.favorites.create(product_id: params[:product_id])
+
+    respond_to do |format|
+      format.json { render json: { id: favorite.id }, status: :created }
+      format.html { redirect_back fallback_location: root_path, notice: 'Agregado a favoritos' }
+    end
   end
 
   def destroy
     favorite = current_user.favorites.find(params[:id])
     favorite.destroy
-    redirect_to favorites_path, notice: "Producto eliminado de favoritos."
+
+    respond_to do |format|
+      format.json { render json: { success: true }, status: :ok }
+      format.html { redirect_back fallback_location: root_path, notice: 'Eliminado de favoritos' }
+    end
   end
 end
