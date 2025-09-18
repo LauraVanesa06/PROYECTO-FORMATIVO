@@ -4,6 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <%= stylesheet_link_tag "modals", media: "all" %>
+  
 </head>
 <body>
   <div class="contact-container">
@@ -125,9 +126,15 @@
               <label>Precio</label>
               <%= form.text_field :precio, id: 'edit-precio' %>
             </div>
-            <div class="input-box">
-              <label>Stock</label>
-              <%= form.number_field :stock, id: 'edit-stock' %>
+            <div class="column">
+              <div class="input-box input2">
+                <label>Stock Inicial</label>
+                <%= form.number_field :stock, id: 'edit-stock' %>
+              </div>
+              <div class="input-box input2">
+                <label>Cod Producto</label>
+                <%= form.text_field :codigo_producto, id: 'edit-codigo_producto', readonly: true %>
+              </div>
             </div>
           </div>
           <div class="column">
@@ -136,18 +143,8 @@
               <%= form.text_field :marca, id: 'edit-marca' %>
             </div>
             <div class="input-box">
-              <label>Cantidad</label>
-              <%= form.number_field :cantidad, id: 'edit-cantidad' %>
-            </div>
-          </div>
-          <div class="column">
-            <div class="input-box">
               <label>Modelo</label>
               <%= form.text_field :modelo, id: 'edit-modelo' %>
-            </div>
-            <div class="input-box">
-              <label>Codigo del producto</label>
-              <%= form.number_field :codigo_producto, id: 'edit-codigo_producto' %>
             </div>
           </div>
           <div class="input-box">

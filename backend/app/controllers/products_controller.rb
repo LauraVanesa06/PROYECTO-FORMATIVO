@@ -108,6 +108,18 @@ class ProductsController < ApplicationController
     redirect_to inventario_path
   end
 
+  def generate_code
+    nombre = params[:nombre].to_s
+    initials = nombre.split.map { |word| word[0] }.join.upcase
+
+    last_product = Product.where("codigo_producto LIKE ?", "#{initials}%").order(:codigo_producto).last
+    last_number = last_product.present? ? last_product.codigo_producto.gsub(initials, "").to_i : 0
+    next_number = last_number + 1
+    candidate = "#{initials}#{next_number.to_s.rjust(3, '0')}"
+
+    render json: { codigo: candidate }
+  end
+
   # DELETE /products/1 or /products/1.json
   def destroy
     @product.destroy!

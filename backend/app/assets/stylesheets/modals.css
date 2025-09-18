@@ -14,8 +14,8 @@ body{
 h1.new{
     position: absolute;
     z-index: 9999;
-    margin-bottom: 505px;
-    font-size: 25px;
+    margin-bottom: 560px;
+    font-size: 21px;
     margin-left: 422px;
     font-family: 'Segoe UI', sans-serif;
     color: #8ea6ff;
@@ -23,7 +23,7 @@ h1.new{
 div.opc{
   position: absolute;
   z-index: 9999;
-  margin-right: -406px;
+  margin-right: -430px;
   width: 150px;
   margin-bottom: -499px;
   display: flex;
@@ -34,14 +34,18 @@ div.opc{
 .opc a{
   text-decoration: none;
   font-size: 15px;
-  color:#e4cf96;
+  color: #0022ff;
   cursor: pointer;
+}
+.button_to{
+  margin: 0;
 }
 .opc button{
   background: none;
   border: none;
-  color:#c50d0d;
+  color:#d91313;
   padding: 0;
+  margin: 0;
   cursor: pointer;
   font: inherit; 
 }
@@ -74,12 +78,12 @@ div.opc{
 }
 /*form*/
 .form-edit-new {
-        position: relative;
+    position: relative;
     width: 70%;
-    height: 80%;
+    height: auto;
     background: #ffffff;
     border: 1px solid #eeeeee;
-    padding: 25px 25px 25px 25px;
+    padding: 10px;
     /* margin-left: 100px; */
     border-radius: 5px;
     display: flex;
@@ -99,8 +103,8 @@ div.opc{
   margin-top: 10px;
 }
 
-#edit-precio, #edit-stock{
-  width: 300px;
+.input2{
+  width: 50% !important;
 }
 
 .input-box label {
@@ -236,8 +240,6 @@ input.guardar:hover {
 /*agregar imagen*/
 .form {
     background-color: #a8baff;
-    /* box-shadow: 0 10px 60px rgb(218, 229, 255); */
-    /* border: 1px solid rgb(159, 159, 160); */
     border-radius: 10px;
     padding: 20px;
     text-align: center;
@@ -247,8 +249,8 @@ input.guardar:hover {
     flex-direction: column;
     position: absolute;
     z-index: 9999;
-    margin-right: 700px;
-    height: 480px;
+    margin-right: 660px;
+    height: 540px;
 }
 
 .form-title {

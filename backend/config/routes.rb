@@ -58,7 +58,11 @@ Rails.application.routes.draw do
   # Recursos principale
   resources :products do
     patch :update_disponibilidad, on: :collection
+    collection do 
+      get :generate_code
+    end
   end
+  
   resources :carts, only: [:show]
   resources :favorites, only: [:index, :create, :destroy]
 

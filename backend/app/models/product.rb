@@ -1,17 +1,16 @@
 class Product < ApplicationRecord
   # Relacion favoritos
   has_many :favorites, dependent: :destroy
-  has_many :favorited_by, through: :favorites, source: :user
+  has_many :favorited_by, through: :favorites, source: :user, dependent: :destroy
 
   # Relacion carrito
-  has_many :cart_items
+  has_many :cart_items, dependent: :destroy
 
   belongs_to :category
   belongs_to :supplier
   has_many :purchasedetails, dependent: :destroy
   validates :nombre, uniqueness: { scope: :supplier_id }
   validates :precio, numericality: { greater_than_or_equal_to: 0 }, presence: true
-  
   before_create :generate_code
   validates :codigo_producto_producto, uniqueness: true
 
@@ -55,4 +54,5 @@ class Product < ApplicationRecord
       end
     end
   end
+
 end
