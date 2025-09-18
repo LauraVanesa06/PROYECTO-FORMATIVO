@@ -1,6 +1,8 @@
 class ApplicationController < ActionController::Base
-  before_action :authenticate_user!
-  # Only allow modern browsers supporting webp images, web push, badges, import maps, CSS nesting, and CSS :has.
+  # ✅ Solo exigir login si no es Devise y no es el controlador de productos
+  before_action :authenticate_user!, unless: :public_controller?
+
+  # Solo navegadores modernos
   allow_browser versions: :modern
 
   before_action :set_cart
@@ -11,6 +13,16 @@ class ApplicationController < ActionController::Base
   before_action :set_locale
 
   private
+
+  def public_controller?
+    # Devise controllers (login, registro, etc.)
+    return true if devise_controller?
+
+    # Permitir ver productos sin login
+    return true if controller_name == "products" && ["index", "show"].include?(action_name)
+
+    false
+  end
 
   def set_locale
     locale = params[:locale] || session[:locale] || I18n.default_locale
