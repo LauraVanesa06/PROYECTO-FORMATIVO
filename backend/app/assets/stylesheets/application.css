@@ -1076,15 +1076,15 @@ hr{
   justify-content: space-around;
 }
 
-/* Estilos generales de flash ALERTAS LOGIN*/
+/* Estilos generales de flash */
 .flash {
   position: fixed;              /* flotante */
-  top: 20px;                    /* separado un poco del borde superior */
+  top: 400px;                    /* separado un poco del borde superior */
   left: 50%;                    /* centrado horizontal */
   transform: translateX(-50%);  /* ajuste perfecto al centro */
   min-width: 300px;             /* ancho mínimo */
   max-width: 90%;               /* no más ancho que la pantalla */
-  
+  width: 600px;
   padding: 12px 18px;
   border-radius: 10px;
   font-weight: bold;
