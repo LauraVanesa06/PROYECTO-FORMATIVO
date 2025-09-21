@@ -8,11 +8,14 @@ class Product < ApplicationRecord
 
   belongs_to :category
   belongs_to :supplier
+  belongs_to :marca
   has_many :purchasedetails, dependent: :destroy
   validates :nombre, uniqueness: { scope: :supplier_id }
   validates :precio, numericality: { greater_than_or_equal_to: 0 }, presence: true
+  validates :marca_id, presence: true
+
   before_create :generate_code
-  validates :codigo_producto_producto, uniqueness: true
+  validates :codigo_producto, uniqueness: true
 
   has_many_attached :images, dependent: :purge
   validate :acceptable_images

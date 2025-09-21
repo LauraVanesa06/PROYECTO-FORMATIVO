@@ -248,7 +248,7 @@ input.guardar:hover {
     display: flex;
     flex-direction: column;
     position: absolute;
-    z-index: 9999;
+    z-index: 1;
     margin-right: 660px;
     height: 540px;
 }
@@ -324,14 +324,17 @@ input.guardar:hover {
 }
 
 #error_explanation {
-  background: #ffe6e6;
-  border: 1px solid #ff4d4d;
-  border-radius: 8px;
-  padding: 12px 16px;
-  margin-bottom: 20px;
-  font-size: 14px;
-  color: #b30000;
-  max-width: 600px;
+  z-index: 9;
+    background: #ffe6e6;
+    border: 1px solid #ff4d4d;
+    border-radius: 8px;
+    padding: 12px 16px;
+    margin-bottom: 20px;
+    margin-right: 150px;
+    font-size: 14px;
+    color: #b30000;
+    position: absolute;
+    max-width: 600px;
 }
 
 #error_explanation h2 {

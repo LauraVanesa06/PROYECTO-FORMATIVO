@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_08_22_025317) do
+ActiveRecord::Schema[8.0].define(version: 2025_09_21_175902) do
   create_table "active_storage_attachments", force: :cascade do |t|
     t.string "name", null: false
     t.string "record_type", null: false
@@ -89,6 +89,12 @@ ActiveRecord::Schema[8.0].define(version: 2025_08_22_025317) do
     t.index ["user_id"], name: "index_favorites_on_user_id"
   end
 
+  create_table "marcas", force: :cascade do |t|
+    t.string "nombre"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
   create_table "pedidos", force: :cascade do |t|
     t.datetime "fecha"
     t.json "productos"
@@ -104,7 +110,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_08_22_025317) do
   create_table "products", force: :cascade do |t|
     t.string "nombre"
     t.string "descripcion"
-    t.decimal "precio", precision: 12, scale: 2
+    t.decimal "precio"
     t.integer "stock"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
@@ -112,9 +118,8 @@ ActiveRecord::Schema[8.0].define(version: 2025_08_22_025317) do
     t.integer "supplier_id", null: false
     t.boolean "disponible", default: true
     t.string "codigo_producto"
-    t.integer "cantidad"
     t.string "modelo"
-    t.string "marca"
+    t.integer "marca_id"
     t.index ["category_id"], name: "index_products_on_category_id"
     t.index ["codigo_producto"], name: "index_products_on_codigo_producto", unique: true
     t.index ["supplier_id"], name: "index_products_on_supplier_id"
@@ -182,6 +187,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_08_22_025317) do
   add_foreign_key "favorites", "users"
   add_foreign_key "pedidos", "suppliers"
   add_foreign_key "products", "categories"
+  add_foreign_key "products", "marcas"
   add_foreign_key "products", "suppliers"
   add_foreign_key "purchasedetails", "buys", on_delete: :cascade
   add_foreign_key "purchasedetails", "products", on_delete: :cascade

@@ -109,15 +109,18 @@ class ProductsController < ApplicationController
   end
 
   def generate_code
-    nombre = params[:nombre].to_s
-    initials = nombre.split.map { |word| word[0] }.join.upcase
+    nombre = params[:nombre].to_s.strip
+    code = ""
 
-    last_product = Product.where("codigo_producto LIKE ?", "#{initials}%").order(:codigo_producto).last
-    last_number = last_product.present? ? last_product.codigo_producto.gsub(initials, "").to_i : 0
-    next_number = last_number + 1
-    candidate = "#{initials}#{next_number.to_s.rjust(3, '0')}"
+    if nombre.present?
+      initials = nombre.split.map { |word| word[0] }.join.upcase
+      last_product = Product.where("codigo_producto LIKE ?", "#{initials}%").order(:codigo_producto).last
+      last_number = last_product.present? ? last_product.codigo_producto.gsub(initials, "").to_i : 0
+      next_number = last_number + 1
+      code = "#{initials}#{next_number.to_s.rjust(3, '0')}"
+    end
 
-    render json: { codigo: candidate }
+    render json: { codigo: code }
   end
 
   # DELETE /products/1 or /products/1.json
