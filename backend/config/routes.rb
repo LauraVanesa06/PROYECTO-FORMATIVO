@@ -89,6 +89,8 @@ Rails.application.routes.draw do
     get 'products', on: :member
   end
 
+  resources :payments, only: [:new, :create]
+  post "/payments/webhook", to: "payments#webhook"
   # API
   namespace :api do
     namespace :v1 do
