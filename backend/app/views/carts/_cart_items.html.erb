@@ -47,8 +47,16 @@
   </table>
 
   <div class="text-end">
-    <h4><%= t("cart.total") %>: <%= number_to_currency(cart_items.sum { |i| (i.product&.precio || 0) * (i.quantity || 0) }) %>
-</h4>
+    <h4>
+      <%= t("cart.total") %>: <%= number_to_currency(cart_items.sum { |i| (i.product&.precio || 0) * (i.quantity || 0) }) %>
+    </h4>
+    <br>
+    <% unless current_page?(cart_path) %>
+      <%= link_to "Ir a Checkout", cart_path, class: "btn btn-success btn-lg" %>
+    <% end %>
+    <% if current_page?(cart_path) %>
+      <%= link_to "Comprar Ahora", cart_path , class: "btn btn-success btn-lg" %>
+    <% end %>
   </div>
 <% else %>
   <p><%= t("cart.empty") %></p>

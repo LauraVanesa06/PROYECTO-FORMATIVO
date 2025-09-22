@@ -547,6 +547,12 @@ textarea {
   color: #555;
 }
 
+.offcanvas {
+  width: 35% !important;
+}
+
+
+
 /* Tablet */
 @media (min-width: 376px) and (max-width:1023px){
   .text1-header {font-size: 33px;}
