@@ -1,7 +1,7 @@
 <h2> FINALIZAR PAGO </h2>
 <p> TOTAL A PAGAR: <%= number_to_currency(@payment.amount) %></p>
 
-<form id="payment-form" action="<%= payments_patch %>" method="post">
+<form id="payment-form" action="<%= payments_path %>" method="post">
   <%= hidden_field_tag :authenticity_token, form_authenticity_token %>
 
     <div>
@@ -12,6 +12,11 @@
             <option value "PSE"> PSE </option>
         </select>
     </div>
+    <div>
+  <label for="account_info">Número de cuenta / tarjeta:</label>
+  <input type="text" name="account_info" required>
+</div>
+
     <%= hidden_field_tag :payment_id, @payment.id %>
 
   <button type="submit">Pagar con Wompi</button>

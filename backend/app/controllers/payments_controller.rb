@@ -2,11 +2,10 @@ class PaymentsController < ApplicationController
 
   protect_from_forgery except: :webhook
   def new
-    @payment = Payment.create!(
+    @payment = Payment.new(
        cart: current_cart,
       amount: current_cart.total,
-      pay_method: nil,
-      status: :pending
+    
     )
   end
 
@@ -16,12 +15,7 @@ class PaymentsController < ApplicationController
   def checkout
   end
 
-  def create
-    @payment = Payment.find(params[:payment_id])
-    @payment.update(pay_method: params[:pay_method])
-      redirect_to wompi_checkout_url(@payment)
 
-  end
 
   def webhook
     data = JSON.parse(request.body.read)
@@ -34,6 +28,31 @@ class PaymentsController < ApplicationController
 
     head :ok
   end
+def create
+  @payment = Payment.new(payment_params.merge(cart: current_cart, amount: current_cart.total))
+
+  if @payment.save
+    # Aquí podrías validar con Wompi que el pago fue exitoso
+    PaymentMailer.invoice(@payment).deliver_later
+
+    flash[:notice] = "¡Gracias por tu compra! Tu pedido llegará en 3 a 5 días hábiles."
+    redirect_to root_path
+    
+  else
+    flash[:alert] = "Hubo un error con tu pago, intenta de nuevo."
+    render :new, status: :unprocessable_entity
+  end
+end
+
+  
+
+private
+
+def payment_params
+  params.permit(:pay_method, :cart_id, :amount)
+    params.permit(:pay_method, :account_info)
+
+end
 
   private
 
