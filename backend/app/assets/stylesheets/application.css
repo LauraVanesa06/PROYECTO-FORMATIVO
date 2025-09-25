@@ -32,6 +32,15 @@ footer {
   font-size: 20px;
 }
 
+#toast-container {
+  position: fixed;
+  top: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 2000;
+}
+
+
 body {
   display: flex;
   flex-direction: column;
@@ -537,6 +546,12 @@ textarea {
   transform: scale(1.2);
   color: #555;
 }
+
+.offcanvas {
+  width: 35% !important;
+}
+
+
 
 /* Tablet */
 @media (min-width: 376px) and (max-width:1023px){

@@ -2,14 +2,15 @@
 <section id="productos" class="productos-destacados container mt-4 mb-5">
   <h2 class="titulo">🛠️ <%= t('productos.titulo') %></h2>
   <br>
+
   <!-- FILTRO -->
   <div class="mb-4">
     <%= form_with url: productos_path, method: :get, local: true do %>
       <div class="row align-items-center g-3">  
-
         <div class="col-md-3">
           <%= label_tag :category_id, t('productos.filtro.categoria') %>
-          <%= select_tag :category_id, options_from_collection_for_select(@categories, :id, :nombre, params[:category_id]),
+          <%= select_tag :category_id,
+                        options_from_collection_for_select(@categories, :id, :nombre, params[:category_id]),
                         include_blank: t('productos.filtro.todas_categorias'),
                         class: "form-select" %>
         </div>
@@ -32,70 +33,64 @@
         <div class="col-md-2 d-flex align-items-end">
           <%= submit_tag t('productos.filtro.boton_filtrar'), class: "btn btn-primary w-100" %>
         </div>
-
       </div>
     <% end %>
   </div>
 
   <div class="product-grid">
     <% @productos.each do |producto| %>
-      <div class="product-card" onclick="window.location='<%= product_path(producto) %>'" style="cursor:pointer;">
+      <div class="product-card" data-url="<%= product_path(producto) %>" style="cursor:pointer;">
 
-        <!-- Imagen del producto -->
+        <!-- Imagen -->
         <div class="product-thumb">
           <% if producto.images.attached? %>
-            <%= image_tag(producto.images.first, 
-                        alt: producto.nombre, 
-                        class: "img-fluid")%>
+            <%= image_tag(producto.images.first, alt: producto.nombre, class: "img-fluid") %>
           <% else %>
-            <%= image_tag "ProductoNoDisponible.png",
-                          alt: t('productos.sin_imagen'),
-                          class: "img-fluid" %>
+            <%= image_tag "ProductoNoDisponible.png", alt: t('productos.sin_imagen'), class: "img-fluid" %>
           <% end %>
         </div>
 
-        <!-- Detalles del producto -->
+        <!-- Detalles -->
         <div class="product-body">
           <div class="info-product">
             <h3 class="product-name"><%= producto.nombre %></h3>
             <p class="product-desc"><%= truncate(producto.descripcion, length: 80) %></p>
           </div>
+
           <div class="product-meta">
-            <span class="price">
-             $ <%= producto.precio_cop %> COP
-            </span>
+            <span class="price">$ <%= producto.precio_cop %> COP</span>
+
             <div class="d-flex flex-wrap gap-2 mt-2">
 
-              <!-- Botón comprar -->
-              <%= button_to cart_items_path(product_id: producto.id),
-                            method: :post,
-                            remote: true,
-                            class: "btn btn-sm btn-outline-primary d-flex align-items-center justify-content-center",
-                            title: t('productos.boton.comprar') do %>
+              <!-- Botón comprar (fetch + toast, sin redirección) -->
+              <button 
+                class="btn btn-sm btn-outline-primary d-flex align-items-center justify-content-center add-to-cart-btn" 
+                data-url="<%= cart_items_path(product_id: producto.id) %>">
                 <i class="fa-solid fa-cart-plus"></i>
-              <% end %>
+              </button>
 
               <!-- Botón favoritos -->
               <% if current_user %>
                 <% favorite = current_user.favorites.find_by(product_id: producto.id) %>
                 <% if favorite %>
-                  <%= button_to favorite_path(favorite),
-                                method: :delete,
-                                class: "btn btn-sm btn-warning d-flex align-items-center gap-1",
-                                title: t('productos.boton.quitar_favorito') do %>
+                  <button 
+                    class="btn btn-sm btn-warning d-flex align-items-center gap-1 favorite-btn"
+                    data-url="<%= favorite_path(favorite) %>"
+                    data-method="delete"
+                    data-product-id="<%= producto.id %>">
                     <i class="fa-solid fa-star"></i>
-                  <% end %>
+                  </button>
                 <% else %>
-                  <%= button_to favorites_path(product_id: producto.id),
-                                method: :post,
-                                class: "btn btn-sm btn-outline-warning d-flex align-items-center gap-1",
-                                title: t('productos.boton.agregar_favorito') do %>
+                  <button 
+                    class="btn btn-sm btn-outline-warning d-flex align-items-center gap-1 favorite-btn"
+                    data-url="<%= favorites_path(product_id: producto.id) %>"
+                    data-method="post"
+                    data-product-id="<%= producto.id %>">
                     <i class="fa-regular fa-star"></i>
-                  <% end %>
+                  </button>
                 <% end %>
               <% else %>
-                <button class="btn btn-sm btn-outline-warning d-flex align-items-center gap-1" disabled
-                        title="<%= t('productos.boton.inicia_sesion_favoritos') %>">
+                <button class="btn btn-sm btn-outline-warning d-flex align-items-center gap-1" disabled>
                   <i class="fa-regular fa-star"></i>
                 </button>
               <% end %>
@@ -107,56 +102,119 @@
   </div>
 </section>
 
+<!-- TOAST container -->
+<div id="toast-container" 
+     class="toast-container position-fixed bottom-0 end-0 p-3"
+     style="z-index: 1055;">
+</div>
+
 <script>
-function initProductoModal() {
-  const modal = document.getElementById("productoModal");
-  if (!modal) return;
+document.addEventListener("click", async (e) => {
+  // CARRITO
+  if (e.target.closest(".add-to-cart-btn")) {
+    e.preventDefault();
+    e.stopPropagation();
 
-  const nombreEl = document.getElementById("modalProductoNombre");
-  const descEl = document.getElementById("modalProductoDescripcion");
-  const precioEl = document.getElementById("modalProductoPrecio");
-  const imgEl = document.getElementById("modalProductoImagen");
-  const formEl = document.getElementById("modalCompraForm");
+    const btn = e.target.closest(".add-to-cart-btn");
+    const url = btn.dataset.url;
 
-  document.querySelectorAll(".ver-mas-btn").forEach(btn => {
-    btn.addEventListener("click", () => {
-      nombreEl.textContent = btn.dataset.nombre || "";
-      descEl.textContent = btn.dataset.descripcion || "";
-      precioEl.textContent = btn.dataset.precio || "";
-      imgEl.src = btn.dataset.imagen || "";
-      formEl.action = btn.dataset.urlCompra || "#";
+    const response = await fetch(url, {
+      method: "POST",
+      headers: {
+        "X-CSRF-Token": document.querySelector("meta[name='csrf-token']").content,
+        "Accept": "application/json"
+      }
     });
-  });
+
+    if (response.ok) {
+      showToast("Producto agregado al carrito ✅", "success");
+    } else {
+      showToast("Error al agregar al carrito ❌", "danger");
+    }
+    return; // 👈 para no seguir evaluando este click
+  }
+
+  // FAVORITOS
+  if (e.target.closest(".favorite-btn")) {
+    e.preventDefault();
+    e.stopPropagation();
+
+    const btn = e.target.closest(".favorite-btn");
+    const url = btn.dataset.url;
+    const method = btn.dataset.method;
+
+    const response = await fetch(url, {
+      method: method.toUpperCase(),
+      headers: {
+        "X-CSRF-Token": document.querySelector("meta[name='csrf-token']").content,
+        "Accept": "application/json"
+      }
+    });
+
+    if (response.ok) {
+      if (method === "post") {
+        // si tu controlador devuelve JSON con el id del favorito:
+        const data = await response.json();
+        btn.dataset.method = "delete";
+        btn.dataset.url = `/favorites/${data.id}`;
+        btn.classList.remove("btn-outline-warning");
+        btn.classList.add("btn-warning");
+        btn.innerHTML = '<i class="fa-solid fa-star"></i>';
+        showToast("Producto agregado a favoritos ⭐", "warning");
+      } else {
+        btn.dataset.method = "post";
+        btn.classList.remove("btn-warning");
+        btn.classList.add("btn-outline-warning");
+        btn.innerHTML = '<i class="fa-regular fa-star"></i>';
+        showToast("Producto eliminado de favoritos ❌", "danger");
+      }
+    } else {
+      showToast("Error al gestionar favoritos ❌", "danger");
+    }
+    return;
+  }
+});
+
+// Función toast reutilizable
+function showToast(message, type) {
+  const toast = document.createElement("div");
+  let bg = "text-bg-primary";
+  if (type === "success") bg = "text-bg-success";
+  if (type === "warning") bg = "text-bg-warning";
+  if (type === "danger") bg = "text-bg-danger";
+
+  toast.className = `toast align-items-center ${bg} border-0 show mb-2 shadow`;
+  toast.setAttribute("role", "alert");
+  toast.style.minWidth = "250px";
+  toast.innerHTML = `
+    <div class="d-flex">
+      <div class="toast-body text-center w-100">${message}</div>
+      <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
+    </div>`;
+
+  document.querySelector("#toast-container").appendChild(toast);
+
+  setTimeout(() => {
+    toast.classList.remove("show");
+    toast.classList.add("fade");
+    setTimeout(() => toast.remove(), 500);
+  }, 3000);
 }
 
-document.addEventListener("turbo:load", initProductoModal);
-document.addEventListener("DOMContentLoaded", initProductoModal);
-</script>
+// Navegación al hacer click en la tarjeta (excepto botones internos)
+document.addEventListener("click", (e) => {
+  const card = e.target.closest(".product-card");
 
-<!-- Modal -->
-<div class="modal fade" id="productoModal" tabindex="-1" aria-hidden="true">
-  <div class="modal-dialog modal-lg modal-dialog-centered">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="modalProductoNombre"></h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-      </div>
-      <div class="modal-body d-flex flex-column flex-md-row">
-        <img id="modalProductoImagen" src="" class="img-fluid me-3 mb-3 mb-md-0" style="max-width: 250px;">
-        <div>
-          <p id="modalProductoDescripcion"></p>
-          <p class="fw-bold fs-5" id="modalProductoPrecio"></p>
-        </div>
-      </div>
-      <div class="modal-footer">
-        <form id="modalCompraForm" method="post">
-          <%= hidden_field_tag :authenticity_token, form_authenticity_token %>
-          <button type="submit" class="btn btn-primary">
-            <i class="fa-solid fa-cart-plus"></i> <%= t('productos.boton.comprar') %>
-          </button>
-        </form>
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"><%= t('productos.boton.cerrar') %></button>
-      </div>
-    </div>
-  </div>
-</div>
+  if (card) {
+    // Si el click vino desde un botón interno => no navegamos
+    if (e.target.closest("button")) return;
+
+    // Redirigir al show del producto
+    const url = card.dataset.url;
+    if (url) {
+      window.location.href = url;
+    }
+  }
+});
+
+</script>
