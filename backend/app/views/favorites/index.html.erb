@@ -7,9 +7,10 @@
         <% product = favorite.product %>
         <div class="product-card">
           <div class="product-thumb">
-            <%= image_tag(product.imagen.attached? ? product.imagen : "placeholder.jpg",
-                          alt: product.nombre,
-                          class: "img-fluid") %>
+           <%= image_tag(product.images.attached? ? url_for(product.images.first) : "placeholder.jpg",
+              alt: product.nombre,
+              class: "img-fluid") %>
+
           </div>
           <div class="product-body">
             <h3 class="product-name"><%= product.nombre %></h3>
@@ -24,27 +25,17 @@
                   <%= button_to add_item_cart_path(favorite.product),
                                 method: :post,
                                 class: "btn btn-sm btn-outline-primary d-flex align-items-center gap-1" do %>
-                    <i class="fa-solid fa-cart-plus"></i> <%= t("productos.boton.comprar") %>
+                    <i class="fa-solid fa-cart-plus"></i>
                   <% end %>
 
                   <!-- Botón eliminar de favoritos -->
                   <%= button_to favorite_path(favorite),
                                 method: :delete,
                                 class: "btn btn-sm btn-warning d-flex align-items-center gap-1" do %>
-                    <i class="fa-solid fa-star"></i> <%= t("favorites.remove") %>
+                    <i class="fa-solid fa-star"></i>
                   <% end %>
 
-                  <!-- Botón ver detalles -->
-                  <button class="btn btn-sm btn-secondary d-flex align-items-center gap-1 ver-mas-btn"
-                          data-bs-toggle="modal"
-                          data-bs-target="#productoModal"
-                          data-nombre="<%= favorite.product.nombre %>"
-                          data-descripcion="<%= favorite.product.descripcion %>"
-                          data-precio="<%= number_to_currency(favorite.product.precio, unit: '$', separator: '.', delimiter: ',') %>"
-                          data-imagen="<%= url_for(favorite.product.imagen.presence || 'martillo-dewalt.png') %>"
-                          data-url-compra="<%= add_item_cart_path(favorite.product) %>">
-                    <i class="fa-solid fa-eye"></i> <%= t("productos.boton.ver_detalles") %>
-                  </button>
+
                 </div>
               </div>
             </div>
