@@ -133,7 +133,7 @@
               </div>
               <div class="input-box input2">
                 <label>Cod Producto</label>
-                <%= form.text_field :codigo_producto, id: 'edit-codigo_producto'%>
+                <%= form.text_field :codigo_producto, id: 'edit-codigo_producto', readonly: true%>
               </div>
             </div>
           </div>
@@ -174,20 +174,40 @@
     document.addEventListener("DOMContentLoaded", () => {
       const nombreInput = document.getElementById("edit-nombre");
       const codigoInput = document.getElementById("edit-codigo_producto");
+      let timeout = null;
 
-      if (nombreInput) {
+      if (nombreInput && codigoInput) {
         nombreInput.addEventListener("input", () => {
-          fetch(`/products/generate_code?nombre=${encodeURIComponent(nombreInput.value)}`)
-            .then(response => response.json())
+          const nombre = nombreInput.value.trim();
+
+          // Limpiar código si no hay nombre
+          if (!nombre) {
+            codigoInput.value = "";
+            return;
+          }
+
+          // Debounce: esperar 300ms después de escribir para llamar al servidor
+          clearTimeout(timeout);
+          timeout = setTimeout(() => {
+            fetch(`/products/generate_code?nombre=${encodeURIComponent(nombre)}`, {
+              headers: { 'Accept': 'application/json' }
+            })
+            .then(response => {
+              if (!response.ok) throw new Error("Error en la respuesta del servidor");
+              return response.json();
+            })
             .then(data => {
               if (data.codigo) {
-                codigoInput.value = data.codigo;
+                codigoInput.value = data.codigo; // actualizar input en tiempo real
               }
-            });
+            })
+            .catch(err => console.error("No se pudo generar el código:", err));
+          }, 300); // 300ms de espera
         });
       }
     });
   </script>
+
 
 </body>
 </html>
