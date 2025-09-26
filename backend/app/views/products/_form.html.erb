@@ -10,7 +10,7 @@
   <div class="contact-container">
     <%= form_with(model: product, local: true, html: { multipart: true}, class: 'form-form') do |form| %>
       <% if product.errors.any? %>
-        <div id="error_explanation">
+        <div id="error_explanation" style="display: none;">
           <h2><%= pluralize(product.errors.count, "error") %> prohibited this product from being saved:</h2>
 
           <ul>
@@ -171,41 +171,42 @@
   </div>
 
   <script>
-    document.addEventListener("DOMContentLoaded", () => {
-      const nombreInput = document.getElementById("edit-nombre");
-      const codigoInput = document.getElementById("edit-codigo_producto");
-      let timeout = null;
 
-      if (nombreInput && codigoInput) {
-        nombreInput.addEventListener("input", () => {
-          const nombre = nombreInput.value.trim();
+    document.addEventListener("turbo:load", () => {codigoInput.value = ""})
 
-          // Limpiar código si no hay nombre
-          if (!nombre) {
-            codigoInput.value = "";
-            return;
-          }
+    const nombreInput = document.getElementById("edit-nombre");
+    const codigoInput = document.getElementById("edit-codigo_producto");
+    let timeout = null; 
 
-          // Debounce: esperar 300ms después de escribir para llamar al servidor
-          clearTimeout(timeout);
-          timeout = setTimeout(() => {
-            fetch(`/products/generate_code?nombre=${encodeURIComponent(nombre)}`, {
-              headers: { 'Accept': 'application/json' }
-            })
-            .then(response => {
-              if (!response.ok) throw new Error("Error en la respuesta del servidor");
-              return response.json();
-            })
-            .then(data => {
-              if (data.codigo) {
-                codigoInput.value = data.codigo; // actualizar input en tiempo real
-              }
-            })
-            .catch(err => console.error("No se pudo generar el código:", err));
-          }, 300); // 300ms de espera
-        });
+    function generarCodigo(){
+      const nombre  = nombreInput.value.trim()
+
+      if (!nombre) {
+        codigoInput.value = "";
+        return;
       }
-    });
+
+      clearTimeout(timeout);
+      timeout = setTimeout(() => {
+        fetch(`/es/products/generate_code?nombre=${encodeURIComponent(nombre)}`, {
+          headers: { 'Accept': 'application/json' }
+        })
+        .then(response => {
+          if (!response.ok) throw new Error("Error en la respuesta del servidor");
+          return response.json();
+        })
+        .then(data => {
+          if (data.codigo) {
+            codigoInput.value = data.codigo; // actualizar input en tiempo real
+          }
+        })
+        .catch(err => console.error("No se pudo generar el código:", err));
+      }, 300);
+    }
+
+
+    nombreInput.addEventListener("input", generarCodigo)
+
   </script>
 
 
