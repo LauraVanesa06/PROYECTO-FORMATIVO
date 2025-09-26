@@ -6,6 +6,7 @@ Rails.application.routes.draw do
     passwords: 'usuarios/passwords'
   }
 
+
   devise_scope :user do
     get '/acceso', to: 'usuarios/sessions#new', as: :custom_login
     get '/registro', to: 'usuarios/registrations#new', as: :custom_signup
