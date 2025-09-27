@@ -20,19 +20,21 @@ ActiveRecord::Base.connection.execute("PRAGMA foreign_keys = OFF")
 puts "🧹 Limpiando base de datos..."
 Purchasedetail.delete_all
 Buy.delete_all
+Product.delete_all
+Customer.delete_all
+Marca.delete_all
 Category.delete_all
 Supplier.delete_all
-Customer.delete_all
 User.delete_all
-Product.delete_all
 
 ActiveRecord::Base.connection.execute("PRAGMA foreign_keys = ON")
-puts "guardando datos de la semilla"
+puts "✅ Datos eliminados, guardando datos de la semilla..."
 
 reset_sqlite_sequences(
   'purchasedetails',
   'buys',
   'products',
+  'marcas',
   'categories',
   'suppliers',
   'customers',
@@ -66,6 +68,19 @@ suppliers = Supplier.create!([
   { nombre: "Distribuidora FerrePlus", contacto: "Mario auditore" }
 ])
 
+marcas = Marca.create!([
+  { nombre: "Stanley" },
+  { nombre: "Bosch" },
+  { nombre: "DeWalt" },
+  { nombre: "Makita" },
+  { nombre: "Black+Decker" },
+  { nombre: "Hilti" },
+  { nombre: "Truper" },
+  { nombre: "Irwin" },
+  { nombre: "Craftsman" },
+  { nombre: "Milwaukee" }
+])
+
 products = Product.create!([
   {
     nombre: "Martillo",
@@ -73,8 +88,12 @@ products = Product.create!([
     ideal para trabajos de carpintería, construcción y reparaciones generales.",
     precio: 25000.9,
     stock: 50,
-    category: categories[1],
-    supplier: suppliers[1]
+    codigo_producto: "P001",
+    modelo: "MX-200",
+    disponible: true,
+    category: categories[0],
+    supplier: suppliers[0],
+    marca: marcas[1]
   },
   {
     nombre: "Llave stilson",
@@ -82,8 +101,12 @@ products = Product.create!([
     ideal para sujetar y girar tuberías metálicas con firmeza y seguridad.",
     precio: 40000,
     stock: 30,
-    category: categories[1],
-    supplier: suppliers[2]
+    codigo_producto: "P002",
+    modelo: "LS-10",
+    disponible: true,
+    category: categories[0],
+    supplier: suppliers[1],
+    marca: marcas[1]
   },
   {
     nombre: "Sierra",
@@ -91,8 +114,12 @@ products = Product.create!([
     ideal para cortes precisos en madera, plástico o metal.",
     precio: 19900,
     stock: 25,
-    category: categories[3],
-    supplier: suppliers[3]
+    codigo_producto: "P003",
+    modelo: "SR-15",
+    disponible: true,
+    category: categories[2],
+    supplier: suppliers[2],
+    marca: marcas[2]
   },
   {
     nombre: "Tijera para lamina",
@@ -100,8 +127,12 @@ products = Product.create!([
     ideal para cortar láminas de metal, aluminio y otros materiales delgados.",
     precio: 35000,
     stock: 12,
-    category: categories[5],
-    supplier: suppliers[4]
+    codigo_producto: "P004",
+    modelo: "TL-22",
+    disponible: true,
+    category: categories[4],
+    supplier: suppliers[3],
+    marca: marcas[3]
   },
   {
     nombre: "Pala de punta",
@@ -109,8 +140,12 @@ products = Product.create!([
     ideal para cavar, remover tierra y trabajos de jardinería o construcción.",
     precio: 25000,
     stock: 50,
-    category: categories[2],
-    supplier: suppliers[0]
+    codigo_producto: "P005",
+    modelo: "PP-01",
+    disponible: true,
+    category: categories[1],
+    supplier: suppliers[0],
+    marca: marcas[4]
   },
   {
     nombre: "Lima plana manual",
@@ -118,8 +153,12 @@ products = Product.create!([
     ideal para desbastar y dar forma a superficies metálicas o de madera.",
     precio: 8000,
     stock: 150,
-    category: categories[6],
-    supplier: suppliers[1]
+    codigo_producto: "P006",
+    modelo: "LP-09",
+    disponible: true,
+    category: categories[5],
+    supplier: suppliers[1],
+    marca: marcas[5]
   },
   {
     nombre: "Llave combinada",
@@ -127,8 +166,12 @@ products = Product.create!([
     ideal para ajustar o aflojar tuercas y pernos de forma segura y eficiente.",
     precio: 6000,
     stock: 80,
-    category: categories[2],
-    supplier: suppliers[0]
+    codigo_producto: "P007",
+    modelo: "LC-14",
+    disponible: true,
+    category: categories[1],
+    supplier: suppliers[0],
+    marca: marcas[6]
   },
   {
     nombre: "Pinza de presión",
@@ -136,8 +179,12 @@ products = Product.create!([
     ideal para sujetar firmemente piezas sin esfuerzo continuo.",
     precio: 15000,
     stock: 10,
-    category: categories[3],
-    supplier: suppliers[3]
+    codigo_producto: "P008",
+    modelo: "PP-05",
+    disponible: true,
+    category: categories[2],
+    supplier: suppliers[2],
+    marca: marcas[7]
   },
   {
     nombre: "Taladro atornillador inalámbrico",
@@ -145,8 +192,12 @@ products = Product.create!([
     ideal para perforar y atornillar con potencia y precisión sin necesidad de cables.",
     precio: 900000,
     stock: 8,
-    category: categories[4],
-    supplier: suppliers[4]
+    codigo_producto: "P009",
+    modelo: "TA-800",
+    disponible: true,
+    category: categories[3],
+    supplier: suppliers[3],
+    marca: marcas[8]
   },
   {
     nombre: "Esmeriladora angular inalámbrica",
@@ -154,8 +205,12 @@ products = Product.create!([
     desbastar y pulir materiales como metal, piedra o cerámica, sin depender de cables.",
     precio: 350000,
     stock: 34,
-    category: categories[1],
-    supplier: suppliers[2]
+    codigo_producto: "P010",
+    modelo: "EA-500",
+    disponible: true,
+    category: categories[0],
+    supplier: suppliers[1],
+    marca: marcas[9]
   }
 ])
 
@@ -182,6 +237,7 @@ products.each do |product|
 
   puts "⚠️  Imagen no encontrada para #{product.nombre}" unless imagen_encontrada
 end
+
 
 customers = Customer.create!([
   { nombre: "Juan Pérez", telefono: "555-0101", documento: 123456789 },

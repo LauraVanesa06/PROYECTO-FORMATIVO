@@ -126,7 +126,7 @@ end
   private 
 
   def suppliers_params
-    params.require(:supplier).permit(:nombre, :contacto)
+    params.require(:supplier).permit(:nombre, :contacto, :codigo_proveedor)
   end
 
 end

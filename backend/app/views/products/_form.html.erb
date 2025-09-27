@@ -4,12 +4,13 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <%= stylesheet_link_tag "modals", media: "all" %>
+  
 </head>
 <body>
   <div class="contact-container">
     <%= form_with(model: product, local: true, html: { multipart: true}, class: 'form-form') do |form| %>
       <% if product.errors.any? %>
-        <div id="error_explanation">
+        <div id="error_explanation" style="display: none;">
           <h2><%= pluralize(product.errors.count, "error") %> prohibited this product from being saved:</h2>
 
           <ul>
@@ -125,9 +126,25 @@
               <label>Precio</label>
               <%= form.text_field :precio, id: 'edit-precio' %>
             </div>
+            <div class="column">
+              <div class="input-box input2">
+                <label>Stock Inicial</label>
+                <%= form.number_field :stock, id: 'edit-stock' %>
+              </div>
+              <div class="input-box input2">
+                <label>Cod Producto</label>
+                <%= form.text_field :codigo_producto, id: 'edit-codigo_producto', readonly: true%>
+              </div>
+            </div>
+          </div>
+          <div class="column">
             <div class="input-box">
-              <label>Stock</label>
-              <%= form.number_field :stock, id: 'edit-stock' %>
+              <label>Marca</label>
+              <%= form.collection_select :marca_id, Marca.all, :id, :nombre, { prompt: "Seleccione una marca" }, id: "edit-marca", class:'select-box' %>
+            </div>
+            <div class="input-box">
+              <label>Modelo</label>
+              <%= form.text_field :modelo, id: 'edit-modelo' %>
             </div>
           </div>
           <div class="input-box">
@@ -152,5 +169,46 @@
       </section>
     <% end %>
   </div>
+
+  <script>
+
+    document.addEventListener("turbo:load", () => {codigoInput.value = ""})
+
+    const nombreInput = document.getElementById("edit-nombre");
+    const codigoInput = document.getElementById("edit-codigo_producto");
+    let timeout = null; 
+
+    function generarCodigo(){
+      const nombre  = nombreInput.value.trim()
+
+      if (!nombre) {
+        codigoInput.value = "";
+        return;
+      }
+
+      clearTimeout(timeout);
+      timeout = setTimeout(() => {
+        fetch(`/es/products/generate_code?nombre=${encodeURIComponent(nombre)}`, {
+          headers: { 'Accept': 'application/json' }
+        })
+        .then(response => {
+          if (!response.ok) throw new Error("Error en la respuesta del servidor");
+          return response.json();
+        })
+        .then(data => {
+          if (data.codigo) {
+            codigoInput.value = data.codigo; // actualizar input en tiempo real
+          }
+        })
+        .catch(err => console.error("No se pudo generar el código:", err));
+      }, 300);
+    }
+
+
+    nombreInput.addEventListener("input", generarCodigo)
+
+  </script>
+
+
 </body>
 </html>

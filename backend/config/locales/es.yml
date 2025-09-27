@@ -13,28 +13,65 @@ es:
     messages:
       taken: "ya está en uso"
       blank: "no puede estar vacío"
+
+  # Traducciones para ActiveRecord
+  activerecord:
+    models:
+      product: "Producto"
+    attributes:
+      product:
+        marca: "Marca"
+        nombre: "Nombre"
+        precio: "Precio"
+        stock: "Stock"
+        codigo_producto: "Código de Producto"
+
+  # Navegación
   nav:
     home: "Inicio"
     products: "Productos"
     contacts: "Contactos"
+
+  # Idiomas
   languages:
     spanish: "Español"
     english: "Inglés"
+
+  # Carrito
   cart:
     title: "Tu carrito"
+    table:
+      product: "Producto"
+      price: "Precio"
+      quantity: "Cantidad"
+      total: "Total"
+    total: "Total general"
+    update_quantity: "Actualizar cantidad"
+    confirm_remove: "¿Eliminar este producto?"
+    empty: "No hay productos en el carrito."
+
+  # Usuario
   user:
     profile: "Perfil"
     logout: "Cerrar sesión"
     logout_confirm: "¿Estás seguro de que quieres cerrar sesión?"
     login: "Iniciar sesión"
     register: "Registrarse"
+
+  # App
   app:
     name: "Ferremateriales el Maestro"
+
+  # Hero
   hero:
     prev: "Anterior"
     next: "Siguiente"
+
+  # Categorías
   categories:
     title: "Categorías"
+
+  # Productos
   products:
     title: "Productos destacados"
     buy: "Comprar"
@@ -42,6 +79,7 @@ es:
     favorites:
       add: "Agregar a favoritos"
       remove: "Quitar de favoritos"
+
   productos:
     titulo: "Todos los Productos"
     sin_imagen: "Sin imagen"
@@ -60,6 +98,8 @@ es:
       quitar_favorito: "Quitar de favoritos"
       inicia_sesion_favoritos: "Inicia sesión para agregar a favoritos"
       ver_detalles: "Ver detalles"
+
+  # Contacto
   contact:
     title: "Contáctanos"
     name: "Tu nombre"
@@ -68,19 +108,10 @@ es:
     description: "Descripción de la duda presentada"
     submit: "Enviar al administrador"
     whatsapp: "Compra con un experto"
+
+  # Favoritos
   favorites:
     title: "Mis favoritos"
     empty: "No tienes productos en favoritos."
     add: "Agregar a favoritos"
     remove: "Quitar de favoritos"
-  cart:
-    title: "Tu carrito"
-    table:
-      product: "Producto"
-      price: "Precio"
-      quantity: "Cantidad"
-      total: "Total"
-    total: "Total general"
-    update_quantity: "Actualizar cantidad"
-    confirm_remove: "¿Eliminar este producto?"
-    empty: "No hay productos en el carrito."    
