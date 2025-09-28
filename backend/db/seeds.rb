@@ -26,6 +26,7 @@ Marca.delete_all
 Category.delete_all
 Supplier.delete_all
 User.delete_all
+Pedido.delete_all
 
 ActiveRecord::Base.connection.execute("PRAGMA foreign_keys = ON")
 puts "✅ Datos eliminados, guardando datos de la semilla..."
@@ -38,7 +39,8 @@ reset_sqlite_sequences(
   'categories',
   'suppliers',
   'customers',
-  'users'
+  'users',
+  'pedidos'
 )
 
 User.create!(
@@ -301,5 +303,94 @@ Purchasedetail.create!([
     product: products[4],
     cantidad: 10,
     preciounidad: 17.50
+  }
+])
+
+pedidos = Pedido.create!([
+  {
+    fecha: Time.zone.now.change(hour: 10),
+    productos: [
+      { nombre: "Martillo", cantidad: 5 },
+      { nombre: "Llave stilson", cantidad: 2 }
+    ],
+    descripcion_entrega: "Entrega en bodega principal",
+    supplier: suppliers[0],
+    stock: 7,
+    proveedor: suppliers[0].nombre
+  },
+  {
+    fecha: 2.days.ago.change(hour: 14),
+    productos: [
+      { nombre: "Sierra", cantidad: 3 },
+      { nombre: "Pinza de presión", cantidad: 1 }
+    ],
+    descripcion_entrega: "Enviar al taller de plomería",
+    supplier: suppliers[1],
+    stock: 4,
+    proveedor: suppliers[1].nombre
+  },
+  {
+    fecha: 1.week.ago.change(hour: 9),
+    productos: [
+      { nombre: "Taladro atornillador inalámbrico", cantidad: 2 }
+    ],
+    descripcion_entrega: "Entrega directa al cliente",
+    supplier: suppliers[2],
+    stock: 2,
+    proveedor: suppliers[2].nombre
+  },
+  {
+    fecha: 3.weeks.ago.change(hour: 16),
+    productos: [
+      { nombre: "Esmeriladora angular inalámbrica", cantidad: 4 },
+      { nombre: "Pala de punta", cantidad: 10 }
+    ],
+    descripcion_entrega: "Envío programado para obra en construcción",
+    supplier: suppliers[3],
+    stock: 14,
+    proveedor: suppliers[3].nombre
+  },
+  {
+    fecha: Time.zone.now.change(hour: 10),
+    productos: [
+      { nombre: "Martillo", cantidad: 5 },
+      { nombre: "Llave stilson", cantidad: 2 }
+    ],
+    descripcion_entrega: "Entrega en bodega principal",
+    supplier: suppliers[0],
+    stock: 7,
+    proveedor: suppliers[0].nombre
+  },
+  {
+    fecha: 2.days.ago.change(hour: 14),
+    productos: [
+      { nombre: "Sierra", cantidad: 3 },
+      { nombre: "Pinza de presión", cantidad: 1 }
+    ],
+    descripcion_entrega: "Enviar al taller de plomería",
+    supplier: suppliers[1],
+    stock: 4,
+    proveedor: suppliers[1].nombre
+  },
+  {
+    fecha: 1.week.ago.change(hour: 9),
+    productos: [
+      { nombre: "Taladro atornillador inalámbrico", cantidad: 2 }
+    ],
+    descripcion_entrega: "Entrega directa al cliente",
+    supplier: suppliers[2],
+    stock: 2,
+    proveedor: suppliers[2].nombre
+  },
+  {
+    fecha: 3.weeks.ago.change(hour: 16),
+    productos: [
+      { nombre: "Esmeriladora angular inalámbrica", cantidad: 4 },
+      { nombre: "Pala de punta", cantidad: 10 }
+    ],
+    descripcion_entrega: "Envío programado para obra en construcción",
+    supplier: suppliers[3],
+    stock: 14,
+    proveedor: suppliers[3].nombre
   }
 ])

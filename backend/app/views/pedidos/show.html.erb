@@ -1,10 +1,32 @@
 <p style="color: green"><%= notice %></p>
+<div id="<%= dom_id @pedido %>" class="pedido">
+  <p class="proveedor">
+    <%= @pedido.supplier.nombre %>
+  </p>
 
-<%= render @pedido %>
+  <p>
+    <strong>Fecha:</strong>
+    <%= @pedido.fecha %>
+  </p>
+
+  <p>
+    <strong>Productos:</strong>
+    <%= @pedido.productos %>
+  </p>
+
+  <p>
+    <strong>Descripcion entrega:</strong>
+    <%= @pedido.descripcion_entrega %>
+  </p>
+
+</div>
 
 <div>
   <%= link_to "Edit this pedido", edit_pedido_path(@pedido) %> |
   <%= link_to "Back to pedidos", pedidos_path %>
-
+  
+    <p class="canc">
+      <%= link_to "Cancelar", @pedido %>
+    </p>
   <%= button_to "Destroy this pedido", @pedido, method: :delete %>
 </div>

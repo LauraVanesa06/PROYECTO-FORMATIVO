@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <%= favicon_link_tag 'favicon.png' %>
   <title>Dashboard Ferretería</title>
-  <%= stylesheet_link_tag "inventario", media: "all" %>
+  <%= stylesheet_link_tag "pedidos", media: "all" %>
 
   <link href="https://fonts.googleapis.com/css2?family=Eczar:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
@@ -58,22 +58,21 @@
       <% end %>
     </div>
   </nav>
+  <section class="section-container">
+    <section class="sect-product"></section>
+    <section class="sect-historial">
+      <div class="titulo-his">Historial de Pedidos</div>
+      <div id="pedidos">
+        <% @pedidos.each do |pedido| %>
+          <%= render pedido %>
+        <% end %>
+      </div>
+    </section>
+    <%= link_to "Hacer Pedido", new_pedido_path, class:"btn-pedir" %>
+  </section>
 
-  <p style="color: green"><%= notice %></p>
-
-  <% content_for :title, "Pedidos" %>
-
-  <h1>Pedidos</h1>
-
-  <div id="pedidos">
-    <% @pedidos.each do |pedido| %>
-      <%= render pedido %>
-      <p>
-        <%= link_to "Show this pedido", pedido %>
-      </p>
-    <% end %>
-  </div>
-
-  <%= link_to "New pedido", new_pedido_path %>
-
+  <footer>
+    &copy; 2025 Ferremateriales el Maestro - v2.3.7
+  </footer>
+  
 </body>
