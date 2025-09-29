@@ -4,19 +4,26 @@ class PedidosController < ApplicationController
 
   # GET /pedidos or /pedidos.json
   def index
-    @pedidos = Pedido.where('fecha <= ?', Time.current).order(fecha: :desc)
     @suppliers = Supplier.order(created_at: :desc)
     @supplier  = Supplier.new
 
+    # Base: todos los pedidos hasta la fecha actual
     base_scope = Pedido.where('fecha <= ?', Time.current)
-    filtered   = params[:supplier_id].present? ? base_scope.where(supplier_id: params[:supplier_id]) : base_scope
 
-    @pedidos = @pedidos.joins(:supplier).where("suppliers.nombre LIKE ?", "%#{params[:name]}%") if params[:name].present?
+    filtered = base_scope
+
+    # Filtro por supplier_id (si viene)
+    filtered = filtered.where(supplier_id: params[:supplier_id]) if params[:supplier_id].present?
+
+    # Filtro por nombre de proveedor (si viene)
+    if params[:name].present?
+      filtered = filtered.joins(:supplier).where("suppliers.nombre LIKE ?", "%#{params[:name]}%")
+      @suppliers = @suppliers.where("nombre LIKE ?", "%#{params[:name]}%") # 👈 para all-provv
+    end
 
     if filtered.exists?
       @pedidos = filtered.order(fecha: :desc)
     else
-      # Si no hay resultados con los filtros, mostramos todos (según base_scope)
       flash.now[:alert] = "No se encontraron pedidos con esos filtros. Se mostrarán todos los pedidos."
       @pedidos = base_scope.order(fecha: :desc)
     end

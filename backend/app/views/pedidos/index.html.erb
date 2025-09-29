@@ -117,11 +117,13 @@
         <ul id="suppliers_container" class="supplier-list">
           <nav class="nav-filtros">
             <p class=p><i class="fas fa-filter"></i> Filtros</p>
-            <%= form_with url: suppliers_path, method: :get, local: true, class:"form-filtros" do %>
+            <%= form_with url: pedidos_path, method: :get, local: true, class:"form-filtros" do %>
               <ul>
                 <li>
-                  <%= label_tag :name, "Nombre:" %>
-                  <%= text_field_tag :name, params[:name], placeholder: "Ej: Ferrecox", style:"width: 163px; border-radius:10px; padding-left: 10px; border:1px solid grey;"%> 
+                  <%= label_tag :name, "Proveedor:" %>
+                  <%= text_field_tag :name, params[:name],
+                        placeholder: "Ej: Ferrecox",
+                        style:"width: 163px; border-radius:10px; padding-left: 10px; border:1px solid grey;" %> 
                 </li>
                 <li>
                   <button id="limpiar-filtros" type="button" class="lupa">
@@ -217,9 +219,11 @@
     // filtro de proveedor
     document.addEventListener('DOMContentLoaded', () => {
       const limpiarBtn = document.getElementById('limpiar-filtros');
-      limpiarBtn.addEventListener('click', () => {
-        window.location.href = '/suppliers';
-      });
+      if (limpiarBtn) {
+        limpiarBtn.addEventListener('click', () => {
+          window.location.href = '/pedidos';
+        });
+      }
     });
     </script>
 
