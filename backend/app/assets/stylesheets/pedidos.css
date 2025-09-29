@@ -178,7 +178,6 @@ h1{
     position: absolute;
     right: 25px;
     margin-top: -20px;
-    z-index: 9999;
     font-size: 13px;
 }
 
@@ -463,8 +462,6 @@ input.main-input::placeholder { color: rgba(255,255,255,0.6); }
 /*todos los proveedores*/
 
 .supplier-list {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
   gap: 14px;
   list-style: none;
   margin: 10px;
@@ -493,13 +490,19 @@ input.main-input::placeholder { color: rgba(255,255,255,0.6); }
 }
 
 .supplier-card {
-  background: #2c2f33;
+  background: #e2e2e2;
   border: 1px solid rgba(255,255,255,0.03);
   border-radius: 12px;
   padding: 5px;
-  color: #eceff1;
   box-shadow: 0 4px 6px rgba(0,0,0,0.3);
   height: 85px;
+  margin-block: 10px;
+}
+
+.supplier-card a {
+    text-decoration: none;
+    color: #090909;
+
 }
 
 .card-top {
@@ -512,7 +515,7 @@ input.main-input::placeholder { color: rgba(255,255,255,0.6); }
 .supplier-name {
     font-weight: 700;
     text-decoration: none;
-    color: #728eb1;
+    color: #296dc3;
     font-size: 13px;
 }
 
@@ -521,6 +524,8 @@ input.main-input::placeholder { color: rgba(255,255,255,0.6); }
   background: rgba(255,255,255,0.04);
   padding: 3px 6px;
   border-radius: 999px;
+  font-weight: bold;
+  color: #a3a3a3;
 }
 
 .card-body {
@@ -538,4 +543,55 @@ input.main-input::placeholder { color: rgba(255,255,255,0.6); }
 /* Responsive */
 @media (max-width: 640px) {
   .supplier-list { grid-template-columns: 1fr; }
+}
+
+.alerta-filtro {
+  background-color: #f8a1a8;
+  color: #e32a3c;
+  border-radius: 7px;
+  font-weight: bold;
+  text-align: center;
+  font-size: 15px;
+  height: 45px;
+  width: 60%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding-inline: 5px;
+  position: absolute;
+  z-index: 9999;
+}
+
+.nav-filtros{
+    background-color: white;
+    border: solid 1px grey;
+    border-radius: 15px;
+    height: 30px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 5px;
+}
+
+.p{
+    margin-left: 15px;
+    font-size: 17px;
+    font-weight: bold;
+    font-family: 'Segoe UI', sans-serif;
+    color: #424242;
+}
+
+.lupa{
+    background-color: transparent;
+    border: none;
+    cursor: pointer;
+}
+.lupa, i{
+    color: #424242;
+    font-size: 17px;
+}
+
+.form-filtros ul{
+    gap: 15px;
+    margin-right: 15px;
 }

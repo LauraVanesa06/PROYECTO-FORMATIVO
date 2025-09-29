@@ -4,9 +4,29 @@ class PedidosController < ApplicationController
 
   # GET /pedidos or /pedidos.json
   def index
-    @pedidos = Pedido.all
-    @suppliers = Supplier.all
-    @supplier = Supplier.new
+    @pedidos = Pedido.where('fecha <= ?', Time.current).order(fecha: :desc)
+    @suppliers = Supplier.order(created_at: :desc)
+    @supplier  = Supplier.new
+
+    base_scope = Pedido.where('fecha <= ?', Time.current)
+    filtered   = params[:supplier_id].present? ? base_scope.where(supplier_id: params[:supplier_id]) : base_scope
+
+    @pedidos = @pedidos.joins(:supplier).where("suppliers.nombre LIKE ?", "%#{params[:name]}%") if params[:name].present?
+
+    if filtered.exists?
+      @pedidos = filtered.order(fecha: :desc)
+    else
+      # Si no hay resultados con los filtros, mostramos todos (según base_scope)
+      flash.now[:alert] = "No se encontraron pedidos con esos filtros. Se mostrarán todos los pedidos."
+      @pedidos = base_scope.order(fecha: :desc)
+    end
+
+    if request.headers["Turbo-Frame"].present?
+      render partial: "pedidos/pedidos_list", locals: { pedidos: @pedidos }
+    else
+      render :index
+    end
+
   end
 
   # GET /pedidos/1 or /pedidos/1.json

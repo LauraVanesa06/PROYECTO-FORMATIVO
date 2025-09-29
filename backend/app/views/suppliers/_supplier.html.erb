@@ -1,11 +1,13 @@
 <li id="<%= dom_id supplier %>" class="supplier-card">
-  <div class="card-top">
-    <%= link_to supplier.nombre, suppliers_path(supplier_id: supplier.id), class: "supplier-name" %>
-    <span class="supplier-code"><%= supplier.codigo_proveedor %></span>
-  </div>
+  <%= link_to pedidos_path(supplier_id: supplier.id), data: { turbo_frame: "pedidos_frame" } do %>
+    <div class="card-top">
+      <span class="supplier-name"><%= supplier.nombre %></span>
+      <span class="supplier-code"><%= supplier.codigo_proveedor %></span>
+    </div>
 
-  <div class="card-body">
-    <div class="supplier-contact"><i class="fa-solid fa-phone"></i> <%= supplier.contacto %></div>
-    <div class="supplier-email"><i class="fa-solid fa-envelope"></i> <%= supplier.correo %></div>
-  </div>
+    <div class="card-body">
+      <div class="supplier-contact"><i class="fa-solid fa-phone"></i> <%= supplier.contacto %></div>
+      <div class="supplier-email"><i class="fa-solid fa-envelope"></i> <%= supplier.correo %></div>
+    </div>
+  <% end %>
 </li>

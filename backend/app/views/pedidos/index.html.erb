@@ -115,6 +115,27 @@
 
       <div class="all-provv">
         <ul id="suppliers_container" class="supplier-list">
+          <nav class="nav-filtros">
+            <p class=p><i class="fas fa-filter"></i> Filtros</p>
+            <%= form_with url: suppliers_path, method: :get, local: true, class:"form-filtros" do %>
+              <ul>
+                <li>
+                  <%= label_tag :name, "Nombre:" %>
+                  <%= text_field_tag :name, params[:name], placeholder: "Ej: Ferrecox", style:"width: 163px; border-radius:10px; padding-left: 10px; border:1px solid grey;"%> 
+                </li>
+                <li>
+                  <button id="limpiar-filtros" type="button" class="lupa">
+                    <i class="fas fa-broom"></i>
+                  </button>
+                </li>
+                <li>
+                  <%= button_tag type: 'submit', class: 'lupa', name: '' do %>
+                    <i class="fas fa-search"></i>
+                  <% end %>
+                </li>
+              </ul>
+            <% end %>
+          </nav>
           <%= render @suppliers %>
         </ul>
       </div>
@@ -123,9 +144,9 @@
     <section class="sect-historial">
       <div class="titulo-his">Historial de Pedidos</div>
       <div id="pedidos">
-        <% @pedidos.each do |pedido| %>
-          <%= render pedido %>
-        <% end %>
+        <turbo-frame id="pedidos_frame">
+          <%= render "pedidos/pedidos_list", pedidos: @pedidos %>
+        </turbo-frame>
       </div>
     </section>
     <%= link_to "Hacer Pedido", new_pedido_path, class:"btn-pedir" %>
@@ -191,6 +212,14 @@
         err.textContent = message;
         setTimeout(()=> { if(err) err.remove(); }, 3500);
       }
+    });
+
+    // filtro de proveedor
+    document.addEventListener('DOMContentLoaded', () => {
+      const limpiarBtn = document.getElementById('limpiar-filtros');
+      limpiarBtn.addEventListener('click', () => {
+        window.location.href = '/suppliers';
+      });
     });
     </script>
 
