@@ -1,28 +1,22 @@
 # frozen_string_literal: true
 
 class Usuarios::SessionsController < Devise::SessionsController
-  # before_action :configure_sign_in_params, only: [:create]
-layout 'custom_login'
+  layout 'custom_login'
 
-def custom_login
-  self.resource = resource_class.new(sign_in_params)
-  clean_up_passwords(resource)
-  respond_with(resource, serialize_options(resource))
-end
-  # POST /resource/sign_in
-  # def create
-  #   super
-  # end
+  # Sobrescribir create para manejar errores con flash
+  def create
+    self.resource = warden.authenticate(auth_options)
 
-  # DELETE /resource/sign_out
-  # def destroy
-  #   super
-  # end
-
-  # protected
-
-  # If you have extra params to permit, append them to the sanitizer.
-  # def configure_sign_in_params
-  #   devise_parameter_sanitizer.permit(:sign_in, keys: [:attribute])
-  # end
+    if resource
+      set_flash_message!(:notice, :signed_in)
+      sign_in(resource_name, resource)
+      yield resource if block_given?
+      respond_with resource, location: after_sign_in_path_for(resource)
+    else
+      flash.now[:alert] = "Correo o contraseña inválidos. Por favor, intenta de nuevo."
+      self.resource = resource_class.new(sign_in_params)
+      clean_up_passwords(resource)
+      respond_with_navigational(resource) { render :new, status: :unprocessable_entity }
+    end
+  end
 end

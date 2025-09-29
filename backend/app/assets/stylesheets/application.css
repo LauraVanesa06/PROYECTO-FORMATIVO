@@ -560,7 +560,10 @@ textarea {
   .custom-header img{height: 80px;}
   .h-icon2{display: none;}
 
+
 }
+
+
 /* LOGIN */
 .login {
   background: url('degrade.png') no-repeat center center fixed;
@@ -1086,4 +1089,49 @@ hr{
   display: flex;
   justify-items: center;
   justify-content: space-around;
+}
+
+/* Estilos generales de flash */
+.flash {
+  position: fixed;              /* flotante */
+  top: 400px;                    /* separado un poco del borde superior */
+  left: 50%;                    /* centrado horizontal */
+  transform: translateX(-50%);  /* ajuste perfecto al centro */
+  min-width: 300px;             /* ancho mínimo */
+  max-width: 90%;               /* no más ancho que la pantalla */
+  width: 600px;
+  padding: 12px 18px;
+  border-radius: 10px;
+  font-weight: bold;
+  font-size: 0.9rem;
+  text-align: center;
+  z-index: 9999;                /* siempre arriba de todo */
+  box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+  animation: aparecer 0.5s ease;
+}
+
+/* Error */
+.flash-alert {
+  background: #ff4c4c;   /* rojo suave */
+  color: white;
+  border: 2px solid #e60023;
+}
+
+/* Éxito */
+.flash-notice {
+  background: #4caf50;   /* verde bonito */
+  color: white;
+  border: 2px solid #2e7d32;
+}
+
+/* Animación de entrada */
+@keyframes aparecer {
+  from {
+    opacity: 0;
+    transform: translate(-50%, -20px);
+  }
+  to {
+    opacity: 1;
+    transform: translate(-50%, 0);
+  }
 }
