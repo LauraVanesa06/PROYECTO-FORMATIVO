@@ -81,8 +81,12 @@
     <%= form_with url: inventario_path, method: :get, local: true, class:"form-filtros" do %>
       <ul>
         <li>
+          <%= label_tag :cod, "Codigo:" %>
+          <%= text_field_tag :cod, params[:cod], placeholder: "Ej: MG001", style:"width: 100px; box-sizing: border-box; border-radius:10px; padding-left: 10px; border:1px solid grey;"%> 
+        </li>
+        <li>
           <%= label_tag :name, "Nombre:" %>
-          <%= text_field_tag :name, params[:name], placeholder: "Ej: Martillo", style:"border-radius:10px; padding-left: 10px; border:1px solid grey;"%> 
+          <%= text_field_tag :name, params[:name], placeholder: "Ej: Martillo", style:"width: 163px; border-radius:10px; padding-left: 10px; border:1px solid grey;"%> 
         </li>
         <li class="li-precio">
           <label for="toggle-precio" class="a-precio">Rango de Precio ▾</label>
@@ -91,12 +95,14 @@
           <ul class="ul-precio">
             <li>
               <%= label_tag :min, "Mínimo:", class: "preci"%>
-              <%= number_field_tag :min, params[:min], id: "min", max: 99999999, step: 0.01, style:"width: 80px; border-radius:10px; padding-left: 10px; border: grey"%>
-            </li>
+              <%= text_field_tag :min, params[:min], id: "min",
+                oninput: "this.value = this.value.replace(/[^0-9.]/g, '')",
+                style:"width: 80px; border-radius:10px; padding-left: 10px; border: grey" %>
             <li>
               <%= label_tag :max, "Máximo:", class: "preci"%>
-              <%= number_field_tag :max, params[:max], id: "max", max: 99999999, step: 0.01, style:"width: 80px; border-radius:10px; padding-left: 10px; border: grey"%>
-              <%# number_to_currency(params[:max].to_f, unit: "$", separator: ",", delimiter: ".") if params[:max].present? %>
+              <%= text_field_tag :max, params[:max], id: "max",
+                oninput: "this.value = this.value.replace(/[^0-9.]/g, '')",
+                style:"width: 80px; border-radius:10px; padding-left: 10px; border: grey" %>
             </li>
           </ul>
         </li>
@@ -107,7 +113,12 @@
 
           <ul class="ul-marca">
             <% @suppliers.each do |supplier| %>
-              <%= render supplier %>
+              <li>
+                <input type="checkbox" id="supplier_<%= supplier.id %>" name="suppliers[]" value="<%= supplier.id %>" 
+                <%= "checked" if params[:suppliers]&.include?(supplier.id.to_s) %>>
+
+                <label for="supplier_<%= supplier.id %>"><%= supplier.nombre %></label>
+              </li>
             <% end %>
           </ul>
         </li>

@@ -59,7 +59,67 @@
     </div>
   </nav>
   <section class="section-container">
-    <section class="sect-product"></section>
+    <section class="sect-product">
+      <div class="form-provv" id="supplier_form_container">  <!-- <--- id agregado -->
+        <p>Proveedor</p>
+
+        <!-- usar Turbo (no local: true). id para el formulario. -->
+        <%= form_with(model: @supplier, id: "supplier_form", class: "form") do |form| %>
+          <%= button_tag type: 'submit', class:'agg' do %>   <!-- ahora es submit -->
+            <%= content_tag :span, class: 'span-mother' do %>
+              <% "Agregar".each_char do |c| %>
+                <%= content_tag :span, c %>
+              <% end %>
+            <% end %>
+
+            <%= content_tag :span, class: 'span-mother2' do %>
+              <% "Agregar".each_char do |c| %>
+                <%= content_tag :span, c %>
+              <% end %>
+            <% end %>
+          <% end %>
+
+          <div class="group">
+            <%= form.text_field :nombre, required: true, class: "main-input", id: "supplier_nombre" %>
+            <span class="highlight-span"></span>
+            <label class="lebal-email">Nombre</label>
+          </div>
+
+          <div class="container-1">
+            <div class="group">
+              <!-- id e inputmode para facilitar validación -->
+              <%= form.text_field :contacto, required: true, class: "main-input", id: "supplier_contacto", inputmode: "numeric", autocomplete: "tel" %>
+              <span class="highlight-span"></span>
+              <label class="lebal-email">Contacto</label>
+            </div>
+          </div>
+
+          <div class="container-1">
+            <div class="group">
+              <%= form.email_field :correo, required: true, class: "main-input", id: "supplier_correo" %>
+              <span class="highlight-span"></span>
+              <label class="lebal-email">Correo</label>
+            </div>
+          </div>
+
+          <div class="container-1">
+            <div class="group">
+              <%= form.text_field :codigo_proveedor, required: true, class: "main-input", id: "supplier_codigo_proveedor" %>
+              <span class="highlight-span"></span>
+              <label class="lebal-email">Código</label>
+            </div>
+          </div>
+
+        <% end %>
+      </div>
+
+      <div class="all-provv">
+        <ul id="suppliers_container" class="supplier-list">
+          <%= render @suppliers %>
+        </ul>
+      </div>
+    </section>
+
     <section class="sect-historial">
       <div class="titulo-his">Historial de Pedidos</div>
       <div id="pedidos">
@@ -74,5 +134,65 @@
   <footer>
     &copy; 2025 Ferremateriales el Maestro - v2.3.7
   </footer>
+
+  <script>
+    document.addEventListener("turbo:load", () => {
+      const contacto = document.getElementById('supplier_contacto');
+      const codigo = document.getElementById('supplier_codigo_proveedor');
+      const form = document.getElementById('supplier_form');
+
+      if (contacto) {
+        contacto.addEventListener('input', e => {
+          e.target.value = e.target.value.replace(/\D+/g, '');
+        });
+        contacto.addEventListener('paste', e => {
+          const paste = (e.clipboardData || window.clipboardData).getData('text');
+          if (/\D/.test(paste)) e.preventDefault();
+        });
+      }
+
+      if (codigo) {
+        codigo.addEventListener('input', e => {
+          e.target.value = e.target.value.toUpperCase().replace(/[^A-Z0-9]/g, '');
+        });
+        codigo.addEventListener('paste', e => {
+          const paste = (e.clipboardData || window.clipboardData).getData('text');
+          const cleaned = paste.toUpperCase().replace(/[^A-Z0-9]/g, '');
+          e.preventDefault();
+          const start = e.target.selectionStart;
+          const end = e.target.selectionEnd;
+          e.target.value = e.target.value.slice(0,start) + cleaned + e.target.value.slice(end);
+          e.target.setSelectionRange(start + cleaned.length, start + cleaned.length);
+        });
+      }
+
+      if (form) {
+        form.addEventListener('submit', e => {
+          const emailEl = document.getElementById('supplier_correo');
+          const emailVal = emailEl && emailEl.value;
+          if (!emailVal || !/^[^@\s]+@[^@\s]+$/.test(emailVal)) {
+            e.preventDefault();
+            showInlineError(emailEl, 'Ingresa un correo válido que contenga @');
+          }
+        });
+      }
+
+      function showInlineError(el, message) {
+        if(!el) return;
+        let err = el.parentNode.querySelector('.field-error');
+        if (!err) {
+          err = document.createElement('div');
+          err.className = 'field-error';
+          err.style.color = '#ff6b6b';
+          err.style.fontSize = '0.9rem';
+          err.style.marginTop = '6px';
+          el.parentNode.appendChild(err);
+        }
+        err.textContent = message;
+        setTimeout(()=> { if(err) err.remove(); }, 3500);
+      }
+    });
+    </script>
+
   
 </body>

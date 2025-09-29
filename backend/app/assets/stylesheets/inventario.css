@@ -27,6 +27,16 @@
     flex-direction: row;
     align-items: center;
 }
+
+.cod{
+  position: absolute;
+  font-size: 15px;
+  color: #a3a3a3;
+  font-weight: bold;
+  z-index: 9;
+  left: 10px;
+}
+
 .ul-nombre{
     text-decoration: none;
     margin-bottom: 7px;
@@ -200,46 +210,59 @@
 input#toggle-marca:checked ~ .ul-marca {
   display: flex;
 }
-.ul-marca li{
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    border-bottom: 1px solid #ccc;
+
+.ul-marca li {
+  list-style: none;
+  margin: 6px 0;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
 }
-.ul-marca li:last-child {
-    border-bottom: none;
+
+.ul-marca input[type="checkbox"] {
+  display: none;
 }
-.aa-marca{
-    border-radius: 15pxpx;
-    background-color: grey;
-    color: white;
-    width: 100%;
-    height: auto;
-    display: flex;
-    align-items: center;
-    font-size: 15px;
-    font-family: Arial, sans-serif;
-    font-weight: normal;
-    margin: 5px;
-}
-.aa-check{
-    width: 30px;
-    height: 20px;
-    margin-left: 10px;
-    border-radius: 50%;
-    accent-color: black;
-    background-color: white;
+
+.ul-marca label {
+    position: relative;
+    padding-left: 38px;
     cursor: pointer;
-    appearance: none !important;
+    font-size: 14px;
+    color: #ffffff;
 }
-.aa-check:checked{
-    background-color: black;
+
+.ul-marca label::before {
+  content: "";
+  position: absolute;
+  left: 7px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 18px;
+  height: 18px;
+  border: 2px solid #555;
+  border-radius: 4px;
+  background: transparent;
+  transition: all 0.2s ease-in-out;
 }
-.aa-check:checked::after{
-    content: "✔";
-    color: white;
-    margin-left: 4px;
+
+
+.ul-marca input[type="checkbox"]:checked + label::before {
+  background: #5b7fe9;
+  border-color: #5067af;
 }
+
+.ul-marca input[type="checkbox"]:checked + label::after {
+  content: "✓";
+  position: absolute;
+  left: 12px;
+  top: 50%;
+  transform: translateY(-55%);
+  font-size: 14px;
+  color: white;
+  font-weight: bold;
+}
+
 /*PRECIO*/
 .ul-precio{
   display: none;

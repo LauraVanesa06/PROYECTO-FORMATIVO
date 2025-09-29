@@ -128,8 +128,12 @@
             </div>
             <div class="column">
               <div class="input-box input2">
-                <label>Stock Inicial</label>
-                <%= form.number_field :stock, id: 'edit-stock' %>
+                <label>Stock actual</label>
+                <% if form.object.new_record? %>
+                  <%= form.number_field :stock, id: 'edit-stock' %>
+                <% else %>
+                  <%= form.number_field :stock, id: 'edit-stock', readonly: true %>
+                <% end %>
               </div>
               <div class="input-box input2">
                 <label>Cod Producto</label>
@@ -140,7 +144,8 @@
           <div class="column">
             <div class="input-box">
               <label>Marca</label>
-              <%= form.collection_select :marca_id, Marca.all, :id, :nombre, { prompt: "Seleccione una marca" }, id: "edit-marca", class:'select-box' %>
+              <%= form.collection_select :marca_id, Marca.all, :id, :nombre, { prompt: "Seleccione una marca" },
+               id: "edit-marca", class:'select-box' %>
             </div>
             <div class="input-box">
               <label>Modelo</label>
@@ -154,11 +159,18 @@
           <div class="input-box address">
             <div class="input-box">
               <label>Categoria</label>
-              <%= form.collection_select :category_id, Category.all, :id, :nombre, { prompt: "Seleccione una categoría" }, id: 'edit-categoria', class:'select-box' %>
+              <%= form.collection_select :category_id, Category.all, :id, :nombre, { prompt: "Seleccione una categoría" },
+               id: 'edit-categoria', class:'select-box' %>
             </div>
             <div class="input-box">
               <label>Proveedor</label>
-              <%= form.collection_select :supplier_id, Supplier.all, :id, :nombre, { prompt: "Seleccione un proveedor" }, id: 'edit-proveedor', class:'select-box' %>
+              <% if form.object.new_record? %>
+                <%= form.collection_select :supplier_id, Supplier.all, :id, :nombre, { prompt: "Seleccione un proveedor" },
+                    id: 'edit-proveedor', class: 'select-box' %>
+              <% else %>
+                <%= form.collection_select :supplier_id, Supplier.all, :id, :nombre, {}, 
+                    id: 'edit-proveedor', class: 'select-box', disabled: true %>
+              <% end %>
             </div>
           </div>
           <div class="row">

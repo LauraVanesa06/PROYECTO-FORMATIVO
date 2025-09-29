@@ -5,6 +5,8 @@ class PedidosController < ApplicationController
   # GET /pedidos or /pedidos.json
   def index
     @pedidos = Pedido.all
+    @suppliers = Supplier.all
+    @supplier = Supplier.new
   end
 
   # GET /pedidos/1 or /pedidos/1.json

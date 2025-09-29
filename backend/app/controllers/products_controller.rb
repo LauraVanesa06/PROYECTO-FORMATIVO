@@ -7,20 +7,22 @@ class ProductsController < ApplicationController
   def index
     puts "params: #{params.inspect}"
 
+    min = params[:min].to_s.gsub(".", "").to_i if params[:min].present?
+    max = params[:max].to_s.gsub(".", "").to_i if params[:max].present?
+
     @products = Product.all
     @suppliers = Supplier.all
 
-    #if params[:name].present? || params[:min].present? || params[:max].present? || params[:supplier_id].present?
+      @products = @products.where("LOWER(codigo_producto) = ?", params[:cod].downcase) if params[:cod].present?
       @products = @products.where("nombre LIKE ? ", "%#{params[:name]}%") if params[:name].present?
-      @products = @products.where("precio >= ?", params[:min]) if params[:min].present?
-      @products = @products.where("precio <= ?", params[:max]) if params[:max].present?
-      @products = @products.where(supplier_id: params[:supplier_id]) if params[:supplier_id].present?
+      @products = @products.where("precio >= ?", min) if min.present? && min > 0
+      @products = @products.where("precio <= ?", max) if max.present? && max > 0
+      @products = @products.where(supplier_id: params[:suppliers]) if params[:suppliers].present?
     
       if @products.empty?
         flash.now[:alert] = "¡No se encontraron productos con esos filtros!"
         @products = Product.all
       end
-    #end
 
     @categories = Category.all
     
