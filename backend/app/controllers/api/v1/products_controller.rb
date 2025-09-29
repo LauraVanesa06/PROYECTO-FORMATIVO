@@ -4,7 +4,7 @@ class Api::V1::ProductsController < ApplicationController
     products = Product.all
     render json: products.map { |product|
     product.as_json.merge(
-      imagen_url: product.imagen.attached? ? url_for(product.imagen) : nil
+      imagen_url: product.images.attached? ? url_for(product.images.first) : nil
     )
   }
   end
