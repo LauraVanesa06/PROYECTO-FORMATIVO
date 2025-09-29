@@ -455,6 +455,25 @@ input
     height: 100%;
     width: 95%;
 }
+
+/* Chrome, Safari, Edge */
+.contenedor::-webkit-scrollbar {
+  width: 8px;              /* ancho del scroll */
+}
+
+.contenedor::-webkit-scrollbar-track {
+  background: transparent; /* fondo invisible */
+}
+
+.contenedor::-webkit-scrollbar-thumb {
+  background: #181818;        /* color del sroll */
+  border-radius: 10px;     /* esquinas redondeadas */
+}
+
+.contenedor::-webkit-scrollbar-thumb:hover {
+  background: #1f1f1f;        /* más oscuro al pasar el mouse */
+}
+
 #purcha{
   display: flex;
     align-items: stretch;

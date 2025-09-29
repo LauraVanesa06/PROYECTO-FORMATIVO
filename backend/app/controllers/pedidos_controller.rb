@@ -1,9 +1,12 @@
 class PedidosController < ApplicationController
   before_action :set_pedido, only: %i[ show edit update destroy ]
+  layout false
 
   # GET /pedidos or /pedidos.json
   def index
     @pedidos = Pedido.all
+    @suppliers = Supplier.all
+    @supplier = Supplier.new
   end
 
   # GET /pedidos/1 or /pedidos/1.json

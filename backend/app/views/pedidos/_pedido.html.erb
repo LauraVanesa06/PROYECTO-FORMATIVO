@@ -1,22 +1,43 @@
-<div id="<%= dom_id pedido %>">
-  <p>
-    <strong>Fecha:</strong>
-    <%= pedido.fecha %>
-  </p>
+<div id="<%= dom_id pedido %>" class="pedido">
+  <div class="info">
+    <p class="proveedor">
+      <%= pedido.supplier.nombre %>
+      <p class="fecha"><%= pedido.fecha.strftime("%d/%m/%Y") %></p>
+    </p>
 
-  <p>
-    <strong>Productos:</strong>
-    <%= pedido.productos %>
-  </p>
+<!--
+     <p>
+      <strong>Productos:</strong>
+      <%= pedido.productos %>
+    </p>
+-->
 
-  <p>
-    <strong>Descripcion entrega:</strong>
-    <%= pedido.descripcion_entrega %>
-  </p>
+    <div class="pro">
+      <div class="img-pro">
+        <%= image_tag "martillo-dewalt.png" %>
+      </div>
 
-  <p>
-    <strong>Supplier:</strong>
-    <%= pedido.supplier_id %>
-  </p>
+      <strong>Nombre: </strong>Martillo
+      <strong>Cantidad: </strong>25
+      <strong>Modelo: </strong>MX-200
+      <strong>Marca: </strong>Dewalt
+    </div>
+
+    <div class="pro">
+      <div class="img-pro">
+        <%= image_tag "martillo-dewalt.png" %>
+      </div>
+
+      <strong>Nombre:</strong> Martillo
+      <strong>Cantidad:</strong> 25
+      <strong>Modelo:</strong> MX-200
+      <strong>Marca: </strong>Dewalt
+    </div>
+
+  </div>
+
+    <p class="deta">
+      <%= link_to "Ver mas", pedido %>
+    </p>
 
 </div>
