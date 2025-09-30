@@ -1,37 +1,72 @@
-<%= form_with(model: pedido) do |form| %>
-  <% if pedido.errors.any? %>
-    <div style="color: red">
-      <h2><%= pluralize(pedido.errors.count, "error") %> prohibited this pedido from being saved:</h2>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <%= stylesheet_link_tag "form-pedido", media: "all" %>
+</head>
+<body>
+  <%= form_with(model: pedido) do |form| %>
+    <div class="form-container">
+        <section class="form-form">
+          <section class="form-pedi">
 
-      <ul>
-        <% pedido.errors.each do |error| %>
-          <li><%= error.full_message %></li>
-        <% end %>
-      </ul>
-    </div>
-  <% end %>
+            <% if pedido.errors.any? %>
+              <div style="color: red">
+                <h2><%= pluralize(pedido.errors.count, "error") %> prohibited this pedido from being saved:</h2>
 
-  <div>
-    <%= form.label :fecha, style: "display: block" %>
-    <%= form.datetime_field :fecha %>
-  </div>
+                <ul>
+                  <% pedido.errors.each do |error| %>
+                    <li><%= error.full_message %></li>
+                  <% end %>
+                </ul>
+              </div>
+            <% end %>
 
-  <div>
-    <%= form.label :productos, style: "display: block" %>
-    <%= form.text_field :productos %>
-  </div>
+            <p class="titulo">Hacer Pedido</p>
 
-  <div>
-    <%= form.label :descripcion_entrega, style: "display: block" %>
-    <%= form.text_field :descripcion_entrega %>
-  </div>
+              <div class="input-box">
+              <%= form.label :fecha, style: "display: block" %>
+              <%= form.datetime_field :fecha,
+                value: Time.use_zone('America/Bogota') { Time.zone.now.strftime("%Y-%m-%dT%H:%M") },
+                readonly: true,
+                class: "input-fecha" %>
+              </div>
 
-  <div>
-    <%= form.label :supplier_id, style: "display: block" %>
-    <%= form.text_field :supplier_id %>
-  </div>
+            <div class="input-box">
+              <%= form.label :descripcion_entrega, style: "display: block" %>
+              <%= form.text_area :descripcion_entrega, class: 'descripcion' %>
+            </div>
 
-  <div>
-    <%= form.submit %>
-  </div>
-<% end %>
+            <div class="input-box">
+              <%= form.label :supplier_id, "Proveedor", style: "display: block" %>
+              <%= form.collection_select :supplier_id, Supplier.all, :id, :nombre, { prompt: "Seleccione un proveedor" }, class: 'select-box' %>
+            </div>
+
+            <div class="input-box">
+              <%= form.label :productos, style: "display: block" %>
+              <%= form.text_field :productos %>
+            </div>
+          </section>
+
+        </section>
+
+        <section class="bajo-stock">
+          <div class="titu-pro">Productos con bajo Stock</div>
+          <div class="div-1"></div>
+          <div class="div-2">
+            <div class="total-pagar">
+              <p>Total a pagar: $ <span id="total-a-pagar">0</span></p>
+            </div>
+            <div>
+              <%= form.submit "Pedir", class: 'guardar' %>
+            </div>
+          </div>
+        </section>
+
+      </div>
+
+    <% end %>
+      
+</body>
+</html>

@@ -1,0 +1,152 @@
+body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    height: 100vh;
+    margin: 0;
+    padding: 0;
+    background-image: url(/assets/madera2_big-95e09ceb.jpg);
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center;
+}
+
+form{
+    width: 100%;
+    display: flex;
+    justify-content: center;
+}
+
+.form-container{
+    width: 59%;
+    height: 515px;
+    background-color: white;
+    padding: 10px;
+    border-radius: 5px;
+    display: flex;
+    flex-direction: row;
+}
+
+.form-form{
+    height: 100%;
+    width: 45%;
+    display: flex;
+    justify-content: center;
+}
+
+.form-pedi{
+    width: 90%;
+}
+
+:where(.input-box input, .select-box, .descripcion) {
+    position: relative;
+    height: 30px;
+    width: 100%;
+    outline: none;
+    font-size: 16px;
+    font-family: 'Segoe UI', sans-serif;
+    color: #272727;
+    margin-bottom: 8px;
+    border: 1px solid #dbdbdb;
+    border-radius: 6px;
+    overflow: hidden;
+}
+
+.input-box label {
+    color: #848484;
+    font-weight: bold;
+    font-size: 16px;
+    font-family: 'Segoe UI', sans-serif;
+}
+
+.titulo{
+    font-size: 21px;
+    font-family: 'Segoe UI', sans-serif;
+    color: #8ea6ff;
+    margin-block: 8px;
+    font-weight: bold;
+    display: flex;
+    justify-content: center;
+}
+
+.guardar {
+    background: linear-gradient(to bottom, #35ee55, #2bbc1b);
+    color: white;
+    height: 30px;
+    width: 125px;
+    font-size: 1rem;
+    font-weight: 400;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+input.guardar:hover {
+  background-color: #2bbc1b !important;
+  cursor: pointer;
+}
+
+.div-1{
+    width: 100%;
+    height: 90%;
+    display: flex;
+    justify-content: space-between;
+    border: solid 1px #eeeeee;
+    border-radius: 10px;
+}
+
+.div-2{
+    width: 100%;
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 10px;
+}
+
+.total-pagar{
+    font-family: 'Segoe UI', sans-serif;
+    font-size: 15px;
+    font-weight: bold;
+    margin-right: 20px;
+    color: #848484;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.total-pagar p{
+    margin: 0;
+}
+
+.bajo-stock{
+    width: 55%;
+    display: flex;
+    flex-direction: column;
+}
+
+.titu-pro{
+    margin-top: 20px;
+    color: grey;
+}
+
+.descripcion {
+    height: 80px !important;
+}
+
+.input-fecha {
+  width: 100%;
+  padding: 0;
+  border: none;
+  border-radius: 8px;
+  background: #f0f0f0;
+  font-size: 14px;
+  color: #555;
+  pointer-events: none;
+  text-align: center;
+}
+
+.input-fecha:focus {
+  outline: none;
+  box-shadow: none;
+}

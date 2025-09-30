@@ -18,7 +18,7 @@ class PedidosController < ApplicationController
     # Filtro por nombre de proveedor (si viene)
     if params[:name].present?
       filtered = filtered.joins(:supplier).where("suppliers.nombre LIKE ?", "%#{params[:name]}%")
-      @suppliers = @suppliers.where("nombre LIKE ?", "%#{params[:name]}%") # 👈 para all-provv
+      @suppliers = @suppliers.where("nombre LIKE ?", "%#{params[:name]}%")
     end
 
     if filtered.exists?
