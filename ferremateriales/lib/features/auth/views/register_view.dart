@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
+import '../../productos/views/profile_view.dart';
 import '../bloc/auth_bloc.dart';
 import '../bloc/auth_state.dart';
 import '../bloc/auth_event.dart';
@@ -201,7 +202,7 @@ class _RegisterViewState extends State<RegisterView> {
                               if (_formKey.currentState!.validate()) {
                                 context.read<AuthBloc>().add(
                                   RegisterRequested(
-                                      email: _email, password: _password),
+                                      email: _email, password: _password, nombre: _nombre),
                                 );
                               }
                             },

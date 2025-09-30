@@ -11,7 +11,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     on<AuthStarted>((event, emit) async {
       final user = _firebaseAuth.currentUser;
       if (user != null) {
-        emit(state.copyWith(status: AuthStatus.success));
+        emit(state.copyWith(status: AuthStatus.success, nombre: user.displayName ?? ''));
       } else {
         emit(const AuthState(status: AuthStatus.loggedOut)); // ✅ CAMBIO CLAVE
       }
@@ -25,7 +25,8 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
           email: event.email,
           password: event.password,
         );
-        emit(state.copyWith(status: AuthStatus.success));
+        final user = _firebaseAuth.currentUser;
+        emit(state.copyWith(status: AuthStatus.success, nombre: user?.displayName ?? ''));
       } on FirebaseAuthException catch (e) {
         emit(state.copyWith(
           status: AuthStatus.failure,
@@ -44,15 +45,17 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     on<RegisterRequested>((event, emit) async {
       emit(state.copyWith(status: AuthStatus.loading));
       try {
-        await _firebaseAuth.createUserWithEmailAndPassword(
+        final userCredential = await _firebaseAuth.createUserWithEmailAndPassword(
           email: event.email,
           password: event.password,
         );
-        emit(state.copyWith(status: AuthStatus.success));
+        await userCredential.user!.updateDisplayName(event.nombre);
+        emit(state.copyWith(status: AuthStatus.success, nombre: event.nombre));
       } on FirebaseAuthException catch (e) {
         emit(state.copyWith(
           status: AuthStatus.failure,
           error: e.message ?? "Error al registrar",
+          nombre: event.nombre,
         ));
       }
     });
