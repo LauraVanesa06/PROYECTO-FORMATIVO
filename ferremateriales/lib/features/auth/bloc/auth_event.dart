@@ -1,4 +1,15 @@
+
 import 'package:equatable/equatable.dart';
+
+class UpdateUserRequested extends AuthEvent {
+  final String nombre;
+  final String email;
+
+  UpdateUserRequested({required this.nombre, required this.email});
+
+  @override
+  List<Object> get props => [nombre, email];
+}
 
 abstract class AuthEvent extends Equatable {
   @override

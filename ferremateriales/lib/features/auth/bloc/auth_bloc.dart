@@ -4,6 +4,14 @@ import 'auth_event.dart';
 import 'auth_state.dart';
 
 class AuthBloc extends Bloc<AuthEvent, AuthState> {
+    on<UpdateUserRequested>((event, emit) async {
+      final user = _firebaseAuth.currentUser;
+      if (user != null) {
+        await user.updateDisplayName(event.nombre);
+        await user.updateEmail(event.email);
+        emit(state.copyWith(nombre: event.nombre, email: event.email));
+      }
+    });
   final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
 
   AuthBloc() : super(const AuthState()) {
@@ -11,9 +19,13 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     on<AuthStarted>((event, emit) async {
       final user = _firebaseAuth.currentUser;
       if (user != null) {
-        emit(state.copyWith(status: AuthStatus.success, nombre: user.displayName ?? ''));
+        emit(state.copyWith(
+          status: AuthStatus.success,
+          nombre: user.displayName ?? '',
+          email: user.email ?? '',
+        ));
       } else {
-        emit(const AuthState(status: AuthStatus.loggedOut)); // ✅ CAMBIO CLAVE
+        emit(const AuthState(status: AuthStatus.loggedOut));
       }
     });
 
@@ -26,7 +38,11 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
           password: event.password,
         );
         final user = _firebaseAuth.currentUser;
-        emit(state.copyWith(status: AuthStatus.success, nombre: user?.displayName ?? ''));
+        emit(state.copyWith(
+          status: AuthStatus.success,
+          nombre: user?.displayName ?? '',
+          email: event.email,
+        ));
       } on FirebaseAuthException catch (e) {
         emit(state.copyWith(
           status: AuthStatus.failure,
@@ -50,12 +66,17 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
           password: event.password,
         );
         await userCredential.user!.updateDisplayName(event.nombre);
-        emit(state.copyWith(status: AuthStatus.success, nombre: event.nombre));
+        emit(state.copyWith(
+          status: AuthStatus.success,
+          nombre: event.nombre,
+          email: event.email,
+        ));
       } on FirebaseAuthException catch (e) {
         emit(state.copyWith(
           status: AuthStatus.failure,
           error: e.message ?? "Error al registrar",
           nombre: event.nombre,
+          email: event.email,
         ));
       }
     });
