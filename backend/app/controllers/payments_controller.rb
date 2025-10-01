@@ -51,7 +51,7 @@ private
 def payment_params
   params.permit(:pay_method, :cart_id, :amount)
     params.permit(:pay_method, :account_info)
-
+sche
 end
 
   private
