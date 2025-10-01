@@ -30,8 +30,8 @@ class FerreteriaApp extends StatelessWidget {
     return MultiBlocProvider(
       providers: [
         BlocProvider(create: (_) => AuthBloc()..add(AuthStarted())),
-        BlocProvider(create: (_) => CartBloc()),       // 👈 Ahora el carrito está disponible en toda la app
-        BlocProvider(create: (_) => ProductBloc()),    // 👈 También los productos
+        BlocProvider(create: (_) => CartBloc()),
+        BlocProvider(create: (_) => ProductBloc()),
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,

@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
-
+import 'package:flutter_bloc/flutter_bloc.dart';
+import '../../auth/bloc/auth_bloc.dart';
 import '../../auth/views/login_view.dart';
+import 'acount_view.dart';
 
 class ProfileView extends StatelessWidget {
   final String userName;
@@ -39,7 +41,16 @@ class ProfileView extends StatelessWidget {
                   leading: const Icon(Icons.account_circle, color: Colors.deepPurple),
                   title: const Text("Cuenta"),
                   onTap: () {
-                    // Acción para cuenta
+                    final authState = context.read<AuthBloc>().state;
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => AcountView(
+                          nombre: authState.nombre ?? "",
+                          email: authState.email ?? "",
+                        ),
+                      ),
+                    );
                   },
                 ),
                 ListTile(
@@ -53,10 +64,10 @@ class ProfileView extends StatelessWidget {
                   leading: const Icon(Icons.logout, color: Colors.red),
                   title: const Text("Cerrar sesión"),
                   onTap: () {
-                  Navigator.pushReplacement(
-                  context,
-                  MaterialPageRoute(builder: (context) => LoginView()),
-                );
+                    Navigator.pushReplacement(
+                      context,
+                      MaterialPageRoute(builder: (context) => LoginView()),
+                    );
                   },
                 ),
               ],
