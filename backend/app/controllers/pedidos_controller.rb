@@ -43,6 +43,7 @@ class PedidosController < ApplicationController
   # GET /pedidos/new
   def new
     @pedido = Pedido.new
+    @productos = Product.all
   end
 
   # GET /pedidos/1/edit
@@ -51,16 +52,24 @@ class PedidosController < ApplicationController
 
   # POST /pedidos or /pedidos.json
   def create
+    # Buscar el proveedor por código_proveedor
+    codigo = params[:codigo_proveedor]
+    supplier = Supplier.find_by(codigo_proveedor: codigo)
     @pedido = Pedido.new(pedido_params)
+    @pedido.supplier = supplier if supplier
 
-    respond_to do |format|
-      if @pedido.save
-        format.html { redirect_to @pedido, notice: "Pedido was successfully created." }
-        format.json { render :show, status: :created, location: @pedido }
-      else
-        format.html { render :new, status: :unprocessable_entity }
-        format.json { render json: @pedido.errors, status: :unprocessable_entity }
+    if @pedido.save
+      # Crear las relaciones con los productos seleccionados
+      if params[:pedido][:product_ids]
+        params[:pedido][:product_ids].each do |product_id|
+          cantidad = params[:pedido][:cantidades][product_id]
+          PedidoProduct.create(pedido: @pedido, product_id: product_id, cantidad: cantidad)
+        end
       end
+      redirect_to @pedido, notice: "Pedido creado correctamente"
+    else
+      @productos = Product.all
+      render :new
     end
   end
 
