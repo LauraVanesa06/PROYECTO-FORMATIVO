@@ -37,10 +37,10 @@ class CartItemsController < ApplicationController
     end
   end
 
-
   def update
     @cart_item = @cart.cart_items.find(params[:id])
-    if @cart_item.update(cantidad: params[:cantidad]) # aquí usamos cantidad
+    
+    if @cart_item.update(cart_item_params)
       @cart_items = @cart.cart_items.includes(:product)
 
       respond_to do |format|
@@ -52,12 +52,12 @@ class CartItemsController < ApplicationController
           )
         end
         format.json { render json: { success: true, item_id: @cart_item.id, quantity: @cart_item.cantidad }, status: :ok }
-        format.html { redirect_to cart_path, notice: 'Cantidad actualizada' }
+        format.html { redirect_to cart_path, notice: 'Cantidad actualizada.' }
       end
     else
       respond_to do |format|
         format.json { render json: { success: true, item_id: @cart_item.id, quantity: @cart_item.cantidad }, status: :ok }
-        format.html { redirect_to cart_path, alert: 'No se pudo actualizar la cantidad' }
+        format.html { redirect_to cart_path, alert: 'Error al actualizar cantidad.' }
       end
     end
   end
@@ -93,5 +93,9 @@ class CartItemsController < ApplicationController
   def set_cart
     @cart = current_user.cart
     
+  end
+
+  def cart_item_params
+    params.require(:cart_item).permit(:quantity)
   end
 end

@@ -22,9 +22,9 @@
           </td>
           <td><%= item.product.precio %></td>
           <td>
-            <%= form_with url: cart_item_path(item), method: :patch, data: { turbo_stream: true }, class: "d-inline" do %>
+            <%= form_with(model: item, local: true) do |f| %>
               <div class="input-group" style="width: 120px;">
-                <%= number_field_tag :quantity, item.quantity, min: 1, class: "form-control text-center" %>
+                <%= f.number_field :quantity, min: 1, class: "form-control text-center" %>
                 <button class="btn btn-outline-primary" type="submit" title="<%= t('cart.update_quantity') %>">
                   <i class="fa-solid fa-rotate"></i>
                 </button>
