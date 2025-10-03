@@ -51,11 +51,13 @@
           <% end %>
 
           <!-- Carrito: abre SIEMPRE el offcanvas derecho y muestra contador -->
-          <%= link_to "#",
-                      class: "text-white position-relative",
-                      data: { bs_toggle: "offcanvas", bs_target: "#cartSidebar" } do %>
-            <i class="fa-solid fa-cart-shopping"></i>
-            <%# render partial: "carts/cart_count", locals: { count: @cart_items.sum(&:cantidad) } %>
+          <% unless current_page?(cart_path) %>
+            <%= link_to "#",
+                        class: "text-white position-relative",
+                        data: { bs_toggle: "offcanvas", bs_target: "#cartOffcanvas" } do %>
+              <i class="fa-solid fa-cart-shopping"></i>
+              <%# render partial: "carts/cart_count", locals: { count: @cart_items.sum(&:cantidad) } %>
+            <% end %>
           <% end %>
 
 
@@ -99,16 +101,16 @@
   <%= javascript_include_tag 'mi_script', "data-turbo-track": "reload" %>
 
   <!-- Offcanvas DERECHO (ÚNICO) -->
-  <div class="offcanvas offcanvas-end" tabindex="-1" id="cartSidebar" aria-labelledby="cartSidebarLabel">
-    <div class="offcanvas-header">
-      <h5 class="offcanvas-title" id="cartSidebarLabel"><%= t("cart.title") %></h5>
-      <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Cerrar"></button>
+  <% unless current_page?(cart_path) %>
+    <div class="offcanvas offcanvas-end" tabindex="-1" id="cartOffcanvas">
+      <div class="offcanvas-header">
+        <h5 class="offcanvas-title"><%= t("cart.title") %></h5>
+        <button type="button" class="btn-close" data-bs-dismiss="offcanvas"></button>
+      </div>
+      <div class="offcanvas-body">
+        <%= render partial: "carts/cart_items", locals: { cart_items: @cart&.cart_items || [] } %>
+      </div>
     </div>
-    <div class="offcanvas-body">
-      <%= turbo_frame_tag "cart_items" do %>
-        <%= render partial: "carts/cart_items", locals: { cart_items: @cart_items } %>
-      <% end %>
-    </div>
-  </div>
+  <% end %>
 </body>
 </html>
