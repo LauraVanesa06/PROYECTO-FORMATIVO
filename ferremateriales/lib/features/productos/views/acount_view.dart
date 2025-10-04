@@ -1,8 +1,9 @@
-  final nombreController = TextEditingController(text: nombre);
-  final emailController = TextEditingController(text: email);
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import '../../auth/bloc/auth_bloc.dart';
+import '../../auth/bloc/auth_event.dart';
 
-class AcountView extends StatelessWidget {
+class AcountView extends StatefulWidget {
   final String nombre;
   final String email;
 
@@ -11,6 +12,28 @@ class AcountView extends StatelessWidget {
     required this.nombre,
     required this.email,
   });
+
+  @override
+  State<AcountView> createState() => _AcountViewState();
+}
+
+class _AcountViewState extends State<AcountView> {
+  late TextEditingController nombreController;
+  late TextEditingController emailController;
+
+  @override
+  void initState() {
+    super.initState();
+    nombreController = TextEditingController(text: widget.nombre);
+    emailController = TextEditingController(text: widget.email);
+  }
+
+  @override
+  void dispose() {
+    nombreController.dispose();
+    emailController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -24,11 +47,11 @@ class AcountView extends StatelessWidget {
             children: [
               ListTile(
                 title: const Text('Nombre'),
-                subtitle: Text(nombre),
+                subtitle: Text(widget.nombre),
               ),
               ListTile(
                 title: const Text('Email'),
-                subtitle: Text(email),
+                subtitle: Text(widget.email),
               ),
               ListTile(
                 leading: const Icon(Icons.edit, color: Colors.deepPurple),

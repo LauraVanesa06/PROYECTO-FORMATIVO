@@ -3,11 +3,13 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../auth/bloc/auth_bloc.dart';
 import '../../auth/views/login_view.dart';
 import 'acount_view.dart';
+import 'config_view.dart';
 
 class ProfileView extends StatelessWidget {
   final String userName;
+  final String? userPhotoUrl; 
 
-  const ProfileView({super.key, this.userName = ""});
+  const ProfileView({super.key, this.userName = "", this.userPhotoUrl});
 
   @override
   Widget build(BuildContext context) {
@@ -20,20 +22,28 @@ class ProfileView extends StatelessWidget {
       body: Column(
         children: [
           const SizedBox(height: 30),
-          // Avatar
+
+          
           CircleAvatar(
             radius: 50,
             backgroundColor: Colors.deepPurple.shade200,
-            child: const Icon(Icons.person, size: 60, color: Colors.white),
+            backgroundImage: userPhotoUrl != null && userPhotoUrl!.isNotEmpty
+                ? NetworkImage(userPhotoUrl!) 
+                : null,
+            child: (userPhotoUrl == null || userPhotoUrl!.isEmpty)
+                ? const Icon(Icons.person, size: 60, color: Colors.white)
+                : null, 
           ),
+
           const SizedBox(height: 15),
-          // Nombre del usuario
+
           Text(
-            userName,
+            userName.isNotEmpty ? userName : "Usuario",
             style: const TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
           ),
+
           const SizedBox(height: 30),
-          // Opciones
+
           Expanded(
             child: ListView(
               children: [
@@ -57,7 +67,10 @@ class ProfileView extends StatelessWidget {
                   leading: const Icon(Icons.settings, color: Colors.deepPurple),
                   title: const Text("Configuración"),
                   onTap: () {
-                    // Acción para configuración
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => const ConfigView()),
+                    );
                   },
                 ),
                 ListTile(
