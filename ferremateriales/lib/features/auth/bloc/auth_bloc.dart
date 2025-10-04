@@ -4,6 +4,10 @@ import 'auth_event.dart';
 import 'auth_state.dart';
 
 class AuthBloc extends Bloc<AuthEvent, AuthState> {
+  final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
+
+  AuthBloc() : super(const AuthState()) {
+    
     on<UpdateUserRequested>((event, emit) async {
       final user = _firebaseAuth.currentUser;
       if (user != null) {
@@ -12,10 +16,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         emit(state.copyWith(nombre: event.nombre, email: event.email));
       }
     });
-  final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
 
-  AuthBloc() : super(const AuthState()) {
-    // Cuando inicia la app
     on<AuthStarted>((event, emit) async {
       final user = _firebaseAuth.currentUser;
       if (user != null) {
@@ -29,7 +30,6 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       }
     });
 
-    // Cuando se envía el formulario de login
     on<LoginSubmitted>((event, emit) async {
       emit(state.copyWith(status: AuthStatus.loading));
       try {
@@ -51,13 +51,11 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       }
     });
 
-    // Cuando se solicita el logout
     on<LogoutRequested>((event, emit) async {
       await _firebaseAuth.signOut();
       emit(const AuthState(status: AuthStatus.loggedOut));
     });
 
-    // Cuando se registra un nuevo usuario
     on<RegisterRequested>((event, emit) async {
       emit(state.copyWith(status: AuthStatus.loading));
       try {

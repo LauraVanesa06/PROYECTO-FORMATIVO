@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
-import '../../productos/views/profile_view.dart';
 import '../bloc/auth_bloc.dart';
 import '../bloc/auth_state.dart';
 import '../bloc/auth_event.dart';
@@ -48,7 +47,7 @@ class _RegisterViewState extends State<RegisterView> {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  CircleAvatar(
+                  const CircleAvatar(
                     backgroundColor: Colors.orange,
                     radius: 40,
                     child: Icon(Icons.person_add, color: Colors.white, size: 40),
@@ -71,8 +70,7 @@ class _RegisterViewState extends State<RegisterView> {
                         TextFormField(
                           style: const TextStyle(color: Colors.white),
                           decoration: InputDecoration(
-                            prefixIcon:
-                                const Icon(Icons.person, color: Colors.orange),
+                            prefixIcon: const Icon(Icons.person, color: Colors.orange),
                             hintText: 'Nombre completo',
                             hintStyle: const TextStyle(color: Colors.white54),
                             filled: true,
@@ -81,16 +79,13 @@ class _RegisterViewState extends State<RegisterView> {
                               borderRadius: BorderRadius.circular(12),
                             ),
                             focusedBorder: OutlineInputBorder(
-                              borderSide:
-                                  const BorderSide(color: Colors.orange),
+                              borderSide: const BorderSide(color: Colors.orange),
                               borderRadius: BorderRadius.circular(12),
                             ),
                           ),
                           onChanged: (value) => _nombre = value,
                           validator: (value) =>
-                              value == null || value.isEmpty
-                                  ? 'Campo requerido'
-                                  : null,
+                              value == null || value.isEmpty ? 'Campo requerido' : null,
                         ),
                         const SizedBox(height: 16),
 
@@ -98,8 +93,7 @@ class _RegisterViewState extends State<RegisterView> {
                         TextFormField(
                           style: const TextStyle(color: Colors.white),
                           decoration: InputDecoration(
-                            prefixIcon:
-                                const Icon(Icons.email, color: Colors.orange),
+                            prefixIcon: const Icon(Icons.email, color: Colors.orange),
                             hintText: 'Correo electrónico',
                             hintStyle: const TextStyle(color: Colors.white54),
                             filled: true,
@@ -108,16 +102,13 @@ class _RegisterViewState extends State<RegisterView> {
                               borderRadius: BorderRadius.circular(12),
                             ),
                             focusedBorder: OutlineInputBorder(
-                              borderSide:
-                                  const BorderSide(color: Colors.orange),
+                              borderSide: const BorderSide(color: Colors.orange),
                               borderRadius: BorderRadius.circular(12),
                             ),
                           ),
                           onChanged: (value) => _email = value,
                           validator: (value) =>
-                              value == null || value.isEmpty
-                                  ? 'Campo requerido'
-                                  : null,
+                              value == null || value.isEmpty ? 'Campo requerido' : null,
                         ),
                         const SizedBox(height: 16),
 
@@ -126,8 +117,7 @@ class _RegisterViewState extends State<RegisterView> {
                           obscureText: _obscurePassword,
                           style: const TextStyle(color: Colors.white),
                           decoration: InputDecoration(
-                            prefixIcon:
-                                const Icon(Icons.lock, color: Colors.orange),
+                            prefixIcon: const Icon(Icons.lock, color: Colors.orange),
                             hintText: 'Contraseña',
                             hintStyle: const TextStyle(color: Colors.white54),
                             filled: true,
@@ -136,8 +126,7 @@ class _RegisterViewState extends State<RegisterView> {
                               borderRadius: BorderRadius.circular(12),
                             ),
                             focusedBorder: OutlineInputBorder(
-                              borderSide:
-                                  const BorderSide(color: Colors.orange),
+                              borderSide: const BorderSide(color: Colors.orange),
                               borderRadius: BorderRadius.circular(12),
                             ),
                             suffixIcon: IconButton(
@@ -156,9 +145,7 @@ class _RegisterViewState extends State<RegisterView> {
                           ),
                           onChanged: (value) => _password = value,
                           validator: (value) =>
-                              value == null || value.isEmpty
-                                  ? 'Campo requerido'
-                                  : null,
+                              value == null || value.isEmpty ? 'Campo requerido' : null,
                         ),
                         const SizedBox(height: 16),
 
@@ -167,8 +154,7 @@ class _RegisterViewState extends State<RegisterView> {
                           obscureText: _obscurePassword,
                           style: const TextStyle(color: Colors.white),
                           decoration: InputDecoration(
-                            prefixIcon:
-                                const Icon(Icons.lock, color: Colors.orange),
+                            prefixIcon: const Icon(Icons.lock, color: Colors.orange),
                             hintText: 'Confirmar contraseña',
                             hintStyle: const TextStyle(color: Colors.white54),
                             filled: true,
@@ -177,8 +163,7 @@ class _RegisterViewState extends State<RegisterView> {
                               borderRadius: BorderRadius.circular(12),
                             ),
                             focusedBorder: OutlineInputBorder(
-                              borderSide:
-                                  const BorderSide(color: Colors.orange),
+                              borderSide: const BorderSide(color: Colors.orange),
                               borderRadius: BorderRadius.circular(12),
                             ),
                           ),
@@ -202,7 +187,10 @@ class _RegisterViewState extends State<RegisterView> {
                               if (_formKey.currentState!.validate()) {
                                 context.read<AuthBloc>().add(
                                   RegisterRequested(
-                                      email: _email, password: _password, nombre: _nombre),
+                                    email: _email,
+                                    password: _password,
+                                    nombre: _nombre,
+                                  ),
                                 );
                               }
                             },
