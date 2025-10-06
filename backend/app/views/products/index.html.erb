@@ -45,12 +45,13 @@
   <nav class="nav-bg">
     <div class="container-nav">
       <ul class="menu" id="menu">
-        <li><a href="../dashboard"class="link-menu">Inicio</a></li>
-        <li><a href="../dashboard/productos"class="link-menu">Productos</a></li>
-        <li><a href="../dashboard/ventas"class="link-menu">Ventas</a></li>
-        <li><a href="../dashboard/suppliers"class="link-menu">Proveedores</a></li>
-        <li><a href="../dashboard/clientes"class="link-menu">Clientes</a></li>
-        <li><a href="../dashboard/help"class="link-menu">Ayuda</a></li>
+        <li><a href="/dashboard"class="link-menu">Inicio</a></li>
+        <li><a href="/dashboard/productos"class="link-menu">Productos</a></li>
+        <li><a href="/dashboard/ventas"class="link-menu">Ventas</a></li>
+        <li><a href="/dashboard/pedidos"class="link-menu">Pedidos</a></li>
+        <%# <li><a href="dashboard/suppliers"class="link-menu">Proveedores</a></li> %>
+        <li><a href="/dashboard/clientes"class="link-menu">Clientes</a></li>
+        <li><a href="/dashboard/help"class="link-menu">Ayuda</a></li>
       </ul>
       <% if user_signed_in? %>
         <%= button_to "Cerrar sesión", destroy_user_session_path, method: :delete, form: { data: { turbo: true } }, id: "cerrar", class: "logout"%>
@@ -76,52 +77,63 @@
   </aside>
   <section class="section-product">
     <nav class="nav-filtros">
-    <p class=p><i class="fas fa-filter"></i> Filtros</p>
-    <%= form_with url: inventario_path, method: :get, local: true, class:"form-filtros" do %>
-      <ul>
-        <li>
-          <%= label_tag :name, "Nombre:" %>
-          <%= text_field_tag :name, params[:name], placeholder: "Ej: Martillo", style:"border-radius:10px; padding-left: 10px; border:1px solid grey;"%> 
-        </li>
-        <li class="li-precio">
-          <label for="toggle-precio" class="a-precio">Rango de Precio ▾</label>
-          <input type="checkbox" id="toggle-precio" hidden>
+      <p class=p><i class="fas fa-filter"></i> Filtro</p>
+      <%= form_with url: inventario_path, method: :get, local: true, class:"form-filtros" do %>
+        <ul>
+          <li>
+            <%= label_tag :cod, "Codigo:" %>
+            <%= text_field_tag :cod, params[:cod], placeholder: "Ej: MG001", style:"width: 100px; box-sizing: border-box; border-radius:10px; padding-left: 10px; border:1px solid grey;"%> 
+          </li>
+          <li>
+            <%= label_tag :name, "Nombre:" %>
+            <%= text_field_tag :name, params[:name], placeholder: "Ej: Martillo", style:"width: 163px; border-radius:10px; padding-left: 10px; border:1px solid grey;"%> 
+          </li>
+          <li class="li-precio">
+            <label for="toggle-precio" class="a-precio">Rango de Precio ▾</label>
+            <input type="checkbox" id="toggle-precio" hidden>
 
-          <ul class="ul-precio">
-            <li>
-              <%= label_tag :min, "Mínimo:", class: "preci"%>
-              <%= number_field_tag :min, params[:min], id: "min", max: 99999999, step: 0.01, style:"width: 80px; border-radius:10px; padding-left: 10px; border: grey"%>
-            </li>
-            <li>
-              <%= label_tag :max, "Máximo:", class: "preci"%>
-              <%= number_field_tag :max, params[:max], id: "max", max: 99999999, step: 0.01, style:"width: 80px; border-radius:10px; padding-left: 10px; border: grey"%>
-              <%# number_to_currency(params[:max].to_f, unit: "$", separator: ",", delimiter: ".") if params[:max].present? %>
-            </li>
-          </ul>
-        </li>
-        </li>
-        <li class="li-marca">
-          <label for="toggle-marca" class="a-marca">Proveedor ▾</label>
-          <input type="checkbox" id="toggle-marca" hidden>
+            <ul class="ul-precio">
+              <li>
+                <%= label_tag :min, "Mínimo:", class: "preci"%>
+                <%= text_field_tag :min, params[:min], id: "min",
+                  oninput: "this.value = this.value.replace(/[^0-9.]/g, '')",
+                  style:"width: 80px; border-radius:10px; padding-left: 10px; border: grey" %>
+              <li>
+                <%= label_tag :max, "Máximo:", class: "preci"%>
+                <%= text_field_tag :max, params[:max], id: "max",
+                  oninput: "this.value = this.value.replace(/[^0-9.]/g, '')",
+                  style:"width: 80px; border-radius:10px; padding-left: 10px; border: grey" %>
+              </li>
+            </ul>
+          </li>
+          </li>
+          <li class="li-marca">
+            <label for="toggle-marca" class="a-marca">Proveedor ▾</label>
+            <input type="checkbox" id="toggle-marca" hidden>
 
-          <ul class="ul-marca">
-            <% @suppliers.each do |supplier| %>
-              <%= render supplier %>
+            <ul class="ul-marca">
+              <% @suppliers.each do |supplier| %>
+                <li>
+                  <input type="checkbox" id="supplier_<%= supplier.id %>" name="suppliers[]" value="<%= supplier.id %>" 
+                  <%= "checked" if params[:suppliers]&.include?(supplier.id.to_s) %>>
+
+                  <label for="supplier_<%= supplier.id %>"><%= supplier.nombre %></label>
+                </li>
+              <% end %>
+            </ul>
+          </li>
+          <li>
+            <button id="limpiar-filtros" type="button" class="lupa">
+              <i class="fas fa-broom"></i>
+            </button>
+          </li>
+          <li>
+            <%= button_tag type: 'submit', class: 'lupa', name: '' do %>
+              <i class="fas fa-search"></i>
             <% end %>
-          </ul>
-        </li>
-        <li>
-          <button id="limpiar-filtros" type="button" class="lupa">
-            <i class="fas fa-broom"></i>
-          </button>
-        </li>
-        <li>
-          <%= button_tag type: 'submit', class: 'lupa', name: '' do %>
-            <i class="fas fa-search"></i>
-          <% end %>
-        </li>
-      </ul>
-    <% end %>
+          </li>
+        </ul>
+      <% end %>
     </nav>
     <section class="section-models">
       <% if flash[:alert] %>
@@ -165,11 +177,11 @@
       menu.classList.toggle("active");
     });
     const btnCategorias = document.getElementById("hamburger-categorias");
-  const menuCategorias = document.getElementById("menu-categorias");
+    const menuCategorias = document.getElementById("menu-categorias");
 
-  btnCategorias.addEventListener("click", () => {
-    menuCategorias.classList.toggle("active");
-  });
+    btnCategorias.addEventListener("click", () => {
+      menuCategorias.classList.toggle("active");
+    });
 
     //borrar filtros
 

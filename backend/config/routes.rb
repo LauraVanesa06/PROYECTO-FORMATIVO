@@ -40,6 +40,7 @@ Rails.application.routes.draw do
   get 'dashboard/productos', to: 'products#index', as: :inventario
   get 'dashboard/clientes', to: 'customers#index', as: :clientes
   get 'dashboard/help', to: 'dashboard#help', as: :help
+  get 'dashboard/pedidos', to: 'pedidos#index', as: :pedidos
   match 'dashboard/ventas', to: 'buys#index', via: [:get, :post], as: :ventas
   post 'dashboard/send_report', to: 'dashboard#send_report', as: :send_report_dashboard
 
@@ -83,6 +84,12 @@ Rails.application.routes.draw do
   end
 
   resources :buys do
+    member do
+      get :purchasedetails
+    end
+  end
+
+  resources :pedidos do
     member do
       get :purchasedetails
     end

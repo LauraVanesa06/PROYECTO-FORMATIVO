@@ -161,6 +161,25 @@ input::placeholder {
     width: 90%;
     height: 100%;
 }
+
+/* Chrome, Safari, Edge */
+.cont-ventas::-webkit-scrollbar {
+  width: 8px;              /* ancho del scroll */
+}
+
+.cont-ventas::-webkit-scrollbar-track {
+  background: transparent; /* fondo invisible */
+}
+
+.cont-ventas::-webkit-scrollbar-thumb {
+  background: #181818;        /* color del sroll */
+  border-radius: 10px;     /* esquinas redondeadas */
+}
+
+.cont-ventas::-webkit-scrollbar-thumb:hover {
+  background: #1f1f1f;        /* más oscuro al pasar el mouse */
+}
+
 .div-purchase{
     width: 48%;
     padding: 10px;

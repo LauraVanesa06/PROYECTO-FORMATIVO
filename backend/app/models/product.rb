@@ -1,4 +1,8 @@
 class Product < ApplicationRecord
+  # Relacion con pedido_products
+  has_many :pedido_products
+  has_many :pedidos, through: :pedido_products
+
   # Relacion favoritos
   has_many :favorites, dependent: :destroy
   has_many :favorited_by, through: :favorites, source: :user, dependent: :destroy

@@ -1,9 +1,39 @@
 class PedidosController < ApplicationController
   before_action :set_pedido, only: %i[ show edit update destroy ]
+  layout false
 
   # GET /pedidos or /pedidos.json
   def index
-    @pedidos = Pedido.all
+    @suppliers = Supplier.order(created_at: :desc)
+    @supplier  = Supplier.new
+
+    # Base: todos los pedidos hasta la fecha actual
+    base_scope = Pedido.where('fecha <= ?', Time.current)
+
+    filtered = base_scope
+
+    # Filtro por supplier_id (si viene)
+    filtered = filtered.where(supplier_id: params[:supplier_id]) if params[:supplier_id].present?
+
+    # Filtro por nombre de proveedor (si viene)
+    if params[:name].present?
+      filtered = filtered.joins(:supplier).where("suppliers.nombre LIKE ?", "%#{params[:name]}%")
+      @suppliers = @suppliers.where("nombre LIKE ?", "%#{params[:name]}%")
+    end
+
+    if filtered.exists?
+      @pedidos = filtered.order(fecha: :desc)
+    else
+      flash.now[:alert] = "No se encontraron pedidos con esos filtros. Se mostrarán todos los pedidos."
+      @pedidos = base_scope.order(fecha: :desc)
+    end
+
+    if request.headers["Turbo-Frame"].present?
+      render partial: "pedidos/pedidos_list", locals: { pedidos: @pedidos }
+    else
+      render :index
+    end
+
   end
 
   # GET /pedidos/1 or /pedidos/1.json
@@ -13,6 +43,7 @@ class PedidosController < ApplicationController
   # GET /pedidos/new
   def new
     @pedido = Pedido.new
+    @productos = Product.all
   end
 
   # GET /pedidos/1/edit
@@ -21,16 +52,29 @@ class PedidosController < ApplicationController
 
   # POST /pedidos or /pedidos.json
   def create
+    # Buscar el proveedor por código_proveedor
+    codigo = params[:codigo_proveedor]
+    supplier = Supplier.find_by(codigo_proveedor: codigo)
     @pedido = Pedido.new(pedido_params)
+    @pedido.supplier = supplier if supplier
 
-    respond_to do |format|
-      if @pedido.save
-        format.html { redirect_to @pedido, notice: "Pedido was successfully created." }
-        format.json { render :show, status: :created, location: @pedido }
-      else
-        format.html { render :new, status: :unprocessable_entity }
-        format.json { render json: @pedido.errors, status: :unprocessable_entity }
+    if @pedido.save
+      # Crear las relaciones con los productos seleccionados y actualizar stock
+      if params[:pedido][:productos]
+        params[:pedido][:productos].each do |product_id|
+          cantidad = params[:pedido][:cantidades][product_id]
+          PedidoProduct.create(pedido: @pedido, product_id: product_id, cantidad: cantidad)
+          # Actualizar el stock del producto
+          producto = Product.find_by(id: product_id)
+          if producto && cantidad.present?
+            producto.increment!(:stock, cantidad.to_i)
+          end
+        end
       end
+  redirect_to pedidos_path, notice: "Pedido creado correctamente"
+    else
+      @productos = Product.all
+      render :new
     end
   end
 
@@ -54,6 +98,14 @@ class PedidosController < ApplicationController
     respond_to do |format|
       format.html { redirect_to pedidos_path, status: :see_other, notice: "Pedido was successfully destroyed." }
       format.json { head :no_content }
+    end
+  end
+
+  def actualizar_stock_productos
+    Array(productos).each do |p|
+      # Buscar si existe el producto
+      producto = Product.find_by(id: p["product_id"])
+      # ...resto del código...
     end
   end
 
