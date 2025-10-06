@@ -34,10 +34,12 @@
           <td><%= number_to_currency((item.product.precio || 0) * item.quantity.to_i, unit: ' $', format: '%n%u', separator: ',', delimiter: '.') %></td>
 
           <td>
-            <%= button_to cart_item_path(item), 
-                          method: :delete, 
-                          data: { turbo_stream: true, confirm: t("cart.confirm_remove") }, 
-                          class: "btn btn-outline-danger btn-sm" do %>
+            <%= button_to cart_item_path(item),
+                          method: :delete,
+                          data: { turbo: false },
+                          remote: true,
+                          class: "btn btn-outline-danger btn-sm delete-item",
+                          form: { "data-item-id": item.id } do %>
               <i class="fa-solid fa-trash"></i>
             <% end %>
           </td>
@@ -63,58 +65,119 @@
 <% end %>
 
 <script>
-document.addEventListener('change', async function(e) {
-  const field = e.target.closest('.quantity-field');
-  if (!field) return; // Solo responder si es un campo de cantidad
-
-  e.preventDefault();
-  const form = field.closest('form');
+document.addEventListener('DOMContentLoaded', function() {
   const csrfToken = document.querySelector('meta[name="csrf-token"]').content;
-  const quantity = field.value;
 
-  try {
-    const response = await fetch(form.action, {
-      method: 'PATCH',
-      headers: {
-        'Content-Type': 'application/json',
-        'X-CSRF-Token': csrfToken
-      },
-      body: JSON.stringify({
-        cart_item: { quantity: quantity }
-      })
-    });
+  // 🔹 Mostrar notificación (agregar / eliminar)
+  function showNotification(message, type = 'success') {
+    const existing = document.querySelector('.custom-alert');
+    if (existing) existing.remove();
 
-    if (response.ok) {
-      const price = parsePrice(field.closest('tr').querySelector('td:nth-child(2)').textContent);
-      const subtotalCell = field.closest('tr').querySelector('td:nth-child(4)');
-      const subtotal = price * parseInt(quantity);
-      subtotalCell.textContent = formatPrice(subtotal);
+    const alert = document.createElement('div');
+    alert.className = `custom-alert alert-${type}`;
+    alert.textContent = message;
+    document.body.appendChild(alert);
 
-      // 🔹 Recalcular el total de todos los productos visibles
-      const quantityFields = document.querySelectorAll('.quantity-field');
-      const total = Array.from(quantityFields).reduce((sum, input) => {
-        const itemPrice = parsePrice(input.closest('tr').querySelector('td:nth-child(2)').textContent);
-        return sum + (itemPrice * parseInt(input.value));
-      }, 0);
+    setTimeout(() => alert.classList.add('show'), 50);
+    setTimeout(() => {
+      alert.classList.remove('show');
+      setTimeout(() => alert.remove(), 300);
+    }, 2500);
+  }
 
-      const totalText = document.querySelector('.text-end h4');
-      if (totalText) totalText.textContent = '<%= t("cart.total") %>: ' + formatPrice(total);
+  // 🔹 Cambiar cantidad (suma/resta)
+  document.addEventListener('change', async function(e) {
+    const field = e.target.closest('.quantity-field');
+    if (!field) return;
+
+    e.preventDefault();
+    const form = field.closest('form');
+    const quantity = field.value;
+
+    try {
+      const response = await fetch(form.action, {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-CSRF-Token': csrfToken
+        },
+        body: JSON.stringify({ cart_item: { quantity: quantity } })
+      });
+
+      if (response.ok) {
+        const price = parsePrice(field.closest('tr').querySelector('td:nth-child(2)').textContent);
+        const subtotalCell = field.closest('tr').querySelector('td:nth-child(4)');
+        const subtotal = price * parseInt(quantity);
+        subtotalCell.textContent = formatPrice(subtotal);
+
+        updateCartTotal();
+      }
+    } catch (error) {
+      console.error('Error al actualizar cantidad:', error);
     }
-  } catch (error) {
-    console.error('Error al actualizar cantidad:', error);
+  });
+
+  // 🔹 Eliminar producto con notificación
+  document.addEventListener('click', async function(e) {
+    const btn = e.target.closest('.delete-item');
+    if (!btn) return;
+
+    e.preventDefault();
+    const form = btn.closest('form');
+    const itemRow = btn.closest('tr');
+
+    try {
+      const response = await fetch(form.action, {
+        method: 'DELETE',
+        headers: {
+          'X-CSRF-Token': csrfToken,
+          'Accept': 'application/json'
+        }
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        itemRow.remove();
+        updateCartTotal();
+
+        // 🔹 Actualizar contador del carrito
+        const cartCount = document.getElementById('cart_count');
+        if (cartCount && data.count !== undefined) {
+          cartCount.textContent = data.count;
+        }
+
+        // 🔹 Mostrar notificación de eliminación
+        showNotification('🗑️ Producto eliminado del carrito', 'danger');
+      }
+    } catch (error) {
+      console.error('Error al eliminar producto:', error);
+    }
+  });
+
+  // 🔹 Recalcular total global
+  function updateCartTotal() {
+    const quantityFields = document.querySelectorAll('.quantity-field');
+    const total = Array.from(quantityFields).reduce((sum, input) => {
+      const itemPrice = parsePrice(input.closest('tr').querySelector('td:nth-child(2)').textContent);
+      return sum + (itemPrice * parseInt(input.value));
+    }, 0);
+
+    const totalText = document.querySelector('.text-end h4');
+    if (totalText) totalText.textContent = '<%= t("cart.total") %>: ' + formatPrice(total);
+  }
+
+  // 🔹 Funciones de formato de precio
+  function formatPrice(amount) {
+    const formattedNumber = new Intl.NumberFormat('es-ES', {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2,
+      useGrouping: true
+    }).format(amount);
+    return `${formattedNumber} $`;
+  }
+
+  function parsePrice(priceString) {
+    return parseFloat(priceString.replace(/\./g, '').replace(',', '.').replace('$', '').trim());
   }
 });
-
-function formatPrice(amount) {
-  const formattedNumber = new Intl.NumberFormat('es-ES', {
-    minimumFractionDigits: 2,
-    maximumFractionDigits: 2,
-    useGrouping: true
-  }).format(amount);
-  return `${formattedNumber} $`;
-}
-
-function parsePrice(priceString) {
-  return parseFloat(priceString.replace(/\./g, '').replace(',', '.').replace('$', '').trim());
-}
 </script>

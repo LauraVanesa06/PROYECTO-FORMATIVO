@@ -551,6 +551,29 @@ textarea {
   width: 35% !important;
 }
 
+.custom-alert {
+  position: fixed;
+  top: 20px;
+  right: -400px;
+  padding: 12px 18px;
+  border-radius: 8px;
+  font-weight: 600;
+  color: #fff;
+  z-index: 9999;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+  transition: all 0.4s ease;
+  opacity: 0;
+}
+.custom-alert.show {
+  right: 20px;
+  opacity: 1;
+}
+.alert-success {
+  background-color: #28a745;
+}
+.alert-danger {
+  background-color: #dc3545;
+}
 
 
 /* Tablet */
