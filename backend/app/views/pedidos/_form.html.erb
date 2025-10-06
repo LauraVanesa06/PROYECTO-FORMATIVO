@@ -6,7 +6,7 @@
   <%= stylesheet_link_tag "form-pedido", media: "all" %>
 </head>
 <body>
-  <%= form_with(model: pedido, url: pedidos_path) do |form| %>
+  <%= form_with(model: pedido, url: '/pedidos', local: true) do |form| %>
     <div class="form-container">
         <section class="form-form">
           <section class="form-pedi">

@@ -59,14 +59,19 @@ class PedidosController < ApplicationController
     @pedido.supplier = supplier if supplier
 
     if @pedido.save
-      # Crear las relaciones con los productos seleccionados
-      if params[:pedido][:product_ids]
-        params[:pedido][:product_ids].each do |product_id|
+      # Crear las relaciones con los productos seleccionados y actualizar stock
+      if params[:pedido][:productos]
+        params[:pedido][:productos].each do |product_id|
           cantidad = params[:pedido][:cantidades][product_id]
           PedidoProduct.create(pedido: @pedido, product_id: product_id, cantidad: cantidad)
+          # Actualizar el stock del producto
+          producto = Product.find_by(id: product_id)
+          if producto && cantidad.present?
+            producto.increment!(:stock, cantidad.to_i)
+          end
         end
       end
-      redirect_to @pedido, notice: "Pedido creado correctamente"
+  redirect_to pedidos_path, notice: "Pedido creado correctamente"
     else
       @productos = Product.all
       render :new
@@ -93,6 +98,14 @@ class PedidosController < ApplicationController
     respond_to do |format|
       format.html { redirect_to pedidos_path, status: :see_other, notice: "Pedido was successfully destroyed." }
       format.json { head :no_content }
+    end
+  end
+
+  def actualizar_stock_productos
+    Array(productos).each do |p|
+      # Buscar si existe el producto
+      producto = Product.find_by(id: p["product_id"])
+      # ...resto del código...
     end
   end
 

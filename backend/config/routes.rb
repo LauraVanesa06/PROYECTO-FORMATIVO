@@ -88,7 +88,11 @@ Rails.application.routes.draw do
     end
   end
 
-  resources :pedidos
+  resources :pedidos do
+    member do
+      get :purchasedetails
+    end
+  end
 
   resources :purchasedetails
 
