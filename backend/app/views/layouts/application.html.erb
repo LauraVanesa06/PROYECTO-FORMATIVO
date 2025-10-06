@@ -107,7 +107,7 @@
         <h5 class="offcanvas-title"><%= t("cart.title") %></h5>
         <button type="button" class="btn-close" data-bs-dismiss="offcanvas"></button>
       </div>
-      <div class="offcanvas-body">
+      <div class="offcanvas-body" id="cart-offcanvas-body">
         <%= render partial: "carts/cart_items", locals: { cart_items: @cart&.cart_items || [] } %>
       </div>
     </div>

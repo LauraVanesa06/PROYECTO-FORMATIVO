@@ -26,7 +26,22 @@ class CartItemsController < ApplicationController
             )
           ]
         end
-        format.json { render json: { success: true, item_id: @cart_item.id, quantity: @cart_item.cantidad, count: @cart_items.sum(&:cantidad) }, status: :created }
+
+        # 🟢 AQUÍ AÑADIMOS EL HTML DEL CARRITO PARA LA RESPUESTA JSON
+        format.json do
+          rendered_cart = render_to_string(
+            partial: "carts/cart_items",
+            locals: { cart_items: @cart_items },
+            formats: [:html]
+          )
+
+          render json: {
+            success: true,
+            cart_html: rendered_cart,
+            count: @cart_items.sum(&:cantidad)
+          }, status: :created
+        end
+
         format.html { redirect_to cart_path, notice: 'Producto agregado al carrito' }
       end
     else
@@ -36,6 +51,7 @@ class CartItemsController < ApplicationController
       end
     end
   end
+
 
   def update
     @cart_item = @cart.cart_items.find(params[:id])

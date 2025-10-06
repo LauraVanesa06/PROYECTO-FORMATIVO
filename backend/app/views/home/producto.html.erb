@@ -127,11 +127,28 @@ document.addEventListener("click", async (e) => {
     });
 
     if (response.ok) {
+      const data = await response.json();
+
+      // 🔹 Actualiza el contenido del carrito (offcanvas)
+      if (data.cart_html) {
+        const cartBody = document.querySelector("#cart-offcanvas-body");
+        if (cartBody) cartBody.innerHTML = data.cart_html;
+      }
+
+      // 🔹 Actualiza el contador
+      const cartCount = document.querySelector("#cart-count");
+      if (cartCount && data.count !== undefined) {
+        cartCount.textContent = data.count;
+      }
+
+      // 🔹 Muestra notificación
       showToast("Producto agregado al carrito ✅", "success");
+
+
     } else {
       showToast("Error al agregar al carrito ❌", "danger");
     }
-    return; // 👈 para no seguir evaluando este click
+    return;
   }
 
   // FAVORITOS
