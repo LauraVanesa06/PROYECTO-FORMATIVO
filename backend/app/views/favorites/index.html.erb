@@ -1,4 +1,8 @@
 <div class="container mt-4">
+  <div id="notification" class="alert alert-success text-center position-fixed top-0 start-50 translate-middle-x mt-3 shadow" 
+      style="display: none; z-index: 1055;">
+  </div>
+
   <h1 class="mb-4">⭐ <%= t("favorites.title") %></h1>
 
   <% if @favorites.any? %>
@@ -21,19 +25,26 @@
               </span>
               <div>
                 <div class="d-flex flex-wrap gap-2 mt-2">
-                  <!-- Botón comprar -->
-                  <%= button_to add_item_cart_path(favorite.product),
-                                method: :post,
-                                class: "btn btn-sm btn-outline-primary d-flex align-items-center gap-1" do %>
-                    <i class="fa-solid fa-cart-plus"></i>
-                  <% end %>
+                <!-- Botón agregar al carrito -->
+                <%= button_to cart_items_path(product_id: favorite.product.id),
+                              method: :post,
+                              data: { turbo: false, remote: true },
+                              class: "btn btn-sm btn-outline-primary d-flex align-items-center gap-1 add-to-cart",
+                              form: { "data-product-id": product.id } do %>
+                  <i class="fa-solid fa-cart-plus"></i>
+                <% end %>
 
-                  <!-- Botón eliminar de favoritos -->
-                  <%= button_to favorite_path(favorite),
-                                method: :delete,
-                                class: "btn btn-sm btn-warning d-flex align-items-center gap-1" do %>
-                    <i class="fa-solid fa-star"></i>
-                  <% end %>
+
+
+                <!-- Botón eliminar de favoritos -->
+                <%= button_to favorite_path(favorite),
+                              method: :delete,
+                              data: { remote: true },
+                              class: "btn btn-sm btn-warning d-flex align-items-center gap-1 remove-favorite",
+                              form: { "data-favorite-id": favorite.id } do %>
+                  <i class="fa-solid fa-star"></i>
+                <% end %>
+
 
 
                 </div>
@@ -75,3 +86,77 @@
     </div>
   </div>
 </div>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  const csrfToken = document.querySelector('meta[name="csrf-token"]').content;
+  const notification = document.getElementById('notification');
+
+  // 🔹 Mostrar notificación
+  function showNotification(message, type = 'success') {
+    notification.textContent = message;
+    notification.className = `alert alert-${type} text-center position-fixed top-0 start-50 translate-middle-x mt-3 shadow`;
+    notification.style.display = 'block';
+    setTimeout(() => notification.style.display = 'none', 2500);
+  }
+
+  // 🔹 Agregar al carrito sin recargar
+  document.addEventListener('click', async (e) => {
+    const btn = e.target.closest('.add-to-cart');
+    if (!btn) return;
+
+    e.preventDefault();
+    const form = btn.closest('form');
+
+    try {
+      const response = await fetch(form.action, {
+        method: 'POST',
+        headers: {
+          'X-CSRF-Token': csrfToken,
+          'Accept': 'application/json'
+        }
+      });
+
+
+      if (response.ok) {
+        showNotification('✅ Producto agregado al carrito');
+      } else {
+        showNotification('⚠️ Error al agregar al carrito', 'danger');
+      }
+    } catch (error) {
+      console.error(error);
+      showNotification('⚠️ Error de conexión', 'danger');
+    }
+  });
+
+  // 🔹 Eliminar de favoritos sin recargar
+  document.addEventListener('click', async (e) => {
+    const btn = e.target.closest('.remove-favorite');
+    if (!btn) return;
+
+    e.preventDefault();
+    const form = btn.closest('form');
+    const card = btn.closest('.product-card');
+
+    try {
+      const response = await fetch(form.action, {
+        method: 'DELETE',
+        headers: {
+          'X-CSRF-Token': csrfToken,
+          'Accept': 'application/json'
+        }
+      });
+
+      if (response.ok) {
+        card.remove();
+        showNotification('⭐ Eliminado de favoritos');
+      } else {
+        showNotification('⚠️ No se pudo eliminar', 'danger');
+      }
+    } catch (error) {
+      console.error(error);
+      showNotification('⚠️ Error de conexión', 'danger');
+    }
+  });
+});
+</script>

@@ -1,6 +1,6 @@
 class ProductsController < ApplicationController
+    layout "application"
   before_action :set_product, only: %i[ show edit update destroy ]
-  layout false
 
 
   # GET /products or /products.json

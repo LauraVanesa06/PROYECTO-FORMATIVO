@@ -26,7 +26,22 @@ class CartItemsController < ApplicationController
             )
           ]
         end
-        format.json { render json: { success: true, item_id: @cart_item.id, quantity: @cart_item.cantidad, count: @cart_items.sum(&:cantidad) }, status: :created }
+
+        # 🟢 AQUÍ AÑADIMOS EL HTML DEL CARRITO PARA LA RESPUESTA JSON
+        format.json do
+          rendered_cart = render_to_string(
+            partial: "carts/cart_items",
+            locals: { cart_items: @cart_items },
+            formats: [:html]
+          )
+
+          render json: {
+            success: true,
+            cart_html: rendered_cart,
+            count: @cart_items.sum(&:cantidad)
+          }, status: :created
+        end
+
         format.html { redirect_to cart_path, notice: 'Producto agregado al carrito' }
       end
     else
@@ -40,7 +55,8 @@ class CartItemsController < ApplicationController
 
   def update
     @cart_item = @cart.cart_items.find(params[:id])
-    if @cart_item.update(cantidad: params[:cantidad]) # aquí usamos cantidad
+    
+    if @cart_item.update(cart_item_params)
       @cart_items = @cart.cart_items.includes(:product)
 
       respond_to do |format|
@@ -52,46 +68,37 @@ class CartItemsController < ApplicationController
           )
         end
         format.json { render json: { success: true, item_id: @cart_item.id, quantity: @cart_item.cantidad }, status: :ok }
-        format.html { redirect_to cart_path, notice: 'Cantidad actualizada' }
+        format.html { redirect_to cart_path, notice: 'Cantidad actualizada.' }
       end
     else
       respond_to do |format|
         format.json { render json: { success: true, item_id: @cart_item.id, quantity: @cart_item.cantidad }, status: :ok }
-        format.html { redirect_to cart_path, alert: 'No se pudo actualizar la cantidad' }
+        format.html { redirect_to cart_path, alert: 'Error al actualizar cantidad.' }
       end
     end
   end
 
-  def destroy
-    @cart_item = @cart.cart_items.find(params[:id])
-    @cart_item.destroy
+def destroy
+  @cart_item = @cart.cart_items.find(params[:id])
+  @cart_item.destroy
 
-    @cart_items = @cart.cart_items.includes(:product)
+  @cart_items = @cart.cart_items.includes(:product)
 
-    respond_to do |format|
-      format.turbo_stream do
-        render turbo_stream: [
-          turbo_stream.replace(
-            "cart_items",
-            partial: "carts/cart_items",
-            locals: { cart_items: @cart_items }
-          ),
-          turbo_stream.replace(
-            "cart_count",
-            partial: "carts/cart_count",
-            locals: { count: @cart_items.sum(&:cantidad) }
-          )
-        ]
-      end
-      format.json { render json: { success: true, deleted_id: @cart_item.id, count: @cart_items.sum(&:cantidad) }, status: :ok }
-      format.html { redirect_to cart_path, notice: 'Producto eliminado del carrito' }
-    end
+  respond_to do |format|
+    format.turbo_stream
+    format.json { render json: { success: true, count: @cart_items.sum(&:cantidad) }, status: :ok }
+    format.html { redirect_to cart_path, notice: 'Producto eliminado del carrito' }
   end
+end
 
   private
 
   def set_cart
     @cart = current_user.cart
     
+  end
+
+  def cart_item_params
+    params.require(:cart_item).permit(:quantity)
   end
 end

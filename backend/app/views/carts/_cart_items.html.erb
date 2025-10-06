@@ -20,24 +20,26 @@
             <% end %>
             <strong><%= item.product.nombre %></strong>
           </td>
-          <td><%= item.product.precio %></td>
+          <td><%= number_to_currency(item.product.precio, unit: ' $', format: '%n%u', separator: ',', delimiter: '.') %></td>
           <td>
-            <%= form_with url: cart_item_path(item), method: :patch, data: { turbo_stream: true }, class: "d-inline" do %>
+            <%= form_with(model: item, class: "quantity-form", data: { item_id: item.id }) do |f| %>
               <div class="input-group" style="width: 120px;">
-                <%= number_field_tag :quantity, item.quantity, min: 1, class: "form-control text-center" %>
-                <button class="btn btn-outline-primary" type="submit" title="<%= t('cart.update_quantity') %>">
-                  <i class="fa-solid fa-rotate"></i>
-                </button>
+                <%= f.number_field :quantity, 
+                    min: 1, 
+                    class: "form-control text-center quantity-field",
+                    value: item.quantity %>
               </div>
             <% end %>
           </td>
-          <td><%= number_to_currency((item.product.precio || 0) * item.quantity.to_i) %></td>
+          <td><%= number_to_currency((item.product.precio || 0) * item.quantity.to_i, unit: ' $', format: '%n%u', separator: ',', delimiter: '.') %></td>
 
           <td>
-            <%= button_to cart_item_path(item), 
-                          method: :delete, 
-                          data: { turbo_stream: true, confirm: t("cart.confirm_remove") }, 
-                          class: "btn btn-outline-danger btn-sm" do %>
+            <%= button_to cart_item_path(item),
+                          method: :delete,
+                          data: { turbo: false },
+                          remote: true,
+                          class: "btn btn-outline-danger btn-sm delete-item",
+                          form: { "data-item-id": item.id } do %>
               <i class="fa-solid fa-trash"></i>
             <% end %>
           </td>
@@ -48,7 +50,7 @@
 
   <div class="text-end">
     <h4>
-      <%= t("cart.total") %>: <%= number_to_currency(cart_items.sum { |i| (i.product&.precio || 0) * (i.quantity || 0) }) %>
+      <%= t("cart.total") %>: <%= number_to_currency(cart_items.sum { |i| (i.product&.precio || 0) * (i.quantity || 0) }, unit: ' $', format: '%n%u', separator: ',', delimiter: '.') %>
     </h4>
     <br>
     <% unless current_page?(cart_path) %>
@@ -61,3 +63,121 @@
 <% else %>
   <p><%= t("cart.empty") %></p>
 <% end %>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const csrfToken = document.querySelector('meta[name="csrf-token"]').content;
+
+  // 🔹 Mostrar notificación (agregar / eliminar)
+  function showNotification(message, type = 'success') {
+    const existing = document.querySelector('.custom-alert');
+    if (existing) existing.remove();
+
+    const alert = document.createElement('div');
+    alert.className = `custom-alert alert-${type}`;
+    alert.textContent = message;
+    document.body.appendChild(alert);
+
+    setTimeout(() => alert.classList.add('show'), 50);
+    setTimeout(() => {
+      alert.classList.remove('show');
+      setTimeout(() => alert.remove(), 300);
+    }, 2500);
+  }
+
+  // 🔹 Cambiar cantidad (suma/resta)
+  document.addEventListener('change', async function(e) {
+    const field = e.target.closest('.quantity-field');
+    if (!field) return;
+
+    e.preventDefault();
+    const form = field.closest('form');
+    const quantity = field.value;
+
+    try {
+      const response = await fetch(form.action, {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-CSRF-Token': csrfToken
+        },
+        body: JSON.stringify({ cart_item: { quantity: quantity } })
+      });
+
+      if (response.ok) {
+        const price = parsePrice(field.closest('tr').querySelector('td:nth-child(2)').textContent);
+        const subtotalCell = field.closest('tr').querySelector('td:nth-child(4)');
+        const subtotal = price * parseInt(quantity);
+        subtotalCell.textContent = formatPrice(subtotal);
+
+        updateCartTotal();
+      }
+    } catch (error) {
+      console.error('Error al actualizar cantidad:', error);
+    }
+  });
+
+  // 🔹 Eliminar producto con notificación
+  document.addEventListener('click', async function(e) {
+    const btn = e.target.closest('.delete-item');
+    if (!btn) return;
+
+    e.preventDefault();
+    const form = btn.closest('form');
+    const itemRow = btn.closest('tr');
+
+    try {
+      const response = await fetch(form.action, {
+        method: 'DELETE',
+        headers: {
+          'X-CSRF-Token': csrfToken,
+          'Accept': 'application/json'
+        }
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        itemRow.remove();
+        updateCartTotal();
+
+        // 🔹 Actualizar contador del carrito
+        const cartCount = document.getElementById('cart_count');
+        if (cartCount && data.count !== undefined) {
+          cartCount.textContent = data.count;
+        }
+
+        // 🔹 Mostrar notificación de eliminación
+        showNotification('🗑️ Producto eliminado del carrito', 'danger');
+      }
+    } catch (error) {
+      console.error('Error al eliminar producto:', error);
+    }
+  });
+
+  // 🔹 Recalcular total global
+  function updateCartTotal() {
+    const quantityFields = document.querySelectorAll('.quantity-field');
+    const total = Array.from(quantityFields).reduce((sum, input) => {
+      const itemPrice = parsePrice(input.closest('tr').querySelector('td:nth-child(2)').textContent);
+      return sum + (itemPrice * parseInt(input.value));
+    }, 0);
+
+    const totalText = document.querySelector('.text-end h4');
+    if (totalText) totalText.textContent = '<%= t("cart.total") %>: ' + formatPrice(total);
+  }
+
+  // 🔹 Funciones de formato de precio
+  function formatPrice(amount) {
+    const formattedNumber = new Intl.NumberFormat('es-ES', {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2,
+      useGrouping: true
+    }).format(amount);
+    return `${formattedNumber} $`;
+  }
+
+  function parsePrice(priceString) {
+    return parseFloat(priceString.replace(/\./g, '').replace(',', '.').replace('$', '').trim());
+  }
+});
+</script>
