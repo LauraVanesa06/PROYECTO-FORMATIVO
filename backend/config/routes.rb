@@ -6,6 +6,7 @@ Rails.application.routes.draw do
     passwords: 'usuarios/passwords'
   }
 
+
   devise_scope :user do
     get '/acceso', to: 'usuarios/sessions#new', as: :custom_login
     get '/registro', to: 'usuarios/registrations#new', as: :custom_signup
@@ -52,18 +53,22 @@ Rails.application.routes.draw do
 
   scope "(:locale)", locale: /en|es/ do
     root "home#index"
-    resources :products
+    resources :products do
+      collection do 
+        patch :update_disponibilidad
+        get :generate_code
+      end
+    end
   end
 
   # Recursos principale
-  resources :products do
-    patch :update_disponibilidad, on: :collection
-  end
+
+  
   resources :carts, only: [:show]
   resources :favorites, only: [:index, :create, :destroy]
 
   resources :cart_items, only: [:create, :update, :destroy] 
-  resources :products
+  #resources :products
  
   resources :categories do
     member do

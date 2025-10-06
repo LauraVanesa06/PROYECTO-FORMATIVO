@@ -4,7 +4,7 @@
     <% if product.images.attached? %>
       <%= image_tag url_for(product.images.first), alt: "Imagen del producto" %>
     <% else %>
-      <p>No hay imagen</p>
+      <%= image_tag "ProductoNoDisponible.png" %>
     <% end %>
     <!--boton editar que llena el parcial con los datos del producto-->
     <%= link_to edit_product_path(product), id: "button" do %>
@@ -23,7 +23,7 @@
       <%= product.descripcion %>
     </li> 
     <div class="opciones">
-      <li class="precio"><%= product.precio_cop %></li>
+      <li class="precio"><%= product.precio_cop%></li>
 
       <!--formulario para marcar si el producto esta disponible o no-->
           <%= form_with url: update_disponibilidad_products_path, method: :patch, id: "disponibilidad-form-#{product.id}" do %>
@@ -37,30 +37,6 @@
   
     </div>
   </div>
-<!--
-  <div class="opciones">
-    <button class="editar"><%= link_to "Editar", "#modal-edit-#{product.id}" %></button>
-    <button class="ver">
-      <%= link_to "Ver", "#modal-ver-#{product.id}" %>
-    </button>
-  </div>
-</ul>
-
-
-<script>
-  document.addEventListener("DOMContentLoaded", () => {
-    const form = document.getElementById("disponibilidad-form");
-    if (!form) return;
-
-    const checkboxes = form.querySelectorAll('input[type="checkbox"]');
-    checkboxes.forEach(chk => {
-      chk.addEventListener('change', () => {
-        form.requestSubmit();  // Método moderno para enviar formulario
-      });
-    });
-  });
-</script>
--->
 </ul>
 <script>
   // Escucha los cambios en el checkbox para enviar el formulario

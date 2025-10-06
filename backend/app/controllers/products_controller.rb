@@ -1,6 +1,6 @@
 class ProductsController < ApplicationController
+    layout "application"
   before_action :set_product, only: %i[ show edit update destroy ]
-  layout false
 
 
   # GET /products or /products.json
@@ -60,22 +60,23 @@ class ProductsController < ApplicationController
 
   # PATCH/PUT /products/1 or /products/1.json
   def update
-  # Adjuntar nuevas imágenes (si el usuario subió más)
+    # Adjuntar nuevas imágenes (si el usuario subió más)
     if params[:product][:images].present?
       params[:product][:images].each do |img|
-        @product.images.attach(img)  # 👉 esto las acumula en lugar de reemplazar
+        @product.images.attach(img)  # 👉 esto acumula en lugar de reemplazar
       end
     end
 
     # Borrar imágenes si se marcaron
     if params[:product][:remove_image_ids].present?
       params[:product][:remove_image_ids].each do |id|
-        image = @product.images.attachments.find(id)
-        image.purge
+        next if id.blank? # 👈 evita errores con ids vacíos
+        image = @product.images.attachments.find_by(id: id)
+        image&.purge
       end
     end
 
-    # Actualizar solo los demás atributos (sin tocar :images)
+    # Actualizar solo los demás atributos (sin tocar :images ni :remove_image_ids)
     respond_to do |format|
       if @product.update(product_params.except(:images, :remove_image_ids))
         format.html { redirect_to inventario_path, notice: "Producto actualizado correctamente." }
@@ -108,6 +109,21 @@ class ProductsController < ApplicationController
     redirect_to inventario_path
   end
 
+  def generate_code
+    nombre = params[:nombre].to_s.strip
+    code = ""
+
+    if nombre.present?
+      initials = nombre.split.map { |word| word[0] }.join.upcase
+      last_product = Product.where("codigo_producto LIKE ?", "#{initials}%").order(:codigo_producto).last
+      last_number = last_product.present? ? last_product.codigo_producto.gsub(initials, "").to_i : 0
+      next_number = last_number + 1
+      code = "#{initials}#{next_number.to_s.rjust(3, '0')}"
+    end
+
+    render json: { codigo: code }
+  end
+
   # DELETE /products/1 or /products/1.json
   def destroy
     @product.destroy!
@@ -131,6 +147,19 @@ class ProductsController < ApplicationController
 
     # Only allow a list of trusted parameters through.
     def product_params
-      params.require(:product).permit(:nombre, :descripcion, :disponible, :precio, :stock, :category_id, :supplier_id, images: [], remove_image_ids: [])
+      params.require(:product).permit(
+        :nombre, 
+        :descripcion, 
+        :disponible, 
+        :precio, 
+        :stock,
+        :category_id, 
+        :supplier_id,
+        :cantidad, 
+        :modelo, 
+        :marca_id,
+        images: [], 
+        remove_image_ids: []
+      )
     end
 end

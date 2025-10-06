@@ -32,9 +32,9 @@ en:
     prev: "Previous"
     next: "Next"
   categories:
-    title: "🔍 Categories"
+    title: "Categories"
   products:
-    title: "🔥 Featured Products"
+    title: "Featured Products"
     buy: "Buy"
     close: "Close"
     favorites:

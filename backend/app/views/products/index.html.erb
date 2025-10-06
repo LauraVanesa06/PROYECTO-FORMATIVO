@@ -209,10 +209,15 @@
     <a href="#" class="close">&times;</a>
     <div class="titulo2 tc">Crear Categoría</div>
 
-    <%= form_with(model: Category.new, url: categories_path, local: true, class: 'form-editar') do |form| %>
+    <%= form_with(model: Category.new, url: categories_path, local: true, html: { multipart: true }, class: 'form-editar') do |form| %>
       <div class="texto2">
         <%= form.label :nombre, "Nombre:", style: "display: block" %>
         <%= form.text_field :nombre %>
+      </div>
+
+      <div class="texto2">
+        <%= form.label :imagen, "Imagen:", style: "display: block" %>
+        <%= form.file_field :imagen, accept: "image/*" %>
       </div>
 
       <div class="btn3">
@@ -221,6 +226,7 @@
     <% end %>
   </div>
 </div>
+
 
 </body>
 </html>

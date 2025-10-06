@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_09_20_020912) do
+ActiveRecord::Schema[8.0].define(version: 2025_09_21_204107) do
   create_table "active_storage_attachments", force: :cascade do |t|
     t.string "name", null: false
     t.string "record_type", null: false
@@ -89,16 +89,22 @@ ActiveRecord::Schema[8.0].define(version: 2025_09_20_020912) do
     t.index ["user_id"], name: "index_favorites_on_user_id"
   end
 
-  create_table "payments", force: :cascade do |t|
-    t.integer "cart_id", null: false
-    t.string "transaction_id"
-    t.integer "status", default: 0
-    t.decimal "amount", precision: 12, scale: 2
-    t.string "pay_method"
-    t.string "token"
+  create_table "marcas", force: :cascade do |t|
+    t.string "nombre"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["cart_id"], name: "index_payments_on_cart_id"
+  end
+
+  create_table "pedidos", force: :cascade do |t|
+    t.datetime "fecha"
+    t.json "productos"
+    t.string "descripcion_entrega"
+    t.integer "supplier_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.integer "stock"
+    t.string "proveedor"
+    t.index ["supplier_id"], name: "index_pedidos_on_supplier_id"
   end
 
   create_table "products", force: :cascade do |t|
@@ -111,7 +117,11 @@ ActiveRecord::Schema[8.0].define(version: 2025_09_20_020912) do
     t.integer "category_id", null: false
     t.integer "supplier_id", null: false
     t.boolean "disponible", default: true
+    t.string "codigo_producto", null: false
+    t.string "modelo"
+    t.integer "marca_id"
     t.index ["category_id"], name: "index_products_on_category_id"
+    t.index ["codigo_producto"], name: "index_products_on_codigo_producto", unique: true
     t.index ["supplier_id"], name: "index_products_on_supplier_id"
   end
 
@@ -131,6 +141,8 @@ ActiveRecord::Schema[8.0].define(version: 2025_09_20_020912) do
     t.string "contacto"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "codigo_proveedor"
+    t.index ["codigo_proveedor"], name: "index_suppliers_on_codigo_proveedor", unique: true
   end
 
   create_table "support_requests", force: :cascade do |t|
@@ -173,8 +185,9 @@ ActiveRecord::Schema[8.0].define(version: 2025_09_20_020912) do
   add_foreign_key "carts", "users"
   add_foreign_key "favorites", "products"
   add_foreign_key "favorites", "users"
-  add_foreign_key "payments", "carts"
+  add_foreign_key "pedidos", "suppliers"
   add_foreign_key "products", "categories"
+  add_foreign_key "products", "marcas"
   add_foreign_key "products", "suppliers"
   add_foreign_key "purchasedetails", "buys", on_delete: :cascade
   add_foreign_key "purchasedetails", "products", on_delete: :cascade
