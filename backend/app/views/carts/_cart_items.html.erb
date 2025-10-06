@@ -20,7 +20,7 @@
             <% end %>
             <strong><%= item.product.nombre %></strong>
           </td>
-          <td><%= number_to_currency(item.product.precio, unit: '$ ', format: '%n %u', separator: ',', delimiter: '.') %></td>
+          <td><%= number_to_currency(item.product.precio, unit: ' $', format: '%n%u', separator: ',', delimiter: '.') %></td>
           <td>
             <%= form_with(model: item, class: "quantity-form", data: { item_id: item.id }) do |f| %>
               <div class="input-group" style="width: 120px;">
@@ -31,7 +31,7 @@
               </div>
             <% end %>
           </td>
-          <td><%= number_to_currency((item.product.precio || 0) * item.quantity.to_i, unit: '$ ', format: '%n %u', separator: ',', delimiter: '.') %></td>
+          <td><%= number_to_currency((item.product.precio || 0) * item.quantity.to_i, unit: ' $', format: '%n%u', separator: ',', delimiter: '.') %></td>
 
           <td>
             <%= button_to cart_item_path(item), 
@@ -48,7 +48,7 @@
 
   <div class="text-end">
     <h4>
-      <%= t("cart.total") %>: <%= number_to_currency(cart_items.sum { |i| (i.product&.precio || 0) * (i.quantity || 0) }, unit: '$ ', format: '%n %u', separator: ',', delimiter: '.') %>
+      <%= t("cart.total") %>: <%= number_to_currency(cart_items.sum { |i| (i.product&.precio || 0) * (i.quantity || 0) }, unit: ' $', format: '%n%u', separator: ',', delimiter: '.') %>
     </h4>
     <br>
     <% unless current_page?(cart_path) %>
@@ -63,63 +63,58 @@
 <% end %>
 
 <script>
-  document.addEventListener('DOMContentLoaded', function() {
-    const quantityFields = document.querySelectorAll('.quantity-field');
-    const csrfToken = document.querySelector('meta[name="csrf-token"]').content;
-    
-    const formatPrice = (amount) => {
-      const formattedNumber = new Intl.NumberFormat('es-ES', {
-        minimumFractionDigits: 2,
-        maximumFractionDigits: 2,
-        useGrouping: true
-      }).format(amount);
-      return `${formattedNumber} $`;
-    };
+document.addEventListener('change', async function(e) {
+  const field = e.target.closest('.quantity-field');
+  if (!field) return; // Solo responder si es un campo de cantidad
 
-    const parsePrice = (priceString) => {
-      // Remover el símbolo de dólar y convertir al formato numérico
-      return parseFloat(priceString.replace(/\./g, '').replace(',', '.').replace('$', '').trim());
-    };
-    
-    quantityFields.forEach(field => {
-      field.addEventListener('change', async function(e) {
-        e.preventDefault();
-        const form = this.closest('form');
-        const itemId = form.dataset.itemId;
-        const quantity = this.value;
-        
-        try {
-          const response = await fetch(form.action, {
-            method: 'PATCH',
-            headers: {
-              'Content-Type': 'application/json',
-              'X-CSRF-Token': csrfToken
-            },
-            body: JSON.stringify({
-              cart_item: { quantity: quantity }
-            })
-          });
+  e.preventDefault();
+  const form = field.closest('form');
+  const csrfToken = document.querySelector('meta[name="csrf-token"]').content;
+  const quantity = field.value;
 
-          if (response.ok) {
-            // Actualizar subtotal del item
-            const price = parsePrice(this.closest('tr').querySelector('td:nth-child(2)').textContent);
-            const subtotalCell = this.closest('tr').querySelector('td:nth-child(4)');
-            const subtotal = price * parseInt(quantity);
-            subtotalCell.textContent = formatPrice(subtotal);
-
-            // Actualizar total del carrito
-            const total = Array.from(quantityFields).reduce((sum, field) => {
-              const itemPrice = parsePrice(field.closest('tr').querySelector('td:nth-child(2)').textContent);
-              return sum + (itemPrice * parseInt(field.value));
-            }, 0);
-
-            document.querySelector('.text-end h4').textContent = '<%= t("cart.total") %>: ' + formatPrice(total);
-          }
-        } catch (error) {
-          console.error('Error:', error);
-        }
-      });
+  try {
+    const response = await fetch(form.action, {
+      method: 'PATCH',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-CSRF-Token': csrfToken
+      },
+      body: JSON.stringify({
+        cart_item: { quantity: quantity }
+      })
     });
-  });
-</script>
+
+    if (response.ok) {
+      const price = parsePrice(field.closest('tr').querySelector('td:nth-child(2)').textContent);
+      const subtotalCell = field.closest('tr').querySelector('td:nth-child(4)');
+      const subtotal = price * parseInt(quantity);
+      subtotalCell.textContent = formatPrice(subtotal);
+
+      // 🔹 Recalcular el total de todos los productos visibles
+      const quantityFields = document.querySelectorAll('.quantity-field');
+      const total = Array.from(quantityFields).reduce((sum, input) => {
+        const itemPrice = parsePrice(input.closest('tr').querySelector('td:nth-child(2)').textContent);
+        return sum + (itemPrice * parseInt(input.value));
+      }, 0);
+
+      const totalText = document.querySelector('.text-end h4');
+      if (totalText) totalText.textContent = '<%= t("cart.total") %>: ' + formatPrice(total);
+    }
+  } catch (error) {
+    console.error('Error al actualizar cantidad:', error);
+  }
+});
+
+function formatPrice(amount) {
+  const formattedNumber = new Intl.NumberFormat('es-ES', {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
+    useGrouping: true
+  }).format(amount);
+  return `${formattedNumber} $`;
+}
+
+function parsePrice(priceString) {
+  return parseFloat(priceString.replace(/\./g, '').replace(',', '.').replace('$', '').trim());
+}
 </script>
