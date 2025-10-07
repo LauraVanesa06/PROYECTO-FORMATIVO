@@ -95,6 +95,31 @@ ActiveRecord::Schema[8.0].define(version: 2025_09_21_204107) do
     t.datetime "updated_at", null: false
   end
 
+create_table "payments", force: :cascade do |t|
+
+  create_table "payments", force: :cascade do |t|
+    t.integer "cart_id", null: false
+    t.string "transaction_id"
+    t.integer "status", default: 0
+    t.decimal "amount", precision: 12, scale: 2
+    t.string "pay_method"
+    t.string "token"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["cart_id"], name: "index_payments_on_cart_id"
+  end
+
+  
+  create_table "pedido_products", force: :cascade do |t|
+    t.integer "product_id", null: false
+    t.integer "pedido_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.integer "cantidad"
+    t.index ["pedido_id"], name: "index_pedido_products_on_pedido_id"
+    t.index ["product_id"], name: "index_pedido_products_on_product_id"
+  end
+
   create_table "pedidos", force: :cascade do |t|
     t.datetime "fecha"
     t.json "productos"
@@ -185,6 +210,11 @@ ActiveRecord::Schema[8.0].define(version: 2025_09_21_204107) do
   add_foreign_key "carts", "users"
   add_foreign_key "favorites", "products"
   add_foreign_key "favorites", "users"
+    add_foreign_key "payments", "carts"
+  add_foreign_key "payments", "carts"
+
+  add_foreign_key "pedido_products", "pedidos"
+  add_foreign_key "pedido_products", "products"
   add_foreign_key "pedidos", "suppliers"
   add_foreign_key "products", "categories"
   add_foreign_key "products", "marcas"
