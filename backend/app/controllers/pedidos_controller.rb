@@ -94,7 +94,17 @@ class PedidosController < ApplicationController
   # PATCH/PUT /pedidos/1 or /pedidos/1.json
   def update
     respond_to do |format|
+      prev_estado = @pedido.estado
       if @pedido.update(pedido_params)
+        # Si el estado cambió a 'entregado' y antes no lo era, incrementar stock
+        if @pedido.estado == 'entregado' && prev_estado != 'entregado'
+          @pedido.pedido_products.includes(:product).each do |pp|
+            producto = pp.product
+            if producto.present?
+              producto.increment!(:stock, pp.cantidad)
+            end
+          end
+        end
         format.html { redirect_to pedidos_path, notice: "Estado actualizado correctamente." }
         format.json { render :show, status: :ok, location: @pedido }
       else
