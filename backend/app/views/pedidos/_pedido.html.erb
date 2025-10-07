@@ -12,27 +12,22 @@
     </p>
 -->
 
-    <div class="pro">
-      <div class="img-pro">
-        <%= image_tag "martillo-dewalt.png" %>
+
+    <% pedido.pedido_products.includes(:product).limit(2).each do |pp| %>
+      <div class="pro">
+        <div class="img-pro">
+          <% if pp.product.images.attached? %>
+            <%= image_tag url_for(pp.product.images.first), alt: pp.product.nombre %>
+          <% else %>
+            <%= image_tag "martillo-dewalt.png" %>
+          <% end %>
+        </div>
+        <strong>Nombre: </strong><%= pp.product.nombre %><br>
+        <strong>Cantidad: </strong><%= pp.cantidad %><br>
+        <strong>Modelo: </strong><%= pp.product.modelo if pp.product.respond_to?(:modelo) %><br>
+        <strong>Marca: </strong><%= pp.product.marca if pp.product.respond_to?(:marca) %>
       </div>
-
-      <strong>Nombre: </strong>Martillo
-      <strong>Cantidad: </strong>25
-      <strong>Modelo: </strong>MX-200
-      <strong>Marca: </strong>Dewalt
-    </div>
-
-    <div class="pro">
-      <div class="img-pro">
-        <%= image_tag "martillo-dewalt.png" %>
-      </div>
-
-      <strong>Nombre:</strong> Martillo
-      <strong>Cantidad:</strong> 25
-      <strong>Modelo:</strong> MX-200
-      <strong>Marca: </strong>Dewalt
-    </div>
+    <% end %>
 
   </div>
 

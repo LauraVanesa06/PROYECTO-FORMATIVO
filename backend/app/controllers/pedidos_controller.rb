@@ -71,7 +71,19 @@ class PedidosController < ApplicationController
           end
         end
       end
-  redirect_to pedidos_path, notice: "Pedido creado correctamente"
+
+      # Notificación al proveedor
+      proveedor = @pedido.supplier
+      if proveedor&.correo.present?
+        PedidoMailer.notificar_proveedor(@pedido).deliver_later
+      elsif proveedor&.contacto.present?
+        # Mensaje de texto (SMS) usando el servicio SmsSender
+        productos_info = @pedido.pedido_products.includes(:product).map { |pp| "#{pp.product.nombre} (#{pp.cantidad})" }.join(", ")
+        sms_body = "Nuevo pedido recibido. Productos: #{productos_info}. Entrega: #{@pedido.descripcion_entrega}"
+        SmsSender.send_sms(to: proveedor.contacto, body: sms_body)
+      end
+
+      redirect_to pedidos_path, notice: "Pedido creado correctamente"
     else
       @productos = Product.all
       render :new

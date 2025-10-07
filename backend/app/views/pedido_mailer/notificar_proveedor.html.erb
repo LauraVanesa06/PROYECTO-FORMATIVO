@@ -1,0 +1,17 @@
+<h2>Nuevo pedido recibido</h2>
+<p>Hola <%= @proveedor.nombre %>,</p>
+<p>Se ha realizado un nuevo pedido con la siguiente información:</p>
+<ul>
+  <li><strong>Fecha:</strong> <%= @pedido.fecha.strftime('%d/%m/%Y %H:%M') %></li>
+  <li><strong>Descripción de entrega:</strong> <%= @pedido.descripcion_entrega %></li>
+</ul>
+<p><strong>Productos solicitados:</strong></p>
+<ul>
+  <% @pedido.pedido_products.includes(:product).each do |pp| %>
+    <li>
+      <%= pp.product.nombre %> - Cantidad: <%= pp.cantidad %>
+    </li>
+  <% end %>
+</ul>
+<p>Por favor, confirma la recepción de este pedido.</p>
+<p>Gracias,<br>Ferremateriales el Maestro</p>
