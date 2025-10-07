@@ -15,7 +15,11 @@
 
     <%# Resumen del pedido: cantidad, total, estado y cambio de estado %>
     <div class="pedido-resumen">
-      <p><strong>Cantidad de productos:</strong> <%= pedido.pedido_products.sum(:cantidad) %></p>
+      <% grouped = pedido.pedido_products.includes(:product).group_by { |pp| [pp.product.id, pp.product.nombre, pp.product.modelo, pp.product.marca] } %>
+      <p>
+        <strong>Productos distintos:</strong> <%= grouped.size %> |
+        <strong>Total unidades:</strong> <%= pedido.pedido_products.sum(:cantidad) %>
+      </p>
       <p><strong>Total a pagar:</strong> <%= number_to_currency(pedido.pedido_products.includes(:product).sum { |pp| pp.cantidad * (pp.product.precio || 0) }, unit: 'COP ', separator: ',', delimiter: '.', format: '%u%n') %></p>
       <p style="display: flex; align-items: center; flex-direction: row; gap: 10px; flex-wrap: wrap;">
         <%= form_with model: pedido, url: pedido_path(pedido), method: :patch, local: false, class: 'form-estado', 
@@ -32,19 +36,21 @@
     </div>
     <%# Todos los productos ocultos por defecto, con scroll y tamaño máximo %>
     <div class="productos-todos" id="productos-todos-<%= pedido.id %>" style="display:none; max-height: 300px; overflow-y: auto;">
-      <% pedido.pedido_products.includes(:product).each do |pp| %>
+      <% grouped = pedido.pedido_products.includes(:product).group_by { |pp| [pp.product.id, pp.product.nombre, pp.product.modelo, pp.product.marca] } %>
+      <% grouped.each do |(prod_id, nombre, modelo, marca), pps| %>
+        <% prod = pps.first.product %>
         <div class="pro">
           <div class="img-pro">
-            <% if pp.product.images.attached? %>
-              <%= image_tag url_for(pp.product.images.first), alt: pp.product.nombre %>
+            <% if prod.images.attached? %>
+              <%= image_tag url_for(prod.images.first), alt: prod.nombre %>
             <% else %>
               <%= image_tag "martillo-dewalt.png" %>
             <% end %>
           </div>
-          <strong>Nombre: </strong><%= pp.product.nombre %><br>
-          <strong>Cantidad: </strong><%= pp.cantidad %><br>
-          <strong>Modelo: </strong><%= pp.product.modelo if pp.product.respond_to?(:modelo) %><br>
-          <strong>Marca: </strong><%= pp.product.marca if pp.product.respond_to?(:marca) %>
+          <strong>Nombre:</strong><%= prod.nombre %>
+          <strong>Cantidad:</strong><%= pps.sum(&:cantidad) %>
+          <strong>Modelo:</strong><%= prod.modelo if prod.respond_to?(:modelo) %>
+          <strong>Marca:</strong><%= prod.marca if prod.respond_to?(:marca) %>
         </div>
       <% end %>
     </div>
@@ -52,7 +58,16 @@
   </div>
 
     <p class="deta">
-      <%= link_to "Ver mas", pedido %>
+      <button type="button" onclick="
+        var prods = document.getElementById('productos-todos-<%= pedido.id %>');
+        if (prods.style.display === 'none' || prods.style.display === '') {
+          prods.style.display = 'block';
+          this.textContent = 'Ver menos';
+        } else {
+          prods.style.display = 'none';
+          this.textContent = 'Ver más';
+        }
+      " style="background: #4a79e3; color: white; border: none; border-radius: 10px; padding: 6px 16px; font-weight: 600; cursor: pointer;">Ver más</button>
     </p>
 
 </div>

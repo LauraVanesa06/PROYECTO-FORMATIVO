@@ -631,8 +631,6 @@ input.main-input::placeholder { color: rgba(255,255,255,0.6); }
   color: #efefef;
 }
 
-.form-estado{}
-
 /* Select de estado personalizado */
 .select-estado {
   padding: 1px 8px 3px 8px;

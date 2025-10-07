@@ -59,10 +59,14 @@ class PedidosController < ApplicationController
     @pedido.supplier = supplier if supplier
 
     if @pedido.save
+      # Limpiar relaciones previas por si acaso (no debería haber, pero por seguridad)
+      @pedido.pedido_products.destroy_all
+
       # Crear las relaciones con los productos seleccionados y actualizar stock
       if params[:pedido][:productos]
         params[:pedido][:productos].each do |product_id|
           cantidad = params[:pedido][:cantidades][product_id]
+          next if cantidad.blank? || cantidad.to_i <= 0
           PedidoProduct.create(pedido: @pedido, product_id: product_id, cantidad: cantidad)
           # Actualizar el stock del producto
           producto = Product.find_by(id: product_id)
