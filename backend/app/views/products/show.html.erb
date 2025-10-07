@@ -208,8 +208,8 @@
 <script>
 document.addEventListener("DOMContentLoaded", () => {
   const csrfToken = document.querySelector('meta[name="csrf-token"]').content;
-    
-  // Escuchar clics SOLO en botones .btn-agg
+
+  // Escuchar clics en todos los botones "Agregar al carrito"
   document.querySelectorAll(".btn-agg").forEach((btn) => {
     btn.addEventListener("click", async (e) => {
       e.preventDefault();
@@ -226,54 +226,74 @@ document.addEventListener("DOMContentLoaded", () => {
           body: JSON.stringify({})
         });
 
-        if (response.ok) {
-          const data = await response.json();
+        if (!response.ok) throw new Error("Error al agregar producto");
 
-          // Notificación tipo toast
-          showNotification("✅ Producto agregado al carrito");
+        const data = await response.json();
 
-          // Actualizar contador del carrito
+        if (data.success) {
+          // 🔹 Actualizar el contenido del carrito lateral
+          const cartBody = document.getElementById("cart-offcanvas-body");
+          if (cartBody && data.cart_html) {
+            cartBody.innerHTML = data.cart_html;
+          }
+
+          // 🔹 Actualizar contador
           const cartCount = document.getElementById("cart_count");
           if (cartCount && data.count !== undefined) {
             cartCount.textContent = data.count;
           }
+
+          // 🔹 Mostrar carrito automáticamente (opcional)
+          const offcanvasEl = document.getElementById("cartOffcanvas");
+          if (offcanvasEl) {
+            const offcanvas = bootstrap.Offcanvas.getOrCreateInstance(offcanvasEl);
+            offcanvas.show();
+          }
+
+          // 🔹 Notificación de éxito
+          showNotification("✅ Producto agregado al carrito");
         } else {
           showNotification("⚠️ No se pudo agregar el producto");
         }
       } catch (error) {
-        console.error("Error al agregar al carrito:", error);
+        console.error("Error:", error);
         showNotification("❌ Error al agregar producto");
       }
     });
   });
 
-  // Mostrar notificación
+  // 🔸 Función de notificación tipo toast
   function showNotification(message) {
-    const notification = document.createElement("div");
-    notification.textContent = message;
-    notification.style.position = "fixed";
-    notification.style.bottom = "20px";
-    notification.style.right = "20px";
-    notification.style.background = "#198754";
-    notification.style.color = "#fff";
-    notification.style.padding = "12px 18px";
-    notification.style.borderRadius = "10px";
-    notification.style.boxShadow = "0 2px 8px rgba(0,0,0,0.3)";
-    notification.style.fontWeight = "600";
-    notification.style.zIndex = "2000";
-    notification.style.opacity = "0";
-    notification.style.transition = "opacity 0.3s ease";
+    const existing = document.querySelector(".custom-toast");
+    if (existing) existing.remove();
 
-    document.body.appendChild(notification);
-    setTimeout(() => (notification.style.opacity = "1"), 100);
-
+    const toast = document.createElement("div");
+    toast.className = "custom-toast";
+    toast.textContent = message;
+    Object.assign(toast.style, {
+      position: "fixed",
+      bottom: "20px",
+      right: "20px",
+      background: "#198754",
+      color: "#fff",
+      padding: "10px 16px",
+      borderRadius: "10px",
+      fontWeight: "600",
+      boxShadow: "0 2px 8px rgba(0,0,0,0.3)",
+      zIndex: "3000",
+      opacity: "0",
+      transition: "opacity 0.3s ease"
+    });
+    document.body.appendChild(toast);
+    setTimeout(() => (toast.style.opacity = "1"), 100);
     setTimeout(() => {
-      notification.style.opacity = "0";
-      setTimeout(() => notification.remove(), 500);
+      toast.style.opacity = "0";
+      setTimeout(() => toast.remove(), 500);
     }, 2500);
   }
 });
 </script>
+
 
 </body>
 </html>
