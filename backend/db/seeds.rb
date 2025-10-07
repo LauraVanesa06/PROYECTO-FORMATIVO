@@ -88,7 +88,7 @@ products = Product.create!([
     nombre: "Martillo",
     descripcion: "Martillo de alta resistencia con mango ergonómico y cabeza de acero forjado,
     ideal para trabajos de carpintería, construcción y reparaciones generales.",
-    precio: 25000.9,
+    precio: 25_000,
     stock: 50,
     codigo_producto: "P001",
     modelo: "MX-200",
@@ -101,7 +101,7 @@ products = Product.create!([
     nombre: "Llave stilson",
     descripcion: "Llave Stilson de acero forjado con mango antideslizante y mordazas ajustables,
     ideal para sujetar y girar tuberías metálicas con firmeza y seguridad.",
-    precio: 40000,
+    precio: 40_000,
     stock: 30,
     codigo_producto: "P002",
     modelo: "LS-10",
@@ -114,7 +114,7 @@ products = Product.create!([
     nombre: "Sierra",
     descripcion: "Sierra manual con hoja de acero templado y mango ergonómico,
     ideal para cortes precisos en madera, plástico o metal.",
-    precio: 19900,
+    precio: 19_900,
     stock: 25,
     codigo_producto: "P003",
     modelo: "SR-15",
@@ -127,7 +127,7 @@ products = Product.create!([
     nombre: "Tijera para lamina",
     descripcion: "Tijera corta hojalata con hojas de acero endurecido y mangos ergonómicos,
     ideal para cortar láminas de metal, aluminio y otros materiales delgados.",
-    precio: 35000,
+    precio: 35_000,
     stock: 12,
     codigo_producto: "P004",
     modelo: "TL-22",
@@ -140,7 +140,7 @@ products = Product.create!([
     nombre: "Pala de punta",
     descripcion: "Pala de punta con hoja de acero resistente y mango corto de madera con agarradera en “D”,
     ideal para cavar, remover tierra y trabajos de jardinería o construcción.",
-    precio: 25000,
+    precio: 25_000,
     stock: 50,
     codigo_producto: "P005",
     modelo: "PP-01",
@@ -153,7 +153,7 @@ products = Product.create!([
     nombre: "Lima plana manual",
     descripcion: "Lima plana de acero templado con mango ergonómico,
     ideal para desbastar y dar forma a superficies metálicas o de madera.",
-    precio: 8000,
+    precio: 8_000,
     stock: 150,
     codigo_producto: "P006",
     modelo: "LP-09",
@@ -166,7 +166,7 @@ products = Product.create!([
     nombre: "Llave combinada",
     descripcion: "Llave combinada de acero cromado con boca fija y estrella,
     ideal para ajustar o aflojar tuercas y pernos de forma segura y eficiente.",
-    precio: 6000,
+    precio: 6_000,
     stock: 80,
     codigo_producto: "P007",
     modelo: "LC-14",
@@ -179,7 +179,7 @@ products = Product.create!([
     nombre: "Pinza de presión",
     descripcion: "Pinza de presión de acero con mecanismo de bloqueo ajustable,
     ideal para sujetar firmemente piezas sin esfuerzo continuo.",
-    precio: 15000,
+    precio: 15_000,
     stock: 10,
     codigo_producto: "P008",
     modelo: "PP-05",
@@ -192,7 +192,7 @@ products = Product.create!([
     nombre: "Taladro atornillador inalámbrico",
     descripcion: "Taladro atornillador inalámbrico compacto Milwaukee,
     ideal para perforar y atornillar con potencia y precisión sin necesidad de cables.",
-    precio: 900000,
+    precio: 90_000,
     stock: 8,
     codigo_producto: "P009",
     modelo: "TA-800",
@@ -205,7 +205,7 @@ products = Product.create!([
     nombre: "Esmeriladora angular inalámbrica",
     descripcion: "Esmeriladora angular inalámbrica ideal para cortar,
     desbastar y pulir materiales como metal, piedra o cerámica, sin depender de cables.",
-    precio: 350000,
+    precio: 35_000,
     stock: 34,
     codigo_producto: "P010",
     modelo: "EA-500",
@@ -278,31 +278,31 @@ Purchasedetail.create!([
     buy: buys[0],
     product: products[0],
     cantidad: 20,
-    preciounidad: 25.99
+    preciounidad: 26_000
   },
   {
     buy: buys[1],
     product: products[1],
     cantidad: 50,
-    preciounidad: 9.50
+    preciounidad: 9_500
   },
   {
     buy: buys[2],
     product: products[2],
     cantidad: 10,
-    preciounidad: 30.50
+    preciounidad: 30_500
   },
   {
     buy: buys[3],
     product: products[3],
     cantidad: 40,
-    preciounidad: 12.50
+    preciounidad: 12_500
   },
   {
     buy: buys[4],
     product: products[4],
     cantidad: 10,
-    preciounidad: 17.50
+    preciounidad: 17_500
   }
 ])
 

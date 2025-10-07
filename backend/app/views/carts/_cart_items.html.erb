@@ -20,10 +20,10 @@
             <% end %>
             <strong><%= item.product.nombre %></strong>
           </td>
-          <td><%= number_to_currency(item.product.precio, unit: ' $', format: '%n%u', separator: ',', delimiter: '.') %></td>
+          <td><%= number_to_currency(item.product.precio, unit: '$', format: '%u%n', delimiter: '.', separator: ',', precision: 0) %> COP</td>
           <td>
             <%= form_with(model: item, class: "quantity-form", data: { item_id: item.id }) do |f| %>
-              <div class="input-group" style="width: 120px;">
+              <div class="input-group" style="width: 60px;">
                 <%= f.number_field :quantity, 
                     min: 1, 
                     class: "form-control text-center quantity-field",
@@ -31,7 +31,7 @@
               </div>
             <% end %>
           </td>
-          <td><%= number_to_currency((item.product.precio || 0) * item.quantity.to_i, unit: ' $', format: '%n%u', separator: ',', delimiter: '.') %></td>
+          <td><%= number_to_currency((item.product.precio || 0) * item.quantity.to_i, unit: '$', format: '%u%n', delimiter: '.', separator: ',', precision: 0) %> COP</td>
 
           <td>
             <%= button_to cart_item_path(item),
@@ -49,9 +49,9 @@
   </table>
 
   <div class="text-end">
-    <h4>
-      <%= t("cart.total") %>: <%= number_to_currency(cart_items.sum { |i| (i.product&.precio || 0) * (i.quantity || 0) }, unit: ' $', format: '%n%u', separator: ',', delimiter: '.') %>
-    </h4>
+  <h4>
+    <%= t("cart.total") %>: <%= number_to_currency(cart_items.sum { |i| (i.product&.precio || 0) * (i.quantity || 0) }, unit: '$', format: '%u%n', delimiter: '.', separator: ',', precision: 0) %> COP
+  </h4>
     <br>
     <% unless current_page?(cart_path) %>
       <%= link_to "Ir a Checkout", cart_path, class: "btn btn-success btn-lg" %>
@@ -168,16 +168,19 @@ document.addEventListener('DOMContentLoaded', function() {
 
   // 🔹 Funciones de formato de precio
   function formatPrice(amount) {
-    const formattedNumber = new Intl.NumberFormat('es-ES', {
-      minimumFractionDigits: 2,
-      maximumFractionDigits: 2,
+    const formattedNumber = new Intl.NumberFormat('es-CO', {
+      minimumFractionDigits: 0, // sin decimales
+      maximumFractionDigits: 0,
       useGrouping: true
     }).format(amount);
-    return `${formattedNumber} $`;
+    return `$${formattedNumber} COP`;
   }
 
   function parsePrice(priceString) {
-    return parseFloat(priceString.replace(/\./g, '').replace(',', '.').replace('$', '').trim());
+    // elimina puntos, símbolo $ y "COP"
+    return parseInt(priceString.replace(/\./g, '').replace('$', '').replace('COP', '').trim());
   }
+
+
 });
 </script>

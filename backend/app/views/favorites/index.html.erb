@@ -21,7 +21,7 @@
             <p class="product-desc"><%= truncate(product.descripcion, length: 80) %></p>
             <div class="product-meta">
               <span class="price">
-                <%= number_to_currency(product.precio, unit: "$", separator: ".", delimiter: ",") %>
+                <%= number_to_currency(product.precio, unit: "$", separator: ".", delimiter: ",") + " COP" %>
               </span>
 
               <div class="d-flex flex-wrap gap-2 mt-2">
