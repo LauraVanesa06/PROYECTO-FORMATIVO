@@ -1,5 +1,5 @@
 <div class="container mt-4">
-  <div id="notification" class="alert alert-success text-center position-fixed top-0 start-50 translate-middle-x mt-3 shadow" 
+  <div id="notification" class="alert alert-success text-center position-fixed top-0 start-50 translate-middle-x mt-3 shadow"
       style="display: none; z-index: 1055;">
   </div>
 
@@ -14,19 +14,19 @@
            <%= image_tag(product.images.attached? ? url_for(product.images.first) : "placeholder.jpg",
               alt: product.nombre,
               class: "img-fluid") %>
-
           </div>
+
           <div class="product-body">
             <h3 class="product-name"><%= product.nombre %></h3>
             <p class="product-desc"><%= truncate(product.descripcion, length: 80) %></p>
             <div class="product-meta">
               <span class="price">
-                <%= number_to_currency(product.precio, unit: "$", separator: ".", delimiter: ",") %>
+                <%= number_to_currency(product.precio, unit: "$", separator: ".", delimiter: ",") + " COP" %>
               </span>
-              <div>
-                <div class="d-flex flex-wrap gap-2 mt-2">
-                <!-- Botón agregar al carrito -->
-                <%= button_to cart_items_path(product_id: favorite.product.id),
+
+              <div class="d-flex flex-wrap gap-2 mt-2">
+                <!-- 🔹 Botón agregar al carrito -->
+                <%= button_to cart_items_path(product_id: product.id),
                               method: :post,
                               data: { turbo: false, remote: true },
                               class: "btn btn-sm btn-outline-primary d-flex align-items-center gap-1 add-to-cart",
@@ -34,9 +34,7 @@
                   <i class="fa-solid fa-cart-plus"></i>
                 <% end %>
 
-
-
-                <!-- Botón eliminar de favoritos -->
+                <!-- 🔹 Botón eliminar de favoritos -->
                 <%= button_to favorite_path(favorite),
                               method: :delete,
                               data: { remote: true },
@@ -44,10 +42,6 @@
                               form: { "data-favorite-id": favorite.id } do %>
                   <i class="fa-solid fa-star"></i>
                 <% end %>
-
-
-
-                </div>
               </div>
             </div>
           </div>
@@ -92,12 +86,17 @@ document.addEventListener('DOMContentLoaded', () => {
   const csrfToken = document.querySelector('meta[name="csrf-token"]').content;
   const notification = document.getElementById('notification');
 
-  // 🔹 Mostrar notificación
+  // 🔹 Mostrar notificación animada
   function showNotification(message, type = 'success') {
     notification.textContent = message;
     notification.className = `alert alert-${type} text-center position-fixed top-0 start-50 translate-middle-x mt-3 shadow`;
     notification.style.display = 'block';
-    setTimeout(() => notification.style.display = 'none', 2500);
+    notification.style.opacity = 0;
+    setTimeout(() => notification.style.opacity = 1, 50);
+    setTimeout(() => {
+      notification.style.opacity = 0;
+      setTimeout(() => notification.style.display = 'none', 300);
+    }, 2500);
   }
 
   // 🔹 Agregar al carrito sin recargar
@@ -117,8 +116,21 @@ document.addEventListener('DOMContentLoaded', () => {
         }
       });
 
-
       if (response.ok) {
+        const data = await response.json();
+
+        // ✅ Actualiza contador del carrito
+        const cartCount = document.getElementById('cart_count');
+        if (cartCount && data.count !== undefined) {
+          cartCount.textContent = data.count;
+        }
+
+        // ✅ Actualiza el contenido del carrito lateral (offcanvas)
+        const cartOffcanvasBody = document.getElementById('cart-offcanvas-body');
+        if (cartOffcanvasBody && data.cart_html) {
+          cartOffcanvasBody.innerHTML = data.cart_html;
+        }
+
         showNotification('✅ Producto agregado al carrito');
       } else {
         showNotification('⚠️ Error al agregar al carrito', 'danger');
