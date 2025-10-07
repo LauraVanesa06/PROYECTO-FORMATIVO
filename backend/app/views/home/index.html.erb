@@ -78,7 +78,7 @@
           </div>
 
           <div class="product-meta">
-            <span class="price">$ <%= producto.precio_cop %> COP</span>
+            <span class="price"><%= producto.precio_cop %></span>
 
             <div class="d-flex flex-wrap gap-2 mt-2">
               <!-- Botón comprar -->
@@ -93,6 +93,7 @@
                 <% favorite = current_user.favorites.find_by(product_id: producto.id) %>
                 <% if favorite %>
                   <button 
+                    id="favorite-btn"
                     class="btn btn-sm btn-warning d-flex align-items-center gap-1 favorite-btn"
                     data-url="<%= favorite_path(favorite) %>"
                     data-method="delete"
@@ -101,6 +102,7 @@
                   </button>
                 <% else %>
                   <button 
+                    id="favorite-btn"
                     class="btn btn-sm btn-outline-warning d-flex align-items-center gap-1 favorite-btn"
                     data-url="<%= favorites_path(product_id: producto.id) %>"
                     data-method="post"
@@ -109,7 +111,7 @@
                   </button>
                 <% end %>
               <% else %>
-                <button class="btn btn-sm btn-outline-warning d-flex align-items-center gap-1" disabled>
+                <button id="favorite-btn" class="btn btn-sm btn-outline-warning d-flex align-items-center gap-1" disabled>
                   <i class="fa-regular fa-star"></i>
                 </button>
               <% end %>

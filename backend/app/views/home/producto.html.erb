@@ -30,7 +30,7 @@
           <%= number_field_tag :max_price, params[:max_price], min: 0, step: 0.01, class: "form-control" %>
         </div>
 
-        <div class="col-md-2 d-flex align-items-end">
+        <div class="col-md-2 d-flex align-items-end" style="margin-top: 48px;">
           <%= submit_tag t('productos.filtro.boton_filtrar'), class: "btn btn-primary w-100" %>
         </div>
       </div>
@@ -58,7 +58,7 @@
           </div>
 
           <div class="product-meta">
-            <span class="price">$ <%= producto.precio_cop %> COP</span>
+            <span class="price"><%= producto.precio_cop %></span>
 
             <div class="d-flex flex-wrap gap-2 mt-2">
 

@@ -31,7 +31,7 @@ class Product < ApplicationRecord
   validate :acceptable_images
   
   def precio_cop
-    ApplicationController.helpers.number_to_currency(precio, unit: "", separator: ",", delimiter:".")
+    "COP #{ApplicationController.helpers.number_to_currency(precio, unit: "", separator: ",", delimiter: ".", precision: 2)}"
   end
 
   private

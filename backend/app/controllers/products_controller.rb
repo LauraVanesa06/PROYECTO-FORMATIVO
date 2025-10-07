@@ -1,5 +1,5 @@
 class ProductsController < ApplicationController
-    layout "application"
+  layout "application"
   before_action :set_product, only: %i[ show edit update destroy ]
 
 
@@ -163,5 +163,5 @@ class ProductsController < ApplicationController
         images: [], 
         remove_image_ids: []
       )
-    end
+  end
 end

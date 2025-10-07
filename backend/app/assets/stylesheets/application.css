@@ -128,7 +128,7 @@ main {
 
 .titulo{
   font-size: 3.75vh;
-  color: white;
+  color: #000000;
   margin: 0;
   padding: 5px 5px 5px 18px; 
   border-radius: 20px;
@@ -860,8 +860,9 @@ body {
 .main-nav a {
   margin: 0 10px;
   text-decoration: none;
-  color: #fff;
-  font-weight: 500;
+  color: #e2e2e2 !important;
+  font-size: 20px;
+  font-weight: 500 !important;
 }
 
 .header-icons {
@@ -876,6 +877,13 @@ body {
   cursor: pointer;
 }
 
+#nav-home{
+  margin-left: 40px;
+}
+
+#userDropdown{
+  margin-right: 40px;
+}
 
   header {
    background-image: url('madera2.jpg');
@@ -888,12 +896,18 @@ body {
     background-size: 15%;
     background-position: center;
     display: flex;
+    align-items: center;
     justify-content: space-between;
     position: relative;
     z-index: 2;
+    height: 50px;
   }
 
-  .text-white:hover{
+.text-white1{
+  color: rgb(222 222 222) !important;
+}
+
+  .text-white:hover, .text-white1:hover{
     color: #83d0eb !important;
   }
 
@@ -1054,14 +1068,24 @@ hr{
 .product-card {
   border-radius: 16px;
   overflow: hidden;
-  border: 1px solid #eee;
-  box-shadow: 0px 4px 12px rgba(0,0,0,0.06);
-  max-width: 100%;
+  border: #ececec solid 1px;
+  max-width: 250px;
+  padding: 5px;
 }
 
 .product-card:hover {
   transform: translateY(-6px);
   box-shadow: 0px 10px 20px rgba(0,0,0,0.12);
+}
+
+.product-body{
+  border: #ececec solid 1px;
+    padding: 8px 5px;
+    border-radius: 20px;
+    height: 160px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
 }
 
 .product-thumb {
@@ -1070,7 +1094,7 @@ hr{
   display: flex;
   align-items: center;
   justify-content: center;
-  background: #f8f9fa;
+  background: #ffffff;
   padding: 10px;
 }
 
@@ -1086,26 +1110,29 @@ hr{
 }
 
 .product-name {
-  font-size: 18px;
-  font-weight: 600;
-  color: #1e3c72;
+  font-size: 20px;
+    font-weight: 640;
+    color: #2e67a3;
+    margin-left: 9px;
 }
 
 .product-desc {
-  font-size: 14px;
-  color: #555;
+    font-size: 14px;
+    color: #a4a4a4;
+    margin-inline: 5px;
+    height: 60px;
+    margin-bottom: 0px !important;
 }
 
 .price {
-  font-size: 18px;
-  font-weight: 700;
-  color: #2c5298;
+    font-size: 20px;
+    font-weight: 700;
+    color: #2e67a3;
 }
 
 .product-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-  gap: 22px;
 }
 
 .product-meta{
@@ -1113,6 +1140,42 @@ hr{
   justify-items: center;
   justify-content: space-around;
 }
+
+/* Posicionar el botón de favoritos en la esquina superior izquierda de la tarjeta de producto */
+.product-card {
+  position: relative;
+}
+.product-card .btn-outline-warning,
+.product-card .btn-warning,
+.product-card .btn[disabled] {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    z-index: 2;
+    border-radius: 50%;
+    height: 35px;
+    width: 35px;
+    justify-content: center;
+    border: solid 1px #ffe700;
+  outline: none;
+  box-shadow: none;
+}
+
+/* Color de la estrella igual al borde */
+.product-card .btn-outline-warning i.fa-star,
+.product-card .btn-warning i.fa-star,
+.product-card .btn[disabled] i.fa-star {
+  color: #ffe700 !important;
+    font-size: 16px !important;
+    line-height: 1;
+}
+
+.product-card .btn-warning {
+  background-color: #ffe60043 !important;
+  border: 2px solid #ffe700 !important;
+}
+
+.favorite-btn{}
 
 /* Estilos generales de flash */
 .flash {
