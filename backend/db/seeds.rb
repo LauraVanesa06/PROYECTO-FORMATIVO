@@ -311,56 +311,48 @@ Purchasedetail.create!([
 pedidos = [
   {
     fecha: Time.zone.now.change(hour: 10),
-    descripcion_entrega: "Entrega en bodega principal",
     supplier: suppliers[0],
     stock: 7,
     proveedor: suppliers[0].nombre
   },
   {
     fecha: 2.days.ago.change(hour: 14),
-    descripcion_entrega: "Enviar al taller de plomería",
     supplier: suppliers[1],
     stock: 4,
     proveedor: suppliers[1].nombre
   },
   {
     fecha: 1.week.ago.change(hour: 9),
-    descripcion_entrega: "Entrega directa al cliente",
     supplier: suppliers[2],
     stock: 2,
     proveedor: suppliers[2].nombre
   },
   {
     fecha: 3.weeks.ago.change(hour: 16),
-    descripcion_entrega: "Envío programado para obra en construcción",
     supplier: suppliers[3],
     stock: 14,
     proveedor: suppliers[3].nombre
   },
   {
     fecha: Time.zone.now.change(hour: 10),
-    descripcion_entrega: "Entrega en bodega principal",
     supplier: suppliers[0],
     stock: 7,
     proveedor: suppliers[0].nombre
   },
   {
     fecha: 2.days.ago.change(hour: 14),
-    descripcion_entrega: "Enviar al taller de plomería",
     supplier: suppliers[1],
     stock: 4,
     proveedor: suppliers[1].nombre
   },
   {
     fecha: 1.week.ago.change(hour: 9),
-    descripcion_entrega: "Entrega directa al cliente",
     supplier: suppliers[2],
     stock: 2,
     proveedor: suppliers[2].nombre
   },
   {
     fecha: 3.weeks.ago.change(hour: 16),
-    descripcion_entrega: "Envío programado para obra en construcción",
     supplier: suppliers[3],
     stock: 14,
     proveedor: suppliers[3].nombre
@@ -369,13 +361,13 @@ pedidos = [
 
 pedidos_records = pedidos.map { |attrs| Pedido.create!(attrs) }
 
-# Asociar al menos dos productos reales a cada pedido
-productos_para_asociar = Product.limit(2).to_a
+# Asociar al menos tres productos reales a cada pedido
+productos_para_asociar = Product.limit(3).to_a
 pedidos_records.each_with_index do |pedido, idx|
   productos = productos_para_asociar
-  # Para variedad, alternar productos si hay más de dos
-  if Product.count > 2
-    productos = Product.offset(idx % (Product.count - 1)).limit(2)
+  # Para variedad, alternar productos si hay más de tres
+  if Product.count > 3
+    productos = Product.offset(idx % (Product.count - 2)).limit(3)
   end
   productos.each do |producto|
     PedidoProduct.create!(pedido: pedido, product_id: producto.id, cantidad: rand(1..5))

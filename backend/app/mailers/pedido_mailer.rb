@@ -1,5 +1,5 @@
 class PedidoMailer < ApplicationMailer
-  default from: 'no-reply@ferremateriales.com'
+  default from: 'ferreteriasoporte3@gmail.com'
 
   def notificar_proveedor(pedido)
     @pedido = pedido

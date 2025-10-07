@@ -13,21 +13,41 @@
 -->
 
 
-    <% pedido.pedido_products.includes(:product).limit(2).each do |pp| %>
-      <div class="pro">
-        <div class="img-pro">
-          <% if pp.product.images.attached? %>
-            <%= image_tag url_for(pp.product.images.first), alt: pp.product.nombre %>
-          <% else %>
-            <%= image_tag "martillo-dewalt.png" %>
-          <% end %>
+    <%# Resumen del pedido: cantidad, total, estado y cambio de estado %>
+    <div class="pedido-resumen">
+      <p><strong>Cantidad de productos:</strong> <%= pedido.pedido_products.sum(:cantidad) %></p>
+      <p><strong>Total a pagar:</strong> <%= number_to_currency(pedido.pedido_products.includes(:product).sum { |pp| pp.cantidad * (pp.product.precio || 0) }, unit: 'COP ', separator: ',', delimiter: '.', format: '%u%n') %></p>
+      <p style="display: flex; align-items: center; flex-direction: row; gap: 10px; flex-wrap: wrap;">
+        <%= form_with model: pedido, url: pedido_path(pedido), method: :patch, local: false, class: 'form-estado', 
+        style: 'display: flex; align-items: center; gap: 6px; margin: 0;' do |f| %>
+          <strong>Estado:</strong>
+          <%= f.select :estado, options_for_select([
+            ['Pendiente', 'pendiente'],
+            ['Confirmado', 'confirmado'],
+            ['Entregado', 'entregado'],
+            ['Cancelado', 'cancelado']
+          ], pedido.estado), {}, class: 'select-estado', data: { turbo_frame: "_top" }, onchange: 'this.form.requestSubmit();' %>
+        <% end %>
+      </p>
+    </div>
+    <%# Todos los productos ocultos por defecto, con scroll y tamaño máximo %>
+    <div class="productos-todos" id="productos-todos-<%= pedido.id %>" style="display:none; max-height: 300px; overflow-y: auto;">
+      <% pedido.pedido_products.includes(:product).each do |pp| %>
+        <div class="pro">
+          <div class="img-pro">
+            <% if pp.product.images.attached? %>
+              <%= image_tag url_for(pp.product.images.first), alt: pp.product.nombre %>
+            <% else %>
+              <%= image_tag "martillo-dewalt.png" %>
+            <% end %>
+          </div>
+          <strong>Nombre: </strong><%= pp.product.nombre %><br>
+          <strong>Cantidad: </strong><%= pp.cantidad %><br>
+          <strong>Modelo: </strong><%= pp.product.modelo if pp.product.respond_to?(:modelo) %><br>
+          <strong>Marca: </strong><%= pp.product.marca if pp.product.respond_to?(:marca) %>
         </div>
-        <strong>Nombre: </strong><%= pp.product.nombre %><br>
-        <strong>Cantidad: </strong><%= pp.cantidad %><br>
-        <strong>Modelo: </strong><%= pp.product.modelo if pp.product.respond_to?(:modelo) %><br>
-        <strong>Marca: </strong><%= pp.product.marca if pp.product.respond_to?(:marca) %>
-      </div>
-    <% end %>
+      <% end %>
+    </div>
 
   </div>
 

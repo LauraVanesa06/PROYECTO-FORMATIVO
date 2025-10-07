@@ -72,15 +72,12 @@ class PedidosController < ApplicationController
         end
       end
 
-      # Notificación al proveedor
+      # Notificación al proveedor SOLO por correo
       proveedor = @pedido.supplier
       if proveedor&.correo.present?
         PedidoMailer.notificar_proveedor(@pedido).deliver_later
-      elsif proveedor&.contacto.present?
-        # Mensaje de texto (SMS) usando el servicio SmsSender
-        productos_info = @pedido.pedido_products.includes(:product).map { |pp| "#{pp.product.nombre} (#{pp.cantidad})" }.join(", ")
-        sms_body = "Nuevo pedido recibido. Productos: #{productos_info}. Entrega: #{@pedido.descripcion_entrega}"
-        SmsSender.send_sms(to: proveedor.contacto, body: sms_body)
+      else
+        flash[:alert] = "El proveedor no tiene correo registrado. No se pudo enviar la notificación."
       end
 
       redirect_to pedidos_path, notice: "Pedido creado correctamente"
@@ -94,7 +91,7 @@ class PedidosController < ApplicationController
   def update
     respond_to do |format|
       if @pedido.update(pedido_params)
-        format.html { redirect_to @pedido, notice: "Pedido was successfully updated." }
+        format.html { redirect_to pedidos_path, notice: "Estado actualizado correctamente." }
         format.json { render :show, status: :ok, location: @pedido }
       else
         format.html { render :edit, status: :unprocessable_entity }
@@ -129,6 +126,6 @@ class PedidosController < ApplicationController
 
     # Only allow a list of trusted parameters through.
     def pedido_params
-      params.expect(pedido: [ :fecha, :productos, :descripcion_entrega, :supplier_id ])
+      params.expect(pedido: [ :fecha, :productos, :estado, :supplier_id ])
     end
 end
