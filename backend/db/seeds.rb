@@ -63,11 +63,11 @@ categories = Category.create!([
 ])
 
 suppliers = Supplier.create!([
-  { nombre: "Ferretería Industrial Martínez S.A. de C.V.", contacto: "Carlos Pérez" },
-  { nombre: "Suministros y Herramientas del Norte", contacto: "Ana Gómez" },
-  { nombre: "Grupo Ferrecomex", contacto: "Farith Ortiz" },
-  { nombre: "Materiales y Tornillería El Águila", contacto: "Jose Torres" },
-  { nombre: "Distribuidora FerrePlus", contacto: "Mario auditore" }
+  { nombre: "Ferretería Industrial Martínez S.A. de C.V.", contacto: "5512345678", codigo_proveedor: "FIM001", correo: "contacto@fim.com" },
+  { nombre: "Suministros y Herramientas del Norte", contacto: "5523456789", codigo_proveedor: "SHN002", correo: "ventas@shn.com" },
+  { nombre: "Grupo Ferrecomex", contacto: "5534567896", codigo_proveedor: "GFX003", correo: "info@ferrecomex.com" },
+  { nombre: "Materiales y Tornillería El Águila", contacto: "5545678901", codigo_proveedor: "MTA004", correo: "atencion@elaguila.com" },
+  { nombre: "Distribuidora FerrePlus", contacto: "5556789012", codigo_proveedor: "DFP005", correo: "soporte@ferreplus.com" }
 ])
 
 marcas = Marca.create!([
