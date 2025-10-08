@@ -1,4 +1,5 @@
 class Api::V1::DashboardController < ApplicationController
+    before_action :set_time_zone
 
     def finanzas
         ingresos = Purchasedetail
@@ -188,5 +189,11 @@ class Api::V1::DashboardController < ApplicationController
         proveedores_registrados: Supplier.count,
         clientes_registrados: Customer.count
         }
+    end
+
+    private
+
+    def set_time_zone
+      Time.zone = 'Bogota' # Cambia a tu zona horaria local si es necesario
     end
 end
