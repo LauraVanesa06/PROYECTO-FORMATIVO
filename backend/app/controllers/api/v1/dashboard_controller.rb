@@ -71,15 +71,15 @@ class Api::V1::DashboardController < ApplicationController
         render json: { porcentaje: porcentaje.clamp(0, 100) }
     end
     def clientes_por_mes
-        clientes = Customer.group("strftime('%m', created_at)").count
+        clientes = User.where(created_at: Time.current.beginning_of_year..Time.current.end_of_year)
+                        .group("strftime('%m', created_at)").count
 
         datos_ordenados = (1..12).map do |mes|
             mes_str = mes.to_s.rjust(2, '0')
             [mes_str, clientes[mes_str] || 0]
         end.to_h
 
-
-        render json: clientes
+        render json: datos_ordenados
     end
 
     def por_tipo
