@@ -1,5 +1,5 @@
 class ProductsController < ApplicationController
-  layout "application"
+  layout false
   before_action :set_product, only: %i[ show edit update destroy ]
 
 
