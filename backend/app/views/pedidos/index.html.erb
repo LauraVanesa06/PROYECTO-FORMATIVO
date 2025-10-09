@@ -229,3 +229,14 @@
 
   
 </body>
+  <% if flash[:notice] %>
+    <div class="flash-notice" id="flash-notice">
+      <%= flash[:notice] %>
+    </div>
+    <script>
+      setTimeout(function() {
+        var notice = document.getElementById('flash-notice');
+        if (notice) { notice.style.opacity = 0; setTimeout(function(){ notice.remove(); }, 500); }
+      }, 3500);
+    </script>
+  <% end %>
