@@ -79,7 +79,7 @@ class PedidosController < ApplicationController
       # Notificación al proveedor SOLO por correo
       proveedor = @pedido.supplier
       if proveedor&.correo.present?
-        PedidoMailer.notificar_proveedor(@pedido).deliver_later
+        PedidoMailer.notificar_proveedor(@pedido).deliver_now
       else
         flash[:alert] = "El proveedor no tiene correo registrado. No se pudo enviar la notificación."
       end
