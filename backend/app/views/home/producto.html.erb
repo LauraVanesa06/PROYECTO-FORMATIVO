@@ -1,10 +1,8 @@
 <!-- PRODUCTOS -->
-<section id="productos" class="productos-destacados container mt-4 mb-5">
-  <h2 class="titulo">🛠️ <%= t('productos.titulo') %></h2>
-  <br>
+<section id="all-pro">
 
   <!-- FILTRO -->
-  <div class="mb-4">
+  <div class="filtro-productos">
     <%= form_with url: productos_path, method: :get, local: true do %>
       <div class="row align-items-center g-3">  
         <div class="col-md-3">
@@ -35,6 +33,11 @@
         </div>
       </div>
     <% end %>
+  </div>
+
+  <div class="section-header">
+    <h2 class="titulo"><%= t('productos.titulo') %></h2>
+    <center><hr class="linea-bonita"></center>
   </div>
 
   <div class="product-grid">

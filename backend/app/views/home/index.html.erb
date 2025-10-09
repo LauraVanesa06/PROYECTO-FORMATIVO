@@ -6,10 +6,10 @@
         <%= image_tag "promo1.png", class: "d-block w-100 carousel-img" %>
       </div>
       <div class="carousel-item">
-        <%= image_tag "promo2.png", class: "d-block w-100 carousel-img" %>
+        <%= image_tag "promo2.jpg", class: "d-block w-100 carousel-img" %>
       </div>
       <div class="carousel-item">
-        <%= image_tag "promo3.png", class: "d-block w-100 carousel-img" %>
+        <%= image_tag "promo3.jpg", class: "d-block w-100 carousel-img" %>
       </div>
       <div class="carousel-item">
         <%= image_tag "promo4.png", class: "d-block w-100 carousel-img" %>
@@ -35,20 +35,43 @@
     <center><hr class="linea-bonita"></center>
   </div>
   
-  <div class="category-scroll" role="list">
-    <% @categories.each do |c| %>
-      <div class="category-card" role="listitem">
-        <%= link_to productos_path(category_id: c.id), class: "category-link d-flex flex-column align-items-center" do %>
-          <% if c.imagen.attached? %>
-            <%= image_tag c.imagen.variant(resize_to_limit: [80, 80]), class: "mb-2 rounded-circle" %>
-          <% else %>
-            <i class="fa-solid fa-tag fa-2x mb-2"></i>
+  <div class="category-carousel-wrapper position-relative">
+    <button class="category-arrow left" aria-label="Anterior" type="button">&#10094;</button>
+    <div class="category-carousel" id="category-carousel" role="list">
+      <% @categories.each do |c| %>
+        <div class="category-card" role="listitem">
+          <%= link_to productos_path(category_id: c.id), class: "category-link d-flex flex-column align-items-center" do %>
+            <% if c.imagen.attached? %>
+              <%= image_tag c.imagen.variant(resize_to_limit: [80, 80]), class: "mb-2 rounded-circle" %>
+            <% else %>
+              <i class="fa-solid fa-tag fa-2x mb-2"></i>
+            <% end %>
+            <span><%= c.nombre %></span>
           <% end %>
-          <span><%= c.nombre %></span>
-        <% end %>
-      </div>
-    <% end %>
+        </div>
+      <% end %>
+    </div>
+    <button class="category-arrow right" aria-label="Siguiente" type="button">&#10095;</button>
   </div>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", function() {
+      const carousel = document.getElementById("category-carousel");
+      const leftBtn = document.querySelector(".category-arrow.left");
+      const rightBtn = document.querySelector(".category-arrow.right");
+      const card = carousel.querySelector(".category-card");
+      if (!card) return;
+      const cardWidth = card.offsetWidth + 16; // 16px gap
+      let scrollAmount = cardWidth * 2; // scroll 2 cards per click
+
+      leftBtn.addEventListener("click", () => {
+        carousel.scrollBy({ left: -scrollAmount, behavior: "smooth" });
+      });
+      rightBtn.addEventListener("click", () => {
+        carousel.scrollBy({ left: scrollAmount, behavior: "smooth" });
+      });
+    });
+  </script>
 </section>
 
 <!-- PRODUCTOS -->

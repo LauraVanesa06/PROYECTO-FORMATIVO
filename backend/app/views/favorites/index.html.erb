@@ -3,44 +3,69 @@
       style="display: none; z-index: 1055;">
   </div>
 
-  <h1 class="mb-4">⭐ <%= t("favorites.title") %></h1>
+  <div class="section-header">
+    <h2 class="titulo">★ <%= t("favorites.title") %></h2>
+    <center><hr class="linea-bonita"></center>
+  </div>
 
   <% if @favorites.any? %>
-    <div class="product-grid">
+  <div class="product-grid" style="display: grid; grid-template-columns: repeat(5, 1fr); gap: 24px;">
       <% @favorites.each do |favorite| %>
-        <% product = favorite.product %>
-        <div class="product-card">
+        <% producto = favorite.product %>
+        <div class="product-card" data-url="<%= product_path(producto) %>" style="cursor:pointer;">
+
+          <!-- Imagen -->
           <div class="product-thumb">
-           <%= image_tag(product.images.attached? ? url_for(product.images.first) : "placeholder.jpg",
-              alt: product.nombre,
-              class: "img-fluid") %>
+            <% if producto.images.attached? %>
+              <%= image_tag(producto.images.first, alt: producto.nombre, class: "img-fluid") %>
+            <% else %>
+              <%= image_tag "ProductoNoDisponible.png", alt: t('productos.sin_imagen'), class: "img-fluid" %>
+            <% end %>
           </div>
 
+          <!-- Detalles -->
           <div class="product-body">
-            <h3 class="product-name"><%= product.nombre %></h3>
-            <p class="product-desc"><%= truncate(product.descripcion, length: 80) %></p>
+            <div class="info-product">
+              <h3 class="product-name"><%= producto.nombre %></h3>
+              <p class="product-desc"><%= truncate(producto.descripcion, length: 80) %></p>
+            </div>
+
             <div class="product-meta">
-              <span class="price">
-                <%= number_to_currency(product.precio, unit: "$", separator: ".", delimiter: ",") + " COP" %>
-              </span>
+              <span class="price"><%= producto.precio_cop %></span>
 
               <div class="d-flex flex-wrap gap-2 mt-2">
-                <!-- 🔹 Botón agregar al carrito -->
-                <%= button_to cart_items_path(product_id: product.id),
-                              method: :post,
-                              data: { turbo: false, remote: true },
-                              class: "btn btn-sm btn-outline-primary d-flex align-items-center gap-1 add-to-cart",
-                              form: { "data-product-id": product.id } do %>
-                  <i class="fa-solid fa-cart-plus"></i>
-                <% end %>
 
-                <!-- 🔹 Botón eliminar de favoritos -->
-                <%= button_to favorite_path(favorite),
-                              method: :delete,
-                              data: { remote: true },
-                              class: "btn btn-sm btn-warning d-flex align-items-center gap-1 remove-favorite",
-                              form: { "data-favorite-id": favorite.id } do %>
-                  <i class="fa-solid fa-star"></i>
+                <!-- Botón comprar (fetch + toast, sin redirección) -->
+                <button 
+                  class="btn btn-sm btn-outline-primary d-flex align-items-center justify-content-center add-to-cart-btn" 
+                  data-url="<%= cart_items_path(product_id: producto.id) %>">
+                  <i class="fa-solid fa-cart-plus"></i>
+                </button>
+
+                <!-- Botón favoritos -->
+                <% if current_user %>
+                  <% favorite = current_user.favorites.find_by(product_id: producto.id) %>
+                  <% if favorite %>
+                    <button 
+                      class="btn btn-sm btn-warning d-flex align-items-center gap-1 favorite-btn"
+                      data-url="<%= favorite_path(favorite) %>"
+                      data-method="delete"
+                      data-product-id="<%= producto.id %>">
+                      <i class="fa-solid fa-star"></i>
+                    </button>
+                  <% else %>
+                    <button 
+                      class="btn btn-sm btn-outline-warning d-flex align-items-center gap-1 favorite-btn"
+                      data-url="<%= favorites_path(product_id: producto.id) %>"
+                      data-method="post"
+                      data-product-id="<%= producto.id %>">
+                      <i class="fa-regular fa-star"></i>
+                    </button>
+                  <% end %>
+                <% else %>
+                  <button class="btn btn-sm btn-outline-warning d-flex align-items-center gap-1" disabled>
+                    <i class="fa-regular fa-star"></i>
+                  </button>
                 <% end %>
               </div>
             </div>
@@ -170,5 +195,21 @@ document.addEventListener('DOMContentLoaded', () => {
       showNotification('⚠️ Error de conexión', 'danger');
     }
   });
+});
+
+// Navegación al hacer click en la tarjeta (excepto botones internos)
+document.addEventListener("click", (e) => {
+  const card = e.target.closest(".product-card");
+
+  if (card) {
+    // Si el click vino desde un botón interno => no navegamos
+    if (e.target.closest("button")) return;
+
+    // Redirigir al show del producto
+    const url = card.dataset.url;
+    if (url) {
+      window.location.href = url;
+    }
+  }
 });
 </script>

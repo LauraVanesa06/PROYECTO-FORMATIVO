@@ -58,6 +58,7 @@ body{
 .d1{
     font-size: 35px;
     font-weight: bold;
+            line-height: 1;
 }
 
 .d2, .d7{
