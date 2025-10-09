@@ -3,11 +3,11 @@
     <div class="cart-items-list">
       <% cart_items.each do |item| %>
         <div class="cart-item-card d-flex flex-row align-items-center position-relative mb-3 p-3 shadow-sm rounded-4 bg-white" id="<%= dom_id(item) %>">
-          <div class="cart-item-thumb me-3">
+          <div class="cart-item-thumb me-3" id="div-foto">
             <% if item.product.images.present? %>
-              <%= image_tag url_for(item.product.images.first), alt: item.product.nombre, class: "img-fluid rounded-3 border", style: "width: 90px; height: 90px; object-fit: cover; background: #f8f8f8;" %>
+              <%= image_tag url_for(item.product.images.first), alt: item.product.nombre, class: "rounded-3 border", style: "object-fit: cover; height: 82px; aspect-ratio: 1 / 1;" %>
             <% else %>
-              <%= image_tag "ProductoNoDisponible.png", alt: t('productos.sin_imagen'), class: "img-fluid rounded-3 border", style: "width: 90px; height: 90px; object-fit: cover; background: #f8f8f8;" %>
+              <%= image_tag "ProductoNoDisponible.png", alt: t('productos.sin_imagen'), class: "img-fluid rounded-3 border", style: "object-fit: cover; height: 90px; aspect-ratio: 1 / 1;" %>
             <% end %>
           </div>
           <div class="cart-item-info flex-grow-1" style="width: 100%;">
