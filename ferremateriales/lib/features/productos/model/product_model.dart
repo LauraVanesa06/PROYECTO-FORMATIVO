@@ -7,7 +7,7 @@ class ProductModel extends Equatable {
   final String? descripcion;
   final double? precio;
   final int? stock;
-  final String? imagenUrl;
+  final List<String>? imagenUrl;
 
   const ProductModel({
     this.id,
@@ -24,7 +24,9 @@ class ProductModel extends Equatable {
       descripcion: json['descripcion'] ?? '',
       precio: double.tryParse(json['precio'].toString()) ?? 0.0,
       stock: int.tryParse(json['stock'].toString()) ?? 0,
-      imagenUrl: json['imagen_url'] ?? '',
+      imagenUrl: json['imagen_url'] != null
+          ? List<String>.from(json['imagen_url'])
+          : [],
     );
 
   @override
