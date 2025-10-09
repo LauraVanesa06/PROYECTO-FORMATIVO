@@ -218,16 +218,16 @@
           btn.classList.remove("btn-outline-warning");
           btn.classList.add("btn-warning");
           btn.innerHTML = '<i class="fa-solid fa-star"></i>';
-          showToast("Producto agregado a favoritos ⭐", "warning");
+          showToast("Producto agregado a favoritos", "warning");
         } else {
           btn.dataset.method = "post";
           btn.classList.remove("btn-warning");
           btn.classList.add("btn-outline-warning");
           btn.innerHTML = '<i class="fa-regular fa-star"></i>';
-          showToast("Producto eliminado de favoritos ❌", "danger");
+          showToast("Producto eliminado de favoritos", "danger");
         }
       } else {
-        showToast("Error al gestionar favoritos ❌", "danger");
+        showToast("Error al gestionar favoritos", "danger");
       }
       return;
     }

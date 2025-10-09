@@ -278,93 +278,115 @@
 </script>
 
 <script>
-document.addEventListener("DOMContentLoaded", () => {
-  const csrfToken = document.querySelector('meta[name="csrf-token"]').content;
-
-  // Escuchar clics en todos los botones "Agregar al carrito"
-  document.querySelectorAll(".btn-agg").forEach((btn) => {
-    btn.addEventListener("click", async (e) => {
+  document.addEventListener("click", async (e) => {
+    // CARRITO
+    if (e.target.closest(".add-to-cart-btn")) {
       e.preventDefault();
-      const form = btn.closest("form");
+      e.stopPropagation();
 
-      try {
-        const response = await fetch(form.action, {
-          method: "POST",
-          headers: {
-            "X-CSRF-Token": csrfToken,
-            "Accept": "application/json",
-            "Content-Type": "application/json"
-          },
-          body: JSON.stringify({})
-        });
+      const btn = e.target.closest(".add-to-cart-btn");
+      const url = btn.dataset.url;
 
-        if (!response.ok) throw new Error("Error al agregar producto");
+      const response = await fetch(url, {
+        method: "POST",
+        headers: {
+          "X-CSRF-Token": document.querySelector("meta[name='csrf-token']").content,
+          "Accept": "application/json"
+        }
+      });
 
+      if (response.ok) {
         const data = await response.json();
 
-        if (data.success) {
-          // 🔹 Actualizar el contenido del carrito lateral
-          const cartBody = document.getElementById("cart-offcanvas-body");
-          if (cartBody && data.cart_html) {
-            cartBody.innerHTML = data.cart_html;
-          }
-
-          // 🔹 Actualizar contador
-          const cartCount = document.getElementById("cart_count");
-          if (cartCount && data.count !== undefined) {
-            cartCount.textContent = data.count;
-          }
-
-          // 🔹 Mostrar carrito automáticamente (opcional)
-          const offcanvasEl = document.getElementById("cartOffcanvas");
-          if (offcanvasEl) {
-            const offcanvas = bootstrap.Offcanvas.getOrCreateInstance(offcanvasEl);
-            offcanvas.show();
-          }
-
-          // 🔹 Notificación de éxito
-          showNotification("✅ Producto agregado al carrito");
-        } else {
-          showNotification("⚠️ No se pudo agregar el producto");
+        // 🔹 Actualiza el contenido del carrito (offcanvas)
+        if (data.cart_html) {
+          const cartBody = document.querySelector("#cart-offcanvas-body");
+          if (cartBody) cartBody.innerHTML = data.cart_html;
         }
-      } catch (error) {
-        console.error("Error:", error);
-        showNotification("❌ Error al agregar producto");
+
+        // 🔹 Actualiza el contador
+        const cartCount = document.querySelector("#cart-count");
+        if (cartCount && data.count !== undefined) {
+          cartCount.textContent = data.count;
+        }
+
+        // 🔹 Muestra notificación
+        showToast("Producto agregado al carrito ✅", "success");
+
+
+      } else {
+        showToast("Error al agregar al carrito ❌", "danger");
       }
-    });
+      return;
+    }
+
+    // FAVORITOS
+    if (e.target.closest(".favorite-btn")) {
+      e.preventDefault();
+      e.stopPropagation();
+
+      const btn = e.target.closest(".favorite-btn");
+      const url = btn.dataset.url;
+      const method = btn.dataset.method;
+
+      const response = await fetch(url, {
+        method: method.toUpperCase(),
+        headers: {
+          "X-CSRF-Token": document.querySelector("meta[name='csrf-token']").content,
+          "Accept": "application/json"
+        }
+      });
+
+      if (response.ok) {
+        if (method === "post") {
+          const data = await response.json();
+          btn.dataset.method = "delete";
+          btn.dataset.url = `/favorites/${data.id}`;
+          btn.classList.remove("btn-outline-warning");
+          btn.classList.add("btn-warning");
+          btn.innerHTML = '<i class="fa-solid fa-star"></i>';
+          showToast("Producto agregado a favoritos", "warning");
+        } else {
+          btn.dataset.method = "post";
+          btn.classList.remove("btn-warning");
+          btn.classList.add("btn-outline-warning");
+          btn.innerHTML = '<i class="fa-regular fa-star"></i>';
+          showToast("Producto eliminado de favoritos", "danger");
+        }
+      } else {
+        showToast("Error al gestionar favoritos", "danger");
+      }
+      return;
+    }
   });
 
-  // 🔸 Función de notificación tipo toast
-  function showNotification(message) {
-    const existing = document.querySelector(".custom-toast");
-    if (existing) existing.remove();
-
+  // Función toast reutilizable
+  function showToast(message, type) {
     const toast = document.createElement("div");
-    toast.className = "custom-toast";
-    toast.textContent = message;
-    Object.assign(toast.style, {
-      position: "fixed",
-      bottom: "20px",
-      right: "20px",
-      background: "#198754",
-      color: "#fff",
-      padding: "10px 16px",
-      borderRadius: "10px",
-      fontWeight: "600",
-      boxShadow: "0 2px 8px rgba(0,0,0,0.3)",
-      zIndex: "3000",
-      opacity: "0",
-      transition: "opacity 0.3s ease"
-    });
-    document.body.appendChild(toast);
-    setTimeout(() => (toast.style.opacity = "1"), 100);
-    setTimeout(() => {
-      toast.style.opacity = "0";
-      setTimeout(() => toast.remove(), 500);
-    }, 2500);
-  }
-});
+    let bg = "text-bg-primary";
+    if (type === "success") bg = "text-bg-success";
+    if (type === "warning") bg = "text-bg-warning";
+    if (type === "danger") bg = "text-bg-danger";
 
+    toast.className = `toast align-items-center ${bg} border-0 show mb-2 shadow`;
+    toast.setAttribute("role", "alert");
+    toast.style.minWidth = "250px";
+    toast.innerHTML = `
+      <div class="d-flex">
+        <div class="toast-body text-center w-100">${message}</div>
+        <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
+      </div>`;
+
+    document.querySelector("#toast-container").appendChild(toast);
+
+    setTimeout(() => {
+      toast.classList.remove("show");
+      toast.classList.add("fade");
+      setTimeout(() => toast.remove(), 500);
+    }, 3000);
+  }
+
+  // Click en la tarjeta → ir a producto_show.html.erb (excepto botones internos)
   document.addEventListener("click", (e) => {
     const card = e.target.closest(".product-card");
     if (!card) return;
@@ -373,7 +395,6 @@ document.addEventListener("DOMContentLoaded", () => {
     const productoId = card.dataset.productoId;
     window.location = `/home/producto_show?id=${productoId}`;
   });
-
 </script>
 
 

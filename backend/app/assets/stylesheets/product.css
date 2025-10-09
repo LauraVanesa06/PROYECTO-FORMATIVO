@@ -376,7 +376,7 @@ body{
 
 .carousel-btn.next {
   right: -4px;
-  z-index: 9999;
+  z-index: 2;
 }
 
 /*error de imagen no encontrada*/

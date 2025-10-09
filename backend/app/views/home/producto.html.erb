@@ -42,7 +42,7 @@
 
   <div class="product-grid">
     <% @productos.each do |producto| %>
-      <div class="product-card" data-url="<%= product_path(producto) %>" style="cursor:pointer;">
+      <div class="product-card" data-producto-id="<%= producto.id %>">
 
         <!-- Imagen -->
         <div class="product-thumb">
@@ -180,16 +180,16 @@ document.addEventListener("click", async (e) => {
         btn.classList.remove("btn-outline-warning");
         btn.classList.add("btn-warning");
         btn.innerHTML = '<i class="fa-solid fa-star"></i>';
-        showToast("Producto agregado a favoritos ⭐", "warning");
+        showToast("Producto agregado a favoritos", "warning");
       } else {
         btn.dataset.method = "post";
         btn.classList.remove("btn-warning");
         btn.classList.add("btn-outline-warning");
         btn.innerHTML = '<i class="fa-regular fa-star"></i>';
-        showToast("Producto eliminado de favoritos ❌", "danger");
+        showToast("Producto eliminado de favoritos", "danger");
       }
     } else {
-      showToast("Error al gestionar favoritos ❌", "danger");
+      showToast("Error al gestionar favoritos", "danger");
     }
     return;
   }
@@ -221,20 +221,14 @@ function showToast(message, type) {
   }, 3000);
 }
 
-// Navegación al hacer click en la tarjeta (excepto botones internos)
-document.addEventListener("click", (e) => {
-  const card = e.target.closest(".product-card");
-
-  if (card) {
-    // Si el click vino desde un botón interno => no navegamos
-    if (e.target.closest("button")) return;
-
-    // Redirigir al show del producto
-    const url = card.dataset.url;
-    if (url) {
-      window.location.href = url;
-    }
-  }
-});
+// Click en la tarjeta → ir a producto_show.html.erb (excepto botones internos)
+  document.addEventListener("click", (e) => {
+    const card = e.target.closest(".product-card");
+    if (!card) return;
+    if (e.target.closest("button") || e.target.closest("i")) return;
+    // Redirigir a la ruta personalizada de producto_show
+    const productoId = card.dataset.productoId;
+    window.location = `/home/producto_show?id=${productoId}`;
+  });
 
 </script>

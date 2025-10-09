@@ -104,8 +104,11 @@
   <!-- Offcanvas DERECHO (ÚNICO) -->
   <% unless current_page?(cart_path) %>
     <div class="offcanvas offcanvas-end" tabindex="-1" id="cartOffcanvas">
-      <div class="offcanvas-header">
-        <h5 class="offcanvas-title"><%= t("cart.title") %></h5>
+      <div class="offcanvas-header" style="position: relative; padding-bottom: 0;">
+        <div class="section-header" style="width: 100%;">
+          <h2 class="titulo"><%= t("cart.title") %></h2>
+          <center><hr class="linea-bonita"></center>
+        </div>
         <button type="button" class="btn-close" data-bs-dismiss="offcanvas"></button>
       </div>
       <div class="offcanvas-body" id="cart-offcanvas-body">
