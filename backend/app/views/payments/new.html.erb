@@ -1,23 +1,27 @@
-<h2> FINALIZAR PAGO </h2>
-<p> TOTAL A PAGAR: <%= number_to_currency(@payment.amount) %></p>
+<h1>Formulario de pago</h1>
 
-<form id="payment-form" action="<%= payments_path %>" method="post">
-  <%= hidden_field_tag :authenticity_token, form_authenticity_token %>
+<%= form_with url: payments_path, method: :post, local: true do |f| %>
+  <div>
+    <label>Monto</label>
+    <%= number_field_tag :amount, (@cart.total || 0), step: 0.01, disabled: true %>
+  </div>
+
+  <div>
+    <label>Correo</label>
+    <%= email_field_tag :email, current_user&.email %>
+  </div>
+
+  <div>
+    <label>Método de pago</label>
+    <%= select_tag :pay_method, options_for_select([['Tarjeta','card'], ['PSE','pse'], ['Link de pago','payment_link']]) %>
+  </div>
 
     <div>
-        <label> Método de pago </label>
-        <select name="pay_method">
-            <option value "CARD"> tarjeta </option>
-            <option value "NEQUI"> Nequi </option>
-            <option value "PSE"> PSE </option>
-        </select>
+    <label>Número de tarjeta</label>
+  <%= text_field_tag :account_info, nil %>
     </div>
-    <div>
-  <label for="account_info">Número de cuenta / tarjeta:</label>
-  <input type="text" name="account_info" required>
-</div>
 
-    <%= hidden_field_tag :payment_id, @payment.id %>
-
-  <button type="submit">Pagar con Wompi</button>
-</form>
+  <div>
+    <%= submit_tag "Pagar" %>
+  </div>
+<% end %>

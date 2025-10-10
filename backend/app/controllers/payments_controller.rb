@@ -1,10 +1,13 @@
 class PaymentsController < ApplicationController
-
+  skip_before_action :verify_authenticity_token, only: [:webhook_return] 
   protect_from_forgery except: :webhook
+  require 'faraday'
+
   def new
     @payment = Payment.new(
        cart: current_cart,
       amount: current_cart.total,
+
     
     )
   end
@@ -29,20 +32,80 @@ class PaymentsController < ApplicationController
     head :ok
   end
 def create
-  @payment = Payment.new(payment_params.merge(cart: current_cart, amount: current_cart.total))
-
-  if @payment.save
-    # Aquí podrías validar con Wompi que el pago fue exitoso
-    PaymentMailer.invoice(@payment).deliver_later
-
-    flash[:notice] = "¡Gracias por tu compra! Tu pedido llegará en 3 a 5 días hábiles."
-    redirect_to root_path
-    
-  else
-    flash[:alert] = "Hubo un error con tu pago, intenta de nuevo."
-    render :new, status: :unprocessable_entity
+  # obtener/validar carrito
+  cart = current_cart || Cart.find_by(id: params[:cart_id])
+  unless cart
+    render json: { error: "Carrito no encontrado" }, status: :unprocessable_entity
+    return
   end
+
+  # monto en decimal para el modelo, y en centavos para Wompi
+  amount_decimal = params[:amount].to_f
+  amount_cents = (amount_decimal * 100).to_i
+  currency = params[:currency] || "COP"
+  pay_method = params[:pay_method] || "card"
+
+  # generar referencia local (se usa como valor inicial de wompi_id para evitar NULL)
+  local_reference = "local_payment_#{SecureRandom.hex(8)}_#{Time.now.to_i}"
+
+  # obtener tokens desde el servicio Wompi
+  service = WompiService.new
+  tokens = {}
+  begin
+    tokens = service.acceptance_tokens || {}
+  rescue => e
+    Rails.logger.error("[WompiService] acceptance_tokens error: #{e.message}")
+  end
+
+  # crear Payment con wompi_id temporal (no NULL)
+  payment = Payment.create!(
+    cart: cart,
+    amount: amount_decimal,
+    currency: currency,
+    status: 0,
+    pay_method: pay_method,
+    user_id: (params[:user_id] || current_user&.id),
+    token: (tokens[:acceptance_token] || params[:token] || ""),
+    account_info: (tokens[:personal_data_token] || params[:account_info] || ""),
+    wompi_id: local_reference
+  )
+
+  # preparar payload para Wompi usando el acceptance_token si lo tenemos
+  payload = {
+    amount_in_cents: amount_cents,
+    currency: currency,
+    customer_email: payment.user&.email || params[:email],
+    reference: "payment_#{payment.id}_#{Time.now.to_i}",
+    redirect_url: params[:redirect_url] || "#{root_url}payments/#{payment.id}",
+    acceptance_token: tokens[:acceptance_token]
+  }
+
+  url = "#{WompiService::BASE_URL}/transactions"
+  resp = Faraday.post(url) do |req|
+    req.headers['Authorization'] = "Bearer #{Rails.application.credentials.dig(:wompi, :private_key) || ENV['WOMPI_PRIVATE_KEY']}"
+    req.headers['Content-Type'] = 'application/json'
+    req.body = { transaction: payload }.to_json
+  end
+
+  unless resp.success?
+    payment.update(status: "failed", raw_response: { error: resp.body })
+    render json: { error: "Wompi request failed" }, status: :bad_gateway
+    return
+  end
+
+  body = JSON.parse(resp.body) rescue {}
+  actual_wompi_id = body.dig("data", "id") || body.dig("data", "transaction", "id")
+  checkout_url = body.dig("data", "authorization", "url") || body.dig("data", "transaction", "payment_method", "gateway_url") || body.dig("data", "metadata", "payment_link")
+
+  # actualizar wompi_id real y raw_response
+  payment.update(wompi_id: (actual_wompi_id || payment.wompi_id), raw_response: body)
+
+  render json: { payment_id: payment.id, wompi_id: actual_wompi_id, checkout_url: checkout_url, data: body }
 end
+ def show
+    @payment = Payment.find(params[:id])
+    render json: { id: @payment.id, status: @payment.status, amount: @payment.amount, wompi_id: @payment.wompi_id }
+  end
 
   
 

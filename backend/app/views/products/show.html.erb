@@ -146,6 +146,10 @@
             <% end %>
 
             <button class="btn-buy">¡Comprar!</button>
+            <button id="pay-with-wompi" data-amount="<%= (@product.precio * 1).round(2) %>">
+        Pagar con Wompi
+      </button>
+            
           </div>
           <div class="metodo">
             <p class="p1">Metodos de pago</p>
@@ -274,6 +278,27 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 });
 </script>
-
+<script>
+document.getElementById('pay-with-wompi')?.addEventListener('click', async function() {
+  const amount = parseFloat(this.dataset.amount);
+  const resp = await fetch('/payments', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'X-CSRF-Token': document.querySelector('meta[name="csrf-token"]').content
+    },
+    body: JSON.stringify({ amount: amount, currency: 'COP', redirect_url: window.location.href })
+  });
+  const data = await resp.json();
+  if (data.checkout_url) {
+    window.location = data.checkout_url;
+  } else if (data.error) {
+    alert('Error iniciando pago: ' + data.error);
+  } else {
+    console.log(data);
+    alert('Respuesta desconocida al crear pago');
+  }
+});
+</script>
 </body>
 </html>

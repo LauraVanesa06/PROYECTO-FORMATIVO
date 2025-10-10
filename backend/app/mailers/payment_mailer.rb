@@ -1,10 +1,12 @@
 class PaymentMailer < ApplicationMailer
-    default from: 'lvanesadelahoz@gmail.com'
+    default from: 'ferreteriasoporte3@gmail.com'
 
-    def invoice(payment)
-        @payment = payment
-        @user = payment.cart.user
+    def invoice
+        @payment = params[:payment]
+        @user = @payment.cart.user
             mail(to: @user.email, subject: 'Tu factura de compra - Ferremateriales El Maestro')
-    end
+       
+
+        end
 
 end

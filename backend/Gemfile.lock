@@ -118,6 +118,12 @@ GEM
     erubi (1.13.1)
     et-orbi (1.2.11)
       tzinfo
+    faraday (2.14.0)
+      faraday-net_http (>= 2.0, < 3.5)
+      json
+      logger
+    faraday-net_http (3.4.1)
+      net-http (>= 0.5.0)
     ffi (1.17.2-aarch64-linux-gnu)
     ffi (1.17.2-aarch64-linux-musl)
     ffi (1.17.2-arm-linux-gnu)
@@ -185,6 +191,8 @@ GEM
     msgpack (1.8.0)
     multi_xml (0.7.2)
       bigdecimal (~> 3.1)
+    net-http (0.6.0)
+      uri
     net-imap (0.5.6)
       date
       net-protocol
@@ -422,6 +430,7 @@ DEPENDENCIES
   capybara
   debug
   devise (~> 4.9)
+  faraday
   httparty
   image_processing (~> 1.2)
   importmap-rails
@@ -445,4 +454,4 @@ DEPENDENCIES
   web-console
 
 BUNDLED WITH
-   2.5.9
+   2.7.2

@@ -57,7 +57,8 @@
       <%= link_to "Ir a Checkout", cart_path, class: "btn btn-success btn-lg" %>
     <% end %>
     <% if current_page?(cart_path) %>
-      <%= link_to "Comprar Ahora", cart_path , class: "btn btn-success btn-lg" %>
+      <%= link_to "Ir al formulario de pago", new_payment_path, class: "btn btn-primary" %>
+
     <% end %>
   </div>
 <% else %>
