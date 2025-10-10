@@ -16,7 +16,7 @@ body{
     align-items: center;
     width: 90%;
     height: 470px;
-    border: solid 1px #8fa0e0;
+    border: solid 1px #d2d2d2;
     border-radius: 20px;
 }
 
@@ -58,6 +58,7 @@ body{
 .d1{
     font-size: 35px;
     font-weight: bold;
+            line-height: 1;
 }
 
 .d2, .d7{
@@ -375,7 +376,7 @@ body{
 
 .carousel-btn.next {
   right: -4px;
-  z-index: 9999;
+  z-index: 2;
 }
 
 /*error de imagen no encontrada*/
@@ -394,4 +395,22 @@ body{
   justify-content: center;
   z-index: 999;
   border-radius: 6px;
+}
+
+.titulo{
+    font-size: 18px;
+    /* font-weight: 700; */
+    color: #83868c;
+    margin: 0;
+    padding: 5px 5px 0px 18px; 
+    letter-spacing: 0.5px;
+}
+
+.linea-bonita {
+    border: none;
+    height: 1px;
+    background: linear-gradient(to right, #1e3c72, #2a5298);
+    border-radius: 5px;
+    width: 98%;
+    margin-block-end: 15px !important;
 }

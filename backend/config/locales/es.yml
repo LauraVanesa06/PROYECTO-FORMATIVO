@@ -102,9 +102,9 @@ es:
   # Contacto
   contact:
     title: "Contáctanos"
-    name: "Tu nombre"
-    lastname: "Tu apellido"
-    email: "Tu correo"
+    name: "Nombre"
+    lastname: "Apellido"
+    email: "Correo"
     description: "Descripción de la duda presentada"
     submit: "Enviar al administrador"
     whatsapp: "Compra con un experto"

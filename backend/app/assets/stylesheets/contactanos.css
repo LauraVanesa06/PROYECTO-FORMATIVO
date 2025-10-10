@@ -2,10 +2,10 @@
   width: 100%;
   display: flex;
   flex-wrap: wrap;
-  background-color: #fff;
+  background-color: #f5f5f5;
   align-items: flex-start;
   gap: 30px;
-  padding: 40px 20px;
+  padding: 25px 20px;
 }
 
 .imagen {
@@ -18,12 +18,14 @@
   border-radius: 12px;
   box-shadow: 0 5px 15px rgba(0,0,0,0.1);
   width: 100%;
-  height: 40%;
-  min-height: 450px;
+  height: 600px;
+  min-height: 0;
+  max-height: 600px;
 }
 
 /* formulario*/
 .form-container {
+  margin-top: 17px;
   flex: 1 1 40%;
   min-width: 350px;
   border: none;
@@ -32,6 +34,13 @@
   padding: 30px;
   border-radius: 15px;
   transition: transform 0.2s ease;
+  position: relative;
+}
+.whats-floating {
+  position: absolute;
+  top: 18px;
+  right: 18px;
+  z-index: 10;
 }
 
 .form-container:hover {
@@ -41,16 +50,16 @@
 
 .form-container input,
 .form-container textarea {
-  padding: 12px;
-  margin-top: 5px;
-  border-radius: 8px;
-  border: 1px solid #ccc;
-  background-color: #fafafa;
-  font-family: inherit;
+    padding: 6px;
+    margin-top: 5px;
+    border-radius: 8px;
+    border: 1px solid #ebebeb;
+    background-color: #ffffff;
+    font-family: inherit;
 }
 
 #colores {
-  background-color: #25d366;
+  background-color: #5687ba;
   color: white;
   border: none;
   padding: 12px 20px;
@@ -71,7 +80,7 @@
     background-color: #fffdf5;
 }
 .form-container h2 {
-    color: #000;
+    color: #848484;
     margin-top: 0;
 }
 
@@ -79,29 +88,18 @@
 background-color: rgb(41, 41, 41);
 }
 .map-responsive{
-
-    overflow:hidden;
-
-    padding-bottom:56.25%;
-
-    position:relative;
-
-    height:0;
-
+  overflow: hidden;
+  position: relative;
+  height: auto;
+  padding-bottom: 0;
 }
 
 .map-responsive iframe{
-
-    left:0;
-
-    top:0;
-
-    height:100%;
-
-    width:100%;
-
-    position:absolute;
-
+  position: static;
+  width: 100%;
+  height: 600px;
+  left: 0;
+  top: 0;
 }
 
 .form .form-container label{
@@ -109,38 +107,41 @@ background-color: rgb(41, 41, 41);
   
 }
 label.letra {
-  color: black
+  color: #c2c2c2;
+    margin-bottom: 0px;
+    margin-top: 0px;
 }
 
 .telefono-icono {
-  flex: 2 1 auto;
-  color: black;
-  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.06);
-  border-radius: 10px;
-  font-size: 18px;
-  display: flex;
-  align-items: center;
-  background-color: #f8f8f8;
-  justify-content: space-around;
-  padding: 10px;
+    flex: 2 1 auto;
+    color: #ffffff;
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.06);
+    border-radius: 10px;
+    font-size: 16px !important;
+    /* font-family: sans-serif !important; */
+    display: flex;
+    align-items: center;
+    background-color: #b1b1b1;
+    justify-content: space-around;
+    padding: 10px;
+    height: 29px;
 }
 
 .centrar{
   align-self: center;
 }
 .organizarIcons {
-  margin-top: 20px;
+  margin-top: -3px;
   display: flex;
   flex-wrap: wrap; 
   flex-direction: row;
-  gap: 10px;
 }
 
 .whats {
   flex: 1 1 auto;
 }
 .organizarIcons i {
-
+  font-family: emoji;
   text-decoration: none;
   transition: transform 0.2s ease;
 }
@@ -152,8 +153,8 @@ label.letra {
   background-color: #000;
 }
 .btn-whatsapp {
-  background: #f8f8f8;
-    border: 1px solid  #25d366;
+  background: #dcffe9;
+  border: 1px solid  #25d366;
   color:  #25d366;
   font-weight: 500;
   border-radius: 30px;

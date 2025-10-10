@@ -1,68 +1,74 @@
 <% if cart_items.any? %>
-  <table class="table align-middle">
-    <thead>
-      <tr>
-        <th><%= t("cart.table.product") %></th>
-        <th><%= t("cart.table.price") %></th>
-        <th><%= t("cart.table.quantity") %></th>
-        <th><%= t("cart.table.total") %></th>
-        <th></th>
-      </tr>
-    </thead>
-    <tbody>
+    <div class="cart-items-list">
       <% cart_items.each do |item| %>
-        <tr id="<%= dom_id(item) %>">
-          <td>
+        <div style="width: 95%;" class="cart-item-card d-flex flex-row align-items-center position-relative mb-3 p-3 shadow-sm rounded-4 bg-white" id="<%= dom_id(item) %>" data-producto-id="<%= item.product.id %>" style="cursor: pointer;">
+          <div class="cart-item-thumb me-3" id="div-foto">
             <% if item.product.images.present? %>
-              <%= image_tag url_for(item.product.images.first), alt: item.product.nombre, class: "img-thumbnail", style: "width: 70px; height: 70px; object-fit: cover;" %>
+              <%= image_tag url_for(item.product.images.first), alt: item.product.nombre, class: "rounded-3 border" %>
             <% else %>
-              <%# image_tag "placeholder.png", class: "img-thumbnail", style: "width: 70px; height: 70px; object-fit: cover;" %>
+              <%= image_tag "ProductoNoDisponible.png", alt: t('productos.sin_imagen'), class: "img-fluid rounded-3 border" %>
             <% end %>
-            <strong><%= item.product.nombre %></strong>
-          </td>
-          <td><%= number_to_currency(item.product.precio, unit: '$', format: '%u%n', delimiter: '.', separator: ',', precision: 0) %> COP</td>
-          <td>
-            <%= form_with(model: item, class: "quantity-form", data: { item_id: item.id }) do |f| %>
-              <div class="input-group" style="width: 60px;">
-                <%= f.number_field :quantity, 
-                    min: 1, 
-                    class: "form-control text-center quantity-field",
-                    value: item.quantity %>
+          </div>
+          <div class="cart-item-info flex-grow-1" style="width: 100%;">
+            <div class="d-flex justify-content-between align-items-center">
+              <strong class="fs-5 text-primary"><%= item.product.nombre %></strong>
+              <span class="cart-item-price fs-5 fw-bold text-success">
+                COP <%= number_with_precision(item.product.precio, delimiter: '.', separator: ',', precision: 2) %>
+              </span>
+            </div>
+            <div class="cart-item-desc text-muted mb-2" style="font-size: 14px;">
+              <%= truncate(item.product.descripcion, length: 60) %>
+            </div>
+            <div class="d-flex align-items-center gap-3 mt-2">
+              <div class="cart-item-qty">
+                <%= form_with(model: item, class: "quantity-form d-inline-flex align-items-center", data: { item_id: item.id }) do |f| %>
+                  <span class="me-1">Cantidad:</span>
+                  <%= f.number_field :quantity, min: 1, class: "form-control text-center quantity-field", value: item.quantity, style: "width: 60px; display: inline-block;", onkeypress: "return event.charCode >= 48 && event.charCode <= 57" %>
+                <% end %>
               </div>
-            <% end %>
-          </td>
-          <td><%= number_to_currency((item.product.precio || 0) * item.quantity.to_i, unit: '$', format: '%u%n', delimiter: '.', separator: ',', precision: 0) %> COP</td>
-
-          <td>
+              <span class="cart-item-subtotal fw-semibold text-secondary" style="font-size: 15px;">
+                Subtotal: COP <%= number_with_precision((item.product.precio || 0) * item.quantity.to_i, delimiter: '.', separator: ',', precision: 2) %>
+              </span>
+            </div>
+          </div>
+          <div class="cart-item-actions ms-3">
             <%= button_to cart_item_path(item),
                           method: :delete,
                           data: { turbo: false },
                           remote: true,
-                          class: "btn btn-outline-danger btn-sm delete-item",
+                          class: "btn btn-outline-danger btn-sm delete-item rounded-circle position-absolute",
+                          style: "top: 78px; right: 8px;",
                           form: { "data-item-id": item.id } do %>
               <i class="fa-solid fa-trash"></i>
             <% end %>
-          </td>
-        </tr>
+          </div>
+        </div>
       <% end %>
-    </tbody>
-  </table>
+    </div>
 
-  <div class="text-end">
-  <h4>
-    <%= t("cart.total") %>: <%= number_to_currency(cart_items.sum { |i| (i.product&.precio || 0) * (i.quantity || 0) }, unit: '$', format: '%u%n', delimiter: '.', separator: ',', precision: 0) %> COP
-  </h4>
-    <br>
-    <% unless current_page?(cart_path) %>
-      <%= link_to "Ir a Checkout", cart_path, class: "btn btn-success btn-lg" %>
-    <% end %>
-    <% if current_page?(cart_path) %>
-      <%= link_to "Comprar Ahora", cart_path , class: "btn btn-success btn-lg" %>
-    <% end %>
-  </div>
-<% else %>
-  <p><%= t("cart.empty") %></p>
-<% end %>
+    <div id="cart-summary" class="cart-summary card p-4 mt-4 shadow-sm border-0 rounded-4 bg-light">
+      <div class="d-flex justify-content-between align-items-center mb-2">
+        <h4 class="mb-0"><%= t("cart.total") %>: </h4>
+        <span class="fs-4 fw-bold text-success">
+          COP <%= number_with_precision(cart_items.sum { |i| (i.product&.precio || 0) * (i.quantity || 0) }, delimiter: '.', separator: ',', precision: 2) %>
+        </span>
+      </div>
+      <div class="d-flex gap-3 mt-3" style="margin: 0 !important;">
+        <% unless current_page?(cart_path) %>
+          <%= link_to "Ir a Checkout", cart_path, class: "btn btn-primary btn-lg px-4 shadow-sm" %>
+        <% end %>
+        <% if current_page?(cart_path) %>
+          <%= link_to "Comprar Ahora", cart_path , class: "btn btn-success btn-lg px-4 shadow-sm" %>
+        <% end %>
+      </div>
+    </div>
+  <% else %>
+    <div class="alert alert-info text-center p-4 mt-4">
+      <i class="fa-solid fa-cart-arrow-down fa-2x mb-2"></i><br>
+      <span class="fs-5"><%= t("cart.empty") %></span>
+    </div>
+  <% end %>
+</div>
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {
@@ -85,12 +91,42 @@ document.addEventListener('DOMContentLoaded', function() {
     }, 2500);
   }
 
-  // 🔹 Cambiar cantidad (suma/resta)
+  // 🔹 Actualizar subtotal automáticamente al cambiar cantidad
+  document.addEventListener('input', function(e) {
+    const field = e.target.closest('.quantity-field');
+    if (!field) return;
+
+    let quantity = parseInt(field.value) || 1;
+    
+    // 🔹 Validar que no sea 0 o negativo
+    if (quantity < 1) {
+      quantity = 1;
+      field.value = 1;
+    }
+
+    const cartItem = field.closest('.cart-item-card');
+    
+    // Obtener precio del producto
+    const priceElement = cartItem.querySelector('.cart-item-price');
+    const priceText = priceElement.textContent.trim();
+    const price = parsePrice(priceText);
+    
+    // Calcular nuevo subtotal
+    const subtotal = price * quantity;
+    
+    // Actualizar subtotal en pantalla
+    const subtotalElement = cartItem.querySelector('.cart-item-subtotal');
+    subtotalElement.textContent = `Subtotal: COP ${formatPrice(subtotal)}`;
+    
+    // Actualizar total general
+    updateCartTotal();
+  });
+
+  // 🔹 Enviar cambio al servidor cuando se pierde el foco
   document.addEventListener('change', async function(e) {
     const field = e.target.closest('.quantity-field');
     if (!field) return;
 
-    e.preventDefault();
     const form = field.closest('form');
     const quantity = field.value;
 
@@ -105,26 +141,22 @@ document.addEventListener('DOMContentLoaded', function() {
       });
 
       if (response.ok) {
-        const price = parsePrice(field.closest('tr').querySelector('td:nth-child(2)').textContent);
-        const subtotalCell = field.closest('tr').querySelector('td:nth-child(4)');
-        const subtotal = price * parseInt(quantity);
-        subtotalCell.textContent = formatPrice(subtotal);
-
-        updateCartTotal();
+        showNotification('Cantidad actualizada', 'success');
       }
     } catch (error) {
       console.error('Error al actualizar cantidad:', error);
+      showNotification('Error al actualizar', 'danger');
     }
   });
 
-  // 🔹 Eliminar producto con notificación
+  // 🔹 Eliminar producto con notificación y actualización automática
   document.addEventListener('click', async function(e) {
     const btn = e.target.closest('.delete-item');
     if (!btn) return;
 
     e.preventDefault();
     const form = btn.closest('form');
-    const itemRow = btn.closest('tr');
+    const itemCard = btn.closest('.cart-item-card');
 
     try {
       const response = await fetch(form.action, {
@@ -137,50 +169,104 @@ document.addEventListener('DOMContentLoaded', function() {
 
       if (response.ok) {
         const data = await response.json();
-        itemRow.remove();
-        updateCartTotal();
-
-        // 🔹 Actualizar contador del carrito
-        const cartCount = document.getElementById('cart_count');
-        if (cartCount && data.count !== undefined) {
-          cartCount.textContent = data.count;
-        }
-
-        // 🔹 Mostrar notificación de eliminación
-        showNotification('🗑️ Producto eliminado del carrito', 'danger');
+        
+        // 🔹 Eliminar la tarjeta del producto con animación
+        itemCard.style.transition = 'opacity 0.3s ease-out';
+        itemCard.style.opacity = '0';
+        
+        setTimeout(() => {
+          itemCard.remove();
+          
+          // 🔹 Actualizar total automáticamente
+          updateCartTotal();
+          
+          // 🔹 Verificar si el carrito está vacío
+          const remainingItems = document.querySelectorAll('.cart-item-card');
+          if (remainingItems.length === 0) {
+            // Mostrar mensaje de carrito vacío
+            const cartContainer = document.querySelector('.cart-items-list').parentElement;
+            cartContainer.innerHTML = `
+              <div class="alert alert-info text-center p-4 mt-4">
+                <i class="fa-solid fa-cart-arrow-down fa-2x mb-2"></i><br>
+                <span class="fs-5">Tu carrito está vacío</span>
+              </div>
+            `;
+          }
+          
+          // 🔹 Actualizar contador del carrito en el navbar
+          const cartCount = document.getElementById('cart_count');
+          if (cartCount && data.count !== undefined) {
+            cartCount.textContent = data.count;
+            
+            // Si el carrito está vacío, ocultar el badge
+            if (data.count == 0) {
+              cartCount.style.display = 'none';
+            }
+          }
+          
+          // 🔹 Mostrar notificación de eliminación
+          showNotification('🗑️ Producto eliminado del carrito', 'danger');
+          
+        }, 300);
+        
       }
     } catch (error) {
       console.error('Error al eliminar producto:', error);
+      showNotification('Error al eliminar producto', 'danger');
     }
   });
 
-  // 🔹 Recalcular total global
+  // 🔹 Recalcular total general del carrito
   function updateCartTotal() {
     const quantityFields = document.querySelectorAll('.quantity-field');
-    const total = Array.from(quantityFields).reduce((sum, input) => {
-      const itemPrice = parsePrice(input.closest('tr').querySelector('td:nth-child(2)').textContent);
-      return sum + (itemPrice * parseInt(input.value));
-    }, 0);
+    let total = 0;
 
-    const totalText = document.querySelector('.text-end h4');
-    if (totalText) totalText.textContent = '<%= t("cart.total") %>: ' + formatPrice(total);
+    quantityFields.forEach(input => {
+      const cartItem = input.closest('.cart-item-card');
+      const priceElement = cartItem.querySelector('.cart-item-price');
+      const priceText = priceElement.textContent.trim();
+      const price = parsePrice(priceText);
+      const quantity = parseInt(input.value) || 1;
+      
+      total += price * quantity;
+    });
+
+    // Actualizar el total en el resumen del carrito
+    const totalElement = document.querySelector('#cart-summary .fs-4');
+    if (totalElement) {
+      totalElement.textContent = `COP ${formatPrice(total)}`;
+    }
   }
 
   // 🔹 Funciones de formato de precio
   function formatPrice(amount) {
-    const formattedNumber = new Intl.NumberFormat('es-CO', {
-      minimumFractionDigits: 0, // sin decimales
-      maximumFractionDigits: 0,
+    return new Intl.NumberFormat('es-CO', {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2,
       useGrouping: true
-    }).format(amount);
-    return `$${formattedNumber} COP`;
+    }).format(amount).replace(',', '.');
   }
 
   function parsePrice(priceString) {
-    // elimina puntos, símbolo $ y "COP"
-    return parseInt(priceString.replace(/\./g, '').replace('$', '').replace('COP', '').trim());
+    // Extraer solo los números del precio "COP 12.000,00"
+    return parseFloat(priceString.replace(/[^\d.,]/g, '').replace('.', '').replace(',', '.')) || 0;
   }
 
-
+  // 🔹 Click en tarjeta del carrito → ir a producto_show (excepto botones internos)
+  document.addEventListener("click", (e) => {
+    const card = e.target.closest(".cart-item-card");
+    if (!card) return;
+    
+    // No redirigir si se hace click en botones, inputs o iconos
+    if (e.target.closest("button") || 
+        e.target.closest("input") || 
+        e.target.closest("i") || 
+        e.target.closest("form")) return;
+    
+    const productoId = card.dataset.productoId;
+    if (productoId && productoId !== "undefined" && productoId !== "") {
+      window.location = `/home/producto_show?id=${productoId}`;
+    }
+  });
 });
 </script>

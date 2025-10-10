@@ -10,8 +10,6 @@ class HomeController < ApplicationController
       .group("products.id")
       .order("total_vendidos DESC")
       .limit(8) # cantidad que quieras mostrar
-
-       
   end
 
   def producto
@@ -35,6 +33,12 @@ class HomeController < ApplicationController
     if params[:max_price].present?
       @productos = @productos.where("precio <= ?", params[:max_price])
     end
+  end
+
+  def producto_show
+    @product = Product.find(params[:id])
+    # Productos relacionados: misma categoría, excluyendo el actual
+    @relacionados = Product.where(category_id: @product.category_id).where.not(id: @product.id).limit(6)
   end
 
   def send_report

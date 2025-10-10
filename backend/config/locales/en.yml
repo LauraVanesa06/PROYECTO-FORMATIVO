@@ -77,9 +77,9 @@ en:
       ver_detalles: "View details"
   contact:
     title: "Contact Us"
-    name: "Your name"
-    lastname: "Your last name"
-    email: "Your email"
+    name: "Name"
+    lastname: "Last name"
+    email: "Email"
     description: "Description of your question"
     submit: "Send to administrator"
     whatsapp: "Buy with an expert"

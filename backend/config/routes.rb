@@ -21,6 +21,7 @@ Rails.application.routes.draw do
   get 'carrito', to: 'home#carrito', as: :carrito
   get 'notificaciones', to: 'home#notificaciones', as: :notificaciones
   get 'contactos', to: 'home#contacto', as: :contactos
+  get '/home/producto_show', to: 'home#producto_show', as: 'producto_show'
 
   # soporte pagina principal
   post '/contacto/enviar', to: 'home#send_report', as: :send_report
