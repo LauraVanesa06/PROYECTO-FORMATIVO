@@ -1,8 +1,7 @@
-
 <% if cart_items.any? %>
     <div class="cart-items-list">
       <% cart_items.each do |item| %>
-        <div class="cart-item-card d-flex flex-row align-items-center position-relative mb-3 p-3 shadow-sm rounded-4 bg-white" id="<%= dom_id(item) %>">
+        <div style="width: 95%;" class="cart-item-card d-flex flex-row align-items-center position-relative mb-3 p-3 shadow-sm rounded-4 bg-white" id="<%= dom_id(item) %>">
           <div class="cart-item-thumb me-3" id="div-foto">
             <% if item.product.images.present? %>
               <%= image_tag url_for(item.product.images.first), alt: item.product.nombre, class: "rounded-3 border", style: "object-fit: cover; height: 82px; aspect-ratio: 1 / 1;" %>
@@ -24,7 +23,7 @@
               <div class="cart-item-qty">
                 <%= form_with(model: item, class: "quantity-form d-inline-flex align-items-center", data: { item_id: item.id }) do |f| %>
                   <span class="me-1">Cantidad:</span>
-                  <%= f.number_field :quantity, min: 1, class: "form-control text-center quantity-field", value: item.quantity, style: "width: 60px; display: inline-block;" %>
+                  <%= f.number_field :quantity, min: 1, class: "form-control text-center quantity-field", value: item.quantity, style: "width: 60px; display: inline-block;", onkeypress: "return event.charCode >= 48 && event.charCode <= 57" %>
                 <% end %>
               </div>
               <span class="cart-item-subtotal fw-semibold text-secondary">
@@ -92,12 +91,42 @@ document.addEventListener('DOMContentLoaded', function() {
     }, 2500);
   }
 
-  // 🔹 Cambiar cantidad (suma/resta)
+  // 🔹 Actualizar subtotal automáticamente al cambiar cantidad
+  document.addEventListener('input', function(e) {
+    const field = e.target.closest('.quantity-field');
+    if (!field) return;
+
+    let quantity = parseInt(field.value) || 1;
+    
+    // 🔹 Validar que no sea 0 o negativo
+    if (quantity < 1) {
+      quantity = 1;
+      field.value = 1;
+    }
+
+    const cartItem = field.closest('.cart-item-card');
+    
+    // Obtener precio del producto
+    const priceElement = cartItem.querySelector('.cart-item-price');
+    const priceText = priceElement.textContent.trim();
+    const price = parsePrice(priceText);
+    
+    // Calcular nuevo subtotal
+    const subtotal = price * quantity;
+    
+    // Actualizar subtotal en pantalla
+    const subtotalElement = cartItem.querySelector('.cart-item-subtotal');
+    subtotalElement.textContent = `Subtotal: COP ${formatPrice(subtotal)}`;
+    
+    // Actualizar total general
+    updateCartTotal();
+  });
+
+  // 🔹 Enviar cambio al servidor cuando se pierde el foco
   document.addEventListener('change', async function(e) {
     const field = e.target.closest('.quantity-field');
     if (!field) return;
 
-    e.preventDefault();
     const form = field.closest('form');
     const quantity = field.value;
 
@@ -112,26 +141,22 @@ document.addEventListener('DOMContentLoaded', function() {
       });
 
       if (response.ok) {
-        const price = parsePrice(field.closest('tr').querySelector('td:nth-child(2)').textContent);
-        const subtotalCell = field.closest('tr').querySelector('td:nth-child(4)');
-        const subtotal = price * parseInt(quantity);
-        subtotalCell.textContent = formatPrice(subtotal);
-
-        updateCartTotal();
+        showNotification('✅ Cantidad actualizada', 'success');
       }
     } catch (error) {
       console.error('Error al actualizar cantidad:', error);
+      showNotification('❌ Error al actualizar', 'danger');
     }
   });
 
-  // 🔹 Eliminar producto con notificación
+  // 🔹 Eliminar producto con notificación y actualización automática
   document.addEventListener('click', async function(e) {
     const btn = e.target.closest('.delete-item');
     if (!btn) return;
 
     e.preventDefault();
     const form = btn.closest('form');
-    const itemRow = btn.closest('tr');
+    const itemCard = btn.closest('.cart-item-card');
 
     try {
       const response = await fetch(form.action, {
@@ -144,50 +169,87 @@ document.addEventListener('DOMContentLoaded', function() {
 
       if (response.ok) {
         const data = await response.json();
-        itemRow.remove();
-        updateCartTotal();
-
-        // 🔹 Actualizar contador del carrito
-        const cartCount = document.getElementById('cart_count');
-        if (cartCount && data.count !== undefined) {
-          cartCount.textContent = data.count;
-        }
-
-        // 🔹 Mostrar notificación de eliminación
-        showNotification('🗑️ Producto eliminado del carrito', 'danger');
+        
+        // 🔹 Eliminar la tarjeta del producto con animación
+        itemCard.style.transition = 'opacity 0.3s ease-out';
+        itemCard.style.opacity = '0';
+        
+        setTimeout(() => {
+          itemCard.remove();
+          
+          // 🔹 Actualizar total automáticamente
+          updateCartTotal();
+          
+          // 🔹 Verificar si el carrito está vacío
+          const remainingItems = document.querySelectorAll('.cart-item-card');
+          if (remainingItems.length === 0) {
+            // Mostrar mensaje de carrito vacío
+            const cartContainer = document.querySelector('.cart-items-list').parentElement;
+            cartContainer.innerHTML = `
+              <div class="alert alert-info text-center p-4 mt-4">
+                <i class="fa-solid fa-cart-arrow-down fa-2x mb-2"></i><br>
+                <span class="fs-5">Tu carrito está vacío</span>
+              </div>
+            `;
+          }
+          
+          // 🔹 Actualizar contador del carrito en el navbar
+          const cartCount = document.getElementById('cart_count');
+          if (cartCount && data.count !== undefined) {
+            cartCount.textContent = data.count;
+            
+            // Si el carrito está vacío, ocultar el badge
+            if (data.count == 0) {
+              cartCount.style.display = 'none';
+            }
+          }
+          
+          // 🔹 Mostrar notificación de eliminación
+          showNotification('🗑️ Producto eliminado del carrito', 'danger');
+          
+        }, 300);
+        
       }
     } catch (error) {
       console.error('Error al eliminar producto:', error);
+      showNotification('❌ Error al eliminar producto', 'danger');
     }
   });
 
-  // 🔹 Recalcular total global
+  // 🔹 Recalcular total general del carrito
   function updateCartTotal() {
     const quantityFields = document.querySelectorAll('.quantity-field');
-    const total = Array.from(quantityFields).reduce((sum, input) => {
-      const itemPrice = parsePrice(input.closest('tr').querySelector('td:nth-child(2)').textContent);
-      return sum + (itemPrice * parseInt(input.value));
-    }, 0);
+    let total = 0;
 
-    const totalText = document.querySelector('.text-end h4');
-    if (totalText) totalText.textContent = '<%= t("cart.total") %>: ' + formatPrice(total);
+    quantityFields.forEach(input => {
+      const cartItem = input.closest('.cart-item-card');
+      const priceElement = cartItem.querySelector('.cart-item-price');
+      const priceText = priceElement.textContent.trim();
+      const price = parsePrice(priceText);
+      const quantity = parseInt(input.value) || 1;
+      
+      total += price * quantity;
+    });
+
+    // Actualizar el total en el resumen del carrito
+    const totalElement = document.querySelector('#cart-summary .fs-4');
+    if (totalElement) {
+      totalElement.textContent = `COP ${formatPrice(total)}`;
+    }
   }
 
   // 🔹 Funciones de formato de precio
   function formatPrice(amount) {
-    const formattedNumber = new Intl.NumberFormat('es-CO', {
-      minimumFractionDigits: 0, // sin decimales
-      maximumFractionDigits: 0,
+    return new Intl.NumberFormat('es-CO', {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2,
       useGrouping: true
-    }).format(amount);
-    return `$${formattedNumber} COP`;
+    }).format(amount).replace(',', '.');
   }
 
   function parsePrice(priceString) {
-    // elimina puntos, símbolo $ y "COP"
-    return parseInt(priceString.replace(/\./g, '').replace('$', '').replace('COP', '').trim());
+    // Extraer solo los números del precio "COP 12.000,00"
+    return parseFloat(priceString.replace(/[^\d.,]/g, '').replace('.', '').replace(',', '.')) || 0;
   }
-
-
 });
 </script>
