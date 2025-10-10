@@ -156,7 +156,7 @@ document.addEventListener('DOMContentLoaded', () => {
           cartOffcanvasBody.innerHTML = data.cart_html;
         }
 
-        showNotification('✅ Producto agregado al carrito');
+        showNotification('Producto agregado al carrito');
       } else {
         showNotification('⚠️ Error al agregar al carrito', 'danger');
       }
@@ -186,7 +186,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
       if (response.ok) {
         card.remove();
-        showNotification('⭐ Eliminado de favoritos');
+        showNotification('Eliminado de favoritos');
       } else {
         showNotification('⚠️ No se pudo eliminar', 'danger');
       }

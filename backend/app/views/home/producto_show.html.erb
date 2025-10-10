@@ -23,6 +23,8 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
 <body>
+  <!-- TOASTS -->
+  <div id="toast-container" class="toast-container position-fixed bottom-0 end-0 p-3" style="z-index: 1055;"></div>
     
   <section class="view-product">
     <section class="container-product">
@@ -142,7 +144,8 @@
             <%= button_to cart_items_path(product_id: @product.id),
               method: :post,
               remote: true,
-              class: "btn-agg" do %>
+              class: "btn-agg add-to-cart-btn",
+              data: { url: cart_items_path(product_id: @product.id) } do %>
               Agregar al carrito
             <% end %>
 
@@ -279,6 +282,32 @@
 </script>
 
 <script>
+  // Función toast reutilizable
+  function showToast(message, type) {
+    const toast = document.createElement("div");
+    let bg = "text-bg-primary";
+    if (type === "success") bg = "text-bg-success";
+    if (type === "warning") bg = "text-bg-warning";
+    if (type === "danger") bg = "text-bg-danger";
+
+    toast.className = `toast align-items-center ${bg} border-0 show mb-2 shadow`;
+    toast.setAttribute("role", "alert");
+    toast.style.minWidth = "250px";
+    toast.innerHTML = `
+      <div class="d-flex">
+        <div class="toast-body text-center w-100">${message}</div>
+        <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
+      </div>`;
+
+    document.querySelector("#toast-container").appendChild(toast);
+
+    setTimeout(() => {
+      toast.classList.remove("show");
+      toast.classList.add("fade");
+      setTimeout(() => toast.remove(), 500);
+    }, 3000);
+  }
+
   document.addEventListener("click", async (e) => {
     // CARRITO
     if (e.target.closest(".add-to-cart-btn")) {
@@ -288,35 +317,39 @@
       const btn = e.target.closest(".add-to-cart-btn");
       const url = btn.dataset.url;
 
-      const response = await fetch(url, {
-        method: "POST",
-        headers: {
-          "X-CSRF-Token": document.querySelector("meta[name='csrf-token']").content,
-          "Accept": "application/json"
+      try {
+        const response = await fetch(url, {
+          method: "POST",
+          headers: {
+            "X-CSRF-Token": document.querySelector("meta[name='csrf-token']").content,
+            "Accept": "application/json"
+          }
+        });
+
+        if (response.ok) {
+          const data = await response.json();
+
+          // 🔹 Actualiza el contenido del carrito (offcanvas)
+          if (data.cart_html) {
+            const cartBody = document.querySelector("#cart-offcanvas-body");
+            if (cartBody) cartBody.innerHTML = data.cart_html;
+          }
+
+          // 🔹 Actualiza el contador
+          const cartCount = document.querySelector("#cart-count");
+          if (cartCount && data.count !== undefined) {
+            cartCount.textContent = data.count;
+          }
+
+          // 🔹 Muestra notificación
+          showToast("Producto agregado al carrito", "success");
+
+        } else {
+          showToast("Error al agregar al carrito", "danger");
         }
-      });
-
-      if (response.ok) {
-        const data = await response.json();
-
-        // 🔹 Actualiza el contenido del carrito (offcanvas)
-        if (data.cart_html) {
-          const cartBody = document.querySelector("#cart-offcanvas-body");
-          if (cartBody) cartBody.innerHTML = data.cart_html;
-        }
-
-        // 🔹 Actualiza el contador
-        const cartCount = document.querySelector("#cart-count");
-        if (cartCount && data.count !== undefined) {
-          cartCount.textContent = data.count;
-        }
-
-        // 🔹 Muestra notificación
-        showToast("Producto agregado al carrito ✅", "success");
-
-
-      } else {
-        showToast("Error al agregar al carrito ❌", "danger");
+      } catch (error) {
+        console.error("Error:", error);
+        showToast("Error de conexión", "danger");
       }
       return;
     }
@@ -361,33 +394,7 @@
     }
   });
 
-  // Función toast reutilizable
-  function showToast(message, type) {
-    const toast = document.createElement("div");
-    let bg = "text-bg-primary";
-    if (type === "success") bg = "text-bg-success";
-    if (type === "warning") bg = "text-bg-warning";
-    if (type === "danger") bg = "text-bg-danger";
-
-    toast.className = `toast align-items-center ${bg} border-0 show mb-2 shadow`;
-    toast.setAttribute("role", "alert");
-    toast.style.minWidth = "250px";
-    toast.innerHTML = `
-      <div class="d-flex">
-        <div class="toast-body text-center w-100">${message}</div>
-        <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
-      </div>`;
-
-    document.querySelector("#toast-container").appendChild(toast);
-
-    setTimeout(() => {
-      toast.classList.remove("show");
-      toast.classList.add("fade");
-      setTimeout(() => toast.remove(), 500);
-    }, 3000);
-  }
-
-  // Click en la tarjeta → ir a producto_show.html.erb (excepto botones internos)
+   // Click en la tarjeta → ir a producto_show.html.erb (excepto botones internos)
   document.addEventListener("click", (e) => {
     const card = e.target.closest(".product-card");
     if (!card) return;
@@ -396,6 +403,7 @@
     const productoId = card.dataset.productoId;
     window.location = `/home/producto_show?id=${productoId}`;
   });
+
 </script>
 
 

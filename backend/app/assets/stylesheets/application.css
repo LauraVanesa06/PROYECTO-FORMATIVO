@@ -2,11 +2,22 @@
     display: flex;
     justify-content: center;
     align-items: center;
+    width: 120px;
+    border: solid 1px #e6e6e6;
+    border-radius: 8px;
+}
+
+#div-foto img{
+    max-width: 90%;
+    height: 86px;
+    object-fit: contain;
+    border: none !important;
 }
 
 .me-1{
   color: #6c757d;
   font-weight: 600;
+  font-size: 15px;
 }
 
 #cart-offcanvas-body{
@@ -39,10 +50,29 @@
 }
 
 .cart-items-list {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  /* gap: 18px; */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    height: 550px;
+    overflow-y: auto;
+}
+
+/* Chrome, Safari, Edge */
+.all-provv .cart-items-list::-webkit-scrollbar {
+  width: 8px;              /* ancho del scroll */
+}
+
+.all-provv .cart-items-list::-webkit-scrollbar-track {
+  background: transparent; /* fondo invisible */
+}
+
+.all-provv .cart-items-list::-webkit-scrollbar-thumb {
+  background: #181818;        /* color del sroll */
+  border-radius: 10px;     /* esquinas redondeadas */
+}
+
+.all-provv .cart-items-list::-webkit-scrollbar-thumb:hover {
+  background: #1f1f1f;        /* más oscuro al pasar el mouse */
 }
 
 .cart-item-card {
@@ -57,16 +87,12 @@
   box-shadow: 0 6px 24px rgba(30,60,114,0.13);
   transform: translateY(-2px) scale(1.01);
 }
-.cart-item-thumb img {
-  border: 1.5px solid #e0e0e0;
-  background: #f8f8f8;
-  box-shadow: 0 1px 4px rgba(30,60,114,0.06);
-}
+
 .cart-item-info {
   min-width: 0;
 }
 .cart-item-info .fs-5 {
-  font-size: 1.2rem !important;
+  font-size: 15px !important;
   color: rgb(46, 103, 163) !important;
 }
 .cart-item-desc {
@@ -158,8 +184,8 @@
 .btn-close{
   margin: 0 !important;
   position: absolute;
-  right: 5px;
-  top: 5px;
+  right: 10px;
+  top: 20px;
 }
 
 /* ===== FILTRO DE PRODUCTOS ===== */
@@ -250,11 +276,11 @@ footer {
 }
 
 #toast-container {
-  position: fixed;
-  top: 20px;
-  left: 50%;
-  transform: translateX(-50%);
-  z-index: 2000;
+  position: fixed !important;
+    top: 20px !important;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 2000 !important;
 }
 
 
