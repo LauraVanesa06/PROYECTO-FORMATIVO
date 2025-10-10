@@ -59,10 +59,14 @@ class PedidosController < ApplicationController
     @pedido.supplier = supplier if supplier
 
     if @pedido.save
+      # Limpiar relaciones previas por si acaso (no debería haber, pero por seguridad)
+      @pedido.pedido_products.destroy_all
+
       # Crear las relaciones con los productos seleccionados y actualizar stock
       if params[:pedido][:productos]
         params[:pedido][:productos].each do |product_id|
           cantidad = params[:pedido][:cantidades][product_id]
+          next if cantidad.blank? || cantidad.to_i <= 0
           PedidoProduct.create(pedido: @pedido, product_id: product_id, cantidad: cantidad)
           # Actualizar el stock del producto
           producto = Product.find_by(id: product_id)
@@ -71,7 +75,16 @@ class PedidosController < ApplicationController
           end
         end
       end
-  redirect_to pedidos_path, notice: "Pedido creado correctamente"
+
+      # Notificación al proveedor SOLO por correo
+      proveedor = @pedido.supplier
+      if proveedor&.correo.present?
+        PedidoMailer.notificar_proveedor(@pedido).deliver_now
+      else
+        flash[:alert] = "El proveedor no tiene correo registrado. No se pudo enviar la notificación."
+      end
+
+      redirect_to pedidos_path, notice: "Pedido creado correctamente"
     else
       @productos = Product.all
       render :new
@@ -81,8 +94,18 @@ class PedidosController < ApplicationController
   # PATCH/PUT /pedidos/1 or /pedidos/1.json
   def update
     respond_to do |format|
+      prev_estado = @pedido.estado
       if @pedido.update(pedido_params)
-        format.html { redirect_to @pedido, notice: "Pedido was successfully updated." }
+        # Si el estado cambió a 'entregado' y antes no lo era, incrementar stock
+        if @pedido.estado == 'entregado' && prev_estado != 'entregado'
+          @pedido.pedido_products.includes(:product).each do |pp|
+            producto = pp.product
+            if producto.present?
+              producto.increment!(:stock, pp.cantidad)
+            end
+          end
+        end
+        format.html { redirect_to pedidos_path, notice: "Estado actualizado correctamente." }
         format.json { render :show, status: :ok, location: @pedido }
       else
         format.html { render :edit, status: :unprocessable_entity }
@@ -117,6 +140,6 @@ class PedidosController < ApplicationController
 
     # Only allow a list of trusted parameters through.
     def pedido_params
-      params.expect(pedido: [ :fecha, :productos, :descripcion_entrega, :supplier_id ])
+      params.expect(pedido: [ :fecha, :estado, :supplier_id ])
     end
 end

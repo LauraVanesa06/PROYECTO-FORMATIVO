@@ -1478,10 +1478,10 @@ hr{
 /* Estilos generales de flash */
 .flash {
   position: fixed;              /* flotante */
-  top: 400px;                    /* separado un poco del borde superior */
+  top: 315px;                    /* separado un poco del borde superior */
   left: 50%;                    /* centrado horizontal */
   transform: translateX(-50%);  /* ajuste perfecto al centro */
-  min-width: 300px;             /* ancho mínimo */
+  min-width: 350px;             /* ancho mínimo */
   max-width: 90%;               /* no más ancho que la pantalla */
   width: 600px;
   padding: 12px 18px;
