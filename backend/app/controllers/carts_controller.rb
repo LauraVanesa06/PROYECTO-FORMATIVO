@@ -4,8 +4,8 @@ class CartsController < ApplicationController
 
   def show
     @cart = current_cart
-
-    # calcular total robusto (decimal)
+    
+    # calcula total decimal robusto (ajusta si tu modelo usa otro atributo)
     total_amount = if @cart.respond_to?(:total) && @cart.total.present?
                      @cart.total.to_f
                    else
@@ -13,11 +13,8 @@ class CartsController < ApplicationController
                    end
 
     amount_cents = (total_amount * 100).to_i
-
-    # referencia única — usa la misma cuando crees la transacción en PaymentsController#create
     @payment_reference = "cart_#{@cart&.id || 'anon'}_#{Time.now.to_i}"
 
-    # firma usando el integrity_secret
     begin
       @signature = WompiService.new.signature_for(
         reference: @payment_reference,
