@@ -16,6 +16,7 @@ class PaymentsController < ApplicationController
   end
 
   def checkout
+
   end
 
 
@@ -37,6 +38,8 @@ def create
   unless cart
     render json: { error: "Carrito no encontrado" }, status: :unprocessable_entity
     return
+  
+  
   end
 
   # monto en decimal para el modelo, y en centavos para Wompi
@@ -105,6 +108,7 @@ end
  def show
     @payment = Payment.find(params[:id])
     render json: { id: @payment.id, status: @payment.status, amount: @payment.amount, wompi_id: @payment.wompi_id }
+    @signature = wompi_checkout_url(@payment)
   end
 
   

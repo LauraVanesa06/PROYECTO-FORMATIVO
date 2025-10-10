@@ -24,7 +24,9 @@ class WompiService
 
   # 2) Generar firma: SHA256( reference + amount_in_cents + currency + integrity_secret )
   def signature_for(reference:, amount_in_cents:, currency: "COP")
-    Digest::SHA256.hexdigest("#{reference}#{amount_in_cents}#{currency}#{@integrity_secret}")
+    raise "integrity_secret missing" if @integrity_secret.blank?
+    payload = "#{reference}#{amount_in_cents}#{currency}#{@integrity_secret}"
+    OpenSSL::Digest::SHA256.hexdigest(payload)
   end
 
   # 3) Crear transacción con tarjeta tokenizada

@@ -57,8 +57,24 @@
       <%= link_to "Ir a Checkout", cart_path, class: "btn btn-success btn-lg" %>
     <% end %>
     <% if current_page?(cart_path) %>
-      <%= link_to "Ir al formulario de pago", new_payment_path, class: "btn btn-primary" %>
+      <% amount_cents = ((cart_items.sum { |i| (i.product&.precio || 0) * (i.quantity || 0) }) * 100).to_i %>
+      <% pub_key = Rails.application.credentials.dig(:wompi, :public_key) || ENV['WOMPI_PUBLIC_KEY'] %>
 
+      <% if amount_cents > 0 && pub_key.present? && @payment_reference.present? && @signature.present? %>
+        <form>
+          <script
+            src="https://checkout.wompi.co/widget.js"
+            data-render="button"
+            data-public-key="<%= pub_key %>"
+            data-currency="COP"
+            data-amount-in-cents="<%= amount_cents %>"
+            data-reference="<%= @payment_reference %>"
+            data-signature="<%= @signature %>"
+          ></script>
+        </form>
+      <% else %>
+        <p class="text-muted">No es posible mostrar el botón de pago: falta monto, firma o configuración de Wompi.</p>
+      <% end %>
     <% end %>
   </div>
 <% else %>
