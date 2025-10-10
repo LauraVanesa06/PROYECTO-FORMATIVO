@@ -151,7 +151,8 @@
   transition: background 0.2s, box-shadow 0.2s;
 }
 .cart-summary .btn-primary:hover {
-  background: linear-gradient(90deg, #1e3c72 60%, #2e67a3 100%);
+  background-color: #0e791c;
+    border: solid 2px #23941f;
   box-shadow: 0 4px 16px rgba(30,60,114,0.15);
 }
 .cart-summary .btn-success {
@@ -230,7 +231,7 @@
   transition: background 0.2s, box-shadow 0.2s;
 }
 .filtro-productos .btn-primary:hover {
-  background: linear-gradient(90deg, #1e3c72 60%, #2e67a3 100%);
+  background: #1e3c72;
   box-shadow: 0 4px 16px rgba(30,60,114,0.15);
 }
 .filtro-productos .row.g-3 {
