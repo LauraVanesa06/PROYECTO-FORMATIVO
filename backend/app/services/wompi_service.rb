@@ -29,6 +29,7 @@ class WompiService
     OpenSSL::Digest::SHA256.hexdigest(payload)
   end
 
+
   # 3) Crear transacción con tarjeta tokenizada
   def create_card_transaction(reference:, amount_in_cents:, customer_email:, token:, installments: 1)
     tokens = acceptance_tokens
@@ -85,4 +86,5 @@ class WompiService
     res = Net::HTTP.start(uri.hostname, uri.port, use_ssl: true) { |http| http.request(req) }
     JSON.parse(res.body)
   end
+
 end

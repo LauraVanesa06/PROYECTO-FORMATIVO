@@ -1,7 +1,7 @@
 class Cart < ApplicationRecord
   belongs_to :user
   has_many :cart_items, dependent: :destroy
-   has_many :payments
+  has_many :payments
 
   def add_product(product_id)
     current_item = cart_items.find_by(product_id: product_id)
@@ -17,4 +17,5 @@ class Cart < ApplicationRecord
   def total
     cart_items.sum { |i| i.product.precio * i.quantity }
   end
+  
 end

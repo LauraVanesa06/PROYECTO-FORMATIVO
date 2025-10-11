@@ -3,19 +3,21 @@ class CartsController < ApplicationController
   before_action :authenticate_user!
 
   def show
+
     @cart = current_cart
     
-    # calcula total decimal robusto (ajusta si tu modelo usa otro atributo)
+    # calcula total decimal
     total_amount = if @cart.respond_to?(:total) && @cart.total.present?
-                     @cart.total.to_f
+                    @cart.total.to_f
                    else
-                     (@cart&.cart_items || []).sum { |i| (i.product&.precio || 0).to_f * (i.quantity || 0).to_i }
+                    (@cart&.cart_items || []).sum { |i| (i.product&.precio || 0).to_f * (i.quantity || 0).to_i }
                    end
 
     amount_cents = (total_amount * 100).to_i
     @payment_reference = "cart_#{@cart&.id || 'anon'}_#{Time.now.to_i}"
 
     begin
+
       @signature = WompiService.new.signature_for(
         reference: @payment_reference,
         amount_in_cents: amount_cents,
@@ -30,6 +32,7 @@ class CartsController < ApplicationController
   end
 
   def add_item
+
     @cart = current_user.cart || current_user.create_cart
     product = Product.find(params[:product_id])
     item = @cart.cart_items.find_by(product_id: product.id)
@@ -45,6 +48,7 @@ class CartsController < ApplicationController
   end
 
   def update_item
+    
     item = @cart.cart_items.find(params[:id])
     nueva_cantidad = params[:cantidad].to_i
 
@@ -53,14 +57,16 @@ class CartsController < ApplicationController
     else
       item.destroy
     end
-
+    #tengo que revisar aquí para redireccionar correctamente, sospecho que es por aquí
     redirect_to cart_path
   end
 
   def remove_item
+
     item = @cart.cart_items.find(params[:id])
     item.destroy
     redirect_to cart_path, notice: "Producto eliminado del carrito"
+
   end
 
   private
@@ -68,4 +74,5 @@ class CartsController < ApplicationController
   def set_cart
     @cart = Cart.find_by(id: session[:cart_id]) || Cart.create
   end
+
 end

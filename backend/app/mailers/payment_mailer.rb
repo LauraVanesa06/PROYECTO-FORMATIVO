@@ -4,9 +4,8 @@ class PaymentMailer < ApplicationMailer
     def invoice
         @payment = params[:payment]
         @user = @payment.cart.user
-            mail(to: @user.email, subject: 'Tu factura de compra - Ferremateriales El Maestro')
+        mail(to: @user.email, subject: 'Tu factura de compra - Ferremateriales El Maestro')
        
-
-        end
+    end
 
 end

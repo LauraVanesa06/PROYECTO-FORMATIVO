@@ -52,23 +52,24 @@
     <h4>
       <%= t("cart.total") %>: <%= number_to_currency(cart_items.sum { |i| (i.product&.precio || 0) * (i.quantity || 0) }, unit: ' $', format: '%n%u', separator: ',', delimiter: '.') %>
     </h4>
+
     <br>
+
     <% unless current_page?(cart_path) %>
       <%= link_to "Ir a Checkout", cart_path, class: "btn btn-success btn-lg" %>
     <% end %>
     <% if current_page?(cart_path) %>
-    <form>
-  <script
-    src="https://checkout.wompi.co/widget.js"
-    data-render="button"
-    data-public-key="pub_test_f0bOPKD5aHr1J6hgSEc9KhPLAFFrOk66"
-    data-currency="COP"
-    data-amount-in-cents="<%= ((@cart.total || 0) * 100).to_i %>"
-    data-reference="<%= @payment_reference %>"
-    data-signature:integrity="<%= @signature %>"
-  ></script>
-</form>
-
+      <form>
+        <script
+          src="https://checkout.wompi.co/widget.js"
+          data-render="button"
+          data-public-key="pub_test_f0bOPKD5aHr1J6hgSEc9KhPLAFFrOk66"
+          data-currency="COP"
+          data-amount-in-cents="<%= ((@cart.total || 0) * 100).to_i %>"
+          data-reference="<%= @payment_reference %>"
+          data-signature:integrity="<%= @signature %>"
+        ></script>
+      </form>
 
     <% end %>
   </div>
@@ -77,119 +78,118 @@
 <% end %>
 
 <script>
-document.addEventListener('DOMContentLoaded', function() {
-  const csrfToken = document.querySelector('meta[name="csrf-token"]').content;
+  document.addEventListener('DOMContentLoaded', function() {
+    const csrfToken = document.querySelector('meta[name="csrf-token"]').content;
 
-  // 🔹 Mostrar notificación (agregar / eliminar)
-  function showNotification(message, type = 'success') {
-    const existing = document.querySelector('.custom-alert');
-    if (existing) existing.remove();
+    // 🔹 Mostrar notificación (agregar / eliminar)
+    function showNotification(message, type = 'success') {
+      const existing = document.querySelector('.custom-alert');
+      if (existing) existing.remove();
+        const alert = document.createElement('div');
+        alert.className = `custom-alert alert-${type}`;
+        alert.textContent = message;
+        document.body.appendChild(alert);
 
-    const alert = document.createElement('div');
-    alert.className = `custom-alert alert-${type}`;
-    alert.textContent = message;
-    document.body.appendChild(alert);
-
-    setTimeout(() => alert.classList.add('show'), 50);
-    setTimeout(() => {
-      alert.classList.remove('show');
-      setTimeout(() => alert.remove(), 300);
-    }, 2500);
-  }
-
-  // 🔹 Cambiar cantidad (suma/resta)
-  document.addEventListener('change', async function(e) {
-    const field = e.target.closest('.quantity-field');
-    if (!field) return;
-
-    e.preventDefault();
-    const form = field.closest('form');
-    const quantity = field.value;
-
-    try {
-      const response = await fetch(form.action, {
-        method: 'PATCH',
-        headers: {
-          'Content-Type': 'application/json',
-          'X-CSRF-Token': csrfToken
-        },
-        body: JSON.stringify({ cart_item: { quantity: quantity } })
-      });
-
-      if (response.ok) {
-        const price = parsePrice(field.closest('tr').querySelector('td:nth-child(2)').textContent);
-        const subtotalCell = field.closest('tr').querySelector('td:nth-child(4)');
-        const subtotal = price * parseInt(quantity);
-        subtotalCell.textContent = formatPrice(subtotal);
-
-        updateCartTotal();
-      }
-    } catch (error) {
-      console.error('Error al actualizar cantidad:', error);
+        setTimeout(() => alert.classList.add('show'), 50);
+        setTimeout(() => {
+          alert.classList.remove('show');
+          setTimeout(() => alert.remove(), 300);
+        }, 2500);
     }
-  });
 
-  // 🔹 Eliminar producto con notificación
-  document.addEventListener('click', async function(e) {
-    const btn = e.target.closest('.delete-item');
-    if (!btn) return;
+    // 🔹 Cambiar cantidad (suma/resta)
+    document.addEventListener('change', async function(e) {
+      const field = e.target.closest('.quantity-field');
+      if (!field) return;
 
-    e.preventDefault();
-    const form = btn.closest('form');
-    const itemRow = btn.closest('tr');
+        e.preventDefault();
+        const form = field.closest('form');
+        const quantity = field.value;
 
-    try {
-      const response = await fetch(form.action, {
-        method: 'DELETE',
-        headers: {
-          'X-CSRF-Token': csrfToken,
-          'Accept': 'application/json'
+        try {
+          const response = await fetch(form.action, {
+            method: 'PATCH',
+            headers: {
+              'Content-Type': 'application/json',
+              'X-CSRF-Token': csrfToken
+            },
+            body: JSON.stringify({ cart_item: { quantity: quantity } })
+          });
+
+          if (response.ok) {
+            const price = parsePrice(field.closest('tr').querySelector('td:nth-child(2)').textContent);
+            const subtotalCell = field.closest('tr').querySelector('td:nth-child(4)');
+            const subtotal = price * parseInt(quantity);
+            subtotalCell.textContent = formatPrice(subtotal);
+
+            updateCartTotal();
+          }
+        } catch (error) {
+          console.error('Error al actualizar cantidad:', error);
         }
-      });
+    });
 
-      if (response.ok) {
-        const data = await response.json();
-        itemRow.remove();
-        updateCartTotal();
+    // 🔹 Eliminar producto con notificación
+    document.addEventListener('click', async function(e) {
+      const btn = e.target.closest('.delete-item');
+      if (!btn) return;
 
-        // 🔹 Actualizar contador del carrito
-        const cartCount = document.getElementById('cart_count');
-        if (cartCount && data.count !== undefined) {
-          cartCount.textContent = data.count;
+      e.preventDefault();
+      const form = btn.closest('form');
+      const itemRow = btn.closest('tr');
+
+      try {
+        const response = await fetch(form.action, {
+          method: 'DELETE',
+          headers: {
+            'X-CSRF-Token': csrfToken,
+            'Accept': 'application/json'
+          }
+        });
+
+        if (response.ok) {
+          const data = await response.json();
+          itemRow.remove();
+          updateCartTotal();
+
+          // 🔹 Actualizar contador del carrito
+          const cartCount = document.getElementById('cart_count');
+          if (cartCount && data.count !== undefined) {
+            cartCount.textContent = data.count;
+          }
+
+          // 🔹 Mostrar notificación de eliminación
+          showNotification('🗑️ Producto eliminado del carrito', 'danger');
         }
-
-        // 🔹 Mostrar notificación de eliminación
-        showNotification('🗑️ Producto eliminado del carrito', 'danger');
-      }
-    } catch (error) {
+      } catch (error) {
       console.error('Error al eliminar producto:', error);
+      }
+    });
+
+    // 🔹 Recalcular total global
+    function updateCartTotal() {
+      const quantityFields = document.querySelectorAll('.quantity-field');
+      const total = Array.from(quantityFields).reduce((sum, input) => {
+        const itemPrice = parsePrice(input.closest('tr').querySelector('td:nth-child(2)').textContent);
+        return sum + (itemPrice * parseInt(input.value));
+      }, 0);
+
+      const totalText = document.querySelector('.text-end h4');
+      if (totalText) totalText.textContent = '<%= t("cart.total") %>: ' + formatPrice(total);
+    }
+
+    // 🔹 Funciones de formato de precio
+    function formatPrice(amount) {
+      const formattedNumber = new Intl.NumberFormat('es-ES', {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2,
+        useGrouping: true
+      }).format(amount);
+      return `${formattedNumber} $`;
+    }
+
+    function parsePrice(priceString) {
+      return parseFloat(priceString.replace(/\./g, '').replace(',', '.').replace('$', '').trim());
     }
   });
-
-  // 🔹 Recalcular total global
-  function updateCartTotal() {
-    const quantityFields = document.querySelectorAll('.quantity-field');
-    const total = Array.from(quantityFields).reduce((sum, input) => {
-      const itemPrice = parsePrice(input.closest('tr').querySelector('td:nth-child(2)').textContent);
-      return sum + (itemPrice * parseInt(input.value));
-    }, 0);
-
-    const totalText = document.querySelector('.text-end h4');
-    if (totalText) totalText.textContent = '<%= t("cart.total") %>: ' + formatPrice(total);
-  }
-
-  // 🔹 Funciones de formato de precio
-  function formatPrice(amount) {
-    const formattedNumber = new Intl.NumberFormat('es-ES', {
-      minimumFractionDigits: 2,
-      maximumFractionDigits: 2,
-      useGrouping: true
-    }).format(amount);
-    return `${formattedNumber} $`;
-  }
-
-  function parsePrice(priceString) {
-    return parseFloat(priceString.replace(/\./g, '').replace(',', '.').replace('$', '').trim());
-  }
-});
 </script>
