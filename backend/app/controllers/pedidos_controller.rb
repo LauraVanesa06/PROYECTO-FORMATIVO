@@ -140,6 +140,6 @@ class PedidosController < ApplicationController
 
     # Only allow a list of trusted parameters through.
     def pedido_params
-      params.expect(pedido: [ :fecha, :productos, :estado, :supplier_id ])
+      params.expect(pedido: [ :fecha, :estado, :supplier_id ])
     end
 end

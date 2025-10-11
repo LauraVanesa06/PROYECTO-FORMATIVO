@@ -47,10 +47,10 @@
               <%= image_tag "martillo-dewalt.png" %>
             <% end %>
           </div>
-          <strong>Nombre:</strong><%= prod.nombre %>
-          <strong>Cantidad:</strong><%= pps.sum(&:cantidad) %>
-          <strong>Modelo:</strong><%= prod.modelo if prod.respond_to?(:modelo) %>
-          <strong>Marca:</strong><%= prod.marca if prod.respond_to?(:marca) %>
+          <strong>Nombre:</strong> <%= prod.nombre %>
+          <strong>Cantidad:</strong> <%= pps.sum(&:cantidad) %>
+          <strong>Modelo:</strong> <%= prod.modelo if prod.respond_to?(:modelo) %>
+          <strong>Marca:</strong> <%= prod.marca if prod.respond_to?(:marca) %>
         </div>
       <% end %>
     </div>

@@ -366,8 +366,10 @@ productos_para_asociar = Product.limit(3).to_a
 pedidos_records.each_with_index do |pedido, idx|
   productos = productos_para_asociar
   # Para variedad, alternar productos si hay más de tres
-  if Product.count > 3
+  if Product.count > 3 && (Product.count - 2) > 0
     productos = Product.offset(idx % (Product.count - 2)).limit(3)
+  else
+    productos = Product.limit(3)
   end
   productos.each do |producto|
     PedidoProduct.create!(pedido: pedido, product_id: producto.id, cantidad: rand(1..5))
