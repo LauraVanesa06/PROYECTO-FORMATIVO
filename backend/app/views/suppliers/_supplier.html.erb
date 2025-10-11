@@ -1,29 +1,13 @@
-<!--
-<ul class="ul-marca">
-  <li>
-    <div id="<%= dom_id supplier %>">
-    <%= supplier.nombre %>
-  </li>
-</ul>
+<li id="<%= dom_id supplier %>" class="supplier-card">
+  <%= link_to pedidos_path(supplier_id: supplier.id), data: { turbo_frame: "pedidos_frame" } do %>
+    <div class="card-top">
+      <span class="supplier-name"><%= supplier.nombre %></span>
+      <span class="supplier-code"><%= supplier.codigo_proveedor %></span>
+    </div>
 
-<%= dom_id supplier %>
-
-  <li class="li-marca"><%= link_to supplier.nombre, inventario_path(proveedor_id: supplier.id), class: "aa-marca" %></li>
-
-
-
-    <li class="li-marca">
-      <%= check_box_tag "supplier_id[]", supplier.id, params[:supplier_id]&.include?(supplier.id.to_s), class:"aa-check" %>
-      <%= label_tag "supplier_id_#{supplier.id}", supplier.nombre, class: "aa-marca" %>
-    </li>
-
-  <p>
-    <strong>Contacto:</strong>
-    <%= supplier.contacto %>
-  </p>
-
-</div>
--->
-<ul class="ul-nombre" id="<%= dom_id supplier %>">
-  <li class="li-nombre"><%= link_to supplier.nombre, suppliers_path(supplier_id: supplier.id) %></li>
-</ul>
+    <div class="card-body">
+      <div class="supplier-contact"><i class="fa-solid fa-phone"></i> <%= supplier.contacto %></div>
+      <div class="supplier-email"><i class="fa-solid fa-envelope"></i> <%= supplier.correo %></div>
+    </div>
+  <% end %>
+</li>

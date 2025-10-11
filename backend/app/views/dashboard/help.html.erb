@@ -38,12 +38,13 @@
     <nav class="nav-bg">
       <div class="container-nav">
         <ul class="menu" id="menu">
-          <li><a href="../dashboard"class="link-menu">Inicio</a></li>
-          <li><a href="../dashboard/productos"class="link-menu">Productos</a></li>
-          <li><a href="../dashboard/ventas"class="link-menu">Ventas</a></li>
-          <li><a href="../dashboard/suppliers"class="link-menu">Proveedores</a></li>
-          <li><a href="../dashboard/clientes"class="link-menu">Clientes</a></li>
-          <li><a href="../dashboard/help"class="link-menu">Ayuda</a></li>
+          <li><a href="/dashboard"class="link-menu">Inicio</a></li>
+          <li><a href="/dashboard/productos"class="link-menu">Productos</a></li>
+          <li><a href="/dashboard/ventas"class="link-menu">Ventas</a></li>
+          <li><a href="/dashboard/pedidos"class="link-menu">Pedidos</a></li>
+          <%# <li><a href="dashboard/suppliers"class="link-menu">Proveedores</a></li> %>
+          <li><a href="/dashboard/clientes"class="link-menu">Clientes</a></li>
+          <li><a href="/dashboard/help"class="link-menu">Ayuda</a></li>
         </ul>
         <div>
           <% if user_signed_in? %>

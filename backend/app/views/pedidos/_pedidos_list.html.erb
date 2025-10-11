@@ -1,0 +1,20 @@
+<% if flash[:alert] %>
+  <div id="mensaje-alerta" class="alerta-filtro">
+    <%= flash[:alert] %>
+  </div>
+
+  <script>
+    setTimeout(() => {
+      const alerta = document.getElementById("mensaje-alerta");
+      if (alerta) alerta.style.display = "none";
+    }, 4000);
+  </script>
+<% end %>
+
+<% if pedidos.present? %>
+  <% pedidos.each do |pedido| %>
+    <%= render pedido %>
+  <% end %>
+<% else %>
+  <p>No hay pedidos para mostrar.</p>
+<% end %>

@@ -1,37 +1,216 @@
-<%= form_with(model: pedido) do |form| %>
-  <% if pedido.errors.any? %>
-    <div style="color: red">
-      <h2><%= pluralize(pedido.errors.count, "error") %> prohibited this pedido from being saved:</h2>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <%= stylesheet_link_tag "form-pedido", media: "all" %>
+</head>
+<body>
+  <%= form_with(model: pedido, url: '/pedidos', local: true) do |form| %>
+    <div class="form-container">
+        <section class="form-form">
+          <section class="form-pedi">
 
-      <ul>
-        <% pedido.errors.each do |error| %>
-          <li><%= error.full_message %></li>
-        <% end %>
-      </ul>
-    </div>
-  <% end %>
+            <% if pedido.errors.any? %>
+              <div style="color: red">
+                <h2><%= pluralize(pedido.errors.count, "error") %> prohibited this pedido from being saved:</h2>
 
-  <div>
-    <%= form.label :fecha, style: "display: block" %>
-    <%= form.datetime_field :fecha %>
-  </div>
+                <ul>
+                  <% pedido.errors.each do |error| %>
+                    <li><%= error.full_message %></li>
+                  <% end %>
+                </ul>
+              </div>
+            <% end %>
 
-  <div>
-    <%= form.label :productos, style: "display: block" %>
-    <%= form.text_field :productos %>
-  </div>
+            <p class="titulo">Hacer Pedido</p>
 
-  <div>
-    <%= form.label :descripcion_entrega, style: "display: block" %>
-    <%= form.text_field :descripcion_entrega %>
-  </div>
+              <div class="input-box" id="input-box2">
+                <%= form.label :fecha, style: "display: block" %>
+                <%= form.datetime_field :fecha,
+                  value: Time.use_zone('America/Bogota') { Time.zone.now.strftime("%Y-%m-%dT%H:%M") },
+                  readonly: true,
+                  class: "input-fecha" %>
+              </div>
 
-  <div>
-    <%= form.label :supplier_id, style: "display: block" %>
-    <%= form.text_field :supplier_id %>
-  </div>
+            <div class="input-box" style="position: relative;">
+              <%= form.label :supplier_id, "Proveedor", style: "display: block" %>
+              <%= text_field_tag :codigo_proveedor, nil, placeholder: "Escribe el código del proveedor", class: "select-box", list: "proveedores-list", autocomplete: "off", id: "codigo-proveedor-input" %>
+              <datalist id="proveedores-list">
+                <% Supplier.all.each do |supplier| %>
+                  <option value="<%= supplier.codigo_proveedor %>"><%= supplier.nombre %> (<%= supplier.codigo_proveedor %>)</option>
+                <% end %>
+              </datalist>
+              <div id="proveedor-tooltip" style="display:none; position:absolute; left:0; top:40px; background:#222; color:#fff; padding:10px; border-radius:8px; font-size:14px; z-index:10; min-width:250px;">
+                <span id="proveedor-codigo"></span><br>
+                <span id="proveedor-nombre"></span>
+              </div>
+            </div>
 
-  <div>
-    <%= form.submit %>
-  </div>
-<% end %>
+            <div class="input-box" id="input-box1">
+              <%= form.label :productos, style: "display: block" %>
+              <div class="div-productos">
+            </div>
+
+            </section>
+
+          </section>
+
+          <section class="bajo-stock">
+            <div class="titu-pro">
+              Productos con bajo Stock
+              <div class="filtro-codigo-producto">
+                <label for="filtro-codigo-producto">Codigo:</label>
+                <input type="text" id="filtro-codigo-producto" placeholder=" " style="text-transform:uppercase;" oninput="this.value = this.value.toUpperCase();">
+              </div>
+            </div>
+            <div class="div-1">
+              <% @productos.sort_by(&:stock).each do |producto| %>
+                <div class="producto-seleccion" data-codigo="<%= producto.codigo_producto %>" data-precio="<%= producto.precio %>">
+                  <span class="codigo-producto"> <%= producto.codigo_producto %> </span>
+                  <div class="img">
+                    <%= image_tag url_for(producto.images.first), alt: producto.nombre, class: "producto-imagen" %>
+                  </div>
+                  <%= check_box_tag "pedido[productos][]", producto.id, false, class: "producto-checkbox", data: { producto_id: producto.id } %>
+                  <div class="nombre-pro"><%= producto.nombre %></div>
+                  <div class="stock-pro">Stock: <%= producto.stock %></div>
+                  <input type="number" name="pedido[cantidades][<%= producto.id %>]" min="1" value="1" class="input-cantidad" style="display:none; margin-top:5px; width:70px;"
+                    oninput="this.value = this.value.replace(/[^0-9]/g, '');" />
+                  <% if producto.stock < 5 %>
+                    <span class="producto-bajo-stock" style="color: red; font-weight: bold;">¡Bajo stock!</span>
+                  <% end %>
+                </div>
+              <% end %>
+            </div>
+          <div class="div-2">
+            <div class="total-pagar">
+              <p>Total a pagar: $ <span id="total-a-pagar">0</span></p>
+            </div>
+            <div>
+              <%= form.submit "Pedir", class: 'guardar' %>
+            </div>
+          </div>
+        </section>
+
+      </div>
+
+    <% end %>
+    <script>
+      document.addEventListener("DOMContentLoaded", function() {
+        const productosCheckboxes = document.querySelectorAll('.producto-checkbox');
+        const divProductos = document.querySelector('.div-productos');
+
+        function formatoCOP(valor) {
+          return valor.toLocaleString('es-CO', { style: 'currency', currency: 'COP', minimumFractionDigits: 0 });
+        }
+
+        function actualizarProductosSeleccionados() {
+          divProductos.innerHTML = '';
+          const lista = document.createElement('ul');
+          lista.className = 'lista-productos-seleccionados';
+          let total = 0;
+          productosCheckboxes.forEach(checkbox => {
+            const productoDiv = checkbox.closest('.producto-seleccion');
+            const inputCantidad = productoDiv.querySelector('.input-cantidad');
+            if (checkbox.checked) {
+              inputCantidad.style.display = 'inline-block';
+              const nombre = productoDiv.querySelector('.producto-imagen').alt;
+              const stockElem = productoDiv.querySelector('.stock-pro');
+              let stockText = stockElem ? stockElem.textContent.trim() : '';
+              const cantidad = parseInt(inputCantidad.value, 10);
+              const precio = parseFloat(productoDiv.getAttribute('data-precio')) || 0;
+              total += precio * cantidad;
+              const item = document.createElement('li');
+              item.className = 'producto-info-seleccionado';
+              item.innerHTML = `<strong>${nombre}</strong>
+                <div class="detalles-producto">
+                  <span>Stock actual: <br> ${stockText.replace('Stock:', '').trim()}</span>
+                  <span>Cantidad: <br> ${cantidad}</span>
+                  <span>Precio: <br> ${formatoCOP(precio)}</span>
+                  <span>Subtotal: <br> ${formatoCOP(precio * cantidad)}</span>
+                </div>
+                <button type="button" class="btn-quitar-producto">&times;</button>`;
+              // Evento para quitar producto
+              item.querySelector('.btn-quitar-producto').addEventListener('click', function() {
+                // Buscar el productoDiv correspondiente por nombre
+                const productos = document.querySelectorAll('.producto-seleccion');
+                productos.forEach(prodDiv => {
+                  const img = prodDiv.querySelector('.producto-imagen');
+                  if (img && img.alt === nombre) {
+                    const checkbox = prodDiv.querySelector('.producto-checkbox');
+                    checkbox.checked = false;
+                    actualizarProductosSeleccionados();
+                  }
+                });
+              });
+              lista.appendChild(item);
+            } else {
+              inputCantidad.style.display = 'none';
+            }
+          });
+          if (lista.children.length > 0) {
+            divProductos.appendChild(lista);
+          }
+          // Mostrar el total a pagar
+          const totalSpan = document.getElementById('total-a-pagar');
+          if (totalSpan) {
+            totalSpan.textContent = formatoCOP(total);
+          }
+        }
+
+        productosCheckboxes.forEach(checkbox => {
+          checkbox.addEventListener('change', actualizarProductosSeleccionados);
+          // Mostrar/ocultar input cantidad al cambiar el checkbox
+          const productoDiv = checkbox.closest('.producto-seleccion');
+          const inputCantidad = productoDiv.querySelector('.input-cantidad');
+          inputCantidad.addEventListener('input', actualizarProductosSeleccionados);
+        });
+
+        actualizarProductosSeleccionados();
+      });
+
+      document.addEventListener("DOMContentLoaded", function() {
+        const input = document.getElementById("codigo-proveedor-input");
+        const tooltip = document.getElementById("proveedor-tooltip");
+        const codigoSpan = document.getElementById("proveedor-codigo");
+        const nombreSpan = document.getElementById("proveedor-nombre");
+
+        // Lista de proveedores para búsqueda rápida
+        const proveedores = [
+          <% Supplier.all.each do |supplier| %>
+            { codigo: "<%= supplier.codigo_proveedor %>", nombre: "<%= supplier.nombre %>" },
+          <% end %>
+        ];
+
+        input.addEventListener("input", function() {
+          const valor = input.value.trim();
+          const proveedor = proveedores.find(p => p.codigo === valor);
+          if (proveedor) {
+            codigoSpan.textContent = proveedor.codigo;
+            nombreSpan.textContent = proveedor.nombre + " (" + proveedor.codigo + ")";
+            tooltip.style.display = "block";
+          } else {
+            tooltip.style.display = "none";
+          }
+        });
+
+        input.addEventListener("blur", function() {
+          setTimeout(() => { tooltip.style.display = "none"; }, 200);
+        });
+      });
+
+      document.addEventListener("DOMContentLoaded", function() {
+        const filtro = document.getElementById("filtro-codigo-producto");
+        const productos = document.querySelectorAll(".producto-seleccion");
+
+        filtro.addEventListener("input", function() {
+          const valor = filtro.value.trim().toUpperCase();
+          productos.forEach(prod => {
+            const codigo = prod.getAttribute("data-codigo").toUpperCase();
+            prod.style.display = codigo.includes(valor) ? "" : "none";
+          });
+        });
+      });
+    </script>
+</body>
+</html>

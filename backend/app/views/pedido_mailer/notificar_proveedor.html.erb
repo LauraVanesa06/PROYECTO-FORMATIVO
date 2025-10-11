@@ -1,0 +1,43 @@
+
+<div style="font-family: Arial, Helvetica, sans-serif; color: #222; max-width: 600px;">
+  <h2 style="color: #1a73e8;">Confirmación de nuevo pedido</h2>
+  <p>Estimado/a <strong><%= @proveedor.nombre %></strong>,</p>
+  <p>
+    Esperamos que se encuentre bien. Nos complace informarle que se ha generado un nuevo pedido para su empresa con los siguientes detalles:
+  </p>
+  <table style="border-collapse: collapse; margin-bottom: 18px;">
+    <tr>
+      <td style="padding: 6px 12px;"><strong>Fecha del pedido:</strong></td>
+      <td style="padding: 6px 12px;"><%= @pedido.fecha.strftime('%d/%m/%Y %H:%M') %></td>
+    </tr>
+    <%# <tr> %>
+      <%# <td style="padding: 6px 12px;"><strong>Descripción de entrega:</strong></td> %>
+      <%# <td style="padding: 6px 12px;"><%= @pedido.descripcion_entrega %>
+    <%# </tr> %>
+  </table>
+  <p><strong>Productos solicitados:</strong></p>
+  <table style="border-collapse: collapse; width: 100%; margin-bottom: 18px;">
+    <thead>
+      <tr style="background: #f2f2f2;">
+        <th style="padding: 8px; border: 1px solid #ddd;">Producto</th>
+        <th style="padding: 8px; border: 1px solid #ddd;">Cantidad</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% @pedido.pedido_products.includes(:product).each do |pp| %>
+        <tr>
+          <td style="padding: 8px; border: 1px solid #ddd;"><%= pp.product.nombre %></td>
+          <td style="padding: 8px; border: 1px solid #ddd; text-align: center;"><%= pp.cantidad %></td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+  <p>
+    Le agradecemos su atención y pronta gestión para este pedido. Si tiene alguna duda o requiere información adicional, no dude en contactarnos.<br>
+    Por favor, confirme la recepción de este mensaje.
+  </p>
+  <p style="margin-top: 32px;">
+    Saludos cordiales,<br>
+    <strong>Ferremateriales el Maestro</strong>
+  </p>
+</div>
