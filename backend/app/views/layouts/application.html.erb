@@ -29,7 +29,7 @@
     <header class="container-header"> 
         <!-- Navegación -->
         <nav class="main-nav d-flex gap-3">
-          <%= link_to t("nav.home"), authenticated_root_path, class: "text-white fw-bold" %>
+          <%= link_to t("nav.home"), authenticated_root_path, id:"nav-home", class: "text-white fw-bold" %>
           <%= link_to t("nav.products"), productos_path, class: "text-white fw-bold" %>
           <%= link_to t("nav.contacts"), contactos_path, class: "text-white fw-bold" %>
         </nav>
@@ -46,28 +46,29 @@
               <li><%= link_to t("languages.english"), url_for(locale: :en), class: "dropdown-item" %></li>
             </ul>
           </div>
-          <%= link_to favoritos_path, class: "text-white" do %>
+          <%= link_to favoritos_path, class: "text-white1" do %>
             <i class="fa-solid fa-star"></i>
           <% end %>
 
           <!-- Carrito: abre SIEMPRE el offcanvas derecho y muestra contador -->
           <% unless current_page?(cart_path) %>
             <%= link_to "#",
-                        class: "text-white position-relative",
+                        class: "text-white1 position-relative",
                         data: { bs_toggle: "offcanvas", bs_target: "#cartOffcanvas" } do %>
               <i class="fa-solid fa-cart-shopping"></i>
               <%# render partial: "carts/cart_count", locals: { count: @cart_items.sum(&:cantidad) } %>
             <% end %>
           <% end %>
 
-
-          <%= link_to notificaciones_path, class: "text-white" do %>
-            <i class="fa-solid fa-bell"></i>
-          <% end %>
+          <!--
+            <%= link_to notificaciones_path, class: "text-white" do %>
+              <i class="fa-solid fa-bell"></i>
+            <% end %>
+          -->
 
           <!-- Usuario con dropdown -->
           <div class="dropdown">
-            <a href="#" class="text-white dropdown-toggle" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+            <a href="#" class="text-white1 dropdown-toggle" role="button" data-bs-toggle="dropdown" aria-expanded="false" id="userDropdown">
               <i class="fa-solid fa-user"></i>
             </a>
             <ul class="dropdown-menu dropdown-menu-end">
@@ -92,7 +93,7 @@
     <%= yield %>
 
     <!-- FOOTER -->
-    <footer class="bg-dark text-white text-center p-3 mt-auto">
+    <footer id="footer"class="bg-dark text-white text-center p-3 mt-auto">
       &copy; 2025 <%= t("app.name") %> - v3.1.4
     </footer>
   </main>
@@ -103,8 +104,11 @@
   <!-- Offcanvas DERECHO (ÚNICO) -->
   <% unless current_page?(cart_path) %>
     <div class="offcanvas offcanvas-end" tabindex="-1" id="cartOffcanvas">
-      <div class="offcanvas-header">
-        <h5 class="offcanvas-title"><%= t("cart.title") %></h5>
+      <div class="offcanvas-header" style="position: relative; padding-bottom: 0;">
+        <div class="section-header" style="width: 100%;">
+          <h2 class="titulo"><%= t("cart.title") %></h2>
+          <center><hr class="linea-bonita"></center>
+        </div>
         <button type="button" class="btn-close" data-bs-dismiss="offcanvas"></button>
       </div>
       <div class="offcanvas-body" id="cart-offcanvas-body">
