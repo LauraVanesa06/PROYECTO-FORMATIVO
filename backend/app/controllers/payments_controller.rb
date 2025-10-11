@@ -7,13 +7,17 @@ class PaymentsController < ApplicationController
     @payment = Payment.new(cart: current_cart, amount: (current_cart.try(:total) || 0))
   end
 
-  def status; end
-  def checkout; end
+  def status;
+  end
+
+  def checkout; 
+  end
 
   def webhook
     data = JSON.parse(request.body.read) rescue {}
     transaction = data.dig("data", "transaction") || {}
     payment = Payment.find_by(transaction_id: transaction["id"])
+
     if payment
       payment.update(status: transaction["status"])
     end
@@ -22,6 +26,7 @@ class PaymentsController < ApplicationController
 
   def create
     cart = current_cart || Cart.find_by(id: params[:cart_id])
+
     unless cart
       render json: { error: "Carrito no encontrado" }, status: :unprocessable_entity
       return
@@ -36,6 +41,7 @@ class PaymentsController < ApplicationController
 
     service = WompiService.new
     tokens = {}
+    
     begin
       tokens = service.acceptance_tokens || {}
     rescue => e
@@ -92,14 +98,16 @@ class PaymentsController < ApplicationController
     render json: { id: @payment.id, status: @payment.status, amount: @payment.amount, wompi_id: @payment.wompi_id, checkout_url: @wompi_checkout_url }
   end
 
-private
+  private
 
-  def payment_params
-    params.permit(:pay_method, :cart_id, :amount, :account_info, :token, :reference)
-  end
+    def payment_params
+      params.permit(:pay_method, :cart_id, :amount, :account_info, :token, :reference)
+    end
 
-  def wompi_checkout_url(payment)
-    pub_key = Rails.application.credentials.dig(:wompi, :public_key) || ENV['WOMPI_PUBLIC_KEY']
-    "https://checkout.wompi.co/p/?public-key=#{pub_key}&amount-in-cents=#{(payment.amount.to_f * 100).to_i}&currency=COP&reference=#{payment.id}"
-  end
+    def wompi_checkout_url(payment)
+
+      pub_key = Rails.application.credentials.dig(:wompi, :public_key) || ENV['WOMPI_PUBLIC_KEY']
+      "https://checkout.wompi.co/p/?public-key=#{pub_key}&amount-in-cents=#{(payment.amount.to_f * 100).to_i}&currency=COP&reference=#{payment.id}"
+      
+    end
 end
