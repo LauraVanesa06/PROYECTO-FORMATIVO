@@ -88,6 +88,7 @@ body {
     align-items: center;
     justify-content: space-between;
     padding: 0 var(--spacing-md);
+    position: relative;
 }
 
 .nav-logo {
@@ -303,14 +304,146 @@ body {
     transform: translateX(4px);
 }
 
+/* ===== MOBILE MENU STYLES ===== */
+.mobile-menu-toggle {
+    display: none;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background: rgba(102, 126, 234, 0.9);
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    cursor: pointer;
+    width: 50px;
+    height: 50px;
+    gap: 4px;
+    border-radius: 8px;
+    backdrop-filter: blur(10px);
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+}
+
+.hamburger-line {
+    width: 25px;
+    height: 3px;
+    background: var(--text-light);
+    border-radius: 2px;
+    transition: all 0.3s ease;
+}
+
+.mobile-menu-toggle.active .hamburger-line:nth-child(1) {
+    transform: rotate(45deg) translate(8px, 8px);
+}
+
+.mobile-menu-toggle.active .hamburger-line:nth-child(2) {
+    opacity: 0;
+}
+
+.mobile-menu-toggle.active .hamburger-line:nth-child(3) {
+    transform: rotate(-45deg) translate(7px, -6px);
+}
+
+.mobile-menu-toggle:hover {
+    background: rgba(102, 126, 234, 0.2);
+    transform: scale(1.05);
+}
+
+/* Asegurar que solo haya un botón hamburguesa */
+@media (min-width: 769px) {
+    .mobile-menu-toggle {
+        display: none !important;
+        position: relative !important;
+        top: auto !important;
+        right: auto !important;
+        z-index: auto !important;
+    }
+}
+
+@media (max-width: 768px) {
+    /* Ocultar cualquier otro elemento de navegación */
+    .nav-links,
+    .nav-cta {
+        visibility: hidden !important;
+        opacity: 0 !important;
+        pointer-events: none !important;
+    }
+}
+
+.mobile-nav-menu {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100vh;
+    background: rgba(15, 15, 35, 0.98);
+    backdrop-filter: blur(20px);
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+    gap: 2rem;
+}
+
+.mobile-nav-menu.active {
+    display: flex;
+}
+
+.mobile-nav-link {
+    color: var(--text-light);
+    text-decoration: none;
+    font-size: 1.5rem;
+    font-weight: 500;
+    padding: 1rem 2rem;
+    border-radius: var(--border-radius-lg);
+    transition: all 0.3s ease;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.mobile-nav-link:hover {
+    background: rgba(102, 126, 234, 0.2);
+    transform: translateY(-2px);
+}
+
+.mobile-nav-cta {
+    background: var(--primary-gradient);
+    color: var(--text-light);
+    border: none;
+    padding: 1rem 2rem;
+    border-radius: var(--border-radius-full);
+    font-size: 1.2rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    margin-top: 1rem;
+}
+
+.mobile-nav-cta:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 10px 20px rgba(102, 126, 234, 0.4);
+}
+
 /* ===== RESPONSIVE DESIGN ===== */
 @media (max-width: 768px) {
     .nav-container {
         padding: 0 var(--spacing-sm);
+        justify-content: flex-start;
     }
     
     .nav-links {
-        display: none;
+        display: none !important;
+    }
+    
+    .nav-cta {
+        display: none !important;
+    }
+    
+    .mobile-menu-toggle {
+        display: flex !important;
+        position: fixed !important;
+        top: 20px !important;
+        right: 20px !important;
+        z-index: 10000 !important;
     }
     
     .hero-content {
@@ -553,5 +686,246 @@ div[style*="rgba(121, 82, 179"]:hover {
 
     .hero-content {
         padding: 0 0.5rem;
+    }
+}
+
+/* ===== DOCUMENTATION STYLES ===== */
+.doc-card {
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.doc-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    pointer-events: none;
+}
+
+.doc-card:hover::before {
+    opacity: 1;
+}
+
+.doc-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+    border-color: rgba(102, 126, 234, 0.5);
+}
+
+.doc-btn {
+    transition: all 0.3s ease;
+}
+
+.doc-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
+}
+
+.use-case-card {
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.use-case-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(135deg, rgba(240, 147, 251, 0.05) 0%, rgba(245, 87, 108, 0.05) 100%);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    pointer-events: none;
+}
+
+.use-case-card:hover::before {
+    opacity: 1;
+}
+
+.use-case-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
+    border-color: rgba(240, 147, 251, 0.3);
+}
+
+.case-btn {
+    transition: all 0.3s ease;
+}
+
+.case-btn:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 5px 15px rgba(240, 147, 251, 0.3);
+}
+
+.manual-card {
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.manual-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(135deg, rgba(245, 166, 35, 0.05) 0%, rgba(80, 200, 120, 0.05) 100%);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    pointer-events: none;
+}
+
+.manual-card:hover::before {
+    opacity: 1;
+}
+
+.manual-card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 25px 50px rgba(0, 0, 0, 0.3);
+    border-color: rgba(245, 166, 35, 0.5);
+}
+
+.manual-btn {
+    transition: all 0.3s ease;
+}
+
+.manual-btn:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 10px 30px rgba(245, 166, 35, 0.4);
+}
+
+.info-card {
+    transition: all 0.3s ease;
+}
+
+.info-card:hover {
+    transform: scale(1.05);
+    box-shadow: 0 10px 25px rgba(118, 75, 162, 0.3);
+    background: rgba(118, 75, 162, 0.2) !important;
+}
+
+/* ===== RESPONSIVE STYLES FOR DOCUMENTATION ===== */
+@media (max-width: 768px) {
+    .hero-title {
+        font-size: 2.5rem !important;
+    }
+    
+    .hero-subtitle {
+        font-size: 1rem !important;
+    }
+    
+    .doc-card, .manual-card {
+        padding: 1.5rem !important;
+    }
+    
+    .use-case-card {
+        padding: 1rem !important;
+    }
+    
+    .info-grid {
+        gap: 1rem !important;
+    }
+    
+    .info-card {
+        width: 100px !important;
+        height: 100px !important;
+    }
+}
+
+/* ===== MODERN INFO CARDS STYLES ===== */
+.info-card-modern {
+    transition: all 0.4s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.info-card-modern::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    pointer-events: none;
+}
+
+.info-card-modern:hover::before {
+    opacity: 1;
+}
+
+.info-card-modern:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 25px 50px rgba(0, 0, 0, 0.4);
+}
+
+.info-card-modern:nth-child(1):hover {
+    border-color: rgba(118, 75, 162, 0.6);
+    box-shadow: 0 25px 50px rgba(118, 75, 162, 0.3);
+}
+
+.info-card-modern:nth-child(2):hover {
+    border-color: rgba(79, 172, 254, 0.6);
+    box-shadow: 0 25px 50px rgba(79, 172, 254, 0.3);
+}
+
+.info-card-modern:nth-child(3):hover {
+    border-color: rgba(245, 166, 35, 0.6);
+    box-shadow: 0 25px 50px rgba(245, 166, 35, 0.3);
+}
+
+.modern-btn {
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.modern-btn::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    transition: left 0.5s ease;
+}
+
+.modern-btn:hover::before {
+    left: 100%;
+}
+
+.modern-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+}
+
+.card-icon {
+    transition: all 0.3s ease;
+}
+
+.info-card-modern:hover .card-icon {
+    transform: scale(1.1) rotateY(10deg);
+}
+
+@media (max-width: 768px) {
+    .info-grid {
+        grid-template-columns: 1fr !important;
+        gap: 1.5rem !important;
+    }
+    
+    .info-card-modern {
+        padding: 2rem !important;
     }
 }
