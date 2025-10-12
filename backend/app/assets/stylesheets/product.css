@@ -125,7 +125,7 @@ body{
 }
 
 .all-img img{
-    height: 60px;
+    height: 50px;
     max-width: 90%;
     object-fit: contain;
 }
