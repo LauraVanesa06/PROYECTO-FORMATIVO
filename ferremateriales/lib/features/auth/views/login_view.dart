@@ -43,7 +43,7 @@ class LoginView extends StatelessWidget {
 
                   // título
                   Text(
-                    'Inicia sesión para continuar',
+                    'Inicia sesión',
                     style: GoogleFonts.montserrat(
                       fontSize: 28,
                       fontWeight: FontWeight.bold,

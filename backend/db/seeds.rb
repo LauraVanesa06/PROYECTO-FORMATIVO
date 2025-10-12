@@ -62,6 +62,27 @@ categories = Category.create!([
   { nombre: "Jardineria" },
 ])
 
+# Adjuntar imagen a cada categoría si existe una imagen con su nombre en db/seeds-img
+extensiones = [".jpg", ".jpeg", ".png", ".webp", ".avif"]
+categories.each do |category|
+  imagen_encontrada = false
+  extensiones.each do |ext|
+    nombre_archivo = "#{category.nombre}#{ext}"
+    ruta_imagen = Rails.root.join("db/seeds-img", nombre_archivo)
+    if File.exist?(ruta_imagen)
+      category.imagen.attach(
+        io: File.open(ruta_imagen),
+        filename: nombre_archivo,
+        content_type: Marcel::MimeType.for(ruta_imagen)
+      )
+      puts "✅ Imagen cargada para categoría #{category.nombre}"
+      imagen_encontrada = true
+      break
+    end
+  end
+  puts "⚠️  Imagen no encontrada para categoría #{category.nombre}" unless imagen_encontrada
+end
+
 suppliers = Supplier.create!([
   { nombre: "Ferretería Industrial Martínez S.A. de C.V.", contacto: "5512345678", codigo_proveedor: "FIM001", correo: "contacto@fim.com" },
   { nombre: "Suministros y Herramientas del Norte", contacto: "5523456789", codigo_proveedor: "SHN002", correo: "ventas@shn.com" },
