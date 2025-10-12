@@ -1,0 +1,17 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  carts: one
+  transaction_id: MyString
+  status: 1
+  amount: 9.99
+  pay_method: MyString
+  token: MyString
+
+two:
+  carts: two
+  transaction_id: MyString
+  status: 1
+  amount: 9.99
+  pay_method: MyString
+  token: MyString

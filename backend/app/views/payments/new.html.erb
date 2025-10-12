@@ -1,0 +1,27 @@
+<h1>Formulario de pago</h1>
+
+<%= form_with url: payments_path, method: :post, local: true do |f| %>
+  <div>
+    <label>Monto</label>
+    <%= number_field_tag :amount, (@cart.total || 0), step: 0.01, disabled: true %>
+  </div>
+
+  <div>
+    <label>Correo</label>
+    <%= email_field_tag :email, current_user&.email %>
+  </div>
+
+  <div>
+    <label>Método de pago</label>
+    <%= select_tag :pay_method, options_for_select([['Tarjeta','card'], ['PSE','pse'], ['Link de pago','payment_link']]) %>
+  </div>
+
+    <div>
+    <label>Número de tarjeta</label>
+  <%= text_field_tag :account_info, nil %>
+    </div>
+
+  <div>
+    <%= submit_tag "Pagar" %>
+  </div>
+<% end %>
