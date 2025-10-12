@@ -1,348 +1,372 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
     <head>
         <meta charset="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
-        <meta name="description" content="" />
-        <meta name="author" content="" />
-        <title>Ferremateriales docs</title>
+        <meta name="description" content="S.E.I.E - Documentación Técnica del Proyecto" />
+        <meta name="author" content="Equipo S.E.I.E" />
+        <title>S.E.I.E - Documentación</title>
         <!-- Favicon-->
-        <link rel="icon" type="image/x-icon" href="assets/llave.ico" />
+        <link rel="icon" type="image/x-icon" href="assets/img/logos/seie-logo.ico" />
         <!-- Font Awesome icons (free version)-->
         <script src="https://use.fontawesome.com/releases/v6.3.0/js/all.js" crossorigin="anonymous"></script>
         <!-- Google fonts-->
-        <link href="https://fonts.googleapis.com/css?family=Montserrat:400,700" rel="stylesheet" type="text/css" />
-        <link href="https://fonts.googleapis.com/css?family=Roboto+Slab:400,100,300,700" rel="stylesheet" type="text/css" />
-        <!-- Core theme CSS (includes Bootstrap)-->
-        <link href="css/styles.css" rel="stylesheet" />
-        <link rel="stylesheet" href="css/estilos.css">
+        <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+        <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+        <!-- Modern CSS-->
+        <link href="css/modern-styles.css" rel="stylesheet" />
+        <style>
+            /* Ensure styles are applied */
+            body {
+                background: #0f0f23 !important;
+                color: white !important;
+                font-family: 'Inter', sans-serif !important;
+            }
+            
+            .hero-section {
+                min-height: 100vh !important;
+                display: flex !important;
+                align-items: center !important;
+                background: linear-gradient(135deg, #0f0f23 0%, #1a1a2e 50%, #16213e 100%) !important;
+                position: relative !important;
+                overflow: hidden !important;
+            }
+        </style>
     </head>
-    <body id="page-top">
+    <body>
         <!-- Navigation-->
-        <nav class="navbar navbar-expand-lg navbar-dark fixed-top" id="mainNav">
-            <div class="container">
-                <a class="navbar-brand" href="#page-top"><img src="assets/img/logo-sena-blanco.ico" alt="..." /></a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
-                    Menu
-                    <i class="fas fa-bars ms-1"></i>
-                </button>
-                <div class="collapse navbar-collapse" id="navbarResponsive">
-                    <ul class="navbar-nav text-uppercase ms-auto py-4 py-lg-0">
-                        <li class="nav-item"><a class="nav-link" href="index.html">Inicio</a></li>
-                        <li class="nav-item"><a class="nav-link" href="index.html#services">Informacion</a></li>
-                        
-                    </ul>
+        <nav class="modern-nav">
+            <div class="nav-container">
+                <div class="nav-logo">
+                    <div class="logo-icon">
+                        <div class="logo-sphere"></div>
+                    </div>
+                    <span class="logo-text">S.E.I.E</span>
                 </div>
+                <div class="nav-links">
+                    <a href="index.html" class="nav-link">Inicio</a>
+                    <a href="index.html#about" class="nav-link">Acerca</a>
+                    <a href="index.html#team" class="nav-link">Equipo</a>
+                    <a href="index.html#services" class="nav-link">Recursos</a>
+                </div>
+                <button class="nav-cta" onclick="window.location.href='index.html'">Volver</button>
             </div>
         </nav>
         
-        <!-- Services-->
-        <section class="page-section" id="services">
+        <!-- Hero Section -->
+        <section class="hero-section" id="hero" style="min-height: 100vh; display: flex; align-items: center; background: linear-gradient(135deg, #0f0f23 0%, #1a1a2e 50%, #16213e 100%); position: relative; overflow: hidden;">
+            <div class="hero-bg-effects">
+                <div class="gradient-orb orb-1"></div>
+                <div class="gradient-orb orb-2"></div>
+                <div class="gradient-orb orb-3"></div>
+            </div>
             <div class="container">
-                <div class="text-center">
-                    <h2 class="section-heading text-uppercase">Diagramas:</h2>
-                </div><div class="row">
-                    <div class="col-lg-4 col-sm-6 mb-4 posicion">
-                        <!-- Portfolio item 1-->
-                        <div class="portfolio-item">
-                            <a class="portfolio-link" data-bs-toggle="modal" href="#portfolioModalr">
-                                <h3 class="title">Relaciones</h3>
-                                <img class="" src="assets/img/diagramas/relaciones.png" alt="..." width="450px" />
-                            </a>
-                            
-                        </div>
-                    </div>
-                    <div class="col-lg-4 col-sm-6 mb-4 posicion" >
-                        <!-- Portfolio item 2-->
-                        <div class="portfolio-item ">
-                            <a class="portfolio-link" data-bs-toggle="modal" href="#portfolioModala">
-                                <h3 class="title">Asociaciones</h3>
-                                <img class="" src="assets/img/diagramas/Asociaciones.png" alt="..." width="500px" />
-                            </a>
-                            
-                        </div>
-                    </div>
+                <div class="hero-content" style="text-align: center; max-width: 900px; margin: 0 auto; position: relative; z-index: 2;">
+                    <h1 class="hero-title" style="font-family: var(--font-heading); font-size: 4rem; font-weight: 800; margin-bottom: 1.5rem; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">
+                        Documentación Técnica del Proyecto
+                    </h1>
+                    <p class="hero-subtitle" style="font-size: 1.25rem; color: rgba(255, 255, 255, 0.7); margin-bottom: 3rem; max-width: 700px; margin-left: auto; margin-right: auto;">
+                        A continuación encontrarás los principales <strong>diagramas UML</strong> del sistema, incluyendo el diagrama de clases y el de 
+                        entidad-relación. Estos documentos proporcionan una visión estructural del sistema desarrollado.
+                    </p>
                 </div>
-                
             </div>
         </section>
-        <!-- Portfolio Modals-->
-        <!-- Portfolio item 1 modal popup-->
-        <div class="portfolio-modal modal fade" id="portfolioModalr" tabindex="-1" role="dialog" aria-hidden="true">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <div class="close-modal" data-bs-dismiss="modal"><img src="assets/img/close-icon.svg" alt="Close modal" /></div>
-                    <div class="container">
-                        <div class="row justify-content-center">
-                            <div class="col-lg-8">
-                                <div class="modal-body">
-                                    <!-- Project details-->
-                                    <h2 class="text-uppercase">Relaciones</h2>
-                                    <img class="img-fluid d-block mx-auto" src="assets/img/diagramas/relaciones.png" alt="..." />
-                                    <button class="btn btn-primary btn-xl text-uppercase" data-bs-dismiss="modal" type="button">
-                                        <i class="fas fa-xmark me-1"></i>
-                                        Cerrar Diagrama
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <!-- Portfolio item 2 modal popup-->
-        <div class="portfolio-modal modal fade" id="portfolioModala" tabindex="-1" role="dialog" aria-hidden="true">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <div class="close-modal" data-bs-dismiss="modal"><img src="assets/img/close-icon.svg" alt="Close modal" /></div>
-                    <div class="container">
-                        <div class="row justify-content-center">
-                            <div class="col-lg-8">
-                                <div class="modal-body">
-                                    <!-- Project details-->
-                                    <h2 class="text-uppercase">Asociaciones</h2>
-                                    <img class="img-fluid d-block mx-auto" src="assets/img/diagramas/Asociaciones.png" alt="..." />
-                                    <button class="btn btn-primary btn-xl text-uppercase" data-bs-dismiss="modal" type="button">
-                                        <i class="fas fa-xmark me-1"></i>
-                                        Cerrar Diagrama
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        
-        <!-- Footer-->
-        <footer class="footer py-4">
+
+        <!-- Documentation Sections -->
+        <section class="documentation-section" id="documentation" style="padding: 5rem 0; background: #0f0f23;">
             <div class="container">
-                <div class="row align-items-center">
-                    <div id="div-footer" class="col-lg-4 text-lg-start">Todos los derechos reservados © 2023 Your Website.</div>
-                    <div class="col-lg-4 my-3 my-lg-0">
-                        <a class="btn btn-dark btn-social mx-2" href="https://oferta.senasofiaplus.edu.co/sofia-oferta/" aria-label="buscar"><i class="fas fa-search"></i></a>
-                        <a class="btn btn-dark btn-social mx-2" href="https://www.facebook.com/groups/566675547810297/?locale=es_LA" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
-                        <a class="btn btn-dark btn-social mx-2" href="https://www.instagram.com/senacomunica/?hl=es-la" aria-label="LinkedIn"><i class="fab fa-instagram"></i></a>
-                        <a class="btn btn-dark btn-social mx-2" href="https://www.youtube.com/channel/UCt5y885UFplu2okY39TBwCg" aria-label="LinkedIn"><i class="fab fa-youtube"></i></a>
+                <!-- Diagramas UML Section -->
+                <div class="doc-section" style="margin-bottom: 6rem;">
+                    <div class="text-center" style="margin-bottom: 4rem;">
+                        <h2 style="font-size: 2.5rem; font-weight: 700; color: #ffffff; margin-bottom: 1rem;">Diagramas UML</h2>
+                        <p style="color: rgba(255, 255, 255, 0.7); font-size: 1.1rem; max-width: 600px; margin: 0 auto;">
+                            Documentación visual de la arquitectura y estructura del sistema
+                        </p>
                     </div>
-                    <div class="col-lg-4 text-lg-end">
-                        <a class="link-dark text-decoration-none me-3" href="#!">Politica de privacidad</a>
-                        <a class="link-dark text-decoration-none" href="#!">Terminos de uso</a>
+                    <div class="row" style="display: flex; justify-content: center; gap: 2rem;">
+                        <div class="col-lg-5 col-md-6 mb-4">
+                            <div class="doc-card" style="background: rgba(255, 255, 255, 0.05); border-radius: 1rem; padding: 2rem; text-align: center; border: 1px solid rgba(255, 255, 255, 0.1); transition: all 0.3s ease; backdrop-filter: blur(10px);">
+                                <div class="doc-icon" style="margin-bottom: 1.5rem;">
+                                    <i class="fas fa-project-diagram" style="font-size: 3rem; color: #667eea;"></i>
+                                </div>
+                                <h4 style="color: #ffffff; margin-bottom: 1rem; font-size: 1.3rem;">📊 DIAGRAMA DE CLASES</h4>
+                                <div class="diagram-preview" style="margin: 1.5rem 0; background: #ffffff; border-radius: 0.5rem; padding: 1rem;">
+                                    <img src="assets/img/diagramas/relaciones.png" alt="Diagrama de Clases" style="width: 100%; height: auto; border-radius: 0.5rem;">
+                                </div>
+                                <button class="doc-btn" data-bs-toggle="modal" data-bs-target="#portfolioModalr" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border: none; padding: 0.75rem 2rem; border-radius: 50px; color: white; font-weight: 600; cursor: pointer; transition: all 0.3s ease; display: inline-flex; align-items: center; gap: 0.5rem;">
+                                    <i class="fas fa-download"></i>
+                                    Descargar PDF
+                                </button>
+                            </div>
+                        </div>
+                        <div class="col-lg-5 col-md-6 mb-4">
+                            <div class="doc-card" style="background: rgba(255, 255, 255, 0.05); border-radius: 1rem; padding: 2rem; text-align: center; border: 1px solid rgba(255, 255, 255, 0.1); transition: all 0.3s ease; backdrop-filter: blur(10px);">
+                                <div class="doc-icon" style="margin-bottom: 1.5rem;">
+                                    <i class="fas fa-sitemap" style="font-size: 3rem; color: #4facfe;"></i>
+                                </div>
+                                <h4 style="color: #ffffff; margin-bottom: 1rem; font-size: 1.3rem;">🔗 DIAGRAMA ENTIDAD-RELACIÓN</h4>
+                                <div class="diagram-preview" style="margin: 1.5rem 0; background: #ffffff; border-radius: 0.5rem; padding: 1rem;">
+                                    <img src="assets/img/diagramas/Asociaciones.png" alt="Diagrama Entidad-Relación" style="width: 100%; height: auto; border-radius: 0.5rem;">
+                                </div>
+                                <button class="doc-btn" data-bs-toggle="modal" data-bs-target="#portfolioModala" style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); border: none; padding: 0.75rem 2rem; border-radius: 50px; color: white; font-weight: 600; cursor: pointer; transition: all 0.3s ease; display: inline-flex; align-items: center; gap: 0.5rem;">
+                                    <i class="fas fa-download"></i>
+                                    Descargar PDF
+                                </button>
+                            </div>
+                        </div>
                     </div>
                 </div>
-            </div>
-        </footer>
-        <!-- Portfolio Modals-->
-        <!-- Portfolio item 1 modal popup-->
-        <div class="portfolio-modal modal fade" id="portfolioModal1" tabindex="-1" role="dialog" aria-hidden="true">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <div class="close-modal" data-bs-dismiss="modal"><img src="assets/img/close-icon.svg" alt="Close modal" /></div>
-                    <div class="container">
-                        <div class="row justify-content-center">
-                            <div class="col-lg-8">
-                                <div class="modal-body">
-                                    <!-- Project details-->
-                                    <h2 class="text-uppercase">Project Name</h2>
-                                    <p class="item-intro text-muted">Lorem ipsum dolor sit amet consectetur.</p>
-                                    <img class="img-fluid d-block mx-auto" src="assets/img/portfolio/1.jpg" alt="..." />
-                                    <p>Use this area to describe your project. Lorem ipsum dolor sit amet, consectetur adipisicing elit. Est blanditiis dolorem culpa incidunt minus dignissimos deserunt repellat aperiam quasi sunt officia expedita beatae cupiditate, maiores repudiandae, nostrum, reiciendis facere nemo!</p>
-                                    <ul class="list-inline">
-                                        <li>
-                                            <strong>Client:</strong>
-                                            Threads
-                                        </li>
-                                        <li>
-                                            <strong>Category:</strong>
-                                            Illustration
-                                        </li>
-                                    </ul>
-                                    <button class="btn btn-primary btn-xl text-uppercase" data-bs-dismiss="modal" type="button">
-                                        <i class="fas fa-xmark me-1"></i>
-                                        Close Project
-                                    </button>
+
+                <!-- Casos de Uso Section -->
+                <div class="doc-section" style="margin-bottom: 6rem;">
+                    <div class="text-center" style="margin-bottom: 4rem;">
+                        <h2 style="font-size: 2.5rem; font-weight: 700; color: #ffffff; margin-bottom: 1rem;">Casos de Uso del Sistema</h2>
+                        <p style="color: rgba(255, 255, 255, 0.7); font-size: 1.1rem; max-width: 700px; margin: 0 auto;">
+                            Aquí encontrarás las fichas detalladas de los casos de uso del sistema. Cada ficha describe el flujo básico, actores 
+                            involucrados y excepciones relevantes para las funcionalidades clave.
+                        </p>
+                    </div>
+                    <div class="row" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.5rem;">
+                        <div class="use-case-card" style="background: rgba(255, 255, 255, 0.05); border-radius: 1rem; padding: 1.5rem; border: 1px solid rgba(255, 255, 255, 0.1); transition: all 0.3s ease;">
+                            <div class="case-header" style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem;">
+                                <div class="case-icon" style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); width: 50px; height: 50px; border-radius: 0.5rem; display: flex; align-items: center; justify-content: center;">
+                                    <i class="fas fa-user-check" style="color: white; font-size: 1.2rem;"></i>
                                 </div>
+                                <h5 style="color: #ffffff; margin: 0; font-size: 1.1rem;">📄 CASO DE USO - CU01</h5>
+                            </div>
+                            <div class="case-preview" style="background: #f8f9fa; border-radius: 0.5rem; padding: 2rem; margin-bottom: 1rem; display: flex; align-items: center; justify-content: center; min-height: 120px;">
+                                <div style="text-align: center; color: #6c757d;">
+                                    <i class="fas fa-user-check" style="font-size: 2.5rem; margin-bottom: 0.5rem; color: #f093fb;"></i>
+                                    <p style="margin: 0; font-size: 0.9rem;">Diagrama CU01</p>
+                                </div>
+                            </div>
+                            <button class="case-btn" style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); border: none; padding: 0.6rem 1.5rem; border-radius: 25px; color: white; font-weight: 500; cursor: pointer; width: 100%; transition: all 0.3s ease;">
+                                <i class="fas fa-download"></i> Descargar PDF
+                            </button>
+                        </div>
+                        <div class="use-case-card" style="background: rgba(255, 255, 255, 0.05); border-radius: 1rem; padding: 1.5rem; border: 1px solid rgba(255, 255, 255, 0.1); transition: all 0.3s ease;">
+                            <div class="case-header" style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem;">
+                                <div class="case-icon" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); width: 50px; height: 50px; border-radius: 0.5rem; display: flex; align-items: center; justify-content: center;">
+                                    <i class="fas fa-shopping-cart" style="color: white; font-size: 1.2rem;"></i>
+                                </div>
+                                <h5 style="color: #ffffff; margin: 0; font-size: 1.1rem;">📄 CASO DE USO - CU02</h5>
+                            </div>
+                            <div class="case-preview" style="background: #f8f9fa; border-radius: 0.5rem; padding: 2rem; margin-bottom: 1rem; display: flex; align-items: center; justify-content: center; min-height: 120px;">
+                                <div style="text-align: center; color: #6c757d;">
+                                    <i class="fas fa-shopping-cart" style="font-size: 2.5rem; margin-bottom: 0.5rem; color: #667eea;"></i>
+                                    <p style="margin: 0; font-size: 0.9rem;">Diagrama CU02</p>
+                                </div>
+                            </div>
+                            <button class="case-btn" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border: none; padding: 0.6rem 1.5rem; border-radius: 25px; color: white; font-weight: 500; cursor: pointer; width: 100%; transition: all 0.3s ease;">
+                                <i class="fas fa-download"></i> Descargar PDF
+                            </button>
+                        </div>
+                        <div class="use-case-card" style="background: rgba(255, 255, 255, 0.05); border-radius: 1rem; padding: 1.5rem; border: 1px solid rgba(255, 255, 255, 0.1); transition: all 0.3s ease;">
+                            <div class="case-header" style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem;">
+                                <div class="case-icon" style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); width: 50px; height: 50px; border-radius: 0.5rem; display: flex; align-items: center; justify-content: center;">
+                                    <i class="fas fa-tools" style="color: white; font-size: 1.2rem;"></i>
+                                </div>
+                                <h5 style="color: #ffffff; margin: 0; font-size: 1.1rem;">📄 CASO DE USO - CU03</h5>
+                            </div>
+                            <div class="case-preview" style="background: #f8f9fa; border-radius: 0.5rem; padding: 2rem; margin-bottom: 1rem; display: flex; align-items: center; justify-content: center; min-height: 120px;">
+                                <div style="text-align: center; color: #6c757d;">
+                                    <i class="fas fa-tools" style="font-size: 2.5rem; margin-bottom: 0.5rem; color: #4facfe;"></i>
+                                    <p style="margin: 0; font-size: 0.9rem;">Diagrama CU03</p>
+                                </div>
+                            </div>
+                            <button class="case-btn" style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); border: none; padding: 0.6rem 1.5rem; border-radius: 25px; color: white; font-weight: 500; cursor: pointer; width: 100%; transition: all 0.3s ease;">
+                                <i class="fas fa-download"></i> Descargar PDF
+                            </button>
+                        </div>
+                        <div class="use-case-card" style="background: rgba(255, 255, 255, 0.05); border-radius: 1rem; padding: 1.5rem; border: 1px solid rgba(255, 255, 255, 0.1); transition: all 0.3s ease;">
+                            <div class="case-header" style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem;">
+                                <div class="case-icon" style="background: linear-gradient(135deg, #ff9a9e 0%, #fecfef 100%); width: 50px; height: 50px; border-radius: 0.5rem; display: flex; align-items: center; justify-content: center;">
+                                    <i class="fas fa-cog" style="color: white; font-size: 1.2rem;"></i>
+                                </div>
+                                <h5 style="color: #ffffff; margin: 0; font-size: 1.1rem;">📄 CASO DE USO - CU04</h5>
+                            </div>
+                            <div class="case-preview" style="background: #f8f9fa; border-radius: 0.5rem; padding: 2rem; margin-bottom: 1rem; display: flex; align-items: center; justify-content: center; min-height: 120px;">
+                                <div style="text-align: center; color: #6c757d;">
+                                    <i class="fas fa-cog" style="font-size: 2.5rem; margin-bottom: 0.5rem; color: #ff9a9e;"></i>
+                                    <p style="margin: 0; font-size: 0.9rem;">Diagrama CU04</p>
+                                </div>
+                            </div>
+                            <button class="case-btn" style="background: linear-gradient(135deg, #ff9a9e 0%, #fecfef 100%); border: none; padding: 0.6rem 1.5rem; border-radius: 25px; color: white; font-weight: 500; cursor: pointer; width: 100%; transition: all 0.3s ease;">
+                                <i class="fas fa-download"></i> Descargar PDF
+                            </button>
+                        </div>
+                        <div class="use-case-card" style="background: rgba(255, 255, 255, 0.05); border-radius: 1rem; padding: 1.5rem; border: 1px solid rgba(255, 255, 255, 0.1); transition: all 0.3s ease;">
+                            <div class="case-header" style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem;">
+                                <div class="case-icon" style="background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%); width: 50px; height: 50px; border-radius: 0.5rem; display: flex; align-items: center; justify-content: center;">
+                                    <i class="fas fa-chart-line" style="color: #333; font-size: 1.2rem;"></i>
+                                </div>
+                                <h5 style="color: #ffffff; margin: 0; font-size: 1.1rem;">📄 CASO DE USO - CU05</h5>
+                            </div>
+                            <div class="case-preview" style="background: #f8f9fa; border-radius: 0.5rem; padding: 2rem; margin-bottom: 1rem; display: flex; align-items: center; justify-content: center; min-height: 120px;">
+                                <div style="text-align: center; color: #6c757d;">
+                                    <i class="fas fa-chart-line" style="font-size: 2.5rem; margin-bottom: 0.5rem; color: #a8edea;"></i>
+                                    <p style="margin: 0; font-size: 0.9rem;">Diagrama CU05</p>
+                                </div>
+                            </div>
+                            <button class="case-btn" style="background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%); border: none; padding: 0.6rem 1.5rem; border-radius: 25px; color: #333; font-weight: 500; cursor: pointer; width: 100%; transition: all 0.3s ease;">
+                                <i class="fas fa-download"></i> Descargar PDF
+                            </button>
+                        </div>
+                        <div class="use-case-card" style="background: rgba(255, 255, 255, 0.05); border-radius: 1rem; padding: 1.5rem; border: 1px solid rgba(255, 255, 255, 0.1); transition: all 0.3s ease;">
+                            <div class="case-header" style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem;">
+                                <div class="case-icon" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); width: 50px; height: 50px; border-radius: 0.5rem; display: flex; align-items: center; justify-content: center;">
+                                    <i class="fas fa-database" style="color: white; font-size: 1.2rem;"></i>
+                                </div>
+                                <h5 style="color: #ffffff; margin: 0; font-size: 1.1rem;">📄 CASO DE USO - CU06</h5>
+                            </div>
+                            <div class="case-preview" style="background: #f8f9fa; border-radius: 0.5rem; padding: 2rem; margin-bottom: 1rem; display: flex; align-items: center; justify-content: center; min-height: 120px;">
+                                <div style="text-align: center; color: #6c757d;">
+                                    <i class="fas fa-database" style="font-size: 2.5rem; margin-bottom: 0.5rem; color: #667eea;"></i>
+                                    <p style="margin: 0; font-size: 0.9rem;">Diagrama CU06</p>
+                                </div>
+                            </div>
+                            <button class="case-btn" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border: none; padding: 0.6rem 1.5rem; border-radius: 25px; color: white; font-weight: 500; cursor: pointer; width: 100%; transition: all 0.3s ease;">
+                                <i class="fas fa-file-image"></i> Descargar PNG
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Manuales de Uso Section -->
+                <div class="doc-section">
+                    <div class="text-center" style="margin-bottom: 4rem;">
+                        <h2 style="font-size: 2.5rem; font-weight: 700; color: #ffffff; margin-bottom: 1rem;">Manuales de Uso</h2>
+                        <p style="color: rgba(255, 255, 255, 0.7); font-size: 1.1rem; max-width: 600px; margin: 0 auto;">
+                            En esta sección encontrarás los manuales de uso del sistema, los cuales explican de manera clara y ordenada cómo 
+                            interactuar con nuestro aplicativo.
+                        </p>
+                    </div>
+                    <div class="row" style="display: flex; justify-content: center; gap: 3rem;">
+                        <div class="col-lg-5 col-md-6 mb-4">
+                            <div class="manual-card" style="background: rgba(255, 255, 255, 0.05); border-radius: 1rem; padding: 2.5rem; text-align: center; border: 1px solid rgba(255, 255, 255, 0.1); transition: all 0.3s ease; backdrop-filter: blur(10px);">
+                                <div class="manual-icon" style="margin-bottom: 2rem;">
+                                    <i class="fas fa-user-graduate" style="font-size: 4rem; color: #f5a623;"></i>
+                                </div>
+                                <h4 style="color: #ffffff; margin-bottom: 1.5rem; font-size: 1.4rem;">📚 MANUAL DE USUARIO CLIENTE</h4>
+                                <div class="manual-preview" style="margin: 1.5rem 0; background: #f8f9fa; border-radius: 0.5rem; padding: 2.5rem; display: flex; align-items: center; justify-content: center; min-height: 150px;">
+                                    <div style="text-align: center; color: #6c757d;">
+                                        <i class="fas fa-book-open" style="font-size: 3rem; margin-bottom: 0.5rem; color: #f5a623;"></i>
+                                        <p style="margin: 0; font-size: 1rem; font-weight: 500;">Manual Cliente</p>
+                                    </div>
+                                </div>
+                                <button class="manual-btn" style="background: linear-gradient(135deg, #f5a623 0%, #f76b1c 100%); border: none; padding: 1rem 2.5rem; border-radius: 50px; color: white; font-weight: 600; cursor: pointer; transition: all 0.3s ease; display: inline-flex; align-items: center; gap: 0.75rem; font-size: 1rem;">
+                                    <i class="fas fa-download"></i>
+                                    Descargar PDF
+                                </button>
+                            </div>
+                        </div>
+                        <div class="col-lg-5 col-md-6 mb-4">
+                            <div class="manual-card" style="background: rgba(255, 255, 255, 0.05); border-radius: 1rem; padding: 2.5rem; text-align: center; border: 1px solid rgba(255, 255, 255, 0.1); transition: all 0.3s ease; backdrop-filter: blur(10px);">
+                                <div class="manual-icon" style="margin-bottom: 2rem;">
+                                    <i class="fas fa-tools" style="font-size: 4rem; color: #50c878;"></i>
+                                </div>
+                                <h4 style="color: #ffffff; margin-bottom: 1.5rem; font-size: 1.4rem;">🔧 MANUAL TÉCNICO</h4>
+                                <div class="manual-preview" style="margin: 1.5rem 0; background: #f8f9fa; border-radius: 0.5rem; padding: 2.5rem; display: flex; align-items: center; justify-content: center; min-height: 150px;">
+                                    <div style="text-align: center; color: #6c757d;">
+                                        <i class="fas fa-code" style="font-size: 3rem; margin-bottom: 0.5rem; color: #50c878;"></i>
+                                        <p style="margin: 0; font-size: 1rem; font-weight: 500;">Manual Técnico</p>
+                                    </div>
+                                </div>
+                                <button class="manual-btn" style="background: linear-gradient(135deg, #50c878 0%, #00a86b 100%); border: none; padding: 1rem 2.5rem; border-radius: 50px; color: white; font-weight: 600; cursor: pointer; transition: all 0.3s ease; display: inline-flex; align-items: center; gap: 0.75rem; font-size: 1rem;">
+                                    <i class="fas fa-download"></i>
+                                    Descargar PDF
+                                </button>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
+        </section> 
         </div>
-        <!-- Portfolio item 2 modal popup-->
-        <div class="portfolio-modal modal fade" id="portfolioModal2" tabindex="-1" role="dialog" aria-hidden="true">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <div class="close-modal" data-bs-dismiss="modal"><img src="assets/img/close-icon.svg" alt="Close modal" /></div>
-                    <div class="container">
-                        <div class="row justify-content-center">
-                            <div class="col-lg-8">
-                                <div class="modal-body">
-                                    <!-- Project details-->
-                                    <h2 class="text-uppercase">Project Name</h2>
-                                    <p class="item-intro text-muted">Lorem ipsum dolor sit amet consectetur.</p>
-                                    <img class="img-fluid d-block mx-auto" src="assets/img/portfolio/2.jpg" alt="..." />
-                                    <p>Use this area to describe your project. Lorem ipsum dolor sit amet, consectetur adipisicing elit. Est blanditiis dolorem culpa incidunt minus dignissimos deserunt repellat aperiam quasi sunt officia expedita beatae cupiditate, maiores repudiandae, nostrum, reiciendis facere nemo!</p>
-                                    <ul class="list-inline">
-                                        <li>
-                                            <strong>Client:</strong>
-                                            Explore
-                                        </li>
-                                        <li>
-                                            <strong>Category:</strong>
-                                            Graphic Design
-                                        </li>
-                                    </ul>
-                                    <button class="btn btn-primary btn-xl text-uppercase" data-bs-dismiss="modal" type="button">
-                                        <i class="fas fa-xmark me-1"></i>
-                                        Close Project
-                                    </button>
-                                </div>
+                <!-- Footer Moderno -->
+        <footer style="background: linear-gradient(135deg, #0f0f23 0%, #1a1a2e 100%); border-top: 1px solid rgba(255,255,255,0.1); padding: 3rem 0 2rem;">
+            <div class="container">
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 2rem; margin-bottom: 2rem;">
+                    <!-- Logo y Descripción -->
+                    <div>
+                        <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem;">
+                            <div class="logo-sphere" style="width: 40px; height: 40px;"></div>
+                            <h3 style="color: var(--text-light); font-family: var(--font-heading); margin: 0;">S.E.I.E</h3>
+                        </div>
+                        <p style="color: var(--text-muted); line-height: 1.6;">
+                            Sistema Estratégico Integral de Empresas. Transformando el futuro empresarial a través de la innovación tecnológica.
+                        </p>
+                    </div>
+
+                    <!-- Enlaces Rápidos -->
+                    <div>
+                        <h4 style="color: var(--text-light); margin-bottom: 1rem; font-family: var(--font-heading);">Enlaces</h4>
+                        <div style="display: flex; flex-direction: column; gap: 0.5rem;">
+                            <a href="#inicio" style="color: var(--text-muted); text-decoration: none; transition: color 0.3s ease;" onmouseover="this.style.color='var(--text-light)'" onmouseout="this.style.color='var(--text-muted)'">Inicio</a>
+                            <a href="#about" style="color: var(--text-muted); text-decoration: none; transition: color 0.3s ease;" onmouseover="this.style.color='var(--text-light)'" onmouseout="this.style.color='var(--text-muted)'">Acerca</a>
+                            <a href="#team" style="color: var(--text-muted); text-decoration: none; transition: color 0.3s ease;" onmouseover="this.style.color='var(--text-light)'" onmouseout="this.style.color='var(--text-muted)'">Equipo</a>
+                            <a href="informacion.html" style="color: var(--text-muted); text-decoration: none; transition: color 0.3s ease;" onmouseover="this.style.color='var(--text-light)'" onmouseout="this.style.color='var(--text-muted)'">Información</a>
+                        </div>
+                    </div>
+
+                    <!-- Redes Sociales -->
+                    <div>
+                        <h4 style="color: var(--text-light); margin-bottom: 1rem; font-family: var(--font-heading);">Síguenos</h4>
+                        <div style="display: flex; gap: 1rem;">
+                            <a href="https://oferta.senasofiaplus.edu.co/sofia-oferta/" target="_blank" style="width: 45px; height: 45px; background: var(--bg-card); border: 1px solid rgba(255,255,255,0.1); border-radius: var(--border-radius-lg); display: flex; align-items: center; justify-content: center; transition: all 0.3s ease; text-decoration: none;" onmouseover="this.style.background='var(--primary-gradient)'; this.style.transform='translateY(-2px)'" onmouseout="this.style.background='var(--bg-card)'; this.style.transform='translateY(0)'">
+                                <i class="fas fa-search" style="color: var(--text-light);"></i>
+                            </a>
+                            <a href="https://www.facebook.com/groups/566675547810297/?locale=es_LA" target="_blank" style="width: 45px; height: 45px; background: var(--bg-card); border: 1px solid rgba(255,255,255,0.1); border-radius: var(--border-radius-lg); display: flex; align-items: center; justify-content: center; transition: all 0.3s ease; text-decoration: none;" onmouseover="this.style.background='var(--secondary-gradient)'; this.style.transform='translateY(-2px)'" onmouseout="this.style.background='var(--bg-card)'; this.style.transform='translateY(0)'">
+                                <i class="fab fa-facebook-f" style="color: var(--text-light);"></i>
+                            </a>
+                            <a href="https://www.instagram.com/senacomunica/?hl=es-la" target="_blank" style="width: 45px; height: 45px; background: var(--bg-card); border: 1px solid rgba(255,255,255,0.1); border-radius: var(--border-radius-lg); display: flex; align-items: center; justify-content: center; transition: all 0.3s ease; text-decoration: none;" onmouseover="this.style.background='var(--accent-gradient)'; this.style.transform='translateY(-2px)'" onmouseout="this.style.background='var(--bg-card)'; this.style.transform='translateY(0)'">
+                                <i class="fab fa-instagram" style="color: var(--text-light);"></i>
+                            </a>
+                            <a href="https://www.youtube.com/channel/UCt5y885UFplu2okY39TBwCg" target="_blank" style="width: 45px; height: 45px; background: var(--bg-card); border: 1px solid rgba(255,255,255,0.1); border-radius: var(--border-radius-lg); display: flex; align-items: center; justify-content: center; transition: all 0.3s ease; text-decoration: none;" onmouseover="this.style.background='var(--primary-gradient)'; this.style.transform='translateY(-2px)'" onmouseout="this.style.background='var(--bg-card)'; this.style.transform='translateY(0)'">
+                                <i class="fab fa-youtube" style="color: var(--text-light);"></i>
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- Información del Proyecto -->
+                    <div>
+                        <h4 style="color: var(--text-light); margin-bottom: 1rem; font-family: var(--font-heading);">Proyecto</h4>
+                        <div style="display: flex; flex-direction: column; gap: 0.8rem;">
+                            <a href="https://github.com/LauraVanesa06/PROYECTO-FORMATIVO" target="_blank" style="color: var(--text-muted); text-decoration: none; transition: all 0.3s ease; display: flex; align-items: center; gap: 0.5rem;" onmouseover="this.style.color='var(--text-light)'; this.querySelector('i').style.transform='scale(1.1)'" onmouseout="this.style.color='var(--text-muted)'; this.querySelector('i').style.transform='scale(1)'">
+                                <i class="fab fa-github" style="font-size: 1.1rem; transition: transform 0.3s ease;"></i>
+                                Repositorio GitHub
+                            </a>
+                            <div style="color: var(--text-muted); display: flex; align-items: center; gap: 0.5rem;">
+                                <i class="fas fa-tag" style="font-size: 1rem; color: rgba(102, 126, 234, 0.8);"></i>
+                                <span style="font-size: 0.9rem;">Versión: <span class="gradient-text" style="font-weight: 600;">v1.0.0</span></span>
+                            </div>
+                            <div style="color: var(--text-muted); display: flex; align-items: center; gap: 0.5rem;">
+                                <i class="fas fa-code-branch" style="font-size: 1rem; color: rgba(168, 85, 247, 0.8);"></i>
+                                <span style="font-size: 0.9rem;">Branch: <code style="background: rgba(255,255,255,0.1); padding: 2px 6px; border-radius: 4px; color: var(--text-light);">feature/200</code></span>
                             </div>
                         </div>
                     </div>
                 </div>
-            </div>
-        </div>
-        <!-- Portfolio item 3 modal popup-->
-        <div class="portfolio-modal modal fade" id="portfolioModal3" tabindex="-1" role="dialog" aria-hidden="true">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <div class="close-modal" data-bs-dismiss="modal"><img src="assets/img/close-icon.svg" alt="Close modal" /></div>
-                    <div class="container">
-                        <div class="row justify-content-center">
-                            <div class="col-lg-8">
-                                <div class="modal-body">
-                                    <!-- Project details-->
-                                    <h2 class="text-uppercase">Project Name</h2>
-                                    <p class="item-intro text-muted">Lorem ipsum dolor sit amet consectetur.</p>
-                                    <img class="img-fluid d-block mx-auto" src="assets/img/portfolio/3.jpg" alt="..." />
-                                    <p>Use this area to describe your project. Lorem ipsum dolor sit amet, consectetur adipisicing elit. Est blanditiis dolorem culpa incidunt minus dignissimos deserunt repellat aperiam quasi sunt officia expedita beatae cupiditate, maiores repudiandae, nostrum, reiciendis facere nemo!</p>
-                                    <ul class="list-inline">
-                                        <li>
-                                            <strong>Client:</strong>
-                                            Finish
-                                        </li>
-                                        <li>
-                                            <strong>Category:</strong>
-                                            Identity
-                                        </li>
-                                    </ul>
-                                    <button class="btn btn-primary btn-xl text-uppercase" data-bs-dismiss="modal" type="button">
-                                        <i class="fas fa-xmark me-1"></i>
-                                        Close Project
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
+
+                <!-- Línea divisoria -->
+                <div style="height: 1px; background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent); margin: 2rem 0;"></div>
+
+                <!-- Copyright y Enlaces Legales -->
+                <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
+                    <p style="color: var(--text-muted); margin: 0;">
+                        © 2025 <span class="gradient-text">S.E.I.E</span>. Todos los derechos reservados. 
+                        <a href="https://github.com/LauraVanesa06/PROYECTO-FORMATIVO" target="_blank" style="color: rgba(102, 126, 234, 0.9); text-decoration: none; margin-left: 0.5rem;" onmouseover="this.style.color='rgba(102, 126, 234, 1)'" onmouseout="this.style.color='rgba(102, 126, 234, 0.9)'">
+                            <i class="fab fa-github"></i> Open Source
+                        </a>
+                    </p>
+                    <div style="display: flex; gap: 2rem;">
+                        <a href="#!" style="color: var(--text-muted); text-decoration: none; transition: color 0.3s ease;" onmouseover="this.style.color='var(--text-light)'" onmouseout="this.style.color='var(--text-muted)'">Política de Privacidad</a>
+                        <a href="#!" style="color: var(--text-muted); text-decoration: none; transition: color 0.3s ease;" onmouseover="this.style.color='var(--text-light)'" onmouseout="this.style.color='var(--text-muted)'">Términos de Uso</a>
                     </div>
                 </div>
             </div>
-        </div>
-        <!-- Portfolio item 4 modal popup-->
-        <div class="portfolio-modal modal fade" id="portfolioModal4" tabindex="-1" role="dialog" aria-hidden="true">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <div class="close-modal" data-bs-dismiss="modal"><img src="assets/img/close-icon.svg" alt="Close modal" /></div>
-                    <div class="container">
-                        <div class="row justify-content-center">
-                            <div class="col-lg-8">
-                                <div class="modal-body">
-                                    <!-- Project details-->
-                                    <h2 class="text-uppercase">Project Name</h2>
-                                    <p class="item-intro text-muted">Lorem ipsum dolor sit amet consectetur.</p>
-                                    <img class="img-fluid d-block mx-auto" src="assets/img/portfolio/4.jpg" alt="..." />
-                                    <p>Use this area to describe your project. Lorem ipsum dolor sit amet, consectetur adipisicing elit. Est blanditiis dolorem culpa incidunt minus dignissimos deserunt repellat aperiam quasi sunt officia expedita beatae cupiditate, maiores repudiandae, nostrum, reiciendis facere nemo!</p>
-                                    <ul class="list-inline">
-                                        <li>
-                                            <strong>Client:</strong>
-                                            Lines
-                                        </li>
-                                        <li>
-                                            <strong>Category:</strong>
-                                            Branding
-                                        </li>
-                                    </ul>
-                                    <button class="btn btn-primary btn-xl text-uppercase" data-bs-dismiss="modal" type="button">
-                                        <i class="fas fa-xmark me-1"></i>
-                                        Close Project
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <!-- Portfolio item 5 modal popup-->
-        <div class="portfolio-modal modal fade" id="portfolioModal5" tabindex="-1" role="dialog" aria-hidden="true">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <div class="close-modal" data-bs-dismiss="modal"><img src="assets/img/close-icon.svg" alt="Close modal" /></div>
-                    <div class="container">
-                        <div class="row justify-content-center">
-                            <div class="col-lg-8">
-                                <div class="modal-body">
-                                    <!-- Project details-->
-                                    <h2 class="text-uppercase">Project Name</h2>
-                                    <p class="item-intro text-muted">Lorem ipsum dolor sit amet consectetur.</p>
-                                    <img class="img-fluid d-block mx-auto" src="assets/img/portfolio/5.jpg" alt="..." />
-                                    <p>Use this area to describe your project. Lorem ipsum dolor sit amet, consectetur adipisicing elit. Est blanditiis dolorem culpa incidunt minus dignissimos deserunt repellat aperiam quasi sunt officia expedita beatae cupiditate, maiores repudiandae, nostrum, reiciendis facere nemo!</p>
-                                    <ul class="list-inline">
-                                        <li>
-                                            <strong>Client:</strong>
-                                            Southwest
-                                        </li>
-                                        <li>
-                                            <strong>Category:</strong>
-                                            Website Design
-                                        </li>
-                                    </ul>
-                                    <button class="btn btn-primary btn-xl text-uppercase" data-bs-dismiss="modal" type="button">
-                                        <i class="fas fa-xmark me-1"></i>
-                                        Close Project
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <!-- Portfolio item 6 modal popup-->
-        <div class="portfolio-modal modal fade" id="portfolioModal6" tabindex="-1" role="dialog" aria-hidden="true">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <div class="close-modal" data-bs-dismiss="modal"><img src="assets/img/close-icon.svg" alt="Close modal" /></div>
-                    <div class="container">
-                        <div class="row justify-content-center">
-                            <div class="col-lg-8">
-                                <div class="modal-body">
-                                    <!-- Project details-->
-                                    <h2 class="text-uppercase">Project Name</h2>
-                                    <p class="item-intro text-muted">Lorem ipsum dolor sit amet consectetur.</p>
-                                    <img class="img-fluid d-block mx-auto" src="assets/img/portfolio/6.jpg" alt="..." />
-                                    <p>Use this area to describe your project. Lorem ipsum dolor sit amet, consectetur adipisicing elit. Est blanditiis dolorem culpa incidunt minus dignissimos deserunt repellat aperiam quasi sunt officia expedita beatae cupiditate, maiores repudiandae, nostrum, reiciendis facere nemo!</p>
-                                    <ul class="list-inline">
-                                        <li>
-                                            <strong>Client:</strong>
-                                            Window
-                                        </li>
-                                        <li>
-                                            <strong>Category:</strong>
-                                            Photography
-                                        </li>
-                                    </ul>
-                                    <button class="btn btn-primary btn-xl text-uppercase" data-bs-dismiss="modal" type="button">
-                                        <i class="fas fa-xmark me-1"></i>
-                                        Close Project
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
+        </footer>   
         <!-- Bootstrap core JS-->
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
         <!-- Core theme JS-->
