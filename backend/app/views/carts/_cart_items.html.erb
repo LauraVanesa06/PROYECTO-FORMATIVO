@@ -44,7 +44,8 @@
           </div>
         </div>
       <% end %>
-
+    </div>
+    
     </tbody>
   </table>
 
@@ -77,49 +78,6 @@
   <p><%= t("cart.empty") %></p>
 <% end %>
 
-<script>
-  document.addEventListener('DOMContentLoaded', function() {
-    const csrfToken = document.querySelector('meta[name="csrf-token"]').content;
-
-    // 🔹 Mostrar notificación (agregar / eliminar)
-    function showNotification(message, type = 'success') {
-      const existing = document.querySelector('.custom-alert');
-      if (existing) existing.remove();
-        const alert = document.createElement('div');
-        alert.className = `custom-alert alert-${type}`;
-        alert.textContent = message;
-        document.body.appendChild(alert);
-
-        setTimeout(() => alert.classList.add('show'), 50);
-        setTimeout(() => {
-          alert.classList.remove('show');
-          setTimeout(() => alert.remove(), 300);
-        }, 2500);
-    </div>
-
-    <div id="cart-summary" class="cart-summary card p-4 mt-4 shadow-sm border-0 rounded-4 bg-light">
-      <div class="d-flex justify-content-between align-items-center mb-2">
-        <h4 class="mb-0"><%= t("cart.total") %>: </h4>
-        <span class="fs-4 fw-bold text-success">
-          COP <%= number_with_precision(cart_items.sum { |i| (i.product&.precio || 0) * (i.quantity || 0) }, delimiter: '.', separator: ',', precision: 2) %>
-        </span>
-      </div>
-      <div class="d-flex gap-3 mt-3" style="margin: 0 !important;">
-        <% unless current_page?(cart_path) %>
-          <%= link_to "Ir a Checkout", cart_path, class: "btn btn-primary btn-lg px-4 shadow-sm" %>
-        <% end %>
-        <% if current_page?(cart_path) %>
-          <%= link_to "Comprar Ahora", cart_path , class: "btn btn-success btn-lg px-4 shadow-sm" %>
-        <% end %>
-      </div>
-    </div>
-  <% else %>
-    <div class="alert alert-info text-center p-4 mt-4">
-      <i class="fa-solid fa-cart-arrow-down fa-2x mb-2"></i><br>
-      <span class="fs-5"><%= t("cart.empty") %></span>
-    </div>
-  <% end %>
-</div>
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {
@@ -279,7 +237,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
       const totalText = document.querySelector('.text-end h4');
       if (totalText) totalText.textContent = '<%= t("cart.total") %>: ' + formatPrice(total);
-=======
+
   // 🔹 Eliminar producto con notificación y actualización automática
   document.addEventListener('click', async function(e) {
     const btn = e.target.closest('.delete-item');
@@ -361,7 +319,7 @@ document.addEventListener('DOMContentLoaded', function() {
       return parseFloat(priceString.replace(/\./g, '').replace(',', '.').replace('$', '').trim());
     }
   });
-=======
+
   // 🔹 Recalcular total general del carrito
   function updateCartTotal() {
     const quantityFields = document.querySelectorAll('.quantity-field');
