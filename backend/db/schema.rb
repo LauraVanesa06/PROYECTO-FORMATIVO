@@ -10,6 +10,8 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
+ActiveRecord::Schema[8.0].define(version: 2025_10_09_041612) do
+
 
 ActiveRecord::Schema[8.0].define(version: 2025_10_07_193350) do
 
@@ -95,6 +97,24 @@ ActiveRecord::Schema[8.0].define(version: 2025_10_07_193350) do
     t.string "nombre"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+  end
+
+  create_table "payments", force: :cascade do |t|
+    t.integer "cart_id", null: false
+    t.string "transaction_id"
+    t.integer "status", default: 0, null: false
+    t.decimal "amount", precision: 12, scale: 2, null: false
+    t.string "pay_method", null: false
+    t.string "token", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.string "currency", default: "COP", null: false
+    t.string "wompi_id", null: false
+    t.integer "user_id", null: false
+    t.json "raw_response", default: {}, null: false
+    t.string "account_info", null: false
+    t.index ["cart_id"], name: "index_payments_on_cart_id"
+    t.index ["user_id"], name: "index_payments_on_user_id"
   end
 
   create_table "pedido_products", force: :cascade do |t|
@@ -198,6 +218,8 @@ ActiveRecord::Schema[8.0].define(version: 2025_10_07_193350) do
   add_foreign_key "carts", "users"
   add_foreign_key "favorites", "products"
   add_foreign_key "favorites", "users"
+  add_foreign_key "payments", "carts"
+  add_foreign_key "payments", "users"
   add_foreign_key "pedido_products", "pedidos"
   add_foreign_key "pedido_products", "products"
   add_foreign_key "pedidos", "suppliers"
