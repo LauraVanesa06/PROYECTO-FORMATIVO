@@ -40,7 +40,7 @@
   position: absolute;
   top: 18px;
   right: 18px;
-  z-index: 10;
+  z-index: 1;
 }
 
 .form-container:hover {
@@ -71,9 +71,9 @@
 }
 
 #colores:hover {
-  background-color: #1da851;
+  background-color: #2d5d90;
+  color: white;
 }
-----
 
 .form-control{
       border: 1px solid #9c9378;
@@ -168,7 +168,8 @@ label.letra {
 
 .btn-whatsapp:hover {
   background:  #25d366;
-
+  text-decoration: none;
+  color: white;
 }
 
 .btn-whatsapp .icono-wsp {
