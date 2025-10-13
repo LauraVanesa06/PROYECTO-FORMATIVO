@@ -17,9 +17,19 @@ class PaymentsController < ApplicationController
     payment = Payment.find_by(transaction_id: transaction["id"])
 
     if payment
-      payment.update(status: transaction["status"])
+      status = transaction["status"].to_s.downcase
+      mapped_status = case status
+                      when "approved", "confirmed" then :paid
+                      when "declined", "failed" then :failed
+                      when "cancelled" then :cancelled
+                      else :pending
+                      end
+
+      payment.update(status: mapped_status)
     end
+
     head :ok
+    
   end
 
   def create
