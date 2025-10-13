@@ -16,15 +16,18 @@ end
 
 
 puts "🧹 Limpiando base de datos..."
+
+PedidoProduct.delete_all
 Purchasedetail.delete_all
 Buy.delete_all
+Pedido.delete_all
+Cart.delete_all 
 Product.delete_all
 Customer.delete_all
 Marca.delete_all
 Category.delete_all
 Supplier.delete_all
 User.delete_all
-Pedido.delete_all
 
 
 puts "✅ Datos eliminados, guardando datos de la semilla..."
@@ -41,11 +44,10 @@ reset_postgres_sequences(
   'pedidos'
 )
 
-User.create!(
-  email: "user@gmail.com",
-  password: "123456",
-  role: "admin"
-)
+User.create!([
+  { email: "user@gmail.com", password: "123456", role: "admin" },
+  { email: "cliente@gmail.com", password: "123456", role: "user" },
+])
 
 categories = Category.create!([
   { nombre: "Herramientas" },
