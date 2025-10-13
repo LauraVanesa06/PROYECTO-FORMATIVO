@@ -37,7 +37,7 @@ class HomeController < ApplicationController
 
   def producto_show
     @product = Product.find(params[:id])
-    @relacionados = Product.where(category: @product.category).where.not(id: @product.id).limit(4)
+    @relacionados = Product.where(category: @product.category).where.not(id: @product.id).limit(5)
     
     # Variables para Wompi en producto individual
     @payment_reference = "product_#{@product.id}_#{Time.current.to_i}"

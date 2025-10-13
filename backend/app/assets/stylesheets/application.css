@@ -1298,16 +1298,15 @@ hr{
 }
 
 .category-link img {
- width: 65px;
+    width: 65px;
     height: 65px;
     object-fit: cover;
     border-radius: 50%;
     border: 2px solid #ececec;
 }
 
-
 .category-link:hover {
-  background: #1e3c72;
+  background: #475f9b;
   color: #fff;
   transform: translateY(-3px);
   box-shadow: 0 6px 14px rgba(0,0,0,0.15);
