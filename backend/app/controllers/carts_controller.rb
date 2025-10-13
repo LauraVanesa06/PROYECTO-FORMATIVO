@@ -3,10 +3,9 @@ class CartsController < ApplicationController
   before_action :authenticate_user!
 
   def show
-
     @cart = current_cart
     
-    # calcula total decimal
+    # Usa quantity en lugar de cantidad
     total_amount = if @cart.respond_to?(:total) && @cart.total.present?
                     @cart.total.to_f
                    else
@@ -17,7 +16,6 @@ class CartsController < ApplicationController
     @payment_reference = "cart_#{@cart&.id || 'anon'}_#{Time.now.to_i}"
 
     begin
-
       @signature = WompiService.new.signature_for(
         reference: @payment_reference,
         amount_in_cents: amount_cents,
@@ -25,14 +23,13 @@ class CartsController < ApplicationController
       )
     rescue => e
       Rails.logger.error("[Wompi] signature error: #{e.message}")
-      @signature = nil
+      @signature = ""
     end
 
-    @cart_items = @cart.cart_items
+    @cart_items = @cart.cart_items.includes(:product)
   end
 
   def add_item
-
     @cart = current_user.cart || current_user.create_cart
     product = Product.find(params[:product_id])
     item = @cart.cart_items.find_by(product_id: product.id)
@@ -48,7 +45,6 @@ class CartsController < ApplicationController
   end
 
   def update_item
-    
     item = @cart.cart_items.find(params[:id])
     nueva_cantidad = params[:cantidad].to_i
 
@@ -62,11 +58,9 @@ class CartsController < ApplicationController
   end
 
   def remove_item
-
     item = @cart.cart_items.find(params[:id])
     item.destroy
     redirect_to cart_path, notice: "Producto eliminado del carrito"
-
   end
 
   private
@@ -74,5 +68,4 @@ class CartsController < ApplicationController
   def set_cart
     @cart = Cart.find_by(id: session[:cart_id]) || Cart.create
   end
-
 end

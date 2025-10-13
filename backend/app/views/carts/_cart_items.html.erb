@@ -45,66 +45,57 @@
         </div>
       <% end %>
     </div>
-    
-    </tbody>
-  </table>
-
-  <div class="text-end">
-    <h4>
-      <%= t("cart.total") %>: <%= number_to_currency(cart_items.sum { |i| (i.product&.precio || 0) * (i.quantity || 0) }, unit: ' $', format: '%n%u', separator: ',', delimiter: '.') %>
-    </h4>
-
-    <br>
-
-    <% unless current_page?(cart_path) %>
-      <%= link_to "Ir a Checkout", cart_path, class: "btn btn-success btn-lg" %>
-    <% end %>
-    <% if current_page?(cart_path) %>
-      <form>
-        <script
-          src="https://checkout.wompi.co/widget.js"
-          data-render="button"
-          data-public-key="pub_test_f0bOPKD5aHr1J6hgSEc9KhPLAFFrOk66"
-          data-currency="COP"
-          data-amount-in-cents="<%= ((@cart.total || 0) * 100).to_i %>"
-          data-reference="<%= @payment_reference %>"
-          data-signature:integrity="<%= @signature %>"
-        ></script>
-      </form>
-
-    <% end %>
-  </div>
-<% else %>
-  <p><%= t("cart.empty") %></p>
-<% end %>
-
-
+    <div id="cart-summary" class="cart-summary card p-4 mt-4 shadow-sm border-0 rounded-4 bg-light">
+      <div class="d-flex justify-content-between align-items-center mb-2">
+        <h4 class="mb-0"><%= t("cart.total") %>: </h4>
+        <span class="fs-4 fw-bold text-success">
+          COP <%= number_with_precision(cart_items.sum { |i| (i.product&.precio || 0) * (i.quantity || 0) }, delimiter: '.', separator: ',', precision: 2) %>
+        </span>
+      </div>
+      <div class="d-flex gap-3 mt-3" style="margin: 0 !important;">
+        <% if current_page?(cart_path) %>
+          <div id="wompi-container">
+            <script
+              src="https://checkout.wompi.co/widget.js"
+              data-render="button"
+              data-public-key="pub_test_f0bOPKD5aHr1J6hgSEc9KhPLAFFrOk66"
+              data-currency="COP"
+              data-amount-in-cents="<%= ((@cart_items.sum { |i| (i.product&.precio || 0) * (i.quantity || 0) }) * 100).to_i %>"
+              data-reference="<%= @payment_reference %>"
+              data-signature-integrity="<%= @signature %>"
+            ></script>
+          </div>
+        <% end %>
+      </div>
+    </div>
+  <% else %>
+    <div class="alert alert-info text-center p-4 mt-4">
+      <i class="fa-solid fa-cart-arrow-down fa-2x mb-2"></i><br>
+      <span class="fs-5"><%= t("cart.empty") %></span>
+    </div>
+  <% end %>
+</div>
 <script>
 document.addEventListener('DOMContentLoaded', function() {
   const csrfToken = document.querySelector('meta[name="csrf-token"]').content;
-
   // 🔹 Mostrar notificación (agregar / eliminar)
   function showNotification(message, type = 'success') {
     const existing = document.querySelector('.custom-alert');
     if (existing) existing.remove();
-
     const alert = document.createElement('div');
     alert.className = `custom-alert alert-${type}`;
     alert.textContent = message;
     document.body.appendChild(alert);
-
     setTimeout(() => alert.classList.add('show'), 50);
     setTimeout(() => {
       alert.classList.remove('show');
       setTimeout(() => alert.remove(), 300);
     }, 2500);
   }
-
   // 🔹 Actualizar subtotal automáticamente al cambiar cantidad
   document.addEventListener('input', function(e) {
     const field = e.target.closest('.quantity-field');
     if (!field) return;
-
     let quantity = parseInt(field.value) || 1;
     
     // 🔹 Validar que no sea 0 o negativo
@@ -112,7 +103,6 @@ document.addEventListener('DOMContentLoaded', function() {
       quantity = 1;
       field.value = 1;
     }
-
     const cartItem = field.closest('.cart-item-card');
     
     // Obtener precio del producto
@@ -130,15 +120,12 @@ document.addEventListener('DOMContentLoaded', function() {
     // Actualizar total general
     updateCartTotal();
   });
-
   // 🔹 Enviar cambio al servidor cuando se pierde el foco
   document.addEventListener('change', async function(e) {
     const field = e.target.closest('.quantity-field');
     if (!field) return;
-
     const form = field.closest('form');
     const quantity = field.value;
-
     try {
       const response = await fetch(form.action, {
         method: 'PATCH',
@@ -155,98 +142,16 @@ document.addEventListener('DOMContentLoaded', function() {
     } catch (error) {
       console.error('Error al actualizar cantidad:', error);
       showNotification('Error al actualizar', 'danger');
-
     }
-
-    // 🔹 Cambiar cantidad (suma/resta)
-    document.addEventListener('change', async function(e) {
-      const field = e.target.closest('.quantity-field');
-      if (!field) return;
-
-        e.preventDefault();
-        const form = field.closest('form');
-        const quantity = field.value;
-
-        try {
-          const response = await fetch(form.action, {
-            method: 'PATCH',
-            headers: {
-              'Content-Type': 'application/json',
-              'X-CSRF-Token': csrfToken
-            },
-            body: JSON.stringify({ cart_item: { quantity: quantity } })
-          });
-
-          if (response.ok) {
-            const price = parsePrice(field.closest('tr').querySelector('td:nth-child(2)').textContent);
-            const subtotalCell = field.closest('tr').querySelector('td:nth-child(4)');
-            const subtotal = price * parseInt(quantity);
-            subtotalCell.textContent = formatPrice(subtotal);
-
-            updateCartTotal();
-          }
-        } catch (error) {
-          console.error('Error al actualizar cantidad:', error);
-        }
-    });
-
-    // 🔹 Eliminar producto con notificación
-    document.addEventListener('click', async function(e) {
-      const btn = e.target.closest('.delete-item');
-      if (!btn) return;
-
-      e.preventDefault();
-      const form = btn.closest('form');
-      const itemRow = btn.closest('tr');
-
-      try {
-        const response = await fetch(form.action, {
-          method: 'DELETE',
-          headers: {
-            'X-CSRF-Token': csrfToken,
-            'Accept': 'application/json'
-          }
-        });
-
-        if (response.ok) {
-          const data = await response.json();
-          itemRow.remove();
-          updateCartTotal();
-
-          // 🔹 Actualizar contador del carrito
-          const cartCount = document.getElementById('cart_count');
-          if (cartCount && data.count !== undefined) {
-            cartCount.textContent = data.count;
-          }
-
-          // 🔹 Mostrar notificación de eliminación
-          showNotification('🗑️ Producto eliminado del carrito', 'danger');
-        }
-      } catch (error) {
-      console.error('Error al eliminar producto:', error);
-      }
-    });
-
-    // 🔹 Recalcular total global
-    function updateCartTotal() {
-      const quantityFields = document.querySelectorAll('.quantity-field');
-      const total = Array.from(quantityFields).reduce((sum, input) => {
-        const itemPrice = parsePrice(input.closest('tr').querySelector('td:nth-child(2)').textContent);
-        return sum + (itemPrice * parseInt(input.value));
-      }, 0);
-
-      const totalText = document.querySelector('.text-end h4');
-      if (totalText) totalText.textContent = '<%= t("cart.total") %>: ' + formatPrice(total);
+  });
 
   // 🔹 Eliminar producto con notificación y actualización automática
   document.addEventListener('click', async function(e) {
     const btn = e.target.closest('.delete-item');
     if (!btn) return;
-
     e.preventDefault();
     const form = btn.closest('form');
     const itemCard = btn.closest('.cart-item-card');
-
     try {
       const response = await fetch(form.action, {
         method: 'DELETE',
@@ -255,24 +160,23 @@ document.addEventListener('DOMContentLoaded', function() {
           'Accept': 'application/json'
         }
       });
-
       if (response.ok) {
         const data = await response.json();
         
-        // 🔹 Eliminar la tarjeta del producto con animación
+        // 🔹 Eliminar la tarjeta del producto with animación
         itemCard.style.transition = 'opacity 0.3s ease-out';
         itemCard.style.opacity = '0';
         
         setTimeout(() => {
           itemCard.remove();
           
-          // 🔹 Actualizar total automáticamente
+          // 🔹 Actualizar total automáticamente (esto ya incluye Wompi)
           updateCartTotal();
           
           // 🔹 Verificar si el carrito está vacío
           const remainingItems = document.querySelectorAll('.cart-item-card');
           if (remainingItems.length === 0) {
-            // Mostrar mensaje de carrito vacío
+            // Mostrar mensaje de carrito vacío y ocultar Wompi
             const cartContainer = document.querySelector('.cart-items-list').parentElement;
             cartContainer.innerHTML = `
               <div class="alert alert-info text-center p-4 mt-4">
@@ -302,21 +206,6 @@ document.addEventListener('DOMContentLoaded', function() {
     } catch (error) {
       console.error('Error al eliminar producto:', error);
       showNotification('Error al eliminar producto', 'danger');
-
-    }
-
-    // 🔹 Funciones de formato de precio
-    function formatPrice(amount) {
-      const formattedNumber = new Intl.NumberFormat('es-ES', {
-        minimumFractionDigits: 2,
-        maximumFractionDigits: 2,
-        useGrouping: true
-      }).format(amount);
-      return `${formattedNumber} $`;
-    }
-
-    function parsePrice(priceString) {
-      return parseFloat(priceString.replace(/\./g, '').replace(',', '.').replace('$', '').trim());
     }
   });
 
@@ -324,7 +213,6 @@ document.addEventListener('DOMContentLoaded', function() {
   function updateCartTotal() {
     const quantityFields = document.querySelectorAll('.quantity-field');
     let total = 0;
-
     quantityFields.forEach(input => {
       const cartItem = input.closest('.cart-item-card');
       const priceElement = cartItem.querySelector('.cart-item-price');
@@ -334,13 +222,104 @@ document.addEventListener('DOMContentLoaded', function() {
       
       total += price * quantity;
     });
-
+    
     // Actualizar el total en el resumen del carrito
     const totalElement = document.querySelector('#cart-summary .fs-4');
     if (totalElement) {
       totalElement.textContent = `COP ${formatPrice(total)}`;
     }
+    
+    // 🔹 Actualizar el botón de Wompi con el nuevo total
+    updateWompiButton(total);
   }
+
+  // 🔹 Función para actualizar el botón de Wompi
+  function updateWompiButton(newTotal) {
+    const wompiContainer = document.getElementById('wompi-container');
+    if (!wompiContainer) return;
+
+    const amountInCents = Math.round(newTotal * 100);
+    const reference = `cart_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+
+    // Remover el script anterior
+    wompiContainer.innerHTML = '';
+
+    // Crear nuevo script con el total actualizado
+    const newScript = document.createElement('script');
+    newScript.src = 'https://checkout.wompi.co/widget.js';
+    newScript.setAttribute('data-render', 'button');
+    newScript.setAttribute('data-public-key', 'pub_test_f0bOPKD5aHr1J6hgSEc9KhPLAFFrOk66');
+    newScript.setAttribute('data-currency', 'COP');
+    newScript.setAttribute('data-amount-in-cents', amountInCents);
+    newScript.setAttribute('data-reference', reference);
+    newScript.setAttribute('data-signature-integrity', '');
+
+    wompiContainer.appendChild(newScript);
+  }
+
+  // 🔹 También actualizar cuando se elimina un producto
+  document.addEventListener('click', async function(e) {
+    const btn = e.target.closest('.delete-item');
+    if (!btn) return;
+    e.preventDefault();
+    const form = btn.closest('form');
+    const itemCard = btn.closest('.cart-item-card');
+    try {
+      const response = await fetch(form.action, {
+        method: 'DELETE',
+        headers: {
+          'X-CSRF-Token': csrfToken,
+          'Accept': 'application/json'
+        }
+      });
+      if (response.ok) {
+        const data = await response.json();
+        
+        // 🔹 Eliminar la tarjeta del producto with animación
+        itemCard.style.transition = 'opacity 0.3s ease-out';
+        itemCard.style.opacity = '0';
+        
+        setTimeout(() => {
+          itemCard.remove();
+          
+          // 🔹 Actualizar total automáticamente (esto ya incluye Wompi)
+          updateCartTotal();
+          
+          // 🔹 Verificar si el carrito está vacío
+          const remainingItems = document.querySelectorAll('.cart-item-card');
+          if (remainingItems.length === 0) {
+            // Mostrar mensaje de carrito vacío y ocultar Wompi
+            const cartContainer = document.querySelector('.cart-items-list').parentElement;
+            cartContainer.innerHTML = `
+              <div class="alert alert-info text-center p-4 mt-4">
+                <i class="fa-solid fa-cart-arrow-down fa-2x mb-2"></i><br>
+                <span class="fs-5">Tu carrito está vacío</span>
+              </div>
+            `;
+          }
+          
+          // 🔹 Actualizar contador del carrito en el navbar
+          const cartCount = document.getElementById('cart_count');
+          if (cartCount && data.count !== undefined) {
+            cartCount.textContent = data.count;
+            
+            // Si el carrito está vacío, ocultar el badge
+            if (data.count == 0) {
+              cartCount.style.display = 'none';
+            }
+          }
+          
+          // 🔹 Mostrar notificación de eliminación
+          showNotification('Producto eliminado del carrito', 'danger');
+          
+        }, 300);
+        
+      }
+    } catch (error) {
+      console.error('Error al eliminar producto:', error);
+      showNotification('Error al eliminar producto', 'danger');
+    }
+  });
 
   // 🔹 Funciones de formato de precio
   function formatPrice(amount) {
@@ -350,7 +329,6 @@ document.addEventListener('DOMContentLoaded', function() {
       useGrouping: true
     }).format(amount).replace(',', '.');
   }
-
   function parsePrice(priceString) {
     // Extraer solo los números del precio "COP 12.000,00"
     return parseFloat(priceString.replace(/[^\d.,]/g, '').replace('.', '').replace(',', '.')) || 0;
@@ -360,18 +338,17 @@ document.addEventListener('DOMContentLoaded', function() {
   document.addEventListener("click", (e) => {
     const card = e.target.closest(".cart-item-card");
     if (!card) return;
-    
+
     // No redirigir si se hace click en botones, inputs o iconos
     if (e.target.closest("button") || 
         e.target.closest("input") || 
         e.target.closest("i") || 
         e.target.closest("form")) return;
-    
+
     const productoId = card.dataset.productoId;
     if (productoId && productoId !== "undefined" && productoId !== "") {
       window.location = `/home/producto_show?id=${productoId}`;
     }
   });
 });
-
 </script>
