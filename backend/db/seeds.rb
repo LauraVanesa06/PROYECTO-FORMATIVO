@@ -1008,3 +1008,11 @@ pedidos_records.each_with_index do |pedido, idx|
     PedidoProduct.create!(pedido: pedido, product_id: producto.id, cantidad: rand(1..5))
   end
 end
+
+# Agregar datos de ejemplo a los productos existentes
+Product.find_each do |product|
+  product.update(
+    purchases_count: rand(5..100),
+    buyers_count: rand(3..50)
+  )
+end

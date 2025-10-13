@@ -37,8 +37,11 @@ class HomeController < ApplicationController
 
   def producto_show
     @product = Product.find(params[:id])
-    # Productos relacionados: misma categoría, excluyendo el actual
-    @relacionados = Product.where(category_id: @product.category_id).where.not(id: @product.id).limit(6)
+    @relacionados = Product.where(category: @product.category).where.not(id: @product.id).limit(4)
+    
+    # Variables para Wompi en producto individual
+    @payment_reference = "product_#{@product.id}_#{Time.current.to_i}"
+    @signature = "" # Para testing, en producción debes generar la signature
   end
 
   def send_report

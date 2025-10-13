@@ -53,16 +53,16 @@
         </span>
       </div>
       <div class="d-flex gap-3 mt-3" style="margin: 0 !important;">
-        <% if current_page?(cart_path) %>
+        <% if cart_items.any? %>
           <div id="wompi-container">
             <script
               src="https://checkout.wompi.co/widget.js"
               data-render="button"
               data-public-key="pub_test_f0bOPKD5aHr1J6hgSEc9KhPLAFFrOk66"
               data-currency="COP"
-              data-amount-in-cents="<%= ((@cart_items.sum { |i| (i.product&.precio || 0) * (i.quantity || 0) }) * 100).to_i %>"
-              data-reference="<%= @payment_reference %>"
-              data-signature-integrity="<%= @signature %>"
+              data-amount-in-cents="<%= ((cart_items.sum { |i| (i.product&.precio || 0) * (i.quantity || 0) }) * 100).to_i %>"
+              data-reference="<%= current_page?(cart_path) ? @payment_reference : "sidebar_#{Time.current.to_i}" %>"
+              data-signature-integrity="<%= current_page?(cart_path) ? @signature : '' %>"
             ></script>
           </div>
         <% end %>
@@ -256,70 +256,6 @@ document.addEventListener('DOMContentLoaded', function() {
 
     wompiContainer.appendChild(newScript);
   }
-
-  // 🔹 También actualizar cuando se elimina un producto
-  document.addEventListener('click', async function(e) {
-    const btn = e.target.closest('.delete-item');
-    if (!btn) return;
-    e.preventDefault();
-    const form = btn.closest('form');
-    const itemCard = btn.closest('.cart-item-card');
-    try {
-      const response = await fetch(form.action, {
-        method: 'DELETE',
-        headers: {
-          'X-CSRF-Token': csrfToken,
-          'Accept': 'application/json'
-        }
-      });
-      if (response.ok) {
-        const data = await response.json();
-        
-        // 🔹 Eliminar la tarjeta del producto with animación
-        itemCard.style.transition = 'opacity 0.3s ease-out';
-        itemCard.style.opacity = '0';
-        
-        setTimeout(() => {
-          itemCard.remove();
-          
-          // 🔹 Actualizar total automáticamente (esto ya incluye Wompi)
-          updateCartTotal();
-          
-          // 🔹 Verificar si el carrito está vacío
-          const remainingItems = document.querySelectorAll('.cart-item-card');
-          if (remainingItems.length === 0) {
-            // Mostrar mensaje de carrito vacío y ocultar Wompi
-            const cartContainer = document.querySelector('.cart-items-list').parentElement;
-            cartContainer.innerHTML = `
-              <div class="alert alert-info text-center p-4 mt-4">
-                <i class="fa-solid fa-cart-arrow-down fa-2x mb-2"></i><br>
-                <span class="fs-5">Tu carrito está vacío</span>
-              </div>
-            `;
-          }
-          
-          // 🔹 Actualizar contador del carrito en el navbar
-          const cartCount = document.getElementById('cart_count');
-          if (cartCount && data.count !== undefined) {
-            cartCount.textContent = data.count;
-            
-            // Si el carrito está vacío, ocultar el badge
-            if (data.count == 0) {
-              cartCount.style.display = 'none';
-            }
-          }
-          
-          // 🔹 Mostrar notificación de eliminación
-          showNotification('Producto eliminado del carrito', 'danger');
-          
-        }, 300);
-        
-      }
-    } catch (error) {
-      console.error('Error al eliminar producto:', error);
-      showNotification('Error al eliminar producto', 'danger');
-    }
-  });
 
   // 🔹 Funciones de formato de precio
   function formatPrice(amount) {
