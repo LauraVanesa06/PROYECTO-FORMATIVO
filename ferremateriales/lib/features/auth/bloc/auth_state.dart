@@ -12,25 +12,32 @@ enum AuthStatus {
 class AuthState extends Equatable {
   final AuthStatus status;
   final String? error;
+  final String? nombre;
+  final String? email;
 
   const AuthState({
     this.status = AuthStatus.initial,
     this.error,
+    this.nombre,
+    this.email,
   });
 
   AuthState copyWith({
     AuthStatus? status,
     String? error,
+    String? nombre,
+    String? email,
   }) {
     return AuthState(
       status: status ?? this.status,
-      // Limpiar error si el estado es success o loggedOut
       error: (status == AuthStatus.success || status == AuthStatus.loggedOut)
           ? null
           : error ?? this.error,
+      nombre: nombre ?? this.nombre,
+      email: email ?? this.email,
     );
   }
 
   @override
-  List<Object?> get props => [status, error];
+  List<Object?> get props => [status, error, nombre, email];
 }

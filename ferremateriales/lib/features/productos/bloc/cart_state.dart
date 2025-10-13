@@ -5,7 +5,7 @@ class CartState extends Equatable {
 
   const CartState({this.items = const []});
 
-  /// 👉 Calcula el total automáticamente (double para más precisión)
+
   double get total {
     return items.fold(0.0, (sum, item) {
       final price = (item["price"] ?? 0).toDouble();
@@ -14,10 +14,9 @@ class CartState extends Equatable {
     });
   }
 
-  /// 👉 Saber si el carrito está vacío
+  
   bool get isEmpty => items.isEmpty;
 
-  /// 👉 Cantidad total de productos
   int get totalItems {
     return items.fold(0, (sum, item) {
       final quantity = (item["quantity"] ?? 1) as int;
@@ -25,7 +24,6 @@ class CartState extends Equatable {
     });
   }
 
-  /// 👉 Permite copiar el estado con nuevos valores
   CartState copyWith({List<Map<String, dynamic>>? items}) {
     return CartState(
       items: items ?? this.items,

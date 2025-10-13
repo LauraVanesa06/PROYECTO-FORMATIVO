@@ -37,5 +37,5 @@ class DecreaseQuantity extends CartEvent {
   List<Object?> get props => [name];
 }
 
-/// 🗑 Evento nuevo para vaciar todo el carrito
+
 class ClearCart extends CartEvent {}
