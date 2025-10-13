@@ -30,6 +30,35 @@ class SuppliersController < ApplicationController
     end
   end
 
+  def create
+    @supplier = Supplier.new(supplier_params)
+
+    if @supplier.save
+      respond_to do |format|
+        format.turbo_stream do
+          render turbo_stream: [
+            turbo_stream.append('suppliers_container', partial: 'suppliers/supplier', locals: { supplier: @supplier }),
+            turbo_stream.replace('supplier_form_container', partial: 'suppliers/form', locals: { supplier: Supplier.new })
+          ]
+        end
+
+        format.html { redirect_back fallback_location: pedidos_path, notice: 'Proveedor creado correctamente.' }
+      end
+    else
+      respond_to do |format|
+        format.turbo_stream do
+          render turbo_stream: turbo_stream.replace('supplier_form_container', partial: 'suppliers/form', locals: { supplier: @supplier })
+        end
+
+        format.html do
+          flash.now[:alert] = @supplier.errors.full_messages.join(', ')
+          @suppliers = Supplier.all
+          render 'pedidos/index', status: :unprocessable_entity
+        end
+      end
+    end
+  end
+
   def show
     @product = Product.find(params[:id])
   end
@@ -125,8 +154,8 @@ end
 
   private 
 
-  def suppliers_params
-    params.require(:supplier).permit(:nombre, :contacto, :codigo_proveedor)
+  def supplier_params
+    params.require(:supplier).permit(:nombre, :contacto, :correo, :codigo_proveedor)
   end
 
 end

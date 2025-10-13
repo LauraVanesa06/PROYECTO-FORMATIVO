@@ -1,4 +1,8 @@
 class Product < ApplicationRecord
+  # Relacion con pedido_products
+  has_many :pedido_products
+  has_many :pedidos, through: :pedido_products
+
   # Relacion favoritos
   has_many :favorites, dependent: :destroy
   has_many :favorited_by, through: :favorites, source: :user, dependent: :destroy
@@ -27,7 +31,7 @@ class Product < ApplicationRecord
   validate :acceptable_images
   
   def precio_cop
-    ApplicationController.helpers.number_to_currency(precio, unit: "", separator: ",", delimiter:".")
+    "COP #{ApplicationController.helpers.number_to_currency(precio, unit: "", separator: ",", delimiter: ".", precision: 2)}"
   end
 
   private

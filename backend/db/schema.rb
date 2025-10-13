@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_09_21_204107) do
+ActiveRecord::Schema[8.0].define(version: 2025_10_09_041612) do
   create_table "active_storage_attachments", force: :cascade do |t|
     t.string "name", null: false
     t.string "record_type", null: false
@@ -95,15 +95,43 @@ ActiveRecord::Schema[8.0].define(version: 2025_09_21_204107) do
     t.datetime "updated_at", null: false
   end
 
+  create_table "payments", force: :cascade do |t|
+    t.integer "cart_id", null: false
+    t.string "transaction_id"
+    t.integer "status", default: 0, null: false
+    t.decimal "amount", precision: 12, scale: 2, null: false
+    t.string "pay_method", null: false
+    t.string "token", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.string "currency", default: "COP", null: false
+    t.string "wompi_id", null: false
+    t.integer "user_id", null: false
+    t.json "raw_response", default: {}, null: false
+    t.string "account_info", null: false
+    t.index ["cart_id"], name: "index_payments_on_cart_id"
+    t.index ["user_id"], name: "index_payments_on_user_id"
+  end
+
+  create_table "pedido_products", force: :cascade do |t|
+    t.integer "product_id", null: false
+    t.integer "pedido_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.integer "cantidad"
+    t.index ["pedido_id"], name: "index_pedido_products_on_pedido_id"
+    t.index ["product_id"], name: "index_pedido_products_on_product_id"
+  end
+
   create_table "pedidos", force: :cascade do |t|
     t.datetime "fecha"
     t.json "productos"
-    t.string "descripcion_entrega"
     t.integer "supplier_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.integer "stock"
     t.string "proveedor"
+    t.string "estado"
     t.index ["supplier_id"], name: "index_pedidos_on_supplier_id"
   end
 
@@ -142,6 +170,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_09_21_204107) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string "codigo_proveedor"
+    t.string "correo"
     t.index ["codigo_proveedor"], name: "index_suppliers_on_codigo_proveedor", unique: true
   end
 
@@ -185,6 +214,10 @@ ActiveRecord::Schema[8.0].define(version: 2025_09_21_204107) do
   add_foreign_key "carts", "users"
   add_foreign_key "favorites", "products"
   add_foreign_key "favorites", "users"
+  add_foreign_key "payments", "carts"
+  add_foreign_key "payments", "users"
+  add_foreign_key "pedido_products", "pedidos"
+  add_foreign_key "pedido_products", "products"
   add_foreign_key "pedidos", "suppliers"
   add_foreign_key "products", "categories"
   add_foreign_key "products", "marcas"

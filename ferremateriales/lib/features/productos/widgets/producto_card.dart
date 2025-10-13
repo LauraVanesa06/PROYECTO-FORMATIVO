@@ -25,7 +25,7 @@ class ProductCard extends StatelessWidget {
                 borderRadius: const BorderRadius.vertical(top: Radius.circular(12)),
                 child: (product.imagenUrl != null && product.imagenUrl!.isNotEmpty)
                     ? Image.network(
-                        product.imagenUrl!,
+                        product.imagenUrl ?? "",
                         fit: BoxFit.contain,
                         errorBuilder: (context, error, stackTracer) => const Icon(Icons.broken_image, size: 100, color: Colors.grey),
                       )

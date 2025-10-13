@@ -1,16 +1,242 @@
-<p style="color: green"><%= notice %></p>
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <%= favicon_link_tag 'favicon.png' %>
+  <title>Dashboard Ferretería</title>
+  <%= stylesheet_link_tag "pedidos", media: "all" %>
 
-<% content_for :title, "Pedidos" %>
+  <link href="https://fonts.googleapis.com/css2?family=Eczar:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
-<h1>Pedidos</h1>
+  <%= stylesheet_link_tag "dashboard", media: "all" %>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
-<div id="pedidos">
-  <% @pedidos.each do |pedido| %>
-    <%= render pedido %>
-    <p>
-      <%= link_to "Show this pedido", pedido %>
-    </p>
+  <%= javascript_include_tag "application", "data-turbo-track": "reload", defer: true %>
+  <%= javascript_importmap_tags %>
+  
+
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+</head>
+<body>
+
+  <header>
+    <div class="container-header">
+
+      <div class="img-empresa">
+        <img src="img/test.png" alt="" width="60px">
+      </div>
+      <button class="hamburger" id="hamburger">&#9776;</button>
+      <div id="control">
+        <div class="panel"><%= image_tag "panel-control.png", class: "c-panel" %></div>
+        <p class="pricipal">Panel de Control</p>
+      </div>
+
+      
+      <% if user_signed_in? %>
+        <%= button_to destroy_user_session_path, method: :delete, form: { data: { turbo: true } }, id: "cerrar", class: "logout2" do %>
+          <span><i class="fas fa-sign-out-alt"style="color: white"></i></span>
+        <% end %>
+      <% end %>
+
+    </div>
+  </header>
+
+  <nav class="nav-bg">
+    <div class="container-nav">
+      <ul class="menu" id="menu">
+        <li><a href="/dashboard"class="link-menu">Inicio</a></li>
+        <li><a href="/dashboard/productos"class="link-menu">Productos</a></li>
+        <li><a href="/dashboard/ventas"class="link-menu">Ventas</a></li>
+        <li><a href="/dashboard/pedidos"class="link-menu">Pedidos</a></li>
+        <%# <li><a href="dashboard/suppliers"class="link-menu">Proveedores</a></li> %>
+        <li><a href="/dashboard/clientes"class="link-menu">Clientes</a></li>
+        <li><a href="/dashboard/help"class="link-menu">Ayuda</a></li>
+      </ul>
+      <% if user_signed_in? %>
+        <%= button_to "Cerrar sesión", destroy_user_session_path, method: :delete, form: { data: { turbo: true } }, id: "cerrar", class: "logout"%>
+      <% end %>
+    </div>
+  </nav>
+  <section class="section-container">
+    <section class="sect-product">
+      <div class="form-provv" id="supplier_form_container">  <!-- <--- id agregado -->
+        <p>Proveedor</p>
+
+        <!-- usar Turbo (no local: true). id para el formulario. -->
+        <%= form_with(model: @supplier, id: "supplier_form", class: "form") do |form| %>
+          <%= button_tag type: 'submit', class:'agg' do %>   <!-- ahora es submit -->
+            <%= content_tag :span, class: 'span-mother' do %>
+              <% "Agregar".each_char do |c| %>
+                <%= content_tag :span, c %>
+              <% end %>
+            <% end %>
+
+            <%= content_tag :span, class: 'span-mother2' do %>
+              <% "Agregar".each_char do |c| %>
+                <%= content_tag :span, c %>
+              <% end %>
+            <% end %>
+          <% end %>
+
+          <div class="group">
+            <%= form.text_field :nombre, required: true, class: "main-input", id: "supplier_nombre" %>
+            <span class="highlight-span"></span>
+            <label class="lebal-email">Nombre</label>
+          </div>
+
+          <div class="container-1">
+            <div class="group">
+              <!-- id e inputmode para facilitar validación -->
+              <%= form.text_field :contacto, required: true, class: "main-input", id: "supplier_contacto", inputmode: "numeric", autocomplete: "tel" %>
+              <span class="highlight-span"></span>
+              <label class="lebal-email">Contacto</label>
+            </div>
+          </div>
+
+          <div class="container-1">
+            <div class="group">
+              <%= form.email_field :correo, required: true, class: "main-input", id: "supplier_correo" %>
+              <span class="highlight-span"></span>
+              <label class="lebal-email">Correo</label>
+            </div>
+          </div>
+
+          <div class="container-1">
+            <div class="group">
+              <%= form.text_field :codigo_proveedor, required: true, class: "main-input", id: "supplier_codigo_proveedor" %>
+              <span class="highlight-span"></span>
+              <label class="lebal-email">Código</label>
+            </div>
+          </div>
+
+        <% end %>
+      </div>
+
+      <div class="all-provv">
+        <ul id="suppliers_container" class="supplier-list">
+          <nav class="nav-filtros">
+            <p class=p><i class="fas fa-filter"></i> Filtros</p>
+            <%= form_with url: pedidos_path, method: :get, local: true, class:"form-filtros" do %>
+              <ul>
+                <li>
+                  <%= label_tag :name, "Proveedor:" %>
+                  <%= text_field_tag :name, params[:name],
+                        placeholder: "Ej: Ferrecox",
+                        style:"width: 163px; border-radius:10px; padding-left: 10px; border:1px solid grey;" %> 
+                </li>
+                <li>
+                  <button id="limpiar-filtros" type="button" class="lupa">
+                    <i class="fas fa-broom"></i>
+                  </button>
+                </li>
+                <li>
+                  <%= button_tag type: 'submit', class: 'lupa', name: '' do %>
+                    <i class="fas fa-search"></i>
+                  <% end %>
+                </li>
+              </ul>
+            <% end %>
+          </nav>
+          <%= render @suppliers %>
+        </ul>
+      </div>
+    </section>
+
+    <section class="sect-historial">
+      <div class="titulo-his">Historial de Pedidos</div>
+      <div id="pedidos">
+        <turbo-frame id="pedidos_frame">
+          <%= render "pedidos/pedidos_list", pedidos: @pedidos %>
+        </turbo-frame>
+      </div>
+    </section>
+    <%= link_to "Hacer Pedido", new_pedido_path, class:"btn-pedir" %>
+  </section>
+
+  <footer>
+    &copy; 2025 Ferremateriales el Maestro - v2.3.7
+  </footer>
+
+  <script>
+    document.addEventListener("turbo:load", () => {
+      const contacto = document.getElementById('supplier_contacto');
+      const codigo = document.getElementById('supplier_codigo_proveedor');
+      const form = document.getElementById('supplier_form');
+
+      if (contacto) {
+        contacto.addEventListener('input', e => {
+          e.target.value = e.target.value.replace(/\D+/g, '');
+        });
+        contacto.addEventListener('paste', e => {
+          const paste = (e.clipboardData || window.clipboardData).getData('text');
+          if (/\D/.test(paste)) e.preventDefault();
+        });
+      }
+
+      if (codigo) {
+        codigo.addEventListener('input', e => {
+          e.target.value = e.target.value.toUpperCase().replace(/[^A-Z0-9]/g, '');
+        });
+        codigo.addEventListener('paste', e => {
+          const paste = (e.clipboardData || window.clipboardData).getData('text');
+          const cleaned = paste.toUpperCase().replace(/[^A-Z0-9]/g, '');
+          e.preventDefault();
+          const start = e.target.selectionStart;
+          const end = e.target.selectionEnd;
+          e.target.value = e.target.value.slice(0,start) + cleaned + e.target.value.slice(end);
+          e.target.setSelectionRange(start + cleaned.length, start + cleaned.length);
+        });
+      }
+
+      if (form) {
+        form.addEventListener('submit', e => {
+          const emailEl = document.getElementById('supplier_correo');
+          const emailVal = emailEl && emailEl.value;
+          if (!emailVal || !/^[^@\s]+@[^@\s]+$/.test(emailVal)) {
+            e.preventDefault();
+            showInlineError(emailEl, 'Ingresa un correo válido que contenga @');
+          }
+        });
+      }
+
+      function showInlineError(el, message) {
+        if(!el) return;
+        let err = el.parentNode.querySelector('.field-error');
+        if (!err) {
+          err = document.createElement('div');
+          err.className = 'field-error';
+          err.style.color = '#ff6b6b';
+          err.style.fontSize = '0.9rem';
+          err.style.marginTop = '6px';
+          el.parentNode.appendChild(err);
+        }
+        err.textContent = message;
+        setTimeout(()=> { if(err) err.remove(); }, 3500);
+      }
+    });
+
+    // filtro de proveedor
+    document.addEventListener('DOMContentLoaded', () => {
+      const limpiarBtn = document.getElementById('limpiar-filtros');
+      if (limpiarBtn) {
+        limpiarBtn.addEventListener('click', () => {
+          window.location.href = '/pedidos';
+        });
+      }
+    });
+    </script>
+
+  
+</body>
+  <% if flash[:notice] %>
+    <div class="flash-notice" id="flash-notice">
+      <%= flash[:notice] %>
+    </div>
+    <script>
+      setTimeout(function() {
+        var notice = document.getElementById('flash-notice');
+        if (notice) { notice.style.opacity = 0; setTimeout(function(){ notice.remove(); }, 500); }
+      }, 3500);
+    </script>
   <% end %>
-</div>
-
-<%= link_to "New pedido", new_pedido_path %>

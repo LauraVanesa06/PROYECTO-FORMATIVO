@@ -3,23 +3,15 @@ class Supplier < ApplicationRecord
   accepts_nested_attributes_for :products
   has_many :pedidos
 
-  before_create :generate_code
-  validates :codigo_proveedor, uniqueness: true
+  validates :correo, presence: true, format: { with: URI::MailTo::EMAIL_REGEXP, message: "no es un correo válido" }
+  validates :contacto, presence: true, format: { with: /\A\d{7,15}\z/, message: "solo puede contener entre 7 y 15 dígitos numéricos" }
+  before_validation :normalize_codigo_proveedor
+  validates :codigo_proveedor, presence: true, format: { with: /\A[A-Z0-9]+\z/, message: "solo puede contener letras mayúsculas y números" }
 
   private
 
-  def generate_code
-    loop do
-      initials = nombre.split.map { |word| word[0] }.join.upcase
-      last_supplier = Supplier.where("codigo_proveedor LIKE ?", "#{initials}%").order(:codigo_proveedor).last
-      last_number = last_supplier.present? ? last_supplier.codigo_proveedor.gsub(initials, "").to_i : 0
-      next_number = last_number + 1
-      candidate = "PR-#{initials}#{next_number.to_s.rjust(3, '0')}"
-
-      unless Supplier.exists?(codigo_proveedor: candidate)
-        self.codigo_proveedor = candidate
-        break
-      end
-    end
+  def normalize_codigo_proveedor
+    self.codigo_proveedor = codigo_proveedor.to_s.upcase.gsub(/[^A-Z0-9]/, '') if codigo_proveedor.present?
   end
+
 end
