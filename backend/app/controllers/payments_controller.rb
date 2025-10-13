@@ -11,7 +11,17 @@ class PaymentsController < ApplicationController
   def status; end
   def checkout; end
 
-  # POST /payments
+  def webhook
+    data = JSON.parse(request.body.read) rescue {}
+    transaction = data.dig("data", "transaction") || {}
+    payment = Payment.find_by(transaction_id: transaction["id"])
+
+    if payment
+      payment.update(status: transaction["status"])
+    end
+    head :ok
+  end
+
   def create
     cart = current_cart || Cart.find_by(id: params[:cart_id])
     unless cart
