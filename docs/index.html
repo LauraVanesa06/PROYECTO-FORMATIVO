@@ -76,6 +76,57 @@
                 </button>
             </div>
         </section>
+
+        <!-- Sección Descripción del Proyecto -->
+        <section class="project-description section" id="proyecto-descripcion" style="padding: 5rem 0; background: rgba(15, 15, 35, 0.98); position: relative;">
+            <div class="container">
+                <div class="text-center" style="margin-bottom: 3rem;">
+                    <h2 style="font-size: 2.8rem; font-weight: 700; color: #ffffff; margin-bottom: 1.5rem; font-family: var(--font-heading);">
+                        Sobre el <span class="gradient-text">Proyecto</span>
+                    </h2>
+                    <div style="width: 80px; height: 4px; background: var(--primary-gradient); margin: 0 auto 2rem; border-radius: 2px;"></div>
+                </div>
+                
+                <div style="max-width: 1200px; margin: 0 auto;">
+                    <div style="background: rgba(255, 255, 255, 0.03); backdrop-filter: blur(20px); border: 1px solid rgba(255,255,255,0.1); border-radius: 2rem; padding: 3rem; text-align: center; position: relative; overflow: hidden;">
+                        <!-- Decorative elements -->
+                        <div style="position: absolute; top: -50px; left: -50px; width: 100px; height: 100px; background: rgba(102, 126, 234, 0.1); border-radius: 50%; filter: blur(40px);"></div>
+                        <div style="position: absolute; bottom: -30px; right: -30px; width: 80px; height: 80px; background: rgba(240, 147, 251, 0.1); border-radius: 50%; filter: blur(35px);"></div>
+                        
+                        <div style="position: relative; z-index: 2;">
+                            <div style="display: flex; justify-content: center; margin-bottom: 2rem;">
+                                <div style="width: 100px; height: 100px; background: var(--primary-gradient); border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: 0 15px 35px rgba(102, 126, 234, 0.4);">
+                                    <i class="fas fa-tools" style="font-size: 3rem; color: white;"></i>
+                                </div>
+                            </div>
+                            
+                            <h3 style="color: var(--text-light); font-size: 1.8rem; margin-bottom: 2rem; font-family: var(--font-heading);">
+                                Sistema Integral de Gestión para Ferretería
+                            </h3>
+                            
+                            <div style="text-align: left; color: rgba(255, 255, 255, 0.85); font-size: 1.1rem; line-height: 1.8; space-y: 1.5rem;">
+                                <p style="margin-bottom: 1.5rem;">
+                                    El proyecto consiste en el desarrollo de una <strong style="color: var(--text-light);">solución integral para la gestión de inventarios y ventas</strong> de una ferretería, compuesta por una página web y una aplicación móvil.
+                                </p>
+                                
+                                <p style="margin-bottom: 1.5rem;">
+                                    La <strong style="background: var(--primary-gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">página web, desarrollada en Ruby on Rails</strong>, cuenta con dos módulos principales: uno administrativo, donde se gestionan productos, existencias y procesos internos, y otro para clientes, que permite explorar el catálogo y realizar compras en línea.
+                                </p>
+                                
+                                <p style="margin-bottom: 1.5rem;">
+                                    La <strong style="background: var(--accent-gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">aplicación móvil, creada con Flutter</strong>, está orientada al cliente final y ofrece una interfaz intuitiva para navegar entre productos, consultar detalles y efectuar pedidos, siguiendo una arquitectura organizada por características (features).
+                                </p>
+                                
+                                <p style="margin-bottom: 0;">
+                                    En conjunto, el sistema busca <strong style="color: var(--text-light);">optimizar la administración del inventario, mejorar la eficiencia operativa y facilitar la experiencia de compra</strong> de los usuarios.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
         <!-- Services - Modern Documentation Section -->
         <section class="documentation-section section" id="documentos" style="padding: 5rem 0; background: rgba(15, 15, 35, 0.95); position: relative;">
             <div class="container">
@@ -95,13 +146,13 @@
                         <div class="card-icon" style="width: 80px; height: 80px; background: linear-gradient(135deg, #764ba2 0%, #667eea 100%); border-radius: 50%; margin: 0 auto 1.5rem; display: flex; align-items: center; justify-content: center; position: relative; z-index: 2;">
                             <i class="fas fa-project-diagram" style="font-size: 2.5rem; color: white;"></i>
                         </div>
-                        <h4 style="color: #ffffff; margin-bottom: 1rem; font-size: 1.4rem; font-weight: 600; position: relative; z-index: 2;">Diagramas</h4>
+                        <h4 style="color: #ffffff; margin-bottom: 1rem; font-size: 1.4rem; font-weight: 600; position: relative; z-index: 2;"><Data>Documentación tecnica</Data></h4>
                         <p style="color: rgba(255, 255, 255, 0.7); margin-bottom: 2rem; font-size: 0.95rem; line-height: 1.6; position: relative; z-index: 2;">
-                            Diagramas UML, casos de uso y documentación técnica completa del sistema
+                            Diagramas UML, casos de uso y documentación técnica completa del sistema.
                         </p>
                         <a href="informacion.html" class="modern-btn" style="background: linear-gradient(135deg, #764ba2 0%, #667eea 100%); border: none; padding: 0.75rem 2rem; border-radius: 50px; color: white; font-weight: 600; text-decoration: none; display: inline-flex; align-items: center; gap: 0.5rem; transition: all 0.3s ease; position: relative; z-index: 2;">
                             <i class="fas fa-eye"></i>
-                            Ver Diagramas
+                            Ver
                         </a>
                     </div>
 
@@ -113,11 +164,11 @@
                         </div>
                         <h4 style="color: #ffffff; margin-bottom: 1rem; font-size: 1.4rem; font-weight: 600; position: relative; z-index: 2;">Mockup</h4>
                         <p style="color: rgba(255, 255, 255, 0.7); margin-bottom: 2rem; font-size: 0.95rem; line-height: 1.6; position: relative; z-index: 2;">
-                            Prototipos y diseños visuales que muestran la interfaz y experiencia de usuario
+                            Prototipos y diseños visuales que representan la interfaz del sistema y la experiencia del usuario de forma clara y atractiva.
                         </p>
                         <a href="document/mockup.pdf" target="_blank" class="modern-btn" style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); border: none; padding: 0.75rem 2rem; border-radius: 50px; color: white; font-weight: 600; text-decoration: none; display: inline-flex; align-items: center; gap: 0.5rem; transition: all 0.3s ease; position: relative; z-index: 2;">
                             <i class="fas fa-download"></i>
-                            Ver Mockup
+                            Ver
                         </a>
                     </div>
 
@@ -127,13 +178,13 @@
                         <div class="card-icon" style="width: 80px; height: 80px; background: linear-gradient(135deg, #f5a623 0%, #f76b1c 100%); border-radius: 50%; margin: 0 auto 1.5rem; display: flex; align-items: center; justify-content: center; position: relative; z-index: 2;">
                             <i class="fas fa-chart-line" style="font-size: 2.5rem; color: white;"></i>
                         </div>
-                        <h4 style="color: #ffffff; margin-bottom: 1rem; font-size: 1.4rem; font-weight: 600; position: relative; z-index: 2;">Dashboard</h4>
+                        <h4 style="color: #ffffff; margin-bottom: 1rem; font-size: 1.4rem; font-weight: 600; position: relative; z-index: 2;">Aplicativo web</h4>
                         <p style="color: rgba(255, 255, 255, 0.7); margin-bottom: 2rem; font-size: 0.95rem; line-height: 1.6; position: relative; z-index: 2;">
-                            Panel de control administrativo con métricas y gestión del sistema en tiempo real
+                            Visita nuestra página web para conocer el progreso de nuestro proyecto, explorar los avances y acceder al sistema con sus diferentes funciones.
                         </p>
                         <a href="../dashboard/index.html" class="modern-btn" style="background: linear-gradient(135deg, #f5a623 0%, #f76b1c 100%); border: none; padding: 0.75rem 2rem; border-radius: 50px; color: white; font-weight: 600; text-decoration: none; display: inline-flex; align-items: center; gap: 0.5rem; transition: all 0.3s ease; position: relative; z-index: 2;">
                             <i class="fas fa-external-link-alt"></i>
-                            Ver Dashboard
+                            Ver
                         </a>
                     </div>
                 </div>
