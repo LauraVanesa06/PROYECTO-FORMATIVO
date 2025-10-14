@@ -6,8 +6,11 @@ class BuysController < ApplicationController
   def index
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
     @buys = Buy.all.order(created_at: :desc).limit(100)
 =======
+=======
+>>>>>>> Stashed changes
 =======
 >>>>>>> Stashed changes
   @buys = Buy.includes(:customer, :payment).order(created_at: :desc)

@@ -16,6 +16,7 @@ class PaymentsController < ApplicationController
     transaction = data.dig("data", "transaction") || {}
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
     payment = Payment.find_by(transaction_id: transaction["id"])
 
     if payment
@@ -33,6 +34,8 @@ class PaymentsController < ApplicationController
 =======
 =======
 >>>>>>> Stashed changes
+=======
+>>>>>>> Stashed changes
     @payment = Payment.find_by(transaction_id: transaction["id"])
     @payment.update(status: :paid)
     if @payment.status == "paid" && @payment.cart.present?
@@ -44,6 +47,9 @@ class PaymentsController < ApplicationController
     payment_id: @payment.id
   )
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
+>>>>>>> Stashed changes
+=======
 >>>>>>> Stashed changes
 =======
 >>>>>>> Stashed changes
