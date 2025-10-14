@@ -14,6 +14,7 @@ class PaymentsController < ApplicationController
   def webhook
     data = JSON.parse(request.body.read) rescue {}
     transaction = data.dig("data", "transaction") || {}
+<<<<<<< Updated upstream
     payment = Payment.find_by(transaction_id: transaction["id"])
 
     if payment
@@ -28,6 +29,18 @@ class PaymentsController < ApplicationController
       payment.update(status: mapped_status)
     end
 
+=======
+    @payment = Payment.find_by(transaction_id: transaction["id"])
+    @payment.update(status: :paid)
+    if @payment.status == "paid" && @payment.cart.present?
+  Buy.create!(
+    customer_id: @payment.user.customer.id,
+    fecha: Time.current,
+    tipo: "Minorista",
+    metodo_pago: "Wompi",
+    payment_id: @payment.id
+  )
+>>>>>>> Stashed changes
     head :ok
     
   end
@@ -137,6 +150,22 @@ class PaymentsController < ApplicationController
     @payment = Payment.find(params[:id])
     render json: { id: @payment.id, status: @payment.status, amount: @payment.amount, wompi_id: @payment.wompi_id }
   end
+
+  def confirm
+  @payment = Payment.find_by(transaction_id: params[:transaction_id])
+
+  if @payment && @payment.status == "paid"
+    customer = Customer.find_by(user_id: @payment.user_id)
+
+    Buy.create!(
+      customer: customer,
+      fecha: Time.zone.now,
+      tipo: "Online",
+      metodo_pago: @payment.pay_method,
+      payment: @payment
+    )
+  end
+end
 
   private
 

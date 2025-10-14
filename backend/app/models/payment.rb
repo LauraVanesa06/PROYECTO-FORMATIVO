@@ -1,6 +1,8 @@
 class Payment < ApplicationRecord
   belongs_to :cart, optional: true
   belongs_to :user, optional: true
+  has_one :buy
+  
 
   enum :status, { pending: 0, paid: 1, failed: 2, cancelled: 3 }
 

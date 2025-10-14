@@ -4,7 +4,35 @@ class BuysController < ApplicationController
 
   # GET /buys or /buys.json
   def index
+<<<<<<< Updated upstream
     @buys = Buy.all.order(created_at: :desc).limit(100)
+=======
+  @buys = Buy.includes(:customer, :payment).order(created_at: :desc)
+    @purchasedetails = Purchasedetail.all
+    @purchasedetails = Purchasedetail.joins("INNER JOIN buys ON buys.id = purchasedetails.buy_id")
+    conditions = []
+    values = []
+
+    @customer = Customer.joins(:buys).distinct.where("nombre LIKE ?", "%#{params[:customer]}%") if params[:customer].present?
+    @buys = @buys.where(customer_id: @customer.ids) if params[:customer].present?
+
+    { year: '%Y', month: '%m', day: '%d' }.each do |param, format|
+      next unless params[param].present?
+      conditions << "strftime('#{format}', buys.fecha) = ?"
+      values << params[param].rjust(2, '0')
+    end
+
+    query = Buy.joins(:customer)
+    query = query.where(conditions.join(" AND "), *values) unless conditions.empty?
+
+    @buys = query
+
+      if @buys.empty?
+        flash.now[:alert] = "No se encontraron compras con esos filtros."
+        @buys = Buy.all
+      end
+
+>>>>>>> Stashed changes
   end
 
   # GET /buys/1 or /buys/1.json

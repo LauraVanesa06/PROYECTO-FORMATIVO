@@ -1,5 +1,6 @@
-<div id="<%= dom_id buy %>" class="buy-id">
+<div id="<%= dom_id(buy) %>" class="buy-id">
   <div>
+<<<<<<< Updated upstream
       <p>
       <strong>Id de venta:</strong>
       <%= buy.id %>
@@ -17,17 +18,24 @@
 <% end %>
 
 
+=======
+    <p><strong>Id de venta:</strong> <%= buy.id %></p>
+    <p><strong>Nombre del cliente:</strong> <%= buy.customer.nombre %></p>
+    <p><strong>Fecha de la compra:</strong> <%= buy.fecha.strftime("%d/%m/%Y") %></p>
+>>>>>>> Stashed changes
     <p>
-      <strong>Nombre del cliente:</strong>
-      <%= buy.customer.nombre %>
+      <strong>Tipo de venta:</strong>
+      <%= buy.payment.present? ? "Venta en línea (Wompi)" : "Venta física" %>
     </p>
 
-    <p>
-      <strong>Fecha de la compra:</strong>
-      <%= buy.fecha.strftime("%d/%m/%Y") %>
-    </p>
-
+    <% if buy.payment.present? %>
+      <p><strong>Método de pago:</strong> <%= buy.payment.pay_method %></p>
+      <p><strong>Transacción:</strong> <%= buy.payment.transaction_id %></p>
+      <p><strong>Monto:</strong> $<%= buy.payment.amount %> <%= buy.payment.currency %></p>
+    <% end %>
   </div>
+</div>
+
   <div class="boton-ver">
       <% buy.purchasedetails.each do |p| %>
         <button class="show-buy"
