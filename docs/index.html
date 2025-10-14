@@ -30,13 +30,14 @@
                 <!-- Desktop Navigation -->
                 <div class="nav-links">
                     <a href="#inicio" class="nav-link">Inicio</a>
+                    <a href="#proyecto-descripcion" class="nav-link">Proyecto</a>
                     <a href="#about" class="nav-link">Acerca</a>
+                    <a href="#documentos" class="nav-link">Documentación</a>
                     <a href="#team" class="nav-link">Equipo</a>
                     <a href="#recursos" class="nav-link">Recursos</a>
                 </div>
                 
-                <!-- Desktop CTA Button -->
-                <button class="nav-cta">Entrar</button>
+                
             </div>
         </nav>
         
@@ -50,10 +51,12 @@
         <!-- Mobile Navigation Menu -->
         <div class="mobile-nav-menu" id="mobileMenu">
             <a href="#inicio" class="mobile-nav-link" onclick="closeMobileMenu()">Inicio</a>
+            <a href="#proyecto-descripcion" class="mobile-nav-link" onclick="closeMobileMenu()">Proyecto</a>
             <a href="#about" class="mobile-nav-link" onclick="closeMobileMenu()">Acerca</a>
+            <a href="#documentos" class="mobile-nav-link" onclick="closeMobileMenu()">Documentación</a>
             <a href="#team" class="mobile-nav-link" onclick="closeMobileMenu()">Equipo</a>
             <a href="#recursos" class="mobile-nav-link" onclick="closeMobileMenu()">Recursos</a>
-            <button class="mobile-nav-cta" onclick="closeMobileMenu()">Entrar</button>
+        
         </div>
 
         <!-- Hero Section-->
@@ -70,7 +73,7 @@
                 <p class="hero-subtitle">
                     Presentamos S.E.I.E, un proyecto que redefine la innovación y la excelencia.
                 </p>
-                <button class="hero-cta" onclick="event.preventDefault(); setTimeout(() => { const el = document.getElementById('documentos'); if(el) { el.scrollIntoView({behavior: 'smooth', block: 'center'}); } }, 100);">
+                <button class="hero-cta" onclick="event.preventDefault(); setTimeout(() => { const el = document.getElementById('proyecto-descripcion'); if(el) { const rect = el.getBoundingClientRect(); const offset = rect.top + window.pageYOffset - 80; window.scrollTo({top: offset, behavior: 'smooth'}); } }, 100);">
                     <span>Saber Más</span>
                     <i class="fas fa-arrow-right"></i>
                 </button>
