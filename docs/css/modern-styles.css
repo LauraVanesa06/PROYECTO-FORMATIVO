@@ -359,12 +359,19 @@ body {
 }
 
 @media (max-width: 768px) {
-    /* Ocultar cualquier otro elemento de navegación */
-    .nav-links,
-    .nav-cta {
+    /* Ocultar solo los enlaces de navegación, mantener el botón CTA */
+    .nav-links {
         visibility: hidden !important;
         opacity: 0 !important;
         pointer-events: none !important;
+    }
+    
+    /* Asegurar que el botón Volver sea visible */
+    .nav-cta {
+        visibility: visible !important;
+        opacity: 1 !important;
+        pointer-events: auto !important;
+        display: block !important;
     }
 }
 
@@ -424,6 +431,17 @@ body {
 }
 
 /* ===== RESPONSIVE DESIGN ===== */
+
+/* Desktop: Asegurar que el botón Volver siempre esté visible */
+@media (min-width: 769px) {
+    .nav-cta {
+        display: block !important;
+        visibility: visible !important;
+        opacity: 1 !important;
+        pointer-events: auto !important;
+    }
+}
+
 @media (max-width: 768px) {
     .nav-container {
         padding: 0 var(--spacing-sm);
@@ -435,7 +453,11 @@ body {
     }
     
     .nav-cta {
-        display: none !important;
+        display: block !important;
+        padding: 0.5rem 1rem !important;
+        font-size: 0.9rem !important;
+        border-radius: var(--border-radius-md) !important;
+        margin-left: auto !important;
     }
     
     .mobile-menu-toggle {
@@ -681,7 +703,9 @@ div[style*="rgba(121, 82, 179"]:hover {
     }
 
     .nav-cta {
-        display: none;
+        display: block !important;
+        padding: 0.4rem 0.8rem !important;
+        font-size: 0.85rem !important;
     }
 
     .hero-content {
@@ -1074,11 +1098,68 @@ div[style*="rgba(121, 82, 179"]:hover {
         padding: 0.5rem !important;
     }
 }
-/* Back button responsive */
+
+/* Hero titles visibility - Ensure they're always visible */
+.hero-section h1,
+.hero-section h2 {
+    display: block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+}
+
+/* Specific styles for informacion.html titles */
+@media (max-width: 768px) {
+    .hero-section h1 {
+        font-size: 3.2rem !important;
+        line-height: 1.1 !important;
+        margin-bottom: 0.8rem !important;
+        text-align: center !important;
+    }
+    
+    .hero-section h2 {
+        font-size: 2rem !important;
+        margin-bottom: 1.5rem !important;
+        text-align: center !important;
+    }
+}
+
+@media (max-width: 480px) {
+    .hero-section h1 {
+        font-size: 2.5rem !important;
+        line-height: 1.1 !important;
+    }
+    
+    .hero-section h2 {
+        font-size: 1.6rem !important;
+    }
+}
+
+@media (max-width: 360px) {
+    .hero-section h1 {
+        font-size: 2rem !important;
+        word-break: break-word !important;
+    }
+    
+    .hero-section h2 {
+        font-size: 1.4rem !important;
+        word-break: break-word !important;
+    }
+}
+
+/* Back button responsive for informacion.html */
 @media (max-width: 768px) {
     section a[href="index.html"] {
         padding: 1rem 2rem !important;
         font-size: 1rem !important;
+        width: 90% !important;
+        max-width: 300px !important;
+        margin: 0 auto !important;
+    }
+    
+    /* Make back button section more visible */
+    section[style*="padding: 4rem 0"] {
+        padding: 3rem 0 !important;
+        background: linear-gradient(135deg, #0f0f23 0%, #1a1a2e 100%) !important;
     }
 }
 
@@ -1086,8 +1167,146 @@ div[style*="rgba(121, 82, 179"]:hover {
     section a[href="index.html"] {
         padding: 0.8rem 1.5rem !important;
         font-size: 0.9rem !important;
-        width: 100% !important;
+        width: 95% !important;
         max-width: 280px !important;
-        justify-content: center !important;
+        margin: 0 auto !important;
+    }
+    
+    section[style*="padding: 4rem 0"] {
+        padding: 2rem 0 !important;
+    }
+}
+
+/* ===== SCOPE & RESTRICTIONS SECTION RESPONSIVE ===== */
+@media (max-width: 768px) {
+    .scope-restrictions .row {
+        flex-direction: column !important;
+        gap: 2rem !important;
+    }
+    
+    .scope-restrictions .col-lg-6 {
+        flex: none !important;
+        width: 100% !important;
+    }
+    
+    .scope-restrictions h2 {
+        font-size: 2.2rem !important;
+    }
+    
+    .scope-restrictions h3 {
+        font-size: 1.5rem !important;
+    }
+}
+
+@media (max-width: 480px) {
+    .scope-restrictions {
+        padding: 3rem 0 !important;
+    }
+    
+    .scope-restrictions h2 {
+        font-size: 1.8rem !important;
+    }
+    
+    .scope-restrictions h3 {
+        font-size: 1.3rem !important;
+    }
+    
+    .scope-restrictions [style*="padding: 2.5rem"] {
+        padding: 1.5rem !important;
+    }
+    
+    .scope-restrictions li {
+        font-size: 0.9rem !important;
+        margin-bottom: 0.8rem !important;
+    }
+    
+    .scope-restrictions [style*="width: 50px; height: 50px"] {
+        width: 40px !important;
+        height: 40px !important;
+        margin-right: 0.8rem !important;
+    }
+    
+    .scope-restrictions [style*="font-size: 1.5rem"] {
+        font-size: 1.2rem !important;
+    }
+}
+
+/* ===== ALCANCE Y RESTRICCIONES SEPARACIÓN ===== */
+/* Responsive spacing for scope and restrictions cards */
+@media (max-width: 768px) {
+    .row[style*="gap: 4rem"] {
+        flex-direction: column !important;
+        gap: 2rem !important;
+    }
+    
+    .col-lg-6[style*="max-width: 45%"] {
+        max-width: 100% !important;
+        margin-bottom: 2rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .row[style*="gap: 4rem"] {
+        gap: 1.5rem !important;
+    }
+    
+    .col-lg-6[style*="max-width: 45%"] {
+        margin-bottom: 1.5rem;
+    }
+}
+
+/* Desktop spacing - keep cards side by side with good separation */
+@media (min-width: 769px) {
+    .row[style*="gap: 4rem"] {
+        display: flex !important;
+        justify-content: space-between !important;
+        align-items: stretch !important;
+        gap: 4rem !important;
+    }
+    
+    .col-lg-6[style*="max-width: 45%"] {
+        flex: 0 0 45% !important;
+        max-width: 45% !important;
+    }
+}
+
+@keyframes dividerPulse {
+    0%, 100% { opacity: 0.3; }
+    50% { opacity: 0.7; }
+}
+
+/* ===== TECH CARDS RESPONSIVE LAYOUT ===== */
+/* Grid 3+2 responsive layout */
+@media (max-width: 768px) {
+    .tech-grid {
+        grid-template-columns: 1fr !important;
+        gap: 1.5rem !important;
+    }
+    
+    .tech-grid-second {
+        grid-template-columns: 1fr !important;
+        max-width: 100% !important;
+        margin-top: 1.5rem !important;
+    }
+}
+
+@media (max-width: 480px) {
+    .tech-grid,
+    .tech-grid-second {
+        gap: 1rem !important;
+    }
+    
+    .tech-card {
+        padding: 1.5rem !important;
+    }
+    
+    .tech-card [style*="width: 70px; height: 70px"] {
+        width: 60px !important;
+        height: 60px !important;
+        margin-bottom: 1rem !important;
+    }
+    
+    .tech-card [style*="font-size: 2.2rem"] {
+        font-size: 1.8rem !important;
     }
 }

@@ -43,12 +43,6 @@
                     </div>
                     <span class="logo-text">S.E.I.E</span>
                 </div>
-                <div class="nav-links">
-                    <a href="index.html" class="nav-link">Inicio</a>
-                    <a href="index.html#about" class="nav-link">Acerca</a>
-                    <a href="index.html#team" class="nav-link">Equipo</a>
-                    <a href="index.html#services" class="nav-link">Recursos</a>
-                </div>
                 <button class="nav-cta" onclick="window.location.href='index.html'">Volver</button>
             </div>
         </nav>
@@ -115,17 +109,24 @@
                 /* Responsive Styles */
                 @media (max-width: 768px) {
                     .hero-section h1 {
-                        font-size: 2.8rem !important;
+                        font-size: 3.2rem !important;
                         line-height: 1.1 !important;
+                        margin-bottom: 0.8rem !important;
+                        display: block !important;
+                        visibility: visible !important;
                     }
                     
                     .hero-section h2 {
-                        font-size: 1.8rem !important;
+                        font-size: 2rem !important;
+                        margin-bottom: 1.5rem !important;
+                        display: block !important;
+                        visibility: visible !important;
                     }
                     
                     .hero-section p {
                         font-size: 1.1rem !important;
                         padding: 0 1rem !important;
+                        margin-bottom: 2rem !important;
                     }
                     
                     .nav-pills-container {
@@ -139,15 +140,28 @@
                         text-align: center !important;
                         padding: 1rem 1.5rem !important;
                     }
+                    
+                    /* Ensure navigation is visible */
+                    .nav-cta {
+                        display: block !important;
+                        font-size: 0.9rem !important;
+                        padding: 0.5rem 1rem !important;
+                    }
                 }
                 
                 @media (max-width: 480px) {
                     .hero-section h1 {
-                        font-size: 2.2rem !important;
+                        font-size: 2.5rem !important;
+                        display: block !important;
+                        visibility: visible !important;
+                        opacity: 1 !important;
                     }
                     
                     .hero-section h2 {
-                        font-size: 1.5rem !important;
+                        font-size: 1.6rem !important;
+                        display: block !important;
+                        visibility: visible !important;
+                        opacity: 1 !important;
                     }
                     
                     .hero-section .container {
@@ -163,17 +177,26 @@
                 /* Ultra responsive for very small screens */
                 @media (max-width: 360px) {
                     .hero-section h1 {
-                        font-size: 1.8rem !important;
+                        font-size: 2rem !important;
+                        display: block !important;
+                        visibility: visible !important;
+                        opacity: 1 !important;
+                        text-align: center !important;
                     }
                     
                     .hero-section h2 {
-                        font-size: 1.3rem !important;
+                        font-size: 1.4rem !important;
+                        display: block !important;
+                        visibility: visible !important;
+                        opacity: 1 !important;
+                        text-align: center !important;
                     }
                     
                     .nav-pills-container a {
                         font-size: 0.9rem !important;
                         padding: 0.8rem 1rem !important;
                     }
+                }
                                     
                 /* Ensure full page scroll */
                 body {
@@ -186,6 +209,25 @@
                     min-height: auto;
                     padding-bottom: 2rem;
                 }
+                
+                /* Back button responsive */
+                @media (max-width: 768px) {
+                    section a[href="index.html"] {
+                        padding: 1rem 2rem !important;
+                        font-size: 1rem !important;
+                        width: 90% !important;
+                        max-width: 300px !important;
+                        justify-content: center !important;
+                    }
+                }
+                
+                @media (max-width: 480px) {
+                    section a[href="index.html"] {
+                        padding: 0.8rem 1.5rem !important;
+                        font-size: 0.9rem !important;
+                        width: 95% !important;
+                        max-width: 280px !important;
+                    }
                 }
             </style>
         </section>
