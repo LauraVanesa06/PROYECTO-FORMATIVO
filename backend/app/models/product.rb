@@ -76,4 +76,42 @@ class Product < ApplicationRecord
     self.codigo_producto ||= "P-#{SecureRandom.hex(4).upcase}"
   end
 
+  # MÉTODOS PÚBLICOS
+  # Método para contar las compras del producto
+  def total_purchases
+    # Si tienes un modelo Order o Purchase, usa algo como:
+    # OrderItem.joins(:order).where(product: self, orders: { status: 'completed' }).sum(:quantity)
+    
+    # Por ahora, simular con los cart_items (temporal)
+    cart_items.sum(:quantity) || 0
+  end
+  
+  # Método para contar usuarios únicos que han comprado este producto
+  def unique_buyers_count
+    # Contar usuarios únicos que tienen este producto en su carrito
+    # (temporal mientras no tienes sistema de órdenes)
+    cart_items.joins(:cart).distinct.count('carts.user_id') || 0
+  end
+  
+  def disponible?
+    disponible && stock > 0
+  end
+
+  # Método para incrementar contadores cuando se complete una orden
+  def increment_purchase!(user_id = nil)
+    increment!(:purchases_count)
+    
+    # Solo incrementar buyers_count si es un nuevo usuario
+    if user_id && !has_bought_before?(user_id)
+      increment!(:buyers_count)
+    end
+  end
+  
+  private
+  
+  def has_bought_before?(user_id)
+    # Lógica para verificar si el usuario ya compró este producto
+    # Por ahora retorna false para que siempre incremente
+    false
+  end
 end
