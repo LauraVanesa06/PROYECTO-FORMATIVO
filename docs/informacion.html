@@ -54,229 +54,518 @@
         </nav>
         
         <!-- Hero Section -->
-        <section class="hero-section" id="hero" style="min-height: 100vh; display: flex; align-items: center; background: linear-gradient(135deg, #0f0f23 0%, #1a1a2e 50%, #16213e 100%); position: relative; overflow: hidden;">
-            <div class="hero-bg-effects">
-                <div class="gradient-orb orb-1"></div>
-                <div class="gradient-orb orb-2"></div>
-                <div class="gradient-orb orb-3"></div>
+        <section class="hero-section" id="hero" style="min-height: 100vh; display: flex; align-items: center; background: radial-gradient(ellipse at center, #1a1a2e 0%, #0f0f23 70%); position: relative; overflow: hidden;">
+            <!-- Animated Background Elements -->
+            <div style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none;">
+                <div style="position: absolute; top: 20%; left: 10%; width: 300px; height: 300px; background: rgba(102, 126, 234, 0.08); border-radius: 50%; animation: float 6s ease-in-out infinite;"></div>
+                <div style="position: absolute; bottom: 30%; right: 15%; width: 200px; height: 200px; background: rgba(240, 147, 251, 0.06); border-radius: 50%; animation: float 8s ease-in-out infinite reverse;"></div>
+                <div style="position: absolute; top: 60%; left: 70%; width: 150px; height: 150px; background: rgba(79, 172, 254, 0.05); border-radius: 50%; animation: float 7s ease-in-out infinite;"></div>
             </div>
+            
+            <!-- Geometric Pattern Overlay -->
+            <div style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; background-image: radial-gradient(circle at 25% 25%, rgba(255,255,255,0.02) 1px, transparent 1px), radial-gradient(circle at 75% 75%, rgba(255,255,255,0.02) 1px, transparent 1px); background-size: 60px 60px; pointer-events: none;"></div>
+            
             <div class="container">
-                <div class="hero-content" style="text-align: center; max-width: 900px; margin: 0 auto; position: relative; z-index: 2;">
-                    <h1 class="hero-title" style="font-family: var(--font-heading); font-size: 4rem; font-weight: 800; margin-bottom: 1.5rem; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">
-                        Documentación Técnica del Proyecto
-                    </h1>
-                    <p class="hero-subtitle" style="font-size: 1.25rem; color: rgba(255, 255, 255, 0.7); margin-bottom: 3rem; max-width: 700px; margin-left: auto; margin-right: auto;">
-                        A continuación encontrarás los principales <strong>diagramas UML</strong> del sistema, incluyendo el diagrama de clases y el de 
-                        entidad-relación. Estos documentos proporcionan una visión estructural del sistema desarrollado.
-                    </p>
+                <div class="hero-content" style="position: relative; z-index: 2;">
+                    <!-- Main Title with Creative Layout -->
+                    <div style="text-align: center; margin-bottom: 4rem;">
+                        <div style="display: inline-block; position: relative; margin-bottom: 2rem;">
+                            <h1 style="font-family: var(--font-heading); font-size: 4.5rem; font-weight: 900; background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; text-align: center; line-height: 1.1; margin: 0;">
+                                DOCUMENTACIÓN
+                            </h1>
+                            <div style="height: 8px; background: linear-gradient(90deg, #667eea 0%, #764ba2 50%, #f093fb 100%); border-radius: 4px; margin: 1rem auto; width: 200px;"></div>
+                            <h2 style="font-family: var(--font-heading); font-size: 2.5rem; font-weight: 600; color: rgba(255, 255, 255, 0.9); margin: 1rem 0 0 0;">
+                                TÉCNICA S.E.I.E
+                            </h2>
+                        </div>
+                        
+                        <!-- Creative Subtitle -->
+                        <div style="max-width: 800px; margin: 0 auto;">
+                            <p style="font-size: 1.3rem; color: rgba(255, 255, 255, 0.8); line-height: 1.6; margin-bottom: 3rem;">
+                                Explora la <span style="background: linear-gradient(135deg, #667eea, #764ba2); -webkit-background-clip: text; -webkit-text-fill-color: transparent; font-weight: 600;">arquitectura completa</span> de nuestro sistema integral. 
+                                Desde diagramas UML hasta manuales detallados, cada documento ha sido cuidadosamente diseñado para 
+                                <span style="background: linear-gradient(135deg, #f093fb, #f5576c); -webkit-background-clip: text; -webkit-text-fill-color: transparent; font-weight: 600;">facilitar tu comprensión</span> 
+                                del proyecto.
+                            </p>
+                        </div>
+                        
+                        <!-- Navigation Pills -->
+                        <div class="nav-pills-container" style="display: flex; justify-content: center; gap: 1rem; flex-wrap: wrap; margin-bottom: 2rem;">
+                            <a href="#diagramas" style="background: rgba(102, 126, 234, 0.15); border: 2px solid rgba(102, 126, 234, 0.3); color: #667eea; padding: 0.8rem 1.5rem; border-radius: 50px; text-decoration: none; font-weight: 600; transition: all 0.3s ease; backdrop-filter: blur(10px); white-space: nowrap;" onmouseover="this.style.background='rgba(102, 126, 234, 0.25)'; this.style.borderColor='rgba(102, 126, 234, 0.5)'" onmouseout="this.style.background='rgba(102, 126, 234, 0.15)'; this.style.borderColor='rgba(102, 126, 234, 0.3)'">
+                                📊 Diagramas UML
+                            </a>
+                            <a href="#casos-uso" style="background: rgba(240, 147, 251, 0.15); border: 2px solid rgba(240, 147, 251, 0.3); color: #f093fb; padding: 0.8rem 1.5rem; border-radius: 50px; text-decoration: none; font-weight: 600; transition: all 0.3s ease; backdrop-filter: blur(10px); white-space: nowrap;" onmouseover="this.style.background='rgba(240, 147, 251, 0.25)'; this.style.borderColor='rgba(240, 147, 251, 0.5)'" onmouseout="this.style.background='rgba(240, 147, 251, 0.15)'; this.style.borderColor='rgba(240, 147, 251, 0.3)'">
+                                📋 Casos de Uso
+                            </a>
+                            <a href="#manuales" style="background: rgba(79, 172, 254, 0.15); border: 2px solid rgba(79, 172, 254, 0.3); color: #4facfe; padding: 0.8rem 1.5rem; border-radius: 50px; text-decoration: none; font-weight: 600; transition: all 0.3s ease; backdrop-filter: blur(10px); white-space: nowrap;" onmouseover="this.style.background='rgba(79, 172, 254, 0.25)'; this.style.borderColor='rgba(79, 172, 254, 0.5)'" onmouseout="this.style.background='rgba(79, 172, 254, 0.15)'; this.style.borderColor='rgba(79, 172, 254, 0.3)'">
+                                📚 Manuales
+                            </a>
+                        </div>
+                    </div>
                 </div>
             </div>
+            
+        <!-- CSS for animations and responsive -->
+            <style>
+                @keyframes float {
+                    0%, 100% { transform: translateY(0px) rotate(0deg); }
+                    50% { transform: translateY(-20px) rotate(180deg); }
+                }
+                
+                /* Responsive Styles */
+                @media (max-width: 768px) {
+                    .hero-section h1 {
+                        font-size: 2.8rem !important;
+                        line-height: 1.1 !important;
+                    }
+                    
+                    .hero-section h2 {
+                        font-size: 1.8rem !important;
+                    }
+                    
+                    .hero-section p {
+                        font-size: 1.1rem !important;
+                        padding: 0 1rem !important;
+                    }
+                    
+                    .nav-pills-container {
+                        flex-direction: column !important;
+                        gap: 0.8rem !important;
+                        padding: 0 1rem !important;
+                    }
+                    
+                    .nav-pills-container a {
+                        width: 100% !important;
+                        text-align: center !important;
+                        padding: 1rem 1.5rem !important;
+                    }
+                }
+                
+                @media (max-width: 480px) {
+                    .hero-section h1 {
+                        font-size: 2.2rem !important;
+                    }
+                    
+                    .hero-section h2 {
+                        font-size: 1.5rem !important;
+                    }
+                    
+                    .hero-section .container {
+                        padding: 0 1rem !important;
+                    }
+                                    
+                    .hero-section p {
+                        font-size: 1rem !important;
+                        line-height: 1.5 !important;
+                    }
+                }
+                
+                /* Ultra responsive for very small screens */
+                @media (max-width: 360px) {
+                    .hero-section h1 {
+                        font-size: 1.8rem !important;
+                    }
+                    
+                    .hero-section h2 {
+                        font-size: 1.3rem !important;
+                    }
+                    
+                    .nav-pills-container a {
+                        font-size: 0.9rem !important;
+                        padding: 0.8rem 1rem !important;
+                    }
+                                    
+                /* Ensure full page scroll */
+                body {
+                    min-height: 100vh;
+                    overflow-x: hidden;
+                    overflow-y: auto;
+                }
+                
+                .documentation-section {
+                    min-height: auto;
+                    padding-bottom: 2rem;
+                }
+                }
+            </style>
         </section>
 
         <!-- Documentation Sections -->
         <section class="documentation-section" id="documentation" style="padding: 5rem 0; background: #0f0f23;">
             <div class="container">
                 <!-- Diagramas UML Section -->
-                <div class="doc-section" style="margin-bottom: 6rem;">
-                    <div class="text-center" style="margin-bottom: 4rem;">
-                        <h2 style="font-size: 2.5rem; font-weight: 700; color: #ffffff; margin-bottom: 1rem;">Diagramas UML</h2>
-                        <p style="color: rgba(255, 255, 255, 0.7); font-size: 1.1rem; max-width: 600px; margin: 0 auto;">
-                            Documentación visual de la arquitectura y estructura del sistema
-                        </p>
+                <div class="doc-section" id="diagramas" style="margin-bottom: 8rem; position: relative;">
+                    <!-- Section Header with Creative Design -->
+                    <div style="text-align: center; margin-bottom: 5rem; position: relative;">
+                        <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 400px; height: 400px; background: radial-gradient(circle, rgba(102, 126, 234, 0.1) 0%, transparent 70%); border-radius: 50%; z-index: 1;"></div>
+                        <div style="position: relative; z-index: 2;">
+                            <div style="display: inline-block; background: rgba(102, 126, 234, 0.1); border: 2px solid rgba(102, 126, 234, 0.3); border-radius: 50px; padding: 0.5rem 1.5rem; margin-bottom: 1.5rem;">
+                                <span style="color: #667eea; font-weight: 600; font-size: 0.9rem; letter-spacing: 2px;">ARQUITECTURA DEL SISTEMA</span>
+                            </div>
+                            <h2 style="font-size: 3.5rem; font-weight: 800; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin-bottom: 1rem; font-family: var(--font-heading);">
+                                Diagramas UML
+                            </h2>
+                            <p style="color: rgba(255, 255, 255, 0.8); font-size: 1.2rem; max-width: 650px; margin: 0 auto; line-height: 1.7;">
+                                Visualiza la estructura y las relaciones fundamentales de nuestro sistema empresarial
+                            </p>
+                        </div>
                     </div>
-                    <div class="row" style="display: flex; justify-content: center; gap: 2rem;">
-                        <div class="col-lg-5 col-md-6 mb-4">
-                            <div class="doc-card" style="background: rgba(255, 255, 255, 0.05); border-radius: 1rem; padding: 2rem; text-align: center; border: 1px solid rgba(255, 255, 255, 0.1); transition: all 0.3s ease; backdrop-filter: blur(10px);">
-                                <div class="doc-icon" style="margin-bottom: 1.5rem;">
-                                    <i class="fas fa-project-diagram" style="font-size: 3rem; color: #667eea;"></i>
+                    
+                    <!-- Creative Diagram Layout -->
+                    <div style="display: flex; justify-content: center; gap: 4rem; flex-wrap: wrap;">
+                        <!-- Diagram 1: Clases -->
+                        <div style="position: relative; max-width: 450px;">
+                            <div style="background: linear-gradient(145deg, rgba(102, 126, 234, 0.15) 0%, rgba(118, 75, 162, 0.1) 100%); border-radius: 2rem; padding: 3rem 2rem; border: 1px solid rgba(102, 126, 234, 0.2); backdrop-filter: blur(20px); transition: all 0.4s ease; position: relative; overflow: hidden;" onmouseover="this.style.transform='translateY(-10px)'; this.style.boxShadow='0 25px 50px rgba(102, 126, 234, 0.3)'" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='none'">
+                                <!-- Decorative Corner -->
+                                <div style="position: absolute; top: -20px; right: -20px; width: 80px; height: 80px; background: linear-gradient(135deg, #667eea, #764ba2); border-radius: 50%; opacity: 0.2;"></div>
+                                
+                                <!-- Header -->
+                                <div style="text-align: center; margin-bottom: 2rem;">
+                                    <div style="width: 100px; height: 100px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 50%; margin: 0 auto 1.5rem; display: flex; align-items: center; justify-content: center; box-shadow: 0 15px 35px rgba(102, 126, 234, 0.4);">
+                                        <i class="fas fa-project-diagram" style="font-size: 2.5rem; color: white;"></i>
+                                    </div>
+                                    <h4 style="color: #ffffff; font-size: 1.5rem; font-weight: 700; margin-bottom: 0.5rem;">Diagrama de Clases</h4>
+                                    <div style="width: 60px; height: 3px; background: linear-gradient(90deg, #667eea, #764ba2); margin: 0 auto; border-radius: 2px;"></div>
                                 </div>
-                                <h4 style="color: #ffffff; margin-bottom: 1rem; font-size: 1.3rem;">📊 DIAGRAMA DE CLASES</h4>
-                                <div class="diagram-preview" style="margin: 1.5rem 0; background: #ffffff; border-radius: 0.5rem; padding: 1rem;">
+                                
+                                <!-- Preview -->
+                                <div style="background: #ffffff; border-radius: 1rem; padding: 1.5rem; margin-bottom: 2rem; box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);">
                                     <img src="assets/img/diagramas/relaciones.png" alt="Diagrama de Clases" style="width: 100%; height: auto; border-radius: 0.5rem;">
                                 </div>
-                                <button class="doc-btn" data-bs-toggle="modal" data-bs-target="#portfolioModalr" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border: none; padding: 0.75rem 2rem; border-radius: 50px; color: white; font-weight: 600; cursor: pointer; transition: all 0.3s ease; display: inline-flex; align-items: center; gap: 0.5rem;">
-                                    <i class="fas fa-download"></i>
-                                    Descargar PDF
-                                </button>
+                                
+                                <!-- Description -->
+                                <p style="color: rgba(255, 255, 255, 0.8); text-align: center; margin-bottom: 2rem; line-height: 1.6;">
+                                    Estructura completa de clases, métodos y relaciones del sistema S.E.I.E
+                                </p>
+                                
+                                <!-- Action Button -->
+                                <div style="text-align: center;">
+                                    <button data-bs-toggle="modal" data-bs-target="#portfolioModalr" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border: none; padding: 1rem 2.5rem; border-radius: 50px; color: white; font-weight: 600; font-size: 1rem; cursor: pointer; transition: all 0.3s ease; display: inline-flex; align-items: center; gap: 0.75rem; box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);" onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 12px 35px rgba(102, 126, 234, 0.4)'" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 8px 25px rgba(102, 126, 234, 0.3)'">
+                                        <i class="fas fa-eye"></i>
+                                        Visualizar Completo
+                                    </button>
+                                </div>
                             </div>
                         </div>
-                        <div class="col-lg-5 col-md-6 mb-4">
-                            <div class="doc-card" style="background: rgba(255, 255, 255, 0.05); border-radius: 1rem; padding: 2rem; text-align: center; border: 1px solid rgba(255, 255, 255, 0.1); transition: all 0.3s ease; backdrop-filter: blur(10px);">
-                                <div class="doc-icon" style="margin-bottom: 1.5rem;">
-                                    <i class="fas fa-sitemap" style="font-size: 3rem; color: #4facfe;"></i>
+                        
+                        <!-- Diagram 2: Entidad-Relación -->
+                        <div style="position: relative; max-width: 450px;">
+                            <div style="background: linear-gradient(145deg, rgba(79, 172, 254, 0.15) 0%, rgba(0, 242, 254, 0.1) 100%); border-radius: 2rem; padding: 3rem 2rem; border: 1px solid rgba(79, 172, 254, 0.2); backdrop-filter: blur(20px); transition: all 0.4s ease; position: relative; overflow: hidden;" onmouseover="this.style.transform='translateY(-10px)'; this.style.boxShadow='0 25px 50px rgba(79, 172, 254, 0.3)'" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='none'">
+                                <!-- Decorative Corner -->
+                                <div style="position: absolute; top: -20px; right: -20px; width: 80px; height: 80px; background: linear-gradient(135deg, #4facfe, #00f2fe); border-radius: 50%; opacity: 0.2;"></div>
+                                
+                                <!-- Header -->
+                                <div style="text-align: center; margin-bottom: 2rem;">
+                                    <div style="width: 100px; height: 100px; background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); border-radius: 50%; margin: 0 auto 1.5rem; display: flex; align-items: center; justify-content: center; box-shadow: 0 15px 35px rgba(79, 172, 254, 0.4);">
+                                        <i class="fas fa-sitemap" style="font-size: 2.5rem; color: white;"></i>
+                                    </div>
+                                    <h4 style="color: #ffffff; font-size: 1.5rem; font-weight: 700; margin-bottom: 0.5rem;">Entidad-Relación</h4>
+                                    <div style="width: 60px; height: 3px; background: linear-gradient(90deg, #4facfe, #00f2fe); margin: 0 auto; border-radius: 2px;"></div>
                                 </div>
-                                <h4 style="color: #ffffff; margin-bottom: 1rem; font-size: 1.3rem;">🔗 DIAGRAMA ENTIDAD-RELACIÓN</h4>
-                                <div class="diagram-preview" style="margin: 1.5rem 0; background: #ffffff; border-radius: 0.5rem; padding: 1rem;">
+                                
+                                <!-- Preview -->
+                                <div style="background: #ffffff; border-radius: 1rem; padding: 1.5rem; margin-bottom: 2rem; box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);">
                                     <img src="assets/img/diagramas/Asociaciones.png" alt="Diagrama Entidad-Relación" style="width: 100%; height: auto; border-radius: 0.5rem;">
                                 </div>
-                                <button class="doc-btn" data-bs-toggle="modal" data-bs-target="#portfolioModala" style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); border: none; padding: 0.75rem 2rem; border-radius: 50px; color: white; font-weight: 600; cursor: pointer; transition: all 0.3s ease; display: inline-flex; align-items: center; gap: 0.5rem;">
-                                    <i class="fas fa-download"></i>
-                                    Descargar PDF
-                                </button>
+                                
+                                <!-- Description -->
+                                <p style="color: rgba(255, 255, 255, 0.8); text-align: center; margin-bottom: 2rem; line-height: 1.6;">
+                                    Modelo de datos y asociaciones entre entidades de la base de datos
+                                </p>
+                                
+                                <!-- Action Button -->
+                                <div style="text-align: center;">
+                                    <button data-bs-toggle="modal" data-bs-target="#portfolioModala" style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); border: none; padding: 1rem 2.5rem; border-radius: 50px; color: white; font-weight: 600; font-size: 1rem; cursor: pointer; transition: all 0.3s ease; display: inline-flex; align-items: center; gap: 0.75rem; box-shadow: 0 8px 25px rgba(79, 172, 254, 0.3);" onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 12px 35px rgba(79, 172, 254, 0.4)'" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 8px 25px rgba(79, 172, 254, 0.3)'">
+                                        <i class="fas fa-eye"></i>
+                                        Visualizar Completo
+                                    </button>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
-
                 <!-- Casos de Uso Section -->
-                <div class="doc-section" style="margin-bottom: 6rem;">
-                    <div class="text-center" style="margin-bottom: 4rem;">
-                        <h2 style="font-size: 2.5rem; font-weight: 700; color: #ffffff; margin-bottom: 1rem;">Casos de Uso del Sistema</h2>
-                        <p style="color: rgba(255, 255, 255, 0.7); font-size: 1.1rem; max-width: 700px; margin: 0 auto;">
-                            Aquí encontrarás las fichas detalladas de los casos de uso del sistema. Cada ficha describe el flujo básico, actores 
-                            involucrados y excepciones relevantes para las funcionalidades clave.
+                <div class="doc-section" id="casos-uso" style="margin-bottom: 8rem; position: relative; padding: 4rem 0;">
+                    <!-- Creative Background Pattern - Extended -->
+                    <div style="position: absolute; top: -2rem; left: -2rem; right: -2rem; bottom: -2rem; background: linear-gradient(45deg, rgba(240, 147, 251, 0.08) 0%, rgba(245, 87, 108, 0.05) 100%); border-radius: 3rem; transform: rotate(-1deg); z-index: 1;"></div>
+                    <!-- Section Header -->
+                    <div style="text-align: center; margin-bottom: 4rem; position: relative; z-index: 2;">
+                        <div style="display: inline-block; background: rgba(240, 147, 251, 0.1); border: 2px solid rgba(240, 147, 251, 0.3); border-radius: 50px; padding: 0.5rem 1.5rem; margin-bottom: 1.5rem;">
+                            <span style="color: #f093fb; font-weight: 600; font-size: 0.9rem; letter-spacing: 2px;">FUNCIONALIDADES DEL SISTEMA</span>
+                        </div>
+                        <h2 style="font-size: 3.5rem; font-weight: 800; background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin-bottom: 1rem; font-family: var(--font-heading);">
+                            Casos de Uso
+                        </h2>
+                        <p style="color: rgba(255, 255, 255, 0.8); font-size: 1.2rem; max-width: 700px; margin: 0 auto; line-height: 1.7;">
+                            Explora las funcionalidades principales a través de flujos detallados y actores del sistema
                         </p>
                     </div>
-                    <div class="row" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.5rem;">
-                        <div class="use-case-card" style="background: rgba(255, 255, 255, 0.05); border-radius: 1rem; padding: 1.5rem; border: 1px solid rgba(255, 255, 255, 0.1); transition: all 0.3s ease;">
-                            <div class="case-header" style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem;">
-                                <div class="case-icon" style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); width: 50px; height: 50px; border-radius: 0.5rem; display: flex; align-items: center; justify-content: center;">
-                                    <i class="fas fa-user-check" style="color: white; font-size: 1.2rem;"></i>
-                                </div>
-                                <h5 style="color: #ffffff; margin: 0; font-size: 1.1rem;">📄 CASO DE USO - CU01</h5>
-                            </div>
-                            <div class="case-preview" style="background: #f8f9fa; border-radius: 0.5rem; padding: 2rem; margin-bottom: 1rem; display: flex; align-items: center; justify-content: center; min-height: 120px;">
-                                <div style="text-align: center; color: #6c757d;">
-                                    <i class="fas fa-user-check" style="font-size: 2.5rem; margin-bottom: 0.5rem; color: #f093fb;"></i>
-                                    <p style="margin: 0; font-size: 0.9rem;">Diagrama CU01</p>
-                                </div>
-                            </div>
-                            <button class="case-btn" style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); border: none; padding: 0.6rem 1.5rem; border-radius: 25px; color: white; font-weight: 500; cursor: pointer; width: 100%; transition: all 0.3s ease;">
-                                <i class="fas fa-download"></i> Descargar PDF
-                            </button>
-                        </div>
-                        <div class="use-case-card" style="background: rgba(255, 255, 255, 0.05); border-radius: 1rem; padding: 1.5rem; border: 1px solid rgba(255, 255, 255, 0.1); transition: all 0.3s ease;">
-                            <div class="case-header" style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem;">
-                                <div class="case-icon" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); width: 50px; height: 50px; border-radius: 0.5rem; display: flex; align-items: center; justify-content: center;">
-                                    <i class="fas fa-shopping-cart" style="color: white; font-size: 1.2rem;"></i>
-                                </div>
-                                <h5 style="color: #ffffff; margin: 0; font-size: 1.1rem;">📄 CASO DE USO - CU02</h5>
-                            </div>
-                            <div class="case-preview" style="background: #f8f9fa; border-radius: 0.5rem; padding: 2rem; margin-bottom: 1rem; display: flex; align-items: center; justify-content: center; min-height: 120px;">
-                                <div style="text-align: center; color: #6c757d;">
-                                    <i class="fas fa-shopping-cart" style="font-size: 2.5rem; margin-bottom: 0.5rem; color: #667eea;"></i>
-                                    <p style="margin: 0; font-size: 0.9rem;">Diagrama CU02</p>
+                    
+                    <!-- Hexagonal Grid Layout -->
+                    <div style="position: relative; z-index: 2;">
+                        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 2rem; max-width: 1400px; margin: 0 auto;">
+                            
+                            <!-- CU01 -->
+                            <div style="background: linear-gradient(145deg, rgba(240, 147, 251, 0.1) 0%, rgba(245, 87, 108, 0.05) 100%); border-radius: 1.5rem; padding: 2rem; border: 1px solid rgba(240, 147, 251, 0.2); backdrop-filter: blur(15px); transition: all 0.4s ease; position: relative; overflow: hidden;" onmouseover="this.style.transform='rotate(2deg) scale(1.05)'; this.style.boxShadow='0 20px 40px rgba(240, 147, 251, 0.3)'" onmouseout="this.style.transform='rotate(0deg) scale(1)'; this.style.boxShadow='none'">
+                                <div style="position: absolute; top: -30px; right: -30px; width: 100px; height: 100px; background: radial-gradient(circle, rgba(240, 147, 251, 0.2) 0%, transparent 70%); border-radius: 50%;"></div>
+                                
+                                <div style="text-align: center;">
+                                    <div style="width: 80px; height: 80px; background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); border-radius: 50%; margin: 0 auto 1.5rem; display: flex; align-items: center; justify-content: center; position: relative; z-index: 2;">
+                                        <i class="fas fa-user-check" style="font-size: 2rem; color: white;"></i>
+                                    </div>
+                                    <h5 style="color: #ffffff; font-size: 1.3rem; font-weight: 700; margin-bottom: 1rem;">Registro Usuario</h5>
+                                    <div style="background: rgba(255, 255, 255, 0.95); border-radius: 1rem; padding: 1.5rem; margin-bottom: 1.5rem;">
+                                        <div style="color: #6c757d; text-align: center;">
+                                            <i class="fas fa-user-plus" style="font-size: 2.5rem; color: #f093fb; margin-bottom: 0.5rem;"></i>
+                                            <p style="margin: 0; font-weight: 600;">CU01 - Registro</p>
+                                        </div>
+                                    </div>
+                                    <button style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); border: none; padding: 0.8rem 2rem; border-radius: 50px; color: white; font-weight: 600; cursor: pointer; width: 100%; transition: all 0.3s ease;">
+                                        <i class="fas fa-download"></i> Obtener Ficha
+                                    </button>
                                 </div>
                             </div>
-                            <button class="case-btn" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border: none; padding: 0.6rem 1.5rem; border-radius: 25px; color: white; font-weight: 500; cursor: pointer; width: 100%; transition: all 0.3s ease;">
-                                <i class="fas fa-download"></i> Descargar PDF
-                            </button>
-                        </div>
-                        <div class="use-case-card" style="background: rgba(255, 255, 255, 0.05); border-radius: 1rem; padding: 1.5rem; border: 1px solid rgba(255, 255, 255, 0.1); transition: all 0.3s ease;">
-                            <div class="case-header" style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem;">
-                                <div class="case-icon" style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); width: 50px; height: 50px; border-radius: 0.5rem; display: flex; align-items: center; justify-content: center;">
-                                    <i class="fas fa-tools" style="color: white; font-size: 1.2rem;"></i>
-                                </div>
-                                <h5 style="color: #ffffff; margin: 0; font-size: 1.1rem;">📄 CASO DE USO - CU03</h5>
-                            </div>
-                            <div class="case-preview" style="background: #f8f9fa; border-radius: 0.5rem; padding: 2rem; margin-bottom: 1rem; display: flex; align-items: center; justify-content: center; min-height: 120px;">
-                                <div style="text-align: center; color: #6c757d;">
-                                    <i class="fas fa-tools" style="font-size: 2.5rem; margin-bottom: 0.5rem; color: #4facfe;"></i>
-                                    <p style="margin: 0; font-size: 0.9rem;">Diagrama CU03</p>
-                                </div>
-                            </div>
-                            <button class="case-btn" style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); border: none; padding: 0.6rem 1.5rem; border-radius: 25px; color: white; font-weight: 500; cursor: pointer; width: 100%; transition: all 0.3s ease;">
-                                <i class="fas fa-download"></i> Descargar PDF
-                            </button>
-                        </div>
-                        <div class="use-case-card" style="background: rgba(255, 255, 255, 0.05); border-radius: 1rem; padding: 1.5rem; border: 1px solid rgba(255, 255, 255, 0.1); transition: all 0.3s ease;">
-                            <div class="case-header" style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem;">
-                                <div class="case-icon" style="background: linear-gradient(135deg, #ff9a9e 0%, #fecfef 100%); width: 50px; height: 50px; border-radius: 0.5rem; display: flex; align-items: center; justify-content: center;">
-                                    <i class="fas fa-cog" style="color: white; font-size: 1.2rem;"></i>
-                                </div>
-                                <h5 style="color: #ffffff; margin: 0; font-size: 1.1rem;">📄 CASO DE USO - CU04</h5>
-                            </div>
-                            <div class="case-preview" style="background: #f8f9fa; border-radius: 0.5rem; padding: 2rem; margin-bottom: 1rem; display: flex; align-items: center; justify-content: center; min-height: 120px;">
-                                <div style="text-align: center; color: #6c757d;">
-                                    <i class="fas fa-cog" style="font-size: 2.5rem; margin-bottom: 0.5rem; color: #ff9a9e;"></i>
-                                    <p style="margin: 0; font-size: 0.9rem;">Diagrama CU04</p>
+                            
+                            <!-- CU02 -->
+                            <div style="background: linear-gradient(145deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.05) 100%); border-radius: 1.5rem; padding: 2rem; border: 1px solid rgba(102, 126, 234, 0.2); backdrop-filter: blur(15px); transition: all 0.4s ease; position: relative; overflow: hidden;" onmouseover="this.style.transform='rotate(-2deg) scale(1.05)'; this.style.boxShadow='0 20px 40px rgba(102, 126, 234, 0.3)'" onmouseout="this.style.transform='rotate(0deg) scale(1)'; this.style.boxShadow='none'">
+                                <div style="position: absolute; top: -30px; right: -30px; width: 100px; height: 100px; background: radial-gradient(circle, rgba(102, 126, 234, 0.2) 0%, transparent 70%); border-radius: 50%;"></div>
+                                
+                                <div style="text-align: center;">
+                                    <div style="width: 80px; height: 80px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 50%; margin: 0 auto 1.5rem; display: flex; align-items: center; justify-content: center; position: relative; z-index: 2;">
+                                        <i class="fas fa-shopping-cart" style="font-size: 2rem; color: white;"></i>
+                                    </div>
+                                    <h5 style="color: #ffffff; font-size: 1.3rem; font-weight: 700; margin-bottom: 1rem;">Gestión Compras</h5>
+                                    <div style="background: rgba(255, 255, 255, 0.95); border-radius: 1rem; padding: 1.5rem; margin-bottom: 1.5rem;">
+                                        <div style="color: #6c757d; text-align: center;">
+                                            <i class="fas fa-cart-plus" style="font-size: 2.5rem; color: #667eea; margin-bottom: 0.5rem;"></i>
+                                            <p style="margin: 0; font-weight: 600;">CU02 - Compras</p>
+                                        </div>
+                                    </div>
+                                    <button style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border: none; padding: 0.8rem 2rem; border-radius: 50px; color: white; font-weight: 600; cursor: pointer; width: 100%; transition: all 0.3s ease;">
+                                        <i class="fas fa-download"></i> Obtener Ficha
+                                    </button>
                                 </div>
                             </div>
-                            <button class="case-btn" style="background: linear-gradient(135deg, #ff9a9e 0%, #fecfef 100%); border: none; padding: 0.6rem 1.5rem; border-radius: 25px; color: white; font-weight: 500; cursor: pointer; width: 100%; transition: all 0.3s ease;">
-                                <i class="fas fa-download"></i> Descargar PDF
-                            </button>
-                        </div>
-                        <div class="use-case-card" style="background: rgba(255, 255, 255, 0.05); border-radius: 1rem; padding: 1.5rem; border: 1px solid rgba(255, 255, 255, 0.1); transition: all 0.3s ease;">
-                            <div class="case-header" style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem;">
-                                <div class="case-icon" style="background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%); width: 50px; height: 50px; border-radius: 0.5rem; display: flex; align-items: center; justify-content: center;">
-                                    <i class="fas fa-chart-line" style="color: #333; font-size: 1.2rem;"></i>
-                                </div>
-                                <h5 style="color: #ffffff; margin: 0; font-size: 1.1rem;">📄 CASO DE USO - CU05</h5>
-                            </div>
-                            <div class="case-preview" style="background: #f8f9fa; border-radius: 0.5rem; padding: 2rem; margin-bottom: 1rem; display: flex; align-items: center; justify-content: center; min-height: 120px;">
-                                <div style="text-align: center; color: #6c757d;">
-                                    <i class="fas fa-chart-line" style="font-size: 2.5rem; margin-bottom: 0.5rem; color: #a8edea;"></i>
-                                    <p style="margin: 0; font-size: 0.9rem;">Diagrama CU05</p>
-                                </div>
-                            </div>
-                            <button class="case-btn" style="background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%); border: none; padding: 0.6rem 1.5rem; border-radius: 25px; color: #333; font-weight: 500; cursor: pointer; width: 100%; transition: all 0.3s ease;">
-                                <i class="fas fa-download"></i> Descargar PDF
-                            </button>
-                        </div>
-                        <div class="use-case-card" style="background: rgba(255, 255, 255, 0.05); border-radius: 1rem; padding: 1.5rem; border: 1px solid rgba(255, 255, 255, 0.1); transition: all 0.3s ease;">
-                            <div class="case-header" style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem;">
-                                <div class="case-icon" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); width: 50px; height: 50px; border-radius: 0.5rem; display: flex; align-items: center; justify-content: center;">
-                                    <i class="fas fa-database" style="color: white; font-size: 1.2rem;"></i>
-                                </div>
-                                <h5 style="color: #ffffff; margin: 0; font-size: 1.1rem;">📄 CASO DE USO - CU06</h5>
-                            </div>
-                            <div class="case-preview" style="background: #f8f9fa; border-radius: 0.5rem; padding: 2rem; margin-bottom: 1rem; display: flex; align-items: center; justify-content: center; min-height: 120px;">
-                                <div style="text-align: center; color: #6c757d;">
-                                    <i class="fas fa-database" style="font-size: 2.5rem; margin-bottom: 0.5rem; color: #667eea;"></i>
-                                    <p style="margin: 0; font-size: 0.9rem;">Diagrama CU06</p>
+                            
+                            <!-- CU03 -->
+                            <div style="background: linear-gradient(145deg, rgba(79, 172, 254, 0.1) 0%, rgba(0, 242, 254, 0.05) 100%); border-radius: 1.5rem; padding: 2rem; border: 1px solid rgba(79, 172, 254, 0.2); backdrop-filter: blur(15px); transition: all 0.4s ease; position: relative; overflow: hidden;" onmouseover="this.style.transform='rotate(2deg) scale(1.05)'; this.style.boxShadow='0 20px 40px rgba(79, 172, 254, 0.3)'" onmouseout="this.style.transform='rotate(0deg) scale(1)'; this.style.boxShadow='none'">
+                                <div style="position: absolute; top: -30px; right: -30px; width: 100px; height: 100px; background: radial-gradient(circle, rgba(79, 172, 254, 0.2) 0%, transparent 70%); border-radius: 50%;"></div>
+                                
+                                <div style="text-align: center;">
+                                    <div style="width: 80px; height: 80px; background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); border-radius: 50%; margin: 0 auto 1.5rem; display: flex; align-items: center; justify-content: center; position: relative; z-index: 2;">
+                                        <i class="fas fa-tools" style="font-size: 2rem; color: white;"></i>
+                                    </div>
+                                    <h5 style="color: #ffffff; font-size: 1.3rem; font-weight: 700; margin-bottom: 1rem;">Gestión Productos</h5>
+                                    <div style="background: rgba(255, 255, 255, 0.95); border-radius: 1rem; padding: 1.5rem; margin-bottom: 1.5rem;">
+                                        <div style="color: #6c757d; text-align: center;">
+                                            <i class="fas fa-box-open" style="font-size: 2.5rem; color: #4facfe; margin-bottom: 0.5rem;"></i>
+                                            <p style="margin: 0; font-weight: 600;">CU03 - Productos</p>
+                                        </div>
+                                    </div>
+                                    <button style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); border: none; padding: 0.8rem 2rem; border-radius: 50px; color: white; font-weight: 600; cursor: pointer; width: 100%; transition: all 0.3s ease;">
+                                        <i class="fas fa-download"></i> Obtener Ficha
+                                    </button>
                                 </div>
                             </div>
-                            <button class="case-btn" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border: none; padding: 0.6rem 1.5rem; border-radius: 25px; color: white; font-weight: 500; cursor: pointer; width: 100%; transition: all 0.3s ease;">
-                                <i class="fas fa-file-image"></i> Descargar PNG
-                            </button>
+                            
+                            <!-- CU04 -->
+                            <div style="background: linear-gradient(145deg, rgba(255, 154, 158, 0.1) 0%, rgba(254, 207, 239, 0.05) 100%); border-radius: 1.5rem; padding: 2rem; border: 1px solid rgba(255, 154, 158, 0.2); backdrop-filter: blur(15px); transition: all 0.4s ease; position: relative; overflow: hidden;" onmouseover="this.style.transform='rotate(-2deg) scale(1.05)'; this.style.boxShadow='0 20px 40px rgba(255, 154, 158, 0.3)'" onmouseout="this.style.transform='rotate(0deg) scale(1)'; this.style.boxShadow='none'">
+                                <div style="position: absolute; top: -30px; right: -30px; width: 100px; height: 100px; background: radial-gradient(circle, rgba(255, 154, 158, 0.2) 0%, transparent 70%); border-radius: 50%;"></div>
+                                
+                                <div style="text-align: center;">
+                                    <div style="width: 80px; height: 80px; background: linear-gradient(135deg, #ff9a9e 0%, #fecfef 100%); border-radius: 50%; margin: 0 auto 1.5rem; display: flex; align-items: center; justify-content: center; position: relative; z-index: 2;">
+                                        <i class="fas fa-cog" style="font-size: 2rem; color: white;"></i>
+                                    </div>
+                                    <h5 style="color: #ffffff; font-size: 1.3rem; font-weight: 700; margin-bottom: 1rem;">Configuración</h5>
+                                    <div style="background: rgba(255, 255, 255, 0.95); border-radius: 1rem; padding: 1.5rem; margin-bottom: 1.5rem;">
+                                        <div style="color: #6c757d; text-align: center;">
+                                            <i class="fas fa-sliders-h" style="font-size: 2.5rem; color: #ff9a9e; margin-bottom: 0.5rem;"></i>
+                                            <p style="margin: 0; font-weight: 600;">CU04 - Config</p>
+                                        </div>
+                                    </div>
+                                    <button style="background: linear-gradient(135deg, #ff9a9e 0%, #fecfef 100%); border: none; padding: 0.8rem 2rem; border-radius: 50px; color: white; font-weight: 600; cursor: pointer; width: 100%; transition: all 0.3s ease;">
+                                        <i class="fas fa-download"></i> Obtener Ficha
+                                    </button>
+                                </div>
+                            </div>
+                            
+                            <!-- CU05 -->
+                            <div style="background: linear-gradient(145deg, rgba(168, 237, 234, 0.1) 0%, rgba(254, 214, 227, 0.05) 100%); border-radius: 1.5rem; padding: 2rem; border: 1px solid rgba(168, 237, 234, 0.2); backdrop-filter: blur(15px); transition: all 0.4s ease; position: relative; overflow: hidden;" onmouseover="this.style.transform='rotate(2deg) scale(1.05)'; this.style.boxShadow='0 20px 40px rgba(168, 237, 234, 0.3)'" onmouseout="this.style.transform='rotate(0deg) scale(1)'; this.style.boxShadow='none'">
+                                <div style="position: absolute; top: -30px; right: -30px; width: 100px; height: 100px; background: radial-gradient(circle, rgba(168, 237, 234, 0.2) 0%, transparent 70%); border-radius: 50%;"></div>
+                                
+                                <div style="text-align: center;">
+                                    <div style="width: 80px; height: 80px; background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%); border-radius: 50%; margin: 0 auto 1.5rem; display: flex; align-items: center; justify-content: center; position: relative; z-index: 2;">
+                                        <i class="fas fa-chart-line" style="font-size: 2rem; color: white;"></i>
+                                    </div>
+                                    <h5 style="color: #ffffff; font-size: 1.3rem; font-weight: 700; margin-bottom: 1rem;">Reportes</h5>
+                                    <div style="background: rgba(255, 255, 255, 0.95); border-radius: 1rem; padding: 1.5rem; margin-bottom: 1.5rem;">
+                                        <div style="color: #6c757d; text-align: center;">
+                                            <i class="fas fa-chart-bar" style="font-size: 2.5rem; color: #a8edea; margin-bottom: 0.5rem;"></i>
+                                            <p style="margin: 0; font-weight: 600;">CU05 - Reportes</p>
+                                        </div>
+                                    </div>
+                                    <button style="background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%); border: none; padding: 0.8rem 2rem; border-radius: 50px; color: #333; font-weight: 600; cursor: pointer; width: 100%; transition: all 0.3s ease;">
+                                        <i class="fas fa-download"></i> Obtener Ficha
+                                    </button>
+                                </div>
+                            </div>
+                            
+                            <!-- CU06 -->
+                            <div style="background: linear-gradient(145deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.05) 100%); border-radius: 1.5rem; padding: 2rem; border: 1px solid rgba(102, 126, 234, 0.2); backdrop-filter: blur(15px); transition: all 0.4s ease; position: relative; overflow: hidden;" onmouseover="this.style.transform='rotate(-2deg) scale(1.05)'; this.style.boxShadow='0 20px 40px rgba(102, 126, 234, 0.3)'" onmouseout="this.style.transform='rotate(0deg) scale(1)'; this.style.boxShadow='none'">
+                                <div style="position: absolute; top: -30px; right: -30px; width: 100px; height: 100px; background: radial-gradient(circle, rgba(102, 126, 234, 0.2) 0%, transparent 70%); border-radius: 50%;"></div>
+                                
+                                <div style="text-align: center;">
+                                    <div style="width: 80px; height: 80px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 50%; margin: 0 auto 1.5rem; display: flex; align-items: center; justify-content: center; position: relative; z-index: 2;">
+                                        <i class="fas fa-database" style="font-size: 2rem; color: white;"></i>
+                                    </div>
+                                    <h5 style="color: #ffffff; font-size: 1.3rem; font-weight: 700; margin-bottom: 1rem;">Base de Datos</h5>
+                                    <div style="background: rgba(255, 255, 255, 0.95); border-radius: 1rem; padding: 1.5rem; margin-bottom: 1.5rem;">
+                                        <div style="color: #6c757d; text-align: center;">
+                                            <i class="fas fa-server" style="font-size: 2.5rem; color: #667eea; margin-bottom: 0.5rem;"></i>
+                                            <p style="margin: 0; font-weight: 600;">CU06 - BD</p>
+                                        </div>
+                                    </div>
+                                    <button style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border: none; padding: 0.8rem 2rem; border-radius: 50px; color: white; font-weight: 600; cursor: pointer; width: 100%; transition: all 0.3s ease;">
+                                        <i class="fas fa-file-image"></i> Obtener PNG
+                                    </button>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
-
                 <!-- Manuales de Uso Section -->
-                <div class="doc-section">
-                    <div class="text-center" style="margin-bottom: 4rem;">
-                        <h2 style="font-size: 2.5rem; font-weight: 700; color: #ffffff; margin-bottom: 1rem;">Manuales de Uso</h2>
-                        <p style="color: rgba(255, 255, 255, 0.7); font-size: 1.1rem; max-width: 600px; margin: 0 auto;">
-                            En esta sección encontrarás los manuales de uso del sistema, los cuales explican de manera clara y ordenada cómo 
-                            interactuar con nuestro aplicativo.
+                <div class="doc-section" id="manuales" style="position: relative; padding: 6rem 0;">
+                    <!-- Creative Background Elements -->
+                    <div style="position: absolute; top: 20%; left: 5%; width: 200px; height: 200px; background: linear-gradient(135deg, rgba(245, 166, 35, 0.1), rgba(80, 200, 120, 0.05)); border-radius: 50% 30% 70% 40%; transform: rotate(45deg); z-index: 1;"></div>
+                    <div style="position: absolute; bottom: 20%; right: 8%; width: 150px; height: 150px; background: linear-gradient(135deg, rgba(80, 200, 120, 0.1), rgba(245, 166, 35, 0.05)); border-radius: 30% 70% 50% 40%; transform: rotate(-30deg); z-index: 1;"></div>
+                    
+                    <!-- Section Header -->
+                    <div style="text-align: center; margin-bottom: 5rem; position: relative; z-index: 2;">
+                        <div style="display: inline-block; background: rgba(245, 166, 35, 0.1); border: 2px solid rgba(245, 166, 35, 0.3); border-radius: 50px; padding: 0.5rem 1.5rem; margin-bottom: 1.5rem;">
+                            <span style="color: #f5a623; font-weight: 600; font-size: 0.9rem; letter-spacing: 2px;">GUÍAS DE IMPLEMENTACIÓN</span>
+                        </div>
+                        <h2 style="font-size: 3.5rem; font-weight: 800; background: linear-gradient(135deg, #f5a623 0%, #50c878 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin-bottom: 1rem; font-family: var(--font-heading);">
+                            Manuales del Sistema
+                        </h2>
+                        <p style="color: rgba(255, 255, 255, 0.8); font-size: 1.2rem; max-width: 650px; margin: 0 auto; line-height: 1.7;">
+                            Documentación completa para usuarios finales y desarrolladores
                         </p>
                     </div>
-                    <div class="row" style="display: flex; justify-content: center; gap: 3rem;">
-                        <div class="col-lg-5 col-md-6 mb-4">
-                            <div class="manual-card" style="background: rgba(255, 255, 255, 0.05); border-radius: 1rem; padding: 2.5rem; text-align: center; border: 1px solid rgba(255, 255, 255, 0.1); transition: all 0.3s ease; backdrop-filter: blur(10px);">
-                                <div class="manual-icon" style="margin-bottom: 2rem;">
-                                    <i class="fas fa-user-graduate" style="font-size: 4rem; color: #f5a623;"></i>
+                    
+                    <!-- Interactive Manual Cards -->
+                    <div style="display: flex; justify-content: center; gap: 4rem; flex-wrap: wrap; position: relative; z-index: 2;">
+                        
+                        <!-- Manual Usuario -->
+                        <div style="position: relative; perspective: 1000px;">
+                            <div style="background: linear-gradient(145deg, rgba(245, 166, 35, 0.15) 0%, rgba(247, 107, 28, 0.1) 100%); border-radius: 2rem; padding: 3rem; border: 1px solid rgba(245, 166, 35, 0.25); backdrop-filter: blur(20px); transition: all 0.6s ease; position: relative; overflow: hidden; max-width: 400px;" onmouseover="this.style.transform='rotateY(10deg) rotateX(5deg)'; this.style.boxShadow='0 30px 60px rgba(245, 166, 35, 0.4)'" onmouseout="this.style.transform='rotateY(0deg) rotateX(0deg)'; this.style.boxShadow='none'">
+                                
+                                <!-- Floating Elements -->
+                                <div style="position: absolute; top: 20px; right: 20px; width: 60px; height: 60px; background: rgba(245, 166, 35, 0.2); border-radius: 50%; animation: float 4s ease-in-out infinite;"></div>
+                                <div style="position: absolute; bottom: 30px; left: 20px; width: 40px; height: 40px; background: rgba(247, 107, 28, 0.15); border-radius: 50%; animation: float 6s ease-in-out infinite reverse;"></div>
+                                
+                                <!-- Icon Section -->
+                                <div style="text-align: center; margin-bottom: 2rem; position: relative; z-index: 2;">
+                                    <div style="width: 120px; height: 120px; background: linear-gradient(135deg, #f5a623 0%, #f76b1c 100%); border-radius: 50%; margin: 0 auto 1.5rem; display: flex; align-items: center; justify-content: center; box-shadow: 0 20px 40px rgba(245, 166, 35, 0.4); position: relative;">
+                                        <i class="fas fa-user-graduate" style="font-size: 3rem; color: white;"></i>
+                                        <!-- Badge -->
+                                        <div style="position: absolute; top: -10px; right: -10px; background: #ffffff; border-radius: 50%; width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);">
+                                            <span style="color: #f5a623; font-weight: 700; font-size: 0.8rem;">PDF</span>
+                                        </div>
+                                    </div>
+                                    <h4 style="color: #ffffff; font-size: 1.6rem; font-weight: 700; margin-bottom: 0.5rem;">Manual de Usuario</h4>
+                                    <div style="width: 80px; height: 4px; background: linear-gradient(90deg, #f5a623, #f76b1c); margin: 0 auto; border-radius: 2px;"></div>
                                 </div>
-                                <h4 style="color: #ffffff; margin-bottom: 1.5rem; font-size: 1.4rem;">📚 MANUAL DE USUARIO CLIENTE</h4>
-                                <div class="manual-preview" style="margin: 1.5rem 0; background: #f8f9fa; border-radius: 0.5rem; padding: 2.5rem; display: flex; align-items: center; justify-content: center; min-height: 150px;">
-                                    <div style="text-align: center; color: #6c757d;">
-                                        <i class="fas fa-book-open" style="font-size: 3rem; margin-bottom: 0.5rem; color: #f5a623;"></i>
-                                        <p style="margin: 0; font-size: 1rem; font-weight: 500;">Manual Cliente</p>
+                                
+                                <!-- Content Preview -->
+                                <div style="background: rgba(255, 255, 255, 0.95); border-radius: 1.5rem; padding: 2rem; margin-bottom: 2rem; position: relative; z-index: 2;">
+                                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; text-align: center; color: #6c757d;">
+                                        <div>
+                                            <i class="fas fa-mouse-pointer" style="font-size: 1.5rem; color: #f5a623; margin-bottom: 0.5rem;"></i>
+                                            <p style="margin: 0; font-size: 0.8rem; font-weight: 600;">Navegación</p>
+                                        </div>
+                                        <div>
+                                            <i class="fas fa-shopping-bag" style="font-size: 1.5rem; color: #f5a623; margin-bottom: 0.5rem;"></i>
+                                            <p style="margin: 0; font-size: 0.8rem; font-weight: 600;">Compras</p>
+                                        </div>
+                                        <div>
+                                            <i class="fas fa-user-cog" style="font-size: 1.5rem; color: #f5a623; margin-bottom: 0.5rem;"></i>
+                                            <p style="margin: 0; font-size: 0.8rem; font-weight: 600;">Perfil</p>
+                                        </div>
+                                        <div>
+                                            <i class="fas fa-headset" style="font-size: 1.5rem; color: #f5a623; margin-bottom: 0.5rem;"></i>
+                                            <p style="margin: 0; font-size: 0.8rem; font-weight: 600;">Soporte</p>
+                                        </div>
                                     </div>
                                 </div>
-                                <button class="manual-btn" style="background: linear-gradient(135deg, #f5a623 0%, #f76b1c 100%); border: none; padding: 1rem 2.5rem; border-radius: 50px; color: white; font-weight: 600; cursor: pointer; transition: all 0.3s ease; display: inline-flex; align-items: center; gap: 0.75rem; font-size: 1rem;">
-                                    <i class="fas fa-download"></i>
-                                    Descargar PDF
-                                </button>
+                                
+                                <!-- Description & Button -->
+                                <div style="text-align: center; position: relative; z-index: 2;">
+                                    <p style="color: rgba(255, 255, 255, 0.8); margin-bottom: 2rem; line-height: 1.6; font-size: 0.95rem;">
+                                        Guía completa para clientes finales con instrucciones paso a paso
+                                    </p>
+                                    <button style="background: linear-gradient(135deg, #f5a623 0%, #f76b1c 100%); border: none; padding: 1rem 2.5rem; border-radius: 50px; color: white; font-weight: 600; font-size: 1rem; cursor: pointer; transition: all 0.3s ease; display: inline-flex; align-items: center; gap: 0.75rem; box-shadow: 0 10px 25px rgba(245, 166, 35, 0.3); width: 100%;" onmouseover="this.style.transform='translateY(-3px)'; this.style.boxShadow='0 15px 35px rgba(245, 166, 35, 0.4)'" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 10px 25px rgba(245, 166, 35, 0.3)'">
+                                        <i class="fas fa-download"></i>
+                                        <span style="flex: 1;">Descargar Manual</span>
+                                        <i class="fas fa-arrow-right"></i>
+                                    </button>
+                                </div>
                             </div>
                         </div>
-                        <div class="col-lg-5 col-md-6 mb-4">
-                            <div class="manual-card" style="background: rgba(255, 255, 255, 0.05); border-radius: 1rem; padding: 2.5rem; text-align: center; border: 1px solid rgba(255, 255, 255, 0.1); transition: all 0.3s ease; backdrop-filter: blur(10px);">
-                                <div class="manual-icon" style="margin-bottom: 2rem;">
-                                    <i class="fas fa-tools" style="font-size: 4rem; color: #50c878;"></i>
+                        
+                        <!-- Manual Técnico -->
+                        <div style="position: relative; perspective: 1000px;">
+                            <div style="background: linear-gradient(145deg, rgba(80, 200, 120, 0.15) 0%, rgba(0, 168, 107, 0.1) 100%); border-radius: 2rem; padding: 3rem; border: 1px solid rgba(80, 200, 120, 0.25); backdrop-filter: blur(20px); transition: all 0.6s ease; position: relative; overflow: hidden; max-width: 400px;" onmouseover="this.style.transform='rotateY(-10deg) rotateX(5deg)'; this.style.boxShadow='0 30px 60px rgba(80, 200, 120, 0.4)'" onmouseout="this.style.transform='rotateY(0deg) rotateX(0deg)'; this.style.boxShadow='none'">
+                                
+                                <!-- Floating Elements -->
+                                <div style="position: absolute; top: 30px; left: 20px; width: 50px; height: 50px; background: rgba(80, 200, 120, 0.2); border-radius: 50%; animation: float 5s ease-in-out infinite;"></div>
+                                <div style="position: absolute; bottom: 40px; right: 30px; width: 35px; height: 35px; background: rgba(0, 168, 107, 0.15); border-radius: 50%; animation: float 7s ease-in-out infinite reverse;"></div>
+                                
+                                <!-- Icon Section -->
+                                <div style="text-align: center; margin-bottom: 2rem; position: relative; z-index: 2;">
+                                    <div style="width: 120px; height: 120px; background: linear-gradient(135deg, #50c878 0%, #00a86b 100%); border-radius: 50%; margin: 0 auto 1.5rem; display: flex; align-items: center; justify-content: center; box-shadow: 0 20px 40px rgba(80, 200, 120, 0.4); position: relative;">
+                                        <i class="fas fa-code" style="font-size: 3rem; color: white;"></i>
+                                        <!-- Badge -->
+                                        <div style="position: absolute; top: -10px; right: -10px; background: #ffffff; border-radius: 50%; width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);">
+                                            <span style="color: #50c878; font-weight: 700; font-size: 0.8rem;">PDF</span>
+                                        </div>
+                                    </div>
+                                    <h4 style="color: #ffffff; font-size: 1.6rem; font-weight: 700; margin-bottom: 0.5rem;">Manual Técnico</h4>
+                                    <div style="width: 80px; height: 4px; background: linear-gradient(90deg, #50c878, #00a86b); margin: 0 auto; border-radius: 2px;"></div>
                                 </div>
-                                <h4 style="color: #ffffff; margin-bottom: 1.5rem; font-size: 1.4rem;">🔧 MANUAL TÉCNICO</h4>
-                                <div class="manual-preview" style="margin: 1.5rem 0; background: #f8f9fa; border-radius: 0.5rem; padding: 2.5rem; display: flex; align-items: center; justify-content: center; min-height: 150px;">
-                                    <div style="text-align: center; color: #6c757d;">
-                                        <i class="fas fa-code" style="font-size: 3rem; margin-bottom: 0.5rem; color: #50c878;"></i>
-                                        <p style="margin: 0; font-size: 1rem; font-weight: 500;">Manual Técnico</p>
+                                
+                                <!-- Content Preview -->
+                                <div style="background: rgba(255, 255, 255, 0.95); border-radius: 1.5rem; padding: 2rem; margin-bottom: 2rem; position: relative; z-index: 2;">
+                                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; text-align: center; color: #6c757d;">
+                                        <div>
+                                            <i class="fas fa-server" style="font-size: 1.5rem; color: #50c878; margin-bottom: 0.5rem;"></i>
+                                            <p style="margin: 0; font-size: 0.8rem; font-weight: 600;">Instalación</p>
+                                        </div>
+                                        <div>
+                                            <i class="fas fa-cogs" style="font-size: 1.5rem; color: #50c878; margin-bottom: 0.5rem;"></i>
+                                            <p style="margin: 0; font-size: 0.8rem; font-weight: 600;">Config</p>
+                                        </div>
+                                        <div>
+                                            <i class="fas fa-database" style="font-size: 1.5rem; color: #50c878; margin-bottom: 0.5rem;"></i>
+                                            <p style="margin: 0; font-size: 0.8rem; font-weight: 600;">BD</p>
+                                        </div>
+                                        <div>
+                                            <i class="fas fa-bug" style="font-size: 1.5rem; color: #50c878; margin-bottom: 0.5rem;"></i>
+                                            <p style="margin: 0; font-size: 0.8rem; font-weight: 600;">Debug</p>
+                                        </div>
                                     </div>
                                 </div>
-                                <button class="manual-btn" style="background: linear-gradient(135deg, #50c878 0%, #00a86b 100%); border: none; padding: 1rem 2.5rem; border-radius: 50px; color: white; font-weight: 600; cursor: pointer; transition: all 0.3s ease; display: inline-flex; align-items: center; gap: 0.75rem; font-size: 1rem;">
-                                    <i class="fas fa-download"></i>
-                                    Descargar PDF
-                                </button>
+                                
+                                <!-- Description & Button -->
+                                <div style="text-align: center; position: relative; z-index: 2;">
+                                    <p style="color: rgba(255, 255, 255, 0.8); margin-bottom: 2rem; line-height: 1.6; font-size: 0.95rem;">
+                                        Documentación técnica para desarrolladores y administradores del sistema
+                                    </p>
+                                    <button style="background: linear-gradient(135deg, #50c878 0%, #00a86b 100%); border: none; padding: 1rem 2.5rem; border-radius: 50px; color: white; font-weight: 600; font-size: 1rem; cursor: pointer; transition: all 0.3s ease; display: inline-flex; align-items: center; gap: 0.75rem; box-shadow: 0 10px 25px rgba(80, 200, 120, 0.3); width: 100%;" onmouseover="this.style.transform='translateY(-3px)'; this.style.boxShadow='0 15px 35px rgba(80, 200, 120, 0.4)'" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 10px 25px rgba(80, 200, 120, 0.3)'">
+                                        <i class="fas fa-download"></i>
+                                        <span style="flex: 1;">Descargar Manual</span>
+                                        <i class="fas fa-arrow-right"></i>
+                                    </button>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -284,6 +573,19 @@
             </div>
         </section> 
         </div>
+        
+        <!-- Botón Volver -->
+        <section style="padding: 4rem 0; background: #0f0f23;">
+            <div class="container">
+                <div class="text-center">
+                    <a href="index.html" style="display: inline-flex; align-items: center; gap: 1rem; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; text-decoration: none; padding: 1.2rem 3rem; border-radius: 50px; font-weight: 600; font-size: 1.1rem; transition: all 0.3s ease; box-shadow: 0 10px 30px rgba(102, 126, 234, 0.3);" onmouseover="this.style.transform='translateY(-3px)'; this.style.boxShadow='0 15px 40px rgba(102, 126, 234, 0.4)'" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 10px 30px rgba(102, 126, 234, 0.3)'">
+                        <i class="fas fa-arrow-left"></i>
+                        Volver al Inicio
+                    </a>
+                </div>
+            </div>
+        </section>
+
                 <!-- Footer Moderno -->
         <footer style="background: linear-gradient(135deg, #0f0f23 0%, #1a1a2e 100%); border-top: 1px solid rgba(255,255,255,0.1); padding: 3rem 0 2rem;">
             <div class="container">

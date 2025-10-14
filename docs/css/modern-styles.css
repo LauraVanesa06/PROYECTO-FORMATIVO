@@ -929,3 +929,165 @@ div[style*="rgba(121, 82, 179"]:hover {
         padding: 2rem !important;
     }
 }
+
+/* ===== RESPONSIVE STYLES FOR INFORMACION.HTML ===== */
+@media (max-width: 768px) {
+    .info-hero h1 {
+        font-size: 2.5rem !important;
+    }
+    
+    .info-hero p.lead {
+        font-size: 1.1rem !important;
+    }
+    
+    .nav-pills-container {
+        gap: 0.5rem !important;
+    }
+    
+    .nav-pills-container a {
+        padding: 0.6rem 1rem !important;
+        font-size: 0.9rem !important;
+    }
+    
+    .container {
+        padding-left: 1rem !important;
+        padding-right: 1rem !important;
+    }
+    
+    /* Diagramas section responsive */
+    .diagram-card {
+        margin-bottom: 2rem !important;
+    }
+    
+    .diagram-card h4 {
+        font-size: 1.3rem !important;
+    }
+    
+    /* Cases section responsive */
+    .hexagon-case {
+        min-height: 300px !important;
+        margin-bottom: 2rem !important;
+    }
+    
+    .hexagon-case h4 {
+        font-size: 1.2rem !important;
+    }
+    
+    /* Manuals section responsive */
+    .manual-card {
+        margin-bottom: 2rem !important;
+    }
+    
+    .manual-card h4 {
+        font-size: 1.3rem !important;
+    }
+    
+    /* 3D effects reduced on mobile */
+    .diagram-card:hover,
+    .hexagon-case:hover,
+    .manual-card:hover {
+        transform: translateY(-5px) !important;
+    }
+}
+
+@media (max-width: 480px) {
+    .info-hero h1 {
+        font-size: 2rem !important;
+    }
+    
+    .info-hero p.lead {
+        font-size: 1rem !important;
+    }
+    
+    .nav-pills-container {
+        flex-direction: column !important;
+        align-items: center !important;
+    }
+    
+    .nav-pills-container a {
+        width: 100% !important;
+        max-width: 250px !important;
+        text-align: center !important;
+    }
+    
+    /* Ultra small screens */
+    .diagram-card,
+    .hexagon-case,
+    .manual-card {
+        padding: 1.5rem !important;
+    }
+    
+    .diagram-card h4,
+    .hexagon-case h4,
+    .manual-card h4 {
+        font-size: 1.1rem !important;
+    }
+    
+    /* Disable 3D effects on very small screens */
+    .diagram-card,
+    .hexagon-case,
+    .manual-card {
+        transform: none !important;
+    }
+    
+    .diagram-card:hover,
+    .hexagon-case:hover,
+    .manual-card:hover {
+        transform: translateY(-3px) !important;
+    }
+        
+    /* Section titles responsive */
+    .doc-section h2 {
+        font-size: 2.2rem !important;
+    }
+    
+    .doc-section p {
+        font-size: 1rem !important;
+        padding: 0 1rem !important;
+    }
+    
+    /* Background elements responsive */
+    .doc-section > div:first-child > div:first-child {
+        width: 250px !important;
+        height: 250px !important;
+    }
+}
+
+/* Additional responsive fixes */
+@media (max-width: 576px) {
+    .container {
+        max-width: 100% !important;
+        padding-left: 0.5rem !important;
+        padding-right: 0.5rem !important;
+    }
+    
+    .doc-section {
+        margin-bottom: 4rem !important;
+    }
+    
+    .row {
+        margin: 0 !important;
+    }
+    
+    .col-lg-4,
+    .col-md-6 {
+        padding: 0.5rem !important;
+    }
+}
+/* Back button responsive */
+@media (max-width: 768px) {
+    section a[href="index.html"] {
+        padding: 1rem 2rem !important;
+        font-size: 1rem !important;
+    }
+}
+
+@media (max-width: 480px) {
+    section a[href="index.html"] {
+        padding: 0.8rem 1.5rem !important;
+        font-size: 0.9rem !important;
+        width: 100% !important;
+        max-width: 280px !important;
+        justify-content: center !important;
+    }
+}
