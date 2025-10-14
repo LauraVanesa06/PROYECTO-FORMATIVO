@@ -264,6 +264,9 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.0.26"
+<<<<<<< Updated upstream
+>>>>>>> Stashed changes
+=======
 >>>>>>> Stashed changes
   flutter_test:
     dependency: "direct dev"
@@ -280,10 +283,17 @@ packages:
     description:
       name: google_fonts
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
       sha256: ebc94ed30fd13cefd397cb1658b593f21571f014b7d1197eeb41fb95f05d899a
       url: "https://pub.dev"
     source: hosted
     version: "6.3.1"
+=======
+      sha256: df9763500dadba0155373e9cb44e202ce21bd9ed5de6bdbd05c5854e86839cb8
+      url: "https://pub.dev"
+    source: hosted
+    version: "6.3.0"
+>>>>>>> Stashed changes
 =======
       sha256: df9763500dadba0155373e9cb44e202ce21bd9ed5de6bdbd05c5854e86839cb8
       url: "https://pub.dev"
@@ -677,7 +687,11 @@ packages:
 sdks:
   dart: ">=3.8.0 <4.0.0"
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
   flutter: ">=3.29.0"
+=======
+  flutter: ">=3.24.0"
+>>>>>>> Stashed changes
 =======
   flutter: ">=3.24.0"
 >>>>>>> Stashed changes

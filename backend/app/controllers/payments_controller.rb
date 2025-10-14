@@ -15,6 +15,7 @@ class PaymentsController < ApplicationController
     data = JSON.parse(request.body.read) rescue {}
     transaction = data.dig("data", "transaction") || {}
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
     payment = Payment.find_by(transaction_id: transaction["id"])
 
     if payment
@@ -30,6 +31,8 @@ class PaymentsController < ApplicationController
     end
 
 =======
+=======
+>>>>>>> Stashed changes
     @payment = Payment.find_by(transaction_id: transaction["id"])
     @payment.update(status: :paid)
     if @payment.status == "paid" && @payment.cart.present?
@@ -40,6 +43,9 @@ class PaymentsController < ApplicationController
     metodo_pago: "Wompi",
     payment_id: @payment.id
   )
+<<<<<<< Updated upstream
+>>>>>>> Stashed changes
+=======
 >>>>>>> Stashed changes
     head :ok
     
