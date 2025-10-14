@@ -5,9 +5,10 @@
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
         <meta name="description" content="S.E.I.E - Documentación Técnica del Proyecto" />
         <meta name="author" content="Equipo S.E.I.E" />
-        <title>S.E.I.E - Documentación</title>
+        <title>S.E.I.E - ¡El Futuro!</title>
         <!-- Favicon-->
-        <link rel="icon" type="image/x-icon" href="assets/img/logos/seie-logo.ico" />
+        <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><circle cx='50' cy='50' r='45' fill='%23667eea'/><text x='50' y='60' font-family='Arial,sans-serif' font-size='35' font-weight='bold' text-anchor='middle' fill='white'>S</text></svg>" />
+        <link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><circle cx='50' cy='50' r='45' fill='%23667eea'/><text x='50' y='60' font-family='Arial,sans-serif' font-size='35' font-weight='bold' text-anchor='middle' fill='white'>S</text></svg>" />
         <!-- Font Awesome icons (free version)-->
         <script src="https://use.fontawesome.com/releases/v6.3.0/js/all.js" crossorigin="anonymous"></script>
         <!-- Google fonts-->
@@ -282,7 +283,7 @@
                                 
                                 <!-- Action Button -->
                                 <div style="text-align: center;">
-                                    <button data-bs-toggle="modal" data-bs-target="#portfolioModalr" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border: none; padding: 1rem 2.5rem; border-radius: 50px; color: white; font-weight: 600; font-size: 1rem; cursor: pointer; transition: all 0.3s ease; display: inline-flex; align-items: center; gap: 0.75rem; box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);" onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 12px 35px rgba(102, 126, 234, 0.4)'" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 8px 25px rgba(102, 126, 234, 0.3)'">
+                                    <button onclick="window.open('diagrama-clases.html', '_blank')" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border: none; padding: 1rem 2.5rem; border-radius: 50px; color: white; font-weight: 600; font-size: 1rem; cursor: pointer; transition: all 0.3s ease; display: inline-flex; align-items: center; gap: 0.75rem; box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);" onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 12px 35px rgba(102, 126, 234, 0.4)'" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 8px 25px rgba(102, 126, 234, 0.3)'">
                                         <i class="fas fa-eye"></i>
                                         Visualizar Completo
                                     </button>
@@ -317,7 +318,7 @@
                                 
                                 <!-- Action Button -->
                                 <div style="text-align: center;">
-                                    <button data-bs-toggle="modal" data-bs-target="#portfolioModala" style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); border: none; padding: 1rem 2.5rem; border-radius: 50px; color: white; font-weight: 600; font-size: 1rem; cursor: pointer; transition: all 0.3s ease; display: inline-flex; align-items: center; gap: 0.75rem; box-shadow: 0 8px 25px rgba(79, 172, 254, 0.3);" onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 12px 35px rgba(79, 172, 254, 0.4)'" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 8px 25px rgba(79, 172, 254, 0.3)'">
+                                    <button onclick="window.open('diagrama-entidad-relacion.html', '_blank')" style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); border: none; padding: 1rem 2.5rem; border-radius: 50px; color: white; font-weight: 600; font-size: 1rem; cursor: pointer; transition: all 0.3s ease; display: inline-flex; align-items: center; gap: 0.75rem; box-shadow: 0 8px 25px rgba(79, 172, 254, 0.3);" onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 12px 35px rgba(79, 172, 254, 0.4)'" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 8px 25px rgba(79, 172, 254, 0.3)'">
                                         <i class="fas fa-eye"></i>
                                         Visualizar Completo
                                     </button>
@@ -495,7 +496,7 @@
                     </div>
                     
                     <!-- Interactive Manual Cards -->
-                    <div style="display: flex; justify-content: center; gap: 4rem; flex-wrap: wrap; position: relative; z-index: 2;">
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); gap: 3rem; max-width: 1200px; margin: 0 auto; position: relative; z-index: 2;">
                         
                         <!-- Manual Usuario -->
                         <div style="position: relative; perspective: 1000px;">
@@ -544,8 +545,12 @@
                                 <div style="text-align: center; position: relative; z-index: 2;">
                                     <p style="color: rgba(255, 255, 255, 0.8); margin-bottom: 2rem; line-height: 1.6; font-size: 0.95rem;">
                                         Guía completa para clientes finales con instrucciones paso a paso
+                                        <span style="display: inline-flex; align-items: center; gap: 0.5rem; color: #4ade80; font-weight: 600; margin-top: 0.5rem;">
+                                            <i class="fas fa-check-circle"></i>
+                                            ¡Ya disponible!
+                                        </span>
                                     </p>
-                                    <button style="background: linear-gradient(135deg, #f5a623 0%, #f76b1c 100%); border: none; padding: 1rem 2.5rem; border-radius: 50px; color: white; font-weight: 600; font-size: 1rem; cursor: pointer; transition: all 0.3s ease; display: inline-flex; align-items: center; gap: 0.75rem; box-shadow: 0 10px 25px rgba(245, 166, 35, 0.3); width: 100%;" onmouseover="this.style.transform='translateY(-3px)'; this.style.boxShadow='0 15px 35px rgba(245, 166, 35, 0.4)'" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 10px 25px rgba(245, 166, 35, 0.3)'">
+                                    <button onclick="window.open('manual-usuario.html')" style="background: linear-gradient(135deg, #f5a623 0%, #f76b1c 100%); border: none; padding: 1rem 2.5rem; border-radius: 50px; color: white; font-weight: 600; font-size: 1rem; cursor: pointer; transition: all 0.3s ease; display: inline-flex; align-items: center; gap: 0.75rem; box-shadow: 0 10px 25px rgba(245, 166, 35, 0.3); width: 100%;" onmouseover="this.style.transform='translateY(-3px)'; this.style.boxShadow='0 15px 35px rgba(245, 166, 35, 0.4)'" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 10px 25px rgba(245, 166, 35, 0.3)'">
                                         <i class="fas fa-download"></i>
                                         <span style="flex: 1;">Descargar Manual</span>
                                         <i class="fas fa-arrow-right"></i>
@@ -602,7 +607,64 @@
                                     <p style="color: rgba(255, 255, 255, 0.8); margin-bottom: 2rem; line-height: 1.6; font-size: 0.95rem;">
                                         Documentación técnica para desarrolladores y administradores del sistema
                                     </p>
-                                    <button style="background: linear-gradient(135deg, #50c878 0%, #00a86b 100%); border: none; padding: 1rem 2.5rem; border-radius: 50px; color: white; font-weight: 600; font-size: 1rem; cursor: pointer; transition: all 0.3s ease; display: inline-flex; align-items: center; gap: 0.75rem; box-shadow: 0 10px 25px rgba(80, 200, 120, 0.3); width: 100%;" onmouseover="this.style.transform='translateY(-3px)'; this.style.boxShadow='0 15px 35px rgba(80, 200, 120, 0.4)'" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 10px 25px rgba(80, 200, 120, 0.3)'">
+                                    <button onclick="window.open('manual-tecnico.html', '_blank')" style="background: linear-gradient(135deg, #50c878 0%, #00a86b 100%); border: none; padding: 1rem 2.5rem; border-radius: 50px; color: white; font-weight: 600; font-size: 1rem; cursor: pointer; transition: all 0.3s ease; display: inline-flex; align-items: center; gap: 0.75rem; box-shadow: 0 10px 25px rgba(80, 200, 120, 0.3); width: 100%;" onmouseover="this.style.transform='translateY(-3px)'; this.style.boxShadow='0 15px 35px rgba(80, 200, 120, 0.4)'" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 10px 25px rgba(80, 200, 120, 0.3)'">
+                                        <i class="fas fa-download"></i>
+                                        <span style="flex: 1;">Descargar Manual</span>
+                                        <i class="fas fa-arrow-right"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Manual Móvil -->
+                        <div style="position: relative; perspective: 1000px;">
+                            <div style="background: linear-gradient(145deg, rgba(168, 85, 247, 0.15) 0%, rgba(139, 69, 19, 0.1) 100%); border-radius: 2rem; padding: 3rem; border: 1px solid rgba(168, 85, 247, 0.25); backdrop-filter: blur(20px); transition: all 0.6s ease; position: relative; overflow: hidden; max-width: 400px;" onmouseover="this.style.transform='rotateY(10deg) rotateX(-5deg)'; this.style.boxShadow='0 30px 60px rgba(168, 85, 247, 0.4)'" onmouseout="this.style.transform='rotateY(0deg) rotateX(0deg)'; this.style.boxShadow='none'">
+                                
+                                <!-- Floating Elements -->
+                                <div style="position: absolute; top: 25px; right: 30px; width: 45px; height: 45px; background: rgba(168, 85, 247, 0.2); border-radius: 50%; animation: float 4.5s ease-in-out infinite;"></div>
+                                <div style="position: absolute; bottom: 35px; left: 25px; width: 30px; height: 30px; background: rgba(139, 69, 19, 0.15); border-radius: 50%; animation: float 5.5s ease-in-out infinite reverse;"></div>
+                                
+                                <!-- Icon Section -->
+                                <div style="text-align: center; margin-bottom: 2rem; position: relative; z-index: 2;">
+                                    <div style="width: 120px; height: 120px; background: linear-gradient(135deg, #a855f7 0%, #8b4513 100%); border-radius: 50%; margin: 0 auto 1.5rem; display: flex; align-items: center; justify-content: center; box-shadow: 0 20px 40px rgba(168, 85, 247, 0.4); position: relative;">
+                                        <i class="fas fa-mobile-alt" style="font-size: 3rem; color: white;"></i>
+                                        <!-- Badge -->
+                                        <div style="position: absolute; top: -10px; right: -10px; background: #ffffff; border-radius: 50%; width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);">
+                                            <span style="color: #a855f7; font-weight: 700; font-size: 0.8rem;">PDF</span>
+                                        </div>
+                                    </div>
+                                    <h4 style="color: #ffffff; font-size: 1.6rem; font-weight: 700; margin-bottom: 0.5rem;">Manual Móvil</h4>
+                                    <div style="width: 80px; height: 4px; background: linear-gradient(90deg, #a855f7, #8b4513); margin: 0 auto; border-radius: 2px;"></div>
+                                </div>
+                                
+                                <!-- Content Preview -->
+                                <div style="background: rgba(255, 255, 255, 0.95); border-radius: 1.5rem; padding: 2rem; margin-bottom: 2rem; position: relative; z-index: 2;">
+                                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; text-align: center; color: #6c757d;">
+                                        <div>
+                                            <i class="fas fa-download" style="font-size: 1.5rem; color: #a855f7; margin-bottom: 0.5rem;"></i>
+                                            <p style="margin: 0; font-size: 0.8rem; font-weight: 600;">Instalación</p>
+                                        </div>
+                                        <div>
+                                            <i class="fas fa-cog" style="font-size: 1.5rem; color: #a855f7; margin-bottom: 0.5rem;"></i>
+                                            <p style="margin: 0; font-size: 0.8rem; font-weight: 600;">Config</p>
+                                        </div>
+                                        <div>
+                                            <i class="fas fa-shopping-cart" style="font-size: 1.5rem; color: #a855f7; margin-bottom: 0.5rem;"></i>
+                                            <p style="margin: 0; font-size: 0.8rem; font-weight: 600;">Compras</p>
+                                        </div>
+                                        <div>
+                                            <i class="fas fa-bell" style="font-size: 1.5rem; color: #a855f7; margin-bottom: 0.5rem;"></i>
+                                            <p style="margin: 0; font-size: 0.8rem; font-weight: 600;">Notif</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <!-- Description & Button -->
+                                <div style="text-align: center; position: relative; z-index: 2;">
+                                    <p style="color: rgba(255, 255, 255, 0.8); margin-bottom: 2rem; line-height: 1.6; font-size: 0.95rem;">
+                                        Guía completa para la aplicación móvil Flutter con funciones específicas
+                                    </p>
+                                    <button onclick="window.open('manual-movil.html', '_blank')" style="background: linear-gradient(135deg, #a855f7 0%, #8b4513 100%); border: none; padding: 1rem 2.5rem; border-radius: 50px; color: white; font-weight: 600; font-size: 1rem; cursor: pointer; transition: all 0.3s ease; display: inline-flex; align-items: center; gap: 0.75rem; box-shadow: 0 10px 25px rgba(168, 85, 247, 0.3); width: 100%;" onmouseover="this.style.transform='translateY(-3px)'; this.style.boxShadow='0 15px 35px rgba(168, 85, 247, 0.4)'" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 10px 25px rgba(168, 85, 247, 0.3)'">
                                         <i class="fas fa-download"></i>
                                         <span style="flex: 1;">Descargar Manual</span>
                                         <i class="fas fa-arrow-right"></i>
@@ -616,18 +678,6 @@
         </section> 
         </div>
         
-        <!-- Botón Volver -->
-        <section style="padding: 4rem 0; background: #0f0f23;">
-            <div class="container">
-                <div class="text-center">
-                    <a href="index.html" style="display: inline-flex; align-items: center; gap: 1rem; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; text-decoration: none; padding: 1.2rem 3rem; border-radius: 50px; font-weight: 600; font-size: 1.1rem; transition: all 0.3s ease; box-shadow: 0 10px 30px rgba(102, 126, 234, 0.3);" onmouseover="this.style.transform='translateY(-3px)'; this.style.boxShadow='0 15px 40px rgba(102, 126, 234, 0.4)'" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 10px 30px rgba(102, 126, 234, 0.3)'">
-                        <i class="fas fa-arrow-left"></i>
-                        Volver al Inicio
-                    </a>
-                </div>
-            </div>
-        </section>
-
                 <!-- Footer Moderno -->
         <footer style="background: linear-gradient(135deg, #0f0f23 0%, #1a1a2e 100%); border-top: 1px solid rgba(255,255,255,0.1); padding: 3rem 0 2rem;">
             <div class="container">
