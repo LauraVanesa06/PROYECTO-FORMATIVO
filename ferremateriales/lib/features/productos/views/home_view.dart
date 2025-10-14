@@ -16,7 +16,6 @@ class _HomeViewState extends State<HomeView> {
   @override
   void initState() {
     super.initState();
-    // Solo se ejecuta una vez
     context.read<ProductBloc>().add(ProductEntrarPressed());
   }
 

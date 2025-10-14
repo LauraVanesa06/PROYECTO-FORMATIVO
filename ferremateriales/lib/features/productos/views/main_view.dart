@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import '../../auth/bloc/auth_bloc.dart';
 import 'home_view.dart';
 import 'favorites_view.dart';
 import 'cart_view.dart';
@@ -15,16 +17,19 @@ class MainView extends StatefulWidget {
 class _MainViewState extends State<MainView> {
   int _selectedIndex = 0;
 
-  final List<Widget> _screens = const [
-    HomeView(),
-    FavoritesView(),
-    CartView(),
-    NotificationsView(),
-    ProfileView(),
-  ];
-
   @override
   Widget build(BuildContext context) {
+    // Obtén el nombre del usuario desde el AuthBloc
+    final nombre = context.watch<AuthBloc>().state.nombre ?? "";
+
+    final List<Widget> _screens = [
+      const HomeView(),
+      const FavoritesView(),
+      const CartView(),
+      const NotificationsView(),
+      ProfileView(userName: nombre),
+    ];
+
     return Scaffold(
       body: _screens[_selectedIndex],
       bottomNavigationBar: SizedBox(

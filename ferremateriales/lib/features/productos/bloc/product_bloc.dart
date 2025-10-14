@@ -13,7 +13,6 @@ class ProductBloc extends Bloc<ProductEvent, ProductState> {
       emit(ProductLoadInProgress());
 
       try {
-        // PETICIÓN HTTP A TU BACKEND RAILS
         final response = await http.get(
           Uri.parse('http://localhost:3000/api/v1/products'),
         );
