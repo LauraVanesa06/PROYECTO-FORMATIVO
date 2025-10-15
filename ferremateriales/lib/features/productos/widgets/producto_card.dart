@@ -1,5 +1,6 @@
 import 'package:ferremateriales/features/productos/bloc/cart_bloc.dart';
 import 'package:ferremateriales/features/productos/bloc/cart_event.dart';
+import 'package:ferremateriales/features/productos/bloc/product_bloc.dart';
 import 'package:ferremateriales/features/productos/model/product_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -133,6 +134,7 @@ class _ProductCardState extends State<ProductCard> {
                     color: isFavorite ? Colors.red : Colors.grey,
                   ),
                   onPressed: () {
+                    context.read<ProductBloc>().add(ToggleFavorite(widget.product.id!));
                     setState(() {
                       isFavorite = !isFavorite;
                     });

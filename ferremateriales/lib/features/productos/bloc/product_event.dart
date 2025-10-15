@@ -1,11 +1,18 @@
 part of 'product_bloc.dart';
 
-sealed class ProductEvent extends Equatable {
+abstract class ProductEvent extends Equatable {
   const ProductEvent();
 
   @override
-  List<Object> get props => [];
+  List<Object?> get props => [];
 }
 
-final class ProductEntrarPressed extends ProductEvent {}
+class ProductEntrarPressed extends ProductEvent {}
 
+class ToggleFavorite extends ProductEvent {
+  final int productId;
+  const ToggleFavorite(this.productId);
+
+  @override
+  List<Object?> get props => [productId];
+}
