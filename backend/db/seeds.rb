@@ -8,30 +8,31 @@
 #     MovieGenre.find_or_create_by!(name: genre_name)
 #   end
 
-def reset_sqlite_sequences(*tables)
+def reset_postgres_sequences(*tables)
   tables.each do |table|
-    ActiveRecord::Base.connection.execute("DELETE FROM sqlite_sequence WHERE name='#{table}'")
+    ActiveRecord::Base.connection.reset_pk_sequence!(table)
   end
 end
 
-# desactivar temporalmente las llaves foraneas
-ActiveRecord::Base.connection.execute("PRAGMA foreign_keys = OFF")
 
 puts "🧹 Limpiando base de datos..."
+
+PedidoProduct.delete_all
 Purchasedetail.delete_all
 Buy.delete_all
+Pedido.delete_all
+Cart.delete_all 
 Product.delete_all
 Customer.delete_all
 Marca.delete_all
 Category.delete_all
 Supplier.delete_all
 User.delete_all
-Pedido.delete_all
 
-ActiveRecord::Base.connection.execute("PRAGMA foreign_keys = ON")
+
 puts "✅ Datos eliminados, guardando datos de la semilla..."
 
-reset_sqlite_sequences(
+reset_postgres_sequences(
   'purchasedetails',
   'buys',
   'products',
@@ -43,11 +44,10 @@ reset_sqlite_sequences(
   'pedidos'
 )
 
-User.create!(
-  email: "user@gmail.com",
-  password: "123456",
-  role: "admin"
-)
+User.create!([
+  { email: "user@gmail.com", password: "123456", role: "admin" },
+  { email: "cliente@gmail.com", password: "123456", role: "user" },
+])
 
 categories = Category.create!([
   { nombre: "Herramientas" },
