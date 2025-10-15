@@ -14,13 +14,14 @@ def reset_postgres_sequences(*tables)
   end
 end
 
-
 puts "🧹 Limpiando base de datos..."
 
+# 🔹 Primero elimina las tablas hijas (dependientes)
 PedidoProduct.delete_all
 Purchasedetail.delete_all
 Buy.delete_all
 Pedido.delete_all
+CartItem.delete_all   # 👈 AGREGA ESTA LÍNEA ANTES DE Cart
 Cart.delete_all 
 Product.delete_all
 Customer.delete_all
@@ -28,7 +29,6 @@ Marca.delete_all
 Category.delete_all
 Supplier.delete_all
 User.delete_all
-
 
 puts "✅ Datos eliminados, guardando datos de la semilla..."
 
@@ -41,8 +41,11 @@ reset_postgres_sequences(
   'suppliers',
   'customers',
   'users',
-  'pedidos'
+  'pedidos',
+  'carts',
+  'cart_items'
 )
+
 
 User.create!([
   { email: "user@gmail.com", password: "123456", role: "admin" },
