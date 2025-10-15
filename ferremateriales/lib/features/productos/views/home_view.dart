@@ -1,3 +1,4 @@
+import 'package:ferremateriales/features/productos/views/category_products_view.dart';
 import 'package:ferremateriales/features/productos/views/product_view.dart';
 import 'package:ferremateriales/features/productos/widgets/product_list.dart';
 import 'package:flutter/material.dart';
@@ -46,7 +47,15 @@ class _HomeViewState extends State<HomeView> {
             icon: category['icon'] as IconData,
             label: category['label'] as String,
             onTap: () {
-              print('Clic en: ${category['label']}');
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (_) => BlocProvider.value(
+                    value: context.read<ProductBloc>(),
+                    child: CategoryProductsView(categoryName: category['label'] as String),
+                  ),
+                ),
+              );
             },
           );
         }).toList();
@@ -102,6 +111,16 @@ class _HomeViewState extends State<HomeView> {
 
               const SizedBox(height: 24),
 
+              Padding(
+                padding: const EdgeInsets.only(left: 16.0),
+                child: Text("Productos Destacados",
+                    style: TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.brown.shade700,
+                        )),
+              ),
+
               // Mostrar productos usando BlocBuilder
               BlocBuilder<ProductBloc, ProductState>(
                 builder: (context, state) {
@@ -112,6 +131,7 @@ class _HomeViewState extends State<HomeView> {
                     return Padding(
                       padding: const EdgeInsets.all(8.0),
                       child: ProductsList(products: state.productos),
+                      
                     );
                     // return SizedBox(
                     //   height: 1000,

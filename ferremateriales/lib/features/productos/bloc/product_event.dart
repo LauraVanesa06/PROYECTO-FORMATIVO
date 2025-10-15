@@ -16,3 +16,12 @@ class ToggleFavorite extends ProductEvent {
   @override
   List<Object?> get props => [productId];
 }
+
+class ProductFilterByCategory extends ProductEvent {
+  final String categoryName;
+
+  ProductFilterByCategory(this.categoryName);
+
+  @override
+  List<Object> get props => [categoryName];
+}

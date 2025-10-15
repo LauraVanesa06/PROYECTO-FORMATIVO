@@ -11,7 +11,37 @@ class ProductBloc extends Bloc<ProductEvent, ProductState> {
   ProductBloc() : super(ProductInitial()) {
     on<ProductEntrarPressed>(_onLoadProducts);
     on<ToggleFavorite>(_onToggleFavorite); // 👈 Agregado
+    on<ProductFilterByCategory>(_onFilterByCategory);
   }
+
+  Future<void> _onFilterByCategory(
+    ProductFilterByCategory event, Emitter<ProductState> emit) async {
+  emit(ProductLoadInProgress());
+
+  try {
+    final response = await http.get(
+      Uri.parse('http://localhost:3000/api/v1/products?category=${Uri.encodeComponent(event.categoryName)}'),
+    );
+
+    if (response.statusCode == 200) {
+      final decoded = jsonDecode(response.body);
+      if (decoded is List) {
+        final products = decoded
+            .whereType<Map<String, dynamic>>()
+            .map((item) => ProductModel.fromJson(item))
+            .toList();
+        emit(ProductLoadSuccess(products));
+      } else {
+        emit(ProductLoadFailure());
+      }
+    } else {
+      emit(ProductLoadFailure());
+    }
+  } catch (e) {
+    emit(ProductLoadFailure());
+  }
+}
+
 
   Future<void> _onLoadProducts(ProductEntrarPressed event, Emitter<ProductState> emit) async {
     emit(ProductLoadInProgress());
