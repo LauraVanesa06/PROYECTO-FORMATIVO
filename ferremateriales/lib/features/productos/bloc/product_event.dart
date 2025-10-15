@@ -9,19 +9,22 @@ abstract class ProductEvent extends Equatable {
 
 class ProductEntrarPressed extends ProductEvent {}
 
-class ToggleFavorite extends ProductEvent {
-  final int productId;
-  const ToggleFavorite(this.productId);
-
-  @override
-  List<Object?> get props => [productId];
-}
+class ProductRefrescar extends ProductEvent {} // 👈 NUEVO EVENTO
 
 class ProductFilterByCategory extends ProductEvent {
   final String categoryName;
 
-  ProductFilterByCategory(this.categoryName);
+  const ProductFilterByCategory(this.categoryName);
 
   @override
-  List<Object> get props => [categoryName];
+  List<Object?> get props => [categoryName];
+}
+
+class ToggleFavorite extends ProductEvent {
+  final int productId;
+
+  const ToggleFavorite(this.productId);
+
+  @override
+  List<Object?> get props => [productId];
 }

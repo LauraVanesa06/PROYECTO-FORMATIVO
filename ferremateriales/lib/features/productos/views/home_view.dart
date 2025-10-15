@@ -55,7 +55,10 @@ class _HomeViewState extends State<HomeView> {
                     child: CategoryProductsView(categoryName: category['label'] as String),
                   ),
                 ),
-              );
+              ).then((_) {
+                // 🔄 Esto se ejecuta al volver de CategoryProductsView
+                context.read<ProductBloc>().add(ProductEntrarPressed());
+              });
             },
           );
         }).toList();
