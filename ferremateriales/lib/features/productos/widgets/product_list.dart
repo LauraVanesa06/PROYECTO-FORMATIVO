@@ -16,7 +16,7 @@ class ProductsList extends StatelessWidget {
         const Padding(
           padding: EdgeInsets.symmetric(horizontal: 16, vertical: 10),
           child: Text(
-            'Productos destacados',
+            '',
             style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
           ),
         ),
