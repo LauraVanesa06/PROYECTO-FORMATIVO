@@ -4,15 +4,10 @@ class BuysController < ApplicationController
 
   # GET /buys or /buys.json
   def index
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
+
     @buys = Buy.all.order(created_at: :desc).limit(100)
-=======
-=======
->>>>>>> Stashed changes
-=======
->>>>>>> Stashed changes
+
+
   @buys = Buy.includes(:customer, :payment).order(created_at: :desc)
     @purchasedetails = Purchasedetail.all
     @purchasedetails = Purchasedetail.joins("INNER JOIN buys ON buys.id = purchasedetails.buy_id")
@@ -38,7 +33,6 @@ class BuysController < ApplicationController
         @buys = Buy.all
       end
 
->>>>>>> Stashed changes
   end
 
   # GET /buys/1 or /buys/1.json
