@@ -29,7 +29,7 @@ class PaymentsController < ApplicationController
       payment.update(status: mapped_status)
     end
 
-hanges
+
     @payment = Payment.find_by(transaction_id: transaction["id"])
     @payment.update(status: :paid)
     if @payment.status == "paid" && @payment.cart.present?

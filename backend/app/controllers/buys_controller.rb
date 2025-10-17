@@ -5,6 +5,7 @@ class BuysController < ApplicationController
   # GET /buys or /buys.json
   def index
 
+
     @buys = Buy.all.order(created_at: :desc).limit(100)
 
 
