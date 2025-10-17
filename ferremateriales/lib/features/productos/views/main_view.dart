@@ -19,7 +19,6 @@ class _MainViewState extends State<MainView> {
 
   @override
   Widget build(BuildContext context) {
-    // Obtén el nombre del usuario desde el AuthBloc
     final nombre = context.watch<AuthBloc>().state.nombre ?? "";
 
     final List<Widget> _screens = [
@@ -33,13 +32,14 @@ class _MainViewState extends State<MainView> {
     return Scaffold(
       body: _screens[_selectedIndex],
       bottomNavigationBar: SizedBox(
-        height: 55, // Altura controlada de la barra inferior
+        height: 70, // aumentamos un poco el alto para que el carrito sobresalga sin overflow
         child: Stack(
           alignment: Alignment.topCenter,
+          clipBehavior: Clip.none, // permite que sobresalga sin causar error
           children: [
-            // Fondo de madera limitado a 65 de alto
+            // Fondo de madera
             Container(
-              height: 55,
+              height: 70,
               decoration: const BoxDecoration(
                 image: DecorationImage(
                   image: AssetImage('assets/images/madera2.jpg'),
@@ -48,7 +48,7 @@ class _MainViewState extends State<MainView> {
               ),
             ),
 
-            // Barra de navegación sin texto y con ícono sobresaliente
+            // Barra de navegación
             BottomNavigationBar(
               currentIndex: _selectedIndex,
               onTap: (index) => setState(() => _selectedIndex = index),
@@ -67,9 +67,10 @@ class _MainViewState extends State<MainView> {
                   icon: Icon(Icons.star),
                   label: '',
                 ),
+                // Carrito 
                 BottomNavigationBarItem(
                   icon: Transform.translate(
-                    offset: const Offset(0, -35), // Carrito sobresaliente
+                    offset: const Offset(0, -15),
                     child: Container(
                       width: 55,
                       height: 55,

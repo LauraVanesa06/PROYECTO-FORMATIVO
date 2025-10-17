@@ -136,13 +136,6 @@ class _HomeViewState extends State<HomeView> {
                       child: ProductsList(products: state.productos),
                       
                     );
-                    // return SizedBox(
-                    //   height: 1000,
-                    //   child: Padding(
-                    //     padding: const EdgeInsets.all(8.0),
-                    //     child: ProductsList(products: state.productos),
-                    //   ),
-                    // );
                   } else if (state is ProductLoadFailure) {
                     return const Center(
                       child: Text('Error al cargar productos'),
