@@ -7,6 +7,7 @@ enum AuthStatus {
   success,    // Login exitoso
   failure,    // Fallo en autenticación
   loggedOut,  // Cuando el usuario cierra sesión
+  guest,      // usuario invitado
 }
 
 class AuthState extends Equatable {
@@ -30,7 +31,10 @@ class AuthState extends Equatable {
   }) {
     return AuthState(
       status: status ?? this.status,
-      error: (status == AuthStatus.success || status == AuthStatus.loggedOut)
+      // 🔹 Reiniciamos error si el estado es exitoso, logout o invitado
+      error: (status == AuthStatus.success ||
+              status == AuthStatus.loggedOut ||
+              status == AuthStatus.guest)
           ? null
           : error ?? this.error,
       nombre: nombre ?? this.nombre,

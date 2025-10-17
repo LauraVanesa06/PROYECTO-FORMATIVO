@@ -7,7 +7,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
   final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
 
   AuthBloc() : super(const AuthState()) {
-    
+    // Actualizar nombre y correo del usuario
     on<UpdateUserRequested>((event, emit) async {
       final user = _firebaseAuth.currentUser;
       if (user != null) {
@@ -17,6 +17,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       }
     });
 
+    // Comprobar si hay sesión activa al iniciar la app
     on<AuthStarted>((event, emit) async {
       final user = _firebaseAuth.currentUser;
       if (user != null) {
@@ -30,6 +31,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       }
     });
 
+    // Iniciar sesión con email y contraseña
     on<LoginSubmitted>((event, emit) async {
       emit(state.copyWith(status: AuthStatus.loading));
       try {
@@ -51,15 +53,12 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       }
     });
 
-    on<LogoutRequested>((event, emit) async {
-      await _firebaseAuth.signOut();
-      emit(const AuthState(status: AuthStatus.loggedOut));
-    });
-
+    // Registrar nuevo usuario
     on<RegisterRequested>((event, emit) async {
       emit(state.copyWith(status: AuthStatus.loading));
       try {
-        final userCredential = await _firebaseAuth.createUserWithEmailAndPassword(
+        final userCredential =
+            await _firebaseAuth.createUserWithEmailAndPassword(
           email: event.email,
           password: event.password,
         );
@@ -77,6 +76,23 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
           email: event.email,
         ));
       }
+    });
+
+    // Cerrar sesión
+    on<LogoutRequested>((event, emit) async {
+      await _firebaseAuth.signOut();
+      emit(const AuthState(status: AuthStatus.loggedOut));
+    });
+
+    // Continuar como invitado
+    on<ContinueAsGuest>((event, emit) async {
+      emit(state.copyWith(status: AuthStatus.loading));
+      await Future.delayed(const Duration(milliseconds: 400)); 
+      emit(state.copyWith(
+        status: AuthStatus.guest,
+        nombre: "Invitado",
+        email: null,
+      ));
     });
   }
 }

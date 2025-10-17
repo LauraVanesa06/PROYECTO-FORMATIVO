@@ -18,6 +18,7 @@ void main() async {
     options: DefaultFirebaseOptions.currentPlatform,
   );
 
+  // Evita errores visuales en producción
   ErrorWidget.builder = (FlutterErrorDetails details) => const SizedBox.shrink();
 
   runApp(const FerreteriaApp());
@@ -54,10 +55,13 @@ class FerreteriaApp extends StatelessWidget {
               builder: (context, authState) {
                 switch (authState.status) {
                   case AuthStatus.success:
-                    return const MainView();
+                  case AuthStatus.guest:
+                    return MainView();
+
                   case AuthStatus.failure:
                   case AuthStatus.loggedOut:
                     return LoginView();
+
                   default:
                     return const Scaffold(
                       body: Center(child: CircularProgressIndicator()),
