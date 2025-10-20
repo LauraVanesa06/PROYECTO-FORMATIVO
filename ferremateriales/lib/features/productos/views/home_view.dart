@@ -1,11 +1,13 @@
 import 'package:ferremateriales/features/productos/views/category_products_view.dart';
-import 'package:ferremateriales/features/productos/views/product_view.dart';
 import 'package:ferremateriales/features/productos/widgets/product_list.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import '../../auth/views/login_view.dart';
+import '../../auth/bloc/auth_bloc.dart';
+import '../../auth/bloc/auth_state.dart';
 import '../bloc/product_bloc.dart';
+import 'product_view.dart';
 
 class HomeView extends StatefulWidget {
   const HomeView({super.key});
@@ -23,6 +25,8 @@ class _HomeViewState extends State<HomeView> {
 
   @override
   Widget build(BuildContext context) {
+    final authState = context.watch<AuthBloc>().state;
+
     final bannerImages = [
       'assets/images/oferta.jpg',
       'assets/images/oferta2.png',
@@ -53,7 +57,8 @@ class _HomeViewState extends State<HomeView> {
               builder: (_) => BlocProvider.value(
                 value: context.read<ProductBloc>(),
                 child: CategoryProductsView(
-                    categoryName: category['label'] as String),
+                  categoryName: category['label'] as String,
+                ),
               ),
             ),
           ).then((_) {
@@ -71,9 +76,10 @@ class _HomeViewState extends State<HomeView> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // Barra superior con buscador y botón de inicio de sesión
+              // 🔸 Barra superior con buscador y botón condicional
               Container(
-                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
                 decoration: BoxDecoration(
                   color: Colors.brown.shade700,
                   boxShadow: [
@@ -96,34 +102,42 @@ class _HomeViewState extends State<HomeView> {
                         child: const TextField(
                           decoration: InputDecoration(
                             hintText: "Buscar productos...",
-                            prefixIcon: Icon(Icons.search, color: Colors.brown),
+                            prefixIcon:
+                                Icon(Icons.search, color: Colors.brown),
                             border: InputBorder.none,
-                            contentPadding: EdgeInsets.symmetric(vertical: 10),
+                            contentPadding:
+                                EdgeInsets.symmetric(vertical: 10),
                           ),
                         ),
                       ),
                     ),
                     const SizedBox(width: 12),
-                    TextButton.icon(
-                      onPressed: () {
-                        Navigator.pushReplacement(
-                      context,
-                      MaterialPageRoute(builder: (context) => LoginView()),
-                    );
-                      },
-                      style: TextButton.styleFrom(
-                        foregroundColor: Colors.white,
-                        backgroundColor: Colors.brown.shade900,
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 12, vertical: 10),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(10),
+                    // 👇 Solo se muestra el botón si es invitado
+                    if (authState.status == AuthStatus.guest)
+                      TextButton.icon(
+                        onPressed: () {
+                          Navigator.pushReplacement(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => const LoginView()),
+                          );
+                        },
+                        style: TextButton.styleFrom(
+                          foregroundColor: Colors.white,
+                          backgroundColor: Colors.brown.shade900,
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 12, vertical: 10),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                        ),
+                        icon: const Icon(Icons.login,
+                            size: 18, color: Colors.white),
+                        label: const Text(
+                          "Iniciar sesión",
+                          style: TextStyle(color: Colors.white),
                         ),
                       ),
-                      icon: const Icon(Icons.login, size: 18, color: Colors.white),
-                      label: const Text("Iniciar sesión",
-                          style: TextStyle(color: Colors.white)),
-                    ),
                   ],
                 ),
               ),
