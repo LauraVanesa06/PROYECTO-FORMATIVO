@@ -17,6 +17,8 @@ class HomeView extends StatefulWidget {
 }
 
 class _HomeViewState extends State<HomeView> {
+  final TextEditingController _searchController = TextEditingController();
+
   @override
   void initState() {
     super.initState();
@@ -99,14 +101,39 @@ class _HomeViewState extends State<HomeView> {
                           color: Colors.white,
                           borderRadius: BorderRadius.circular(12),
                         ),
-                        child: const TextField(
+                        child: TextField(
+                          controller: _searchController,
+                          onChanged: (value) {
+                            if (value.isEmpty) {
+                              context
+                                  .read<ProductBloc>()
+                                  .add(ProductEntrarPressed());
+                            } else {
+                              context
+                                  .read<ProductBloc>()
+                                  .add(ProductBuscarPorNombre(value));
+                            }
+                          },
                           decoration: InputDecoration(
                             hintText: "Buscar productos...",
                             prefixIcon:
-                                Icon(Icons.search, color: Colors.brown),
+                                const Icon(Icons.search, color: Colors.brown),
+                            suffixIcon: _searchController.text.isNotEmpty
+                                ? IconButton(
+                                    icon: const Icon(Icons.close,
+                                        color: Colors.brown),
+                                    onPressed: () {
+                                      _searchController.clear();
+                                      context
+                                          .read<ProductBloc>()
+                                          .add(ProductEntrarPressed());
+                                      setState(() {}); // refresca el icono
+                                    },
+                                  )
+                                : null,
                             border: InputBorder.none,
                             contentPadding:
-                                EdgeInsets.symmetric(vertical: 10),
+                                const EdgeInsets.symmetric(vertical: 10),
                           ),
                         ),
                       ),
