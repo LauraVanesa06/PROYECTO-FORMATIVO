@@ -7,7 +7,7 @@ enum AuthStatus {
   success,    // Login exitoso
   failure,    // Fallo en autenticación
   loggedOut,  // Cuando el usuario cierra sesión
-  guest,      // Usuario invitado
+  guest, authenticated,      // Usuario invitado
 }
 
 class AuthState extends Equatable {

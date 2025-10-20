@@ -18,9 +18,6 @@ void main() async {
     options: DefaultFirebaseOptions.currentPlatform,
   );
 
-  // Evita errores visuales en producción
-  ErrorWidget.builder = (FlutterErrorDetails details) => const SizedBox.shrink();
-
   runApp(const FerreteriaApp());
 }
 
@@ -42,10 +39,7 @@ class FerreteriaApp extends StatelessWidget {
             debugShowCheckedModeBanner: false,
             theme: themeState.isDarkMode ? ThemeData.dark() : ThemeData.light(),
             locale: themeState.locale,
-            supportedLocales: const [
-              Locale('es'),
-              Locale('en'),
-            ],
+            supportedLocales: const [Locale('es'), Locale('en')],
             localizationsDelegates: const [
               GlobalMaterialLocalizations.delegate,
               GlobalWidgetsLocalizations.delegate,
@@ -56,12 +50,10 @@ class FerreteriaApp extends StatelessWidget {
                 switch (authState.status) {
                   case AuthStatus.success:
                   case AuthStatus.guest:
-                    return MainView();
-
+                    return const MainView();
                   case AuthStatus.failure:
                   case AuthStatus.loggedOut:
-                    return LoginView();
-
+                    return const LoginView();
                   default:
                     return const Scaffold(
                       body: Center(child: CircularProgressIndicator()),
