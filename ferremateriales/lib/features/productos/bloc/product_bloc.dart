@@ -3,7 +3,6 @@ import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:http/http.dart' as http;
 import '../model/product_model.dart';
-
 part 'product_event.dart';
 part 'product_state.dart';
 
@@ -13,15 +12,15 @@ class ProductBloc extends Bloc<ProductEvent, ProductState> {
 
   ProductBloc() : super(ProductInitial()) {
     on<ProductEntrarPressed>(_onLoadProducts);
-    on<ProductRefrescar>(_onRefreshProducts); // 👈 Nuevo evento opcional
+    on<ProductRefrescar>(_onRefreshProducts);
     on<ToggleFavorite>(_onToggleFavorite);
     on<ProductFilterByCategory>(_onFilterByCategory);
+    on<ProductBuscarPorNombre>(_onBuscarProductoPorNombre); // 🔍 Nuevo evento
   }
 
   // ✅ Cargar productos (solo si no se ha hecho antes)
   Future<void> _onLoadProducts(
       ProductEntrarPressed event, Emitter<ProductState> emit) async {
-    // Si ya están cargados, devolvemos el estado actual y salimos
     if (_yaCargados && _productosCache.isNotEmpty) {
       emit(ProductLoadSuccess(_productosCache));
       return;
@@ -41,8 +40,8 @@ class ProductBloc extends Bloc<ProductEvent, ProductState> {
               .map((item) => ProductModel.fromJson(item))
               .toList();
 
-          _productosCache = products; // Guardamos localmente
-          _yaCargados = true; // ✅ Marcamos como cargados
+          _productosCache = products;
+          _yaCargados = true;
           emit(ProductLoadSuccess(products));
         } else {
           emit(ProductLoadFailure());
@@ -127,8 +126,26 @@ class ProductBloc extends Bloc<ProductEvent, ProductState> {
         return product;
       }).toList();
 
-      _productosCache = updatedProducts; // 🧠 Actualizamos el cache también
+      _productosCache = updatedProducts;
       emit(ProductLoadSuccess(updatedProducts));
     }
+  }
+
+  // 🔎 Buscar productos por nombre
+  void _onBuscarProductoPorNombre(
+      ProductBuscarPorNombre event, Emitter<ProductState> emit) {
+    final query = event.query.toLowerCase().trim();
+
+    if (query.isEmpty) {
+      // Si el texto está vacío, mostramos todos
+      emit(ProductLoadSuccess(_productosCache));
+      return;
+    }
+
+    final resultados = _productosCache.where((producto) {
+      return producto.nombre!.toLowerCase().contains(query);
+    }).toList();
+
+    emit(ProductLoadSuccess(resultados));
   }
 }
