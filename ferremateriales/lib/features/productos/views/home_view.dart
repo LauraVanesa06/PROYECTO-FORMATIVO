@@ -4,6 +4,7 @@ import 'package:ferremateriales/features/productos/widgets/product_list.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:carousel_slider/carousel_slider.dart';
+import '../../auth/views/login_view.dart';
 import '../bloc/product_bloc.dart';
 
 class HomeView extends StatefulWidget {
@@ -41,27 +42,26 @@ class _HomeViewState extends State<HomeView> {
       {'icon': Icons.grass, 'label': 'Jardinería'},
     ];
 
-    final categoryItems =
-        categories.map((category) {
-          return _HoverCategoryButton(
-            icon: category['icon'] as IconData,
-            label: category['label'] as String,
-            onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (_) => BlocProvider.value(
-                    value: context.read<ProductBloc>(),
-                    child: CategoryProductsView(categoryName: category['label'] as String),
-                  ),
-                ),
-              ).then((_) {
-                // 🔄 Esto se ejecuta al volver de CategoryProductsView
-                context.read<ProductBloc>().add(ProductEntrarPressed());
-              });
-            },
-          );
-        }).toList();
+    final categoryItems = categories.map((category) {
+      return _HoverCategoryButton(
+        icon: category['icon'] as IconData,
+        label: category['label'] as String,
+        onTap: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (_) => BlocProvider.value(
+                value: context.read<ProductBloc>(),
+                child: CategoryProductsView(
+                    categoryName: category['label'] as String),
+              ),
+            ),
+          ).then((_) {
+            context.read<ProductBloc>().add(ProductEntrarPressed());
+          });
+        },
+      );
+    }).toList();
 
     return Scaffold(
       backgroundColor: Colors.white,
@@ -71,6 +71,63 @@ class _HomeViewState extends State<HomeView> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+              // Barra superior con buscador y botón de inicio de sesión
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                decoration: BoxDecoration(
+                  color: Colors.brown.shade700,
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.brown.shade200.withOpacity(0.5),
+                      blurRadius: 6,
+                      offset: const Offset(0, 3),
+                    ),
+                  ],
+                ),
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: Container(
+                        height: 40,
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        child: const TextField(
+                          decoration: InputDecoration(
+                            hintText: "Buscar productos...",
+                            prefixIcon: Icon(Icons.search, color: Colors.brown),
+                            border: InputBorder.none,
+                            contentPadding: EdgeInsets.symmetric(vertical: 10),
+                          ),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(width: 12),
+                    TextButton.icon(
+                      onPressed: () {
+                        Navigator.pushReplacement(
+                      context,
+                      MaterialPageRoute(builder: (context) => LoginView()),
+                    );
+                      },
+                      style: TextButton.styleFrom(
+                        foregroundColor: Colors.white,
+                        backgroundColor: Colors.brown.shade900,
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 12, vertical: 10),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                      ),
+                      icon: const Icon(Icons.login, size: 18, color: Colors.white),
+                      label: const Text("Iniciar sesión",
+                          style: TextStyle(color: Colors.white)),
+                    ),
+                  ],
+                ),
+              ),
+
               const SizedBox(height: 24),
 
               // Carrusel de imágenes
@@ -80,21 +137,20 @@ class _HomeViewState extends State<HomeView> {
                   autoPlay: true,
                   enlargeCenterPage: true,
                 ),
-                items:
-                    bannerImages.map((path) {
-                      return Builder(
-                        builder: (BuildContext context) {
-                          return ClipRRect(
-                            borderRadius: BorderRadius.circular(12),
-                            child: Image.asset(
-                              path,
-                              fit: BoxFit.cover,
-                              width: double.infinity,
-                            ),
-                          );
-                        },
+                items: bannerImages.map((path) {
+                  return Builder(
+                    builder: (BuildContext context) {
+                      return ClipRRect(
+                        borderRadius: BorderRadius.circular(12),
+                        child: Image.asset(
+                          path,
+                          fit: BoxFit.cover,
+                          width: double.infinity,
+                        ),
                       );
-                    }).toList(),
+                    },
+                  );
+                }).toList(),
               ),
 
               const SizedBox(height: 28),
@@ -116,12 +172,14 @@ class _HomeViewState extends State<HomeView> {
 
               Padding(
                 padding: const EdgeInsets.only(left: 16.0),
-                child: Text("Productos Destacados",
-                    style: TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.brown.shade700,
-                        )),
+                child: Text(
+                  "Productos Destacados",
+                  style: TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.brown.shade700,
+                  ),
+                ),
               ),
 
               // Mostrar productos usando BlocBuilder
@@ -134,14 +192,13 @@ class _HomeViewState extends State<HomeView> {
                     return Padding(
                       padding: const EdgeInsets.all(8.0),
                       child: ProductsList(products: state.productos),
-                      
                     );
                   } else if (state is ProductLoadFailure) {
                     return const Center(
                       child: Text('Error al cargar productos'),
                     );
                   } else {
-                    return const ProductsPageView(); // Estado inicial
+                    return const ProductsPageView();
                   }
                 },
               ),
@@ -155,7 +212,7 @@ class _HomeViewState extends State<HomeView> {
   }
 }
 
-// Widget personalizado con efecto hover
+// 🔸 Botón de categoría con hover
 class _HoverCategoryButton extends StatefulWidget {
   final IconData icon;
   final String label;
@@ -190,10 +247,9 @@ class _HoverCategoryButtonState extends State<_HoverCategoryButton> {
                   _isHovered ? Colors.brown.shade100 : Colors.grey.shade200,
               child: Icon(
                 widget.icon,
-                color:
-                    _isHovered
-                        ? Colors.brown.shade800
-                        : const Color.fromARGB(255, 130, 204, 238),
+                color: _isHovered
+                    ? Colors.brown.shade800
+                    : const Color.fromARGB(255, 130, 204, 238),
                 size: 22,
               ),
             ),
