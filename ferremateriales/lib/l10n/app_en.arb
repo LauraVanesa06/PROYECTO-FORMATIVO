@@ -1,5 +1,12 @@
 {
     "appTitle": "Hardware Store",
+    "profile": "Profile",
+    "cancel": "Cancel",
+    "save": "Save",
+    "logout": "Logout",
+    "personalinformation": "Personal Information",
+    "modifyinformation": "Modify Information",
+    "account": "Account",
     "settings": "Settings",
     "darkTheme": "Dark theme",
     "language": "Language",

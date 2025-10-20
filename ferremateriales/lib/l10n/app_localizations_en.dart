@@ -12,6 +12,27 @@ class AppLocalizationsEn extends AppLocalizations {
   String get appTitle => 'Hardware Store';
 
   @override
+  String get profile => 'Profile';
+
+  @override
+  String get cancel => 'Cancel';
+
+  @override
+  String get save => 'Save';
+
+  @override
+  String get logout => 'Logout';
+
+  @override
+  String get personalinformation => 'Personal Information';
+
+  @override
+  String get modifyinformation => 'Modify Information';
+
+  @override
+  String get account => 'Account';
+
+  @override
   String get settings => 'Settings';
 
   @override
@@ -46,12 +67,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get products => 'Products';
-
-  @override
-  String get profile => 'Profile';
-
-  @override
-  String get logout => 'Logout';
 
   @override
   String get searchHint => 'Search products...';

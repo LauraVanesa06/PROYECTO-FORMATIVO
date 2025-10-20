@@ -1,5 +1,12 @@
 {
     "appTitle": "Ferremateriales",
+    "profile": "Perfil",
+    "cancel": "Cancelar",
+    "save": "Guardar",
+    "logout": "Cerrar sesion",
+    "personalinformation": "Informacion Personal",
+    "modifyinformation": "Modificar informacion",
+    "account": "Cuenta",
     "settings": "Configuración",
     "darkTheme": "Tema oscuro",
     "language": "Idioma",

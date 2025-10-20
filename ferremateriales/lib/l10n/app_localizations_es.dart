@@ -12,6 +12,27 @@ class AppLocalizationsEs extends AppLocalizations {
   String get appTitle => 'Ferremateriales';
 
   @override
+  String get profile => 'Perfil';
+
+  @override
+  String get cancel => 'Cancelar';
+
+  @override
+  String get save => 'Guardar';
+
+  @override
+  String get logout => 'Cerrar sesión';
+
+  @override
+  String get personalinformation => 'Informacion Personal';
+
+  @override
+  String get modifyinformation => 'Modificar informacion';
+
+  @override
+  String get account => 'Cuenta';
+
+  @override
   String get settings => 'Configuración';
 
   @override
@@ -46,12 +67,6 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get products => 'Productos';
-
-  @override
-  String get profile => 'Perfil';
-
-  @override
-  String get logout => 'Cerrar sesión';
 
   @override
   String get searchHint => 'Buscar productos...';

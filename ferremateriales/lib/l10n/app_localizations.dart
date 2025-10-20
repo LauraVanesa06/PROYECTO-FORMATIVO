@@ -101,6 +101,48 @@ abstract class AppLocalizations {
   /// **'Hardware Store'**
   String get appTitle;
 
+  /// No description provided for @profile.
+  ///
+  /// In en, this message translates to:
+  /// **'Profile'**
+  String get profile;
+
+  /// No description provided for @cancel.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancel'**
+  String get cancel;
+
+  /// No description provided for @save.
+  ///
+  /// In en, this message translates to:
+  /// **'Save'**
+  String get save;
+
+  /// No description provided for @logout.
+  ///
+  /// In en, this message translates to:
+  /// **'Logout'**
+  String get logout;
+
+  /// No description provided for @personalinformation.
+  ///
+  /// In en, this message translates to:
+  /// **'Personal Information'**
+  String get personalinformation;
+
+  /// No description provided for @modifyinformation.
+  ///
+  /// In en, this message translates to:
+  /// **'Modify Information'**
+  String get modifyinformation;
+
+  /// No description provided for @account.
+  ///
+  /// In en, this message translates to:
+  /// **'Account'**
+  String get account;
+
   /// No description provided for @settings.
   ///
   /// In en, this message translates to:
@@ -172,18 +214,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Products'**
   String get products;
-
-  /// No description provided for @profile.
-  ///
-  /// In en, this message translates to:
-  /// **'Profile'**
-  String get profile;
-
-  /// No description provided for @logout.
-  ///
-  /// In en, this message translates to:
-  /// **'Logout'**
-  String get logout;
 
   /// No description provided for @searchHint.
   ///
