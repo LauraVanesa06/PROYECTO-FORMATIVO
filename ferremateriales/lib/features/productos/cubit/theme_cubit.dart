@@ -1,14 +1,17 @@
 import 'package:bloc/bloc.dart';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 part 'theme_state.dart';
 
 class ThemeCubit extends Cubit<ThemeState> {
-  ThemeCubit()
+  final SharedPreferences _prefs;
+
+  ThemeCubit(this._prefs)
       : super(
           ThemeState(
             isDarkMode: false,
-            locale: Locale('es'),
+            locale: Locale(_prefs.getString('language') ?? 'es'),
           ),
         );
 
@@ -16,7 +19,8 @@ class ThemeCubit extends Cubit<ThemeState> {
     emit(state.copyWith(isDarkMode: !state.isDarkMode));
   }
 
-  void changeLanguage(Locale newLocale) {
-    emit(state.copyWith(locale: newLocale));
+  Future<void> changeLanguage(Locale locale) async {
+    await _prefs.setString('language', locale.languageCode);
+    emit(state.copyWith(locale: locale));
   }
 }

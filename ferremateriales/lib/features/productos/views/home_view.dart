@@ -1,6 +1,7 @@
 import 'package:ferremateriales/features/productos/views/category_products_view.dart';
 import 'package:ferremateriales/features/productos/views/product_view.dart';
 import 'package:ferremateriales/features/productos/widgets/product_list.dart';
+import 'package:ferremateriales/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:carousel_slider/carousel_slider.dart';
@@ -22,6 +23,8 @@ class _HomeViewState extends State<HomeView> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+
     final bannerImages = [
       'assets/images/oferta.jpg',
       'assets/images/oferta2.png',
@@ -29,16 +32,16 @@ class _HomeViewState extends State<HomeView> {
     ];
 
     final categories = [
-      {'icon': Icons.construction, 'label': 'Herramientas'},
-      {'icon': Icons.handyman, 'label': 'Tornillería y Fijaciones'},
-      {'icon': Icons.plumbing, 'label': 'Plomería'},
-      {'icon': Icons.flash_on, 'label': 'Electricidad'},
-      {'icon': Icons.business, 'label': 'Construcción y Materiales'},
-      {'icon': Icons.format_paint, 'label': 'Pintura y Acabados'},
-      {'icon': Icons.home_repair_service, 'label': 'Ferretería para el hogar'},
-      {'icon': Icons.cleaning_services, 'label': 'Limpieza y Mantenimiento'},
-      {'icon': Icons.sticky_note_2, 'label': 'Adhesivos y Selladores'},
-      {'icon': Icons.grass, 'label': 'Jardinería'},
+      {'icon': Icons.construction, 'label': l10n.tools},
+      {'icon': Icons.handyman, 'label': l10n.hardware},
+      {'icon': Icons.plumbing, 'label': l10n.plumbing},
+      {'icon': Icons.flash_on, 'label': l10n.electricity},
+      {'icon': Icons.business, 'label': l10n.construction},
+      {'icon': Icons.format_paint, 'label': l10n.paint},
+      {'icon': Icons.home_repair_service, 'label': l10n.homeHardware},
+      {'icon': Icons.cleaning_services, 'label': l10n.cleaning},
+      {'icon': Icons.sticky_note_2, 'label': l10n.adhesives},
+      {'icon': Icons.grass, 'label': l10n.gardening},
     ];
 
     final categoryItems =
@@ -116,12 +119,12 @@ class _HomeViewState extends State<HomeView> {
 
               Padding(
                 padding: const EdgeInsets.only(left: 16.0),
-                child: Text("Productos Destacados",
+                child: Text(l10n.featuredProducts,
                     style: TextStyle(
                         fontSize: 18,
                         fontWeight: FontWeight.bold,
                         color: Colors.brown.shade700,
-                        )),
+                    )),
               ),
 
               // Mostrar productos usando BlocBuilder
@@ -144,8 +147,8 @@ class _HomeViewState extends State<HomeView> {
                     //   ),
                     // );
                   } else if (state is ProductLoadFailure) {
-                    return const Center(
-                      child: Text('Error al cargar productos'),
+                    return Center(
+                      child: Text(l10n.errorLoadingProducts),
                     );
                   } else {
                     return const ProductsPageView(); // Estado inicial
