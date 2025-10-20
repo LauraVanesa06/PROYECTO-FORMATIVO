@@ -1,13 +1,92 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import '../../auth/bloc/auth_bloc.dart';
+import '../../auth/views/login_view.dart';
+import 'acount_view.dart';
+import 'config_view.dart';
 
 class ProfileView extends StatelessWidget {
-  const ProfileView({super.key});
+  final String userName;
+  final String? userPhotoUrl; 
+
+  const ProfileView({super.key, this.userName = "", this.userPhotoUrl});
 
   @override
   Widget build(BuildContext context) {
-    return const Scaffold(
-      body: Center(
-        child: Text('Perfil', style: TextStyle(fontSize: 24)),
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text("Perfil"),
+        centerTitle: true,
+        backgroundColor: Colors.deepPurple,
+      ),
+      body: Column(
+        children: [
+          const SizedBox(height: 30),
+
+          
+          CircleAvatar(
+            radius: 50,
+            backgroundColor: Colors.deepPurple.shade200,
+            backgroundImage: userPhotoUrl != null && userPhotoUrl!.isNotEmpty
+                ? NetworkImage(userPhotoUrl!) 
+                : null,
+            child: (userPhotoUrl == null || userPhotoUrl!.isEmpty)
+                ? const Icon(Icons.person, size: 60, color: Colors.white)
+                : null, 
+          ),
+
+          const SizedBox(height: 15),
+
+          Text(
+            userName.isNotEmpty ? userName : "Usuario",
+            style: const TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
+          ),
+
+          const SizedBox(height: 30),
+
+          Expanded(
+            child: ListView(
+              children: [
+                ListTile(
+                  leading: const Icon(Icons.account_circle, color: Colors.deepPurple),
+                  title: const Text("Cuenta"),
+                  onTap: () {
+                    final authState = context.read<AuthBloc>().state;
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => AcountView(
+                          nombre: authState.nombre ?? "",
+                          email: authState.email ?? "",
+                        ),
+                      ),
+                    );
+                  },
+                ),
+                ListTile(
+                  leading: const Icon(Icons.settings, color: Colors.deepPurple),
+                  title: const Text("Configuración"),
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => const ConfigView()),
+                    );
+                  },
+                ),
+                ListTile(
+                  leading: const Icon(Icons.logout, color: Colors.red),
+                  title: const Text("Cerrar sesión"),
+                  onTap: () {
+                    Navigator.pushReplacement(
+                      context,
+                      MaterialPageRoute(builder: (context) => LoginView()),
+                    );
+                  },
+                ),
+              ],
+            ),
+          ),
+        ],
       ),
     );
   }

@@ -44,6 +44,9 @@ dependencies:
   firebase_core: ^2.31.0
   logger: ^2.0.2
   carousel_slider: ^5.1.1
+  image_picker: ^1.0.4
+  flutter_localizations:
+    sdk: flutter
 
 
 

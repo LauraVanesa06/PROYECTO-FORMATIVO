@@ -1,143 +1,91 @@
-import 'dart:convert';
+
+import 'package:ferremateriales/features/productos/bloc/product_bloc.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart' show rootBundle;
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../bloc/cart_bloc.dart';
 import '../bloc/cart_event.dart';
-import '../bloc/cart_state.dart';
 
-class FavoritesView extends StatefulWidget {
+class FavoritesView extends StatelessWidget {
   const FavoritesView({super.key});
-
-  @override
-  State<FavoritesView> createState() => _FavoritesViewState();
-}
-
-class _FavoritesViewState extends State<FavoritesView> {
-  List favoritos = [];
-
-  Future<void> cargarJson() async {
-    final String data = await rootBundle.loadString('assets/json/ferre.json');
-    final List jsonResult = jsonDecode(data);
-    setState(() {
-      favoritos = jsonResult;
-    });
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    cargarJson();
-  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: BlocBuilder<CartBloc, CartState>(
-          builder: (context, state) {
-            return Text('Favoritos (${state.items.length})');
-          },
-        ),
+        title: const Text("Favoritos ❤️"),
+        centerTitle: true,
       ),
-      body: favoritos.isEmpty
-          ? const _EstadoVacio()
-          : ListView.builder(
+      body: BlocBuilder<ProductBloc, ProductState>(
+        builder: (context, state) {
+          if (state is ProductLoadInProgress) {
+            return const Center(child: CircularProgressIndicator());
+          } else if (state is ProductLoadSuccess) {
+            final favoritos = state.productos.where((p) => p.isFavorite).toList();
+
+            if (favoritos.isEmpty) {
+              return const Center(child: Text("No tienes productos favoritos"));
+            }
+
+            return ListView.builder(
               itemCount: favoritos.length,
               itemBuilder: (context, index) {
                 final fav = favoritos[index];
                 return Card(
-                  margin: const EdgeInsets.all(8),
-                  child: Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Row(
-                      crossAxisAlignment: CrossAxisAlignment.center,
+                  margin: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                  child: ListTile(
+                    leading: Image.network(
+                      fav.imagenUrl ?? '',
+                      width: 60,
+                      height: 60,
+                      fit: BoxFit.cover,
+                      errorBuilder: (_, __, ___) => const Icon(Icons.broken_image),
+                    ),
+                    title: Text(fav.nombre ?? ''),
+                    subtitle: Text('\$${fav.precio?.toStringAsFixed(0)}'),
+                    trailing: Row(
+                      mainAxisSize: MainAxisSize.min,
                       children: [
-                        ClipRRect(
-                          borderRadius: BorderRadius.circular(6),
-                          child: Image.network(
-                            fav['imagenUrl'],
-                            width: 50,
-                            height: 50,
-                            fit: BoxFit.cover,
-                            errorBuilder: (context, error, stackTrace) {
-                              return Container(
-                                width: 50,
-                                height: 50,
-                                color: Colors.grey.shade200,
-                                child: const Icon(Icons.broken_image, color: Colors.grey),
-                              );
-                            },
-                          ),
+                        // ❤️ Botón de favoritos
+                        IconButton(
+                          icon: const Icon(Icons.favorite, color: Colors.red),
+                          onPressed: () {
+                            context.read<ProductBloc>().add(ToggleFavorite(fav.id!));
+                          },
                         ),
-                        const SizedBox(width: 10),
-                        Expanded(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                fav['nombre'],
-                                style: const TextStyle(fontWeight: FontWeight.bold),
-                              ),
-                              Text(fav['descripcion']),
-                              Text(
-                                "\$${(fav['precio'] as num).toStringAsFixed(0)}",
-                                style: const TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                  color: Colors.green,
-                                ),
-                              ),
-                            ],
+
+                        // 🛒 Botón de comprar (copiado de ProductCard)
+                        ElevatedButton.icon(
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Colors.brown[700],
+                            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
+                            minimumSize: const Size(90, 35),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(8),
+                            ),
                           ),
-                        ),
-                        BlocBuilder<CartBloc, CartState>(
-                          builder: (context, state) {
-                            final indexInCart = state.items.indexWhere(
-                              (item) => item["name"] == fav['nombre'],
+                          icon: const Icon(Icons.shopping_cart, size: 16, color: Colors.white),
+                          label: const Text(
+                            "Comprar",
+                            style: TextStyle(fontSize: 13, color: Colors.white),
+                          ),
+                          onPressed: () {
+                            // Enviar al carrito 🛒
+                            context.read<CartBloc>().add(
+                              AddToCart({
+                                "name": fav.nombre ?? '',
+                                "price": fav.precio ?? 0.0,
+                                "quantity": 1,
+                                "image": fav.imagenUrl ?? '',
+                              }),
                             );
 
-                            if (indexInCart >= 0) {
-                              final item = state.items[indexInCart];
-                              return Row(
-                                children: [
-                                  IconButton(
-                                    icon: const Icon(Icons.remove, color: Colors.orange),
-                                    onPressed: () {
-                                      context.read<CartBloc>().add(
-                                            DecreaseQuantity(item["name"]),
-                                          );
-                                    },
-                                  ),
-                                  Text("${item["quantity"]}"),
-                                  IconButton(
-                                    icon: const Icon(Icons.add, color: Colors.green),
-                                    onPressed: () {
-                                      context.read<CartBloc>().add(
-                                            IncreaseQuantity(item["name"]),
-                                          );
-                                    },
-                                  ),
-                                ],
-                              );
-                            } else {
-                              return ElevatedButton(
-                                style: ElevatedButton.styleFrom(
-                                  backgroundColor: Colors.blue,
-                                  foregroundColor: Colors.white,
-                                ),
-                                onPressed: () {
-                                  context.read<CartBloc>().add(
-                                        AddToCart({
-                                          "name": fav['nombre'],
-                                          "price": fav['precio'],
-                                          "descripcion": fav['descripcion'],
-                                          "imagenUrl": fav['imagenUrl'],
-                                        }),
-                                      );
-                                },
-                                child: const Text("Comprar"),
-                              );
-                            }
+                            // Notificación visual
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                content: Text('${fav.nombre} agregado al carrito 🛒'),
+                                duration: const Duration(seconds: 2),
+                              ),
+                            );
                           },
                         ),
                       ],
@@ -145,28 +93,11 @@ class _FavoritesViewState extends State<FavoritesView> {
                   ),
                 );
               },
-            ),
-    );
-  }
-}
-
-class _EstadoVacio extends StatelessWidget {
-  const _EstadoVacio({Key? key}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          const Icon(Icons.star_border, size: 80, color: Colors.grey),
-          const SizedBox(height: 16),
-          const Text(
-            "No tienes productos favoritos",
-            style: TextStyle(fontSize: 18, color: Colors.grey),
-          ),
-          const SizedBox(height: 20),
-        ],
+            );
+          } else {
+            return const Center(child: Text("Error al cargar productos"));
+          }
+        },
       ),
     );
   }

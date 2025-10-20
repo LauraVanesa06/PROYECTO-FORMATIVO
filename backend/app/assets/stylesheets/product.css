@@ -125,7 +125,7 @@ body{
 }
 
 .all-img img{
-    height: 60px;
+    height: 50px;
     max-width: 90%;
     object-fit: contain;
 }
@@ -201,7 +201,7 @@ body{
     flex-direction: column;
 }
 
-.btn-agg, .btn-buy{
+.btn-agg, .btn-buy button{
     width: 350px;
     height: 50px;
     border: solid 2px #4286cf;
@@ -213,18 +213,18 @@ body{
     background-color: white;
 }
 
-.btn-buy{
+.btn-buy button{
     background-color:  #309b3f;
     border: solid 2px #23941f;
     color: #ffffff;
 }
 
-.btn-agg:hover, .btn-buy:hover{
+.btn-agg:hover, .btn-buy button:hover{
     width: 370px;
     border-radius: 10px;
 }
 
-.btn-buy:hover{
+.btn-buy button:hover{
     background-color: #0e791c;
 }
 

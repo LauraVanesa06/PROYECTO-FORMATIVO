@@ -68,7 +68,7 @@
             <div class="cont-img2"></div>
             <div class="stock">
               <div class="d4"><p>Compras</p></div>
-              <div class="d5"><p>100 Usuarios</p></div>
+              <div class="d5"><p><%= @product.buyers_count || 0 %> Usuarios</p></div>
             </div>
             <div class="cont-img"></div>
             <div class="stock">
@@ -120,7 +120,7 @@
           </script>
 
           <div class="d6"><p>$ <%= @product.precio_cop %> COP</p></div>
-          <div class="d7"><p><%= @product.disponible? ? "Disponible" : "No disponible" %></p></div>
+          <div class="d7"><p><%= @product.disponible && @product.stock > 0 ? "Disponible" : "No disponible" %></p></div>
         </ul>
         <!--estrellas
           <div class="rating">
@@ -149,7 +149,18 @@
               Agregar al carrito
             <% end %>
 
-            <button class="btn-buy">¡Comprar!</button>
+            <!-- Reemplazar el botón estático con Wompi -->
+            <div id="wompi-single-product" class="btn-buy">
+              <script
+                src="https://checkout.wompi.co/widget.js"
+                data-render="button"
+                data-public-key="pub_test_f0bOPKD5aHr1J6hgSEc9KhPLAFFrOk66"
+                data-currency="COP"
+                data-amount-in-cents="<%= (@product.precio * 100).to_i %>"
+                data-reference="product_<%= @product.id %>_<%= Time.current.to_i %>"
+                data-signature-integrity=""
+              ></script>
+            </div>
           </div>
           <div class="metodo">
             <p class="p1">Metodos de pago</p>
