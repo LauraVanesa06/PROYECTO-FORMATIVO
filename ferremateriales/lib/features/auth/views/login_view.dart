@@ -3,105 +3,104 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../bloc/auth_bloc.dart';
 import '../bloc/auth_event.dart';
+import '../bloc/auth_state.dart';
 import '../widgets/login_form.dart';
 import 'register_view.dart';
 import 'reset_password_view.dart';
+import '../../productos/views/main_view.dart';
 
 class LoginView extends StatelessWidget {
   const LoginView({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Container(
-        decoration: const BoxDecoration(
-          image: DecorationImage(
-            image: AssetImage('assets/images/degrade.png'),
-            fit: BoxFit.cover,
+    return BlocListener<AuthBloc, AuthState>(
+      listener: (context, state) {
+        if (state.status == AuthStatus.success || state.status == AuthStatus.guest) {
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(builder: (_) => const MainView()),
+          );
+        }
+      },
+      child: Scaffold(
+        body: Container(
+          decoration: const BoxDecoration(
+            image: DecorationImage(
+              image: AssetImage('assets/images/degrade.png'),
+              fit: BoxFit.cover,
+            ),
           ),
-        ),
-        child: Center(
-          child: SingleChildScrollView(
-            padding: const EdgeInsets.symmetric(horizontal: 24.0),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                // Logo de usuario
-                const CircleAvatar(
-                  backgroundColor: Colors.orange,
-                  radius: 40,
-                  child: Icon(Icons.person, color: Colors.white, size: 40),
-                ),
-                const SizedBox(height: 16),
-
-                // Título
-                Text(
-                  'Inicia sesión',
-                  style: GoogleFonts.montserrat(
-                    fontSize: 28,
-                    fontWeight: FontWeight.bold,
-                    color: Color.fromARGB(255, 219, 222, 227),
-                  ),
-                  textAlign: TextAlign.center,
-                ),
-
-                const SizedBox(height: 30),
-
-                // Formulario de login
-                LoginForm(),
-
-                const SizedBox(height: 16),
-
-                // Botón de registro
-                TextButton(
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (_) => RegisterView()),
-                    );
-                  },
-                  child: const Text(
-                    "¿No tienes cuenta? Regístrate aquí",
-                    style: TextStyle(color: Colors.white),
-                  ),
-                ),
-
-                // Botón de olvidar contraseña
-                TextButton(
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (_) => ResetPasswordView()),
-                    );
-                  },
-                  child: const Text(
-                    "¿Olvidaste tu contraseña?",
-                    style: TextStyle(color: Colors.white),
-                  ),
-                ),
-
-                const SizedBox(height: 12),
-
-                // --- BOTÓN DE INVITADO ---
-                ElevatedButton.icon(
-                  style: ElevatedButton.styleFrom(
+          child: Center(
+            child: SingleChildScrollView(
+              padding: const EdgeInsets.symmetric(horizontal: 24.0),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const CircleAvatar(
                     backgroundColor: Colors.orange,
-                    padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(20),
+                    radius: 40,
+                    child: Icon(Icons.person, color: Colors.white, size: 40),
+                  ),
+                  const SizedBox(height: 16),
+
+                  Text(
+                    'Inicia sesión',
+                    style: GoogleFonts.montserrat(
+                      fontSize: 28,
+                      fontWeight: FontWeight.bold,
+                      color: Color.fromARGB(255, 219, 222, 227),
                     ),
                   ),
-                  onPressed: () {
-                    // Envía el evento correcto al bloc
-                    context.read<AuthBloc>().add(ContinueAsGuest());
-                  },
-                  icon: const Icon(Icons.person_outline, color: Colors.white),
-                  label: const Text(
-                    "Continuar como invitado",
-                    style: TextStyle(color: Colors.white, fontSize: 16),
+
+                  const SizedBox(height: 30),
+
+                  LoginForm(),
+
+                  const SizedBox(height: 16),
+
+                  TextButton(
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (_) => RegisterView()),
+                      );
+                    },
+                    child: const Text("¿No tienes cuenta? Regístrate aquí",
+                        style: TextStyle(color: Colors.white)),
                   ),
-                ),
-              ],
+                  TextButton(
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (_) => ResetPasswordView()),
+                      );
+                    },
+                    child: const Text("¿Olvidaste tu contraseña?",
+                        style: TextStyle(color: Colors.white)),
+                  ),
+                  const SizedBox(height: 12),
+
+                  // --- Botón Invitado ---
+                  ElevatedButton.icon(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.orange,
+                      padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(20),
+                      ),
+                    ),
+                    onPressed: () {
+                      context.read<AuthBloc>().add(ContinueAsGuest());
+                    },
+                    icon: const Icon(Icons.person_outline, color: Colors.white),
+                    label: const Text(
+                      "Continuar como invitado",
+                      style: TextStyle(color: Colors.white, fontSize: 16),
+                    ),
+                  ),
+                ],
+              ),
             ),
           ),
         ),
