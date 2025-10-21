@@ -6,8 +6,15 @@ import '../widgets/product_list.dart';
 
 class CategoryProductsView extends StatefulWidget {
   final String categoryName;
+  final int categoryId;
+  final String displayName;
 
-  const CategoryProductsView({super.key, required this.categoryName});
+  const CategoryProductsView({
+    super.key, 
+    required this.categoryName,
+    required this.categoryId,
+    required this.displayName,
+  });
 
   @override
   State<CategoryProductsView> createState() => _CategoryProductsViewState();
@@ -17,7 +24,10 @@ class _CategoryProductsViewState extends State<CategoryProductsView> {
   @override
   void initState() {
     super.initState();
-    context.read<ProductBloc>().add(ProductFilterByCategory(widget.categoryName));
+  context
+      .read<ProductBloc>()
+      .add(ProductFilterByCategory(widget.categoryId));
+
   }
 
   @override

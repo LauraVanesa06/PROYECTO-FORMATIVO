@@ -2,11 +2,8 @@ class Api::V1::ProductsController < ApplicationController
   skip_before_action :authenticate_user!
 
   def index
-    # Si viene un parámetro de categoría, filtramos por ella
-    if params[:category].present?
-      products = Product
-        .joins(:category)
-        .where('categories.nombre ILIKE ?', "%#{params[:category]}%")
+    if params[:category_id].present?
+      products = Product.where(category_id: params[:category_id])
     else
       # Si no hay categoría, traemos los 8 más comprados
       products = Product

@@ -32,39 +32,41 @@ class _HomeViewState extends State<HomeView> {
     ];
 
     final categories = [
-      {'icon': Icons.construction, 'label': l10n.tools},
-      {'icon': Icons.handyman, 'label': l10n.hardware},
-      {'icon': Icons.plumbing, 'label': l10n.plumbing},
-      {'icon': Icons.flash_on, 'label': l10n.electricity},
-      {'icon': Icons.business, 'label': l10n.construction},
-      {'icon': Icons.format_paint, 'label': l10n.paint},
-      {'icon': Icons.home_repair_service, 'label': l10n.homeHardware},
-      {'icon': Icons.cleaning_services, 'label': l10n.cleaning},
-      {'icon': Icons.sticky_note_2, 'label': l10n.adhesives},
-      {'icon': Icons.grass, 'label': l10n.gardening},
+      {'icon': Icons.construction, 'label': 'Herramientas', 'display': l10n.tools, 'id': 1},
+      {'icon': Icons.handyman, 'label': 'Tornilleria y Fijaciones', 'display': l10n.hardware, 'id': 2},
+      {'icon': Icons.plumbing, 'label': 'Plomeria', 'display': l10n.plumbing, 'id': 3},
+      {'icon': Icons.flash_on, 'label': 'Electricidad', 'display': l10n.electricity, 'id': 4},
+      {'icon': Icons.business, 'label': 'Construccion y Materiales', 'display': l10n.construction, 'id': 5},
+      {'icon': Icons.format_paint, 'label': 'Pintura y Acabados', 'display': l10n.paint, 'id': 6},
+      {'icon': Icons.home_repair_service, 'label': 'Ferreteria para el hogar', 'display': l10n.homeHardware, 'id': 7},
+      {'icon': Icons.cleaning_services, 'label': 'Limpieza y Mantenimiento', 'display': l10n.cleaning, 'id': 8},
+      {'icon': Icons.sticky_note_2, 'label': 'Adhesivos y Selladores', 'display': l10n.adhesives, 'id': 9},
+      {'icon': Icons.grass, 'label': 'Jardineria', 'display': l10n.gardening, 'id': 10},
     ];
 
-    final categoryItems =
-        categories.map((category) {
-          return _HoverCategoryButton(
-            icon: category['icon'] as IconData,
-            label: category['label'] as String,
-            onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (_) => BlocProvider.value(
-                    value: context.read<ProductBloc>(),
-                    child: CategoryProductsView(categoryName: category['label'] as String),
-                  ),
+    final categoryItems = categories.map((category) {
+      return _HoverCategoryButton(
+        icon: category['icon'] as IconData,
+        label: category['display'] as String,
+        onTap: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (_) => BlocProvider.value(
+                value: context.read<ProductBloc>(),
+                child: CategoryProductsView(
+                  categoryName: category['label'] as String,
+                  categoryId: category['id'] as int,
+                  displayName: category['display'] as String,
                 ),
-              ).then((_) {
-                // 🔄 Esto se ejecuta al volver de CategoryProductsView
-                context.read<ProductBloc>().add(ProductEntrarPressed());
-              });
-            },
-          );
-        }).toList();
+              ),
+            ),
+          ).then((_) {
+            context.read<ProductBloc>().add(ProductEntrarPressed());
+          });
+        },
+      );
+    }).toList();
 
     return Scaffold(
       backgroundColor: Colors.white,
