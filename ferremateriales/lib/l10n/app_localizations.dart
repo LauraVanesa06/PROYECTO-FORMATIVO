@@ -107,6 +107,48 @@ abstract class AppLocalizations {
   /// **'Profile'**
   String get profile;
 
+  /// No description provided for @favorite.
+  ///
+  /// In en, this message translates to:
+  /// **'Favorite'**
+  String get favorite;
+
+  /// No description provided for @donthaveproductcategory.
+  ///
+  /// In en, this message translates to:
+  /// **'There are no products in this category'**
+  String get donthaveproductcategory;
+
+  /// No description provided for @productsin.
+  ///
+  /// In en, this message translates to:
+  /// **'Products in '**
+  String get productsin;
+
+  /// No description provided for @buy.
+  ///
+  /// In en, this message translates to:
+  /// **'Buy'**
+  String get buy;
+
+  /// No description provided for @donthavefavorite.
+  ///
+  /// In en, this message translates to:
+  /// **'you don\'t have any favorite products'**
+  String get donthavefavorite;
+
+  /// No description provided for @addToCart.
+  ///
+  /// In en, this message translates to:
+  /// **'Add to cart'**
+  String get addToCart;
+
+  /// No description provided for @errorLoadingProducts.
+  ///
+  /// In en, this message translates to:
+  /// **'Error loading products'**
+  String get errorLoadingProducts;
+
   /// No description provided for @cancel.
   ///
   /// In en, this message translates to:
@@ -221,12 +263,6 @@ abstract class AppLocalizations {
   /// **'Search products...'**
   String get searchHint;
 
-  /// No description provided for @addToCart.
-  ///
-  /// In en, this message translates to:
-  /// **'Add to cart'**
-  String get addToCart;
-
   /// No description provided for @categories.
   ///
   /// In en, this message translates to:
@@ -299,12 +335,6 @@ abstract class AppLocalizations {
   /// **'Featured Products'**
   String get featuredProducts;
 
-  /// No description provided for @errorLoadingProducts.
-  ///
-  /// In en, this message translates to:
-  /// **'Error loading products'**
-  String get errorLoadingProducts;
-
   /// No description provided for @price.
   ///
   /// In en, this message translates to:
@@ -328,6 +358,54 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Checkout'**
   String get checkout;
+
+  /// No description provided for @myCart.
+  ///
+  /// In en, this message translates to:
+  /// **'My Cart'**
+  String get myCart;
+
+  /// No description provided for @emptyCart.
+  ///
+  /// In en, this message translates to:
+  /// **'Your cart is empty 🛒'**
+  String get emptyCart;
+
+  /// No description provided for @finishPurchase.
+  ///
+  /// In en, this message translates to:
+  /// **'Checkout'**
+  String get finishPurchase;
+
+  /// No description provided for @addedToCart.
+  ///
+  /// In en, this message translates to:
+  /// **'{product} added to cart 🛒'**
+  String addedToCart(String product);
+
+  /// No description provided for @addedToFavorites.
+  ///
+  /// In en, this message translates to:
+  /// **'Added to favorites ❤️'**
+  String get addedToFavorites;
+
+  /// No description provided for @removedFromFavorites.
+  ///
+  /// In en, this message translates to:
+  /// **'Removed from favorites 💔'**
+  String get removedFromFavorites;
+
+  /// No description provided for @notifications.
+  ///
+  /// In en, this message translates to:
+  /// **'Notifications'**
+  String get notifications;
+
+  /// No description provided for @noNotifications.
+  ///
+  /// In en, this message translates to:
+  /// **'No notifications'**
+  String get noNotifications;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

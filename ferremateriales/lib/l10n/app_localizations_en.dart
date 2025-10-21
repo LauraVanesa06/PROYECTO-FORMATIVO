@@ -15,6 +15,27 @@ class AppLocalizationsEn extends AppLocalizations {
   String get profile => 'Profile';
 
   @override
+  String get favorite => 'Favorite';
+
+  @override
+  String get donthaveproductcategory => 'There are no products in this category';
+
+  @override
+  String get productsin => 'Products in ';
+
+  @override
+  String get buy => 'Buy';
+
+  @override
+  String get donthavefavorite => 'you don\'t have any favorite products';
+
+  @override
+  String get addToCart => 'Add to cart';
+
+  @override
+  String get errorLoadingProducts => 'Error loading products';
+
+  @override
   String get cancel => 'Cancel';
 
   @override
@@ -72,9 +93,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get searchHint => 'Search products...';
 
   @override
-  String get addToCart => 'Add to cart';
-
-  @override
   String get categories => 'Categories';
 
   @override
@@ -111,9 +129,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get featuredProducts => 'Featured Products';
 
   @override
-  String get errorLoadingProducts => 'Error loading products';
-
-  @override
   String get price => 'Price';
 
   @override
@@ -124,4 +139,30 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get checkout => 'Checkout';
+
+  @override
+  String get myCart => 'My Cart';
+
+  @override
+  String get emptyCart => 'Your cart is empty 🛒';
+
+  @override
+  String get finishPurchase => 'Checkout';
+
+  @override
+  String addedToCart(String product) {
+    return '$product added to cart 🛒';
+  }
+
+  @override
+  String get addedToFavorites => 'Added to favorites ❤️';
+
+  @override
+  String get removedFromFavorites => 'Removed from favorites 💔';
+
+  @override
+  String get notifications => 'Notifications';
+
+  @override
+  String get noNotifications => 'No notifications';
 }

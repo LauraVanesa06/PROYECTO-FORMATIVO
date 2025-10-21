@@ -1,6 +1,13 @@
 {
     "appTitle": "Ferremateriales",
     "profile": "Perfil",
+    "favorite": "Favorito",
+    "donthaveproductcategory": "No hay productos en esta categoría",
+    "productsin": "Productos en ",
+    "buy": "Comprar",
+    "donthavefavorite": "No tienes productos favoritos",
+    "addToCart": "Agregado al carrito",
+    "errorLoadingProducts": "Error al cargar productos",
     "cancel": "Cancelar",
     "save": "Guardar",
     "logout": "Cerrar sesion",
@@ -39,5 +46,21 @@
     "price": "Precio",
     "quantity": "Cantidad",
     "total": "Total",
-    "checkout": "Finalizar compra"
+    "checkout": "Finalizar compra",
+    "myCart": "Mi Carrito",
+    "emptyCart": "Tu carrito está vacío 🛒",
+    "finishPurchase": "Finalizar Compra",
+    "addedToCart": "{product} agregado al carrito 🛒",
+    "addedToFavorites": "Agregado a favoritos ❤️",
+    "removedFromFavorites": "Eliminado de favoritos 💔",
+    "buy": "Comprar",
+    "notifications": "Notificaciones",
+    "noNotifications": "No hay notificaciones",
+    "@addedToCart": {
+        "placeholders": {
+            "product": {
+                "type": "String"
+            }
+        }
+    }
 }

@@ -2,6 +2,7 @@ import 'package:ferremateriales/features/productos/bloc/cart_bloc.dart';
 import 'package:ferremateriales/features/productos/bloc/cart_event.dart';
 import 'package:ferremateriales/features/productos/bloc/product_bloc.dart';
 import 'package:ferremateriales/features/productos/model/product_model.dart';
+import 'package:ferremateriales/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -19,6 +20,7 @@ class _ProductCardState extends State<ProductCard> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     final product = widget.product;
 
     return Card(
@@ -101,9 +103,9 @@ class _ProductCardState extends State<ProductCard> {
                   ),
                 ),
                 icon: const Icon(Icons.shopping_cart, size: 16, color: Colors.white),
-                label: const Text(
-                  "Comprar",
-                  style: TextStyle(fontSize: 13, color: Colors.white),
+                label: Text(
+                  l10n.buy,
+                  style: const TextStyle(fontSize: 13, color: Colors.white),
                 ),
                 onPressed: () {
                   // 🛒 Enviamos el producto como Map<String, dynamic> al CartBloc
@@ -119,7 +121,7 @@ class _ProductCardState extends State<ProductCard> {
                   // ✅ Mostrar notificación breve
                   ScaffoldMessenger.of(context).showSnackBar(
                     SnackBar(
-                      content: Text('${product.nombre} agregado al carrito 🛒'),
+                      content: Text(l10n.addedToCart(product.nombre ?? '')),
                       duration: const Duration(seconds: 2),
                     ),
                   );
@@ -141,9 +143,7 @@ class _ProductCardState extends State<ProductCard> {
                     ScaffoldMessenger.of(context).showSnackBar(
                       SnackBar(
                         content: Text(
-                          isFavorite
-                              ? 'Agregado a favoritos ❤️'
-                              : 'Eliminado de favoritos 💔',
+                          isFavorite ? l10n.addedToFavorites : l10n.removedFromFavorites,
                         ),
                         duration: const Duration(seconds: 1),
                       ),

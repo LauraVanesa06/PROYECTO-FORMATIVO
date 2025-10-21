@@ -15,6 +15,27 @@ class AppLocalizationsEs extends AppLocalizations {
   String get profile => 'Perfil';
 
   @override
+  String get favorite => 'Favorito';
+
+  @override
+  String get donthaveproductcategory => 'No hay productos en esta categoría';
+
+  @override
+  String get productsin => 'Productos en ';
+
+  @override
+  String get buy => 'Comprar';
+
+  @override
+  String get donthavefavorite => 'No tienes productos favoritos';
+
+  @override
+  String get addToCart => 'Agregar al carrito';
+
+  @override
+  String get errorLoadingProducts => 'Error al cargar productos';
+
+  @override
   String get cancel => 'Cancelar';
 
   @override
@@ -72,9 +93,6 @@ class AppLocalizationsEs extends AppLocalizations {
   String get searchHint => 'Buscar productos...';
 
   @override
-  String get addToCart => 'Agregar al carrito';
-
-  @override
   String get categories => 'Categorías';
 
   @override
@@ -111,9 +129,6 @@ class AppLocalizationsEs extends AppLocalizations {
   String get featuredProducts => 'Productos Destacados';
 
   @override
-  String get errorLoadingProducts => 'Error al cargar productos';
-
-  @override
   String get price => 'Precio';
 
   @override
@@ -124,4 +139,30 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get checkout => 'Finalizar compra';
+
+  @override
+  String get myCart => 'Mi Carrito';
+
+  @override
+  String get emptyCart => 'Tu carrito está vacío 🛒';
+
+  @override
+  String get finishPurchase => 'Finalizar Compra';
+
+  @override
+  String addedToCart(String product) {
+    return '$product agregado al carrito 🛒';
+  }
+
+  @override
+  String get addedToFavorites => 'Agregado a favoritos ❤️';
+
+  @override
+  String get removedFromFavorites => 'Eliminado de favoritos 💔';
+
+  @override
+  String get notifications => 'Notificaciones';
+
+  @override
+  String get noNotifications => 'No hay notificaciones';
 }

@@ -1,6 +1,13 @@
 {
     "appTitle": "Hardware Store",
     "profile": "Profile",
+    "favorite": "Favorite",
+    "donthaveproductcategory": "There are no products in this category",
+    "productsin": "Products in ",
+    "buy": "Buy",
+    "donthavefavorite": "you don't have any favorite products",
+    "addToCart": "added to cart",
+    "errorLoadingProducts": "Error loading products",
     "cancel": "Cancel",
     "save": "Save",
     "logout": "Logout",
@@ -39,5 +46,21 @@
     "price": "Price",
     "quantity": "Quantity",
     "total": "Total",
-    "checkout": "Checkout"
+    "checkout": "Checkout",
+    "myCart": "My Cart",
+    "emptyCart": "Your cart is empty 🛒",
+    "finishPurchase": "Checkout",
+    "addedToCart": "{product} added to cart 🛒",
+    "addedToFavorites": "Added to favorites ❤️",
+    "removedFromFavorites": "Removed from favorites 💔",
+    "buy": "Buy",
+    "notifications": "Notifications",
+    "noNotifications": "No notifications",
+    "@addedToCart": {
+        "placeholders": {
+            "product": {
+                "type": "String"
+            }
+        }
+    }
 }
