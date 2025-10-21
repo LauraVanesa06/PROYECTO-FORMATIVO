@@ -2,10 +2,13 @@ class Api::V1::ProductsController < ApplicationController
   skip_before_action :authenticate_user!
 
   def index
-    if params[:category_id].present?
-      products = Product.where(category_id: params[:category_id])
+    # Permite recibir tanto category_id (Rails style) como categoryId (Flutter style)
+    category_param = params[:category_id] || params[:categoryId]
+
+    if category_param.present?
+      products = Product.where(category_id: category_param)
     else
-      # Si no hay categoría, traemos los 8 más comprados
+      # Si no hay categoría, devolvemos los 8 productos más comprados
       products = Product
         .left_joins(:purchasedetails)
         .group('products.id')
@@ -15,13 +18,19 @@ class Api::V1::ProductsController < ApplicationController
     end
 
     render json: products.map { |product|
-      product.as_json.merge(
+      {
+        id: product.id,
+        nombre: product.nombre,
+        descripcion: product.descripcion,
+        precio: product.precio,
+        stock: product.stock,
+        category_id: product.category_id,
+        categoria: product.category&.nombre,
         total_comprados: (product.try(:total_comprados) || 0).to_i,
         imagen_url: product.images.attached? ? url_for(product.images.first) : "NO_IMAGE",
         has_images: product.images.attached?,
-        images_count: product.images.count,
-        categoria: product.category&.nombre
-      )
+        images_count: product.images.count
+      }
     }
   end
 end

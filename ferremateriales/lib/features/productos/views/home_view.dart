@@ -1,11 +1,14 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:carousel_slider/carousel_slider.dart';
+
+import 'package:ferremateriales/features/productos/bloc/product_bloc.dart';
+import 'package:ferremateriales/features/productos/bloc/category_bloc.dart';
 import 'package:ferremateriales/features/productos/views/category_products_view.dart';
 import 'package:ferremateriales/features/productos/views/product_view.dart';
 import 'package:ferremateriales/features/productos/widgets/product_list.dart';
 import 'package:ferremateriales/l10n/app_localizations.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:carousel_slider/carousel_slider.dart';
-import '../bloc/product_bloc.dart';
+import '../model/category_model.dart';
 
 class HomeView extends StatefulWidget {
   const HomeView({super.key});
@@ -31,19 +34,21 @@ class _HomeViewState extends State<HomeView> {
       'assets/images/oferta3.jpg',
     ];
 
+    // 🔧 Lista de categorías con IDs únicos
     final categories = [
       {'icon': Icons.construction, 'label': 'Herramientas', 'display': l10n.tools, 'id': 1},
-      {'icon': Icons.handyman, 'label': 'Tornilleria y Fijaciones', 'display': l10n.hardware, 'id': 2},
-      {'icon': Icons.plumbing, 'label': 'Plomeria', 'display': l10n.plumbing, 'id': 3},
+      {'icon': Icons.handyman, 'label': 'Tornillería y Fijaciones', 'display': l10n.hardware, 'id': 2},
+      {'icon': Icons.plumbing, 'label': 'Plomería', 'display': l10n.plumbing, 'id': 3},
       {'icon': Icons.flash_on, 'label': 'Electricidad', 'display': l10n.electricity, 'id': 4},
-      {'icon': Icons.business, 'label': 'Construccion y Materiales', 'display': l10n.construction, 'id': 5},
+      {'icon': Icons.business, 'label': 'Construcción y Materiales', 'display': l10n.construction, 'id': 5},
       {'icon': Icons.format_paint, 'label': 'Pintura y Acabados', 'display': l10n.paint, 'id': 6},
-      {'icon': Icons.home_repair_service, 'label': 'Ferreteria para el hogar', 'display': l10n.homeHardware, 'id': 7},
+      {'icon': Icons.home_repair_service, 'label': 'Ferretería para el hogar', 'display': l10n.homeHardware, 'id': 7},
       {'icon': Icons.cleaning_services, 'label': 'Limpieza y Mantenimiento', 'display': l10n.cleaning, 'id': 8},
       {'icon': Icons.sticky_note_2, 'label': 'Adhesivos y Selladores', 'display': l10n.adhesives, 'id': 9},
-      {'icon': Icons.grass, 'label': 'Jardineria', 'display': l10n.gardening, 'id': 10},
+      {'icon': Icons.grass, 'label': 'Jardinería', 'display': l10n.gardening, 'id': 10},
     ];
 
+    // 🔁 Construcción dinámica de botones de categoría
     final categoryItems = categories.map((category) {
       return _HoverCategoryButton(
         icon: category['icon'] as IconData,
@@ -78,33 +83,32 @@ class _HomeViewState extends State<HomeView> {
             children: [
               const SizedBox(height: 24),
 
-              // Carrusel de imágenes
+              // 🖼️ Carrusel de imágenes
               CarouselSlider(
                 options: CarouselOptions(
                   height: 140,
                   autoPlay: true,
                   enlargeCenterPage: true,
                 ),
-                items:
-                    bannerImages.map((path) {
-                      return Builder(
-                        builder: (BuildContext context) {
-                          return ClipRRect(
-                            borderRadius: BorderRadius.circular(12),
-                            child: Image.asset(
-                              path,
-                              fit: BoxFit.cover,
-                              width: double.infinity,
-                            ),
-                          );
-                        },
+                items: bannerImages.map((path) {
+                  return Builder(
+                    builder: (BuildContext context) {
+                      return ClipRRect(
+                        borderRadius: BorderRadius.circular(12),
+                        child: Image.asset(
+                          path,
+                          fit: BoxFit.cover,
+                          width: double.infinity,
+                        ),
                       );
-                    }).toList(),
+                    },
+                  );
+                }).toList(),
               ),
 
               const SizedBox(height: 28),
 
-              // Carrusel de categorías
+              // 🧩 Carrusel de categorías
               CarouselSlider(
                 options: CarouselOptions(
                   height: 110,
@@ -121,15 +125,17 @@ class _HomeViewState extends State<HomeView> {
 
               Padding(
                 padding: const EdgeInsets.only(left: 16.0),
-                child: Text(l10n.featuredProducts,
-                    style: TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.brown.shade700,
-                    )),
+                child: Text(
+                  l10n.featuredProducts,
+                  style: TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.brown.shade700,
+                  ),
+                ),
               ),
 
-              // Mostrar productos usando BlocBuilder
+              // 🛒 Productos destacados
               BlocBuilder<ProductBloc, ProductState>(
                 builder: (context, state) {
                   if (state is ProductLoadInProgress) {
@@ -139,15 +145,7 @@ class _HomeViewState extends State<HomeView> {
                     return Padding(
                       padding: const EdgeInsets.all(8.0),
                       child: ProductsList(products: state.productos),
-                      
                     );
-                    // return SizedBox(
-                    //   height: 1000,
-                    //   child: Padding(
-                    //     padding: const EdgeInsets.all(8.0),
-                    //     child: ProductsList(products: state.productos),
-                    //   ),
-                    // );
                   } else if (state is ProductLoadFailure) {
                     return Center(
                       child: Text(l10n.errorLoadingProducts),
@@ -167,7 +165,7 @@ class _HomeViewState extends State<HomeView> {
   }
 }
 
-// Widget personalizado con efecto hover
+// 🎨 Widget personalizado con efecto hover
 class _HoverCategoryButton extends StatefulWidget {
   final IconData icon;
   final String label;
@@ -202,10 +200,9 @@ class _HoverCategoryButtonState extends State<_HoverCategoryButton> {
                   _isHovered ? Colors.brown.shade100 : Colors.grey.shade200,
               child: Icon(
                 widget.icon,
-                color:
-                    _isHovered
-                        ? Colors.brown.shade800
-                        : const Color.fromARGB(255, 130, 204, 238),
+                color: _isHovered
+                    ? Colors.brown.shade800
+                    : const Color.fromARGB(255, 130, 204, 238),
                 size: 22,
               ),
             ),
