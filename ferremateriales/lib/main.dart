@@ -60,10 +60,11 @@ class MyApp extends StatelessWidget {
               builder: (context, authState) {
                 switch (authState.status) {
                   case AuthStatus.success:
+                  case AuthStatus.guest:
                     return const MainView();
                   case AuthStatus.failure:
                   case AuthStatus.loggedOut:
-                    return LoginView();
+                    return const LoginView();
                   default:
                     return const Scaffold(
                       body: Center(child: CircularProgressIndicator()),

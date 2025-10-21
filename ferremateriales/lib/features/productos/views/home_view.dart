@@ -1,3 +1,4 @@
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:carousel_slider/carousel_slider.dart';
@@ -10,6 +11,17 @@ import 'package:ferremateriales/features/productos/widgets/product_list.dart';
 import 'package:ferremateriales/l10n/app_localizations.dart';
 import '../model/category_model.dart';
 
+import 'package:ferremateriales/features/productos/views/category_products_view.dart';
+import 'package:ferremateriales/features/productos/widgets/product_list.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:carousel_slider/carousel_slider.dart';
+import '../../auth/views/login_view.dart';
+import '../../auth/bloc/auth_bloc.dart';
+import '../../auth/bloc/auth_state.dart';
+import '../bloc/product_bloc.dart';
+import 'product_view.dart';
+
 class HomeView extends StatefulWidget {
   const HomeView({super.key});
 
@@ -18,6 +30,8 @@ class HomeView extends StatefulWidget {
 }
 
 class _HomeViewState extends State<HomeView> {
+  final TextEditingController _searchController = TextEditingController();
+
   @override
   void initState() {
     super.initState();
@@ -27,6 +41,8 @@ class _HomeViewState extends State<HomeView> {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
+
+    final authState = context.watch<AuthBloc>().state;
 
     final bannerImages = [
       'assets/images/oferta.jpg',
@@ -81,6 +97,97 @@ class _HomeViewState extends State<HomeView> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+              // 🔸 Barra superior con buscador y botón condicional
+              Container(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                decoration: BoxDecoration(
+                  color: Colors.brown.shade700,
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.brown.shade200.withOpacity(0.5),
+                      blurRadius: 6,
+                      offset: const Offset(0, 3),
+                    ),
+                  ],
+                ),
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: Container(
+                        height: 40,
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        child: TextField(
+                          controller: _searchController,
+                          onChanged: (value) {
+                            if (value.isEmpty) {
+                              context
+                                  .read<ProductBloc>()
+                                  .add(ProductEntrarPressed());
+                            } else {
+                              context
+                                  .read<ProductBloc>()
+                                  .add(ProductBuscarPorNombre(value));
+                            }
+                          },
+                          decoration: InputDecoration(
+                            hintText: "Buscar productos...",
+                            prefixIcon:
+                                const Icon(Icons.search, color: Colors.brown),
+                            suffixIcon: _searchController.text.isNotEmpty
+                                ? IconButton(
+                                    icon: const Icon(Icons.close,
+                                        color: Colors.brown),
+                                    onPressed: () {
+                                      _searchController.clear();
+                                      context
+                                          .read<ProductBloc>()
+                                          .add(ProductEntrarPressed());
+                                      setState(() {}); // refresca el icono
+                                    },
+                                  )
+                                : null,
+                            border: InputBorder.none,
+                            contentPadding:
+                                const EdgeInsets.symmetric(vertical: 10),
+                          ),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(width: 12),
+                    // 👇 Solo se muestra el botón si es invitado
+                    if (authState.status == AuthStatus.guest)
+                      TextButton.icon(
+                        onPressed: () {
+                          Navigator.pushReplacement(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => const LoginView()),
+                          );
+                        },
+                        style: TextButton.styleFrom(
+                          foregroundColor: Colors.white,
+                          backgroundColor: Colors.brown.shade900,
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 12, vertical: 10),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                        ),
+                        icon: const Icon(Icons.login,
+                            size: 18, color: Colors.white),
+                        label: const Text(
+                          "Iniciar sesión",
+                          style: TextStyle(color: Colors.white),
+                        ),
+                      ),
+                  ],
+                ),
+              ),
+
               const SizedBox(height: 24),
 
               // 🖼️ Carrusel de imágenes
@@ -151,7 +258,7 @@ class _HomeViewState extends State<HomeView> {
                       child: Text(l10n.errorLoadingProducts),
                     );
                   } else {
-                    return const ProductsPageView(); // Estado inicial
+                    return const ProductsPageView();
                   }
                 },
               ),

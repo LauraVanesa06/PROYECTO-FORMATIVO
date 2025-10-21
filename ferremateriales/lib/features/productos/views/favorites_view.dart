@@ -1,12 +1,13 @@
-import 'dart:convert';
+
 import 'package:ferremateriales/features/productos/bloc/product_bloc.dart';
 import 'package:flutter/material.dart';
+
 import 'package:ferremateriales/l10n/app_localizations.dart';
 import 'package:http/http.dart' as http;
+
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../bloc/cart_bloc.dart';
 import '../bloc/cart_event.dart';
-import '../bloc/cart_state.dart';
 
 class FavoritesView extends StatelessWidget {
   const FavoritesView({super.key});
