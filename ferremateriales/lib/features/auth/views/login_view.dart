@@ -1,3 +1,4 @@
+import 'package:ferremateriales/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -11,6 +12,8 @@ import 'reset_password_view.dart';
 class LoginView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+
     return BlocListener<AuthBloc, AuthState>(
       listenWhen: (previous, current) => current.status == AuthStatus.success,
       listener: (context, state) {
@@ -43,7 +46,7 @@ class LoginView extends StatelessWidget {
 
                   // título
                   Text(
-                    'Inicia sesión',
+                    l10n.login,
                     style: GoogleFonts.montserrat(
                       fontSize: 28,
                       fontWeight: FontWeight.bold,
@@ -74,8 +77,8 @@ class LoginView extends StatelessWidget {
                         MaterialPageRoute(builder: (_) => RegisterView()),
                       );
                     },
-                    child: const Text(
-                      "¿No tienes cuenta? Regístrate aquí",
+                    child: Text(
+                      l10n.noAccount,
                       style: TextStyle(color: Colors.white),
                     ),
                   ),
@@ -88,8 +91,8 @@ class LoginView extends StatelessWidget {
                         MaterialPageRoute(builder: (_) => ResetPasswordView()),
                       );
                     },
-                    child: const Text(
-                      "¿Olvidaste tu contraseña?",
+                    child: Text(
+                      l10n.forgotPassword,
                       style: TextStyle(color: Colors.white),
                     ),
                   ),

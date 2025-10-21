@@ -21,7 +21,7 @@ class AppLocalizationsEs extends AppLocalizations {
   String get donthaveproductcategory => 'No hay productos en esta categoría';
 
   @override
-  String get productsin => 'Productos en ';
+  String get productsin => 'Productos en';
 
   @override
   String get buy => 'Comprar';
@@ -165,4 +165,49 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get noNotifications => 'No hay notificaciones';
+
+  @override
+  String get registrationSuccess => 'Usuario registrado exitosamente';
+
+  @override
+  String get noAccount => '¿No tienes cuenta? Regístrate aquí';
+
+  @override
+  String get yesAccount => 'Do have an account? Login here';
+
+  @override
+  String get forgotPassword => '¿Olvidaste tu contraseña?';
+
+  @override
+  String get resetPassword => 'Recuperar contraseña';
+
+  @override
+  String get confirmPassword => 'Confirmar Contraseña';
+
+  @override
+  String get sendReset => 'Enviar recuperación';
+
+  @override
+  String get backToLogin => 'Volver al inicio de sesión';
+
+  @override
+  String get passwordsDontMatch => 'Las contraseñas no coinciden';
+
+  @override
+  String get required => 'Campo requerido';
+
+  @override
+  String get invalidEmail => 'Correo no válido';
+
+  @override
+  String get resetPasswordTitle => 'Recuperar contraseña';
+
+  @override
+  String get emailRequired => 'El correo es obligatorio';
+
+  @override
+  String get sendRecovery => 'Enviar recuperación';
+
+  @override
+  String get requestSent => 'Solicitud enviada';
 }

@@ -56,6 +56,23 @@
     "buy": "Buy",
     "notifications": "Notifications",
     "noNotifications": "No notifications",
+    "registrationSuccess": "User registered successfully",
+    "noAccount": "Don't have an account? Register here",
+    "yesAccount": "Do have an account? Login here",
+    "forgotPassword": "Forgot your password?",
+    "resetPassword": "Reset Password",
+    "confirmPassword": "Confirm Password",
+    "sendReset": "Send Reset Link",
+    "backToLogin": "Back to Login",
+    "passwordsDontMatch": "Passwords don't match",
+    "required": "This field is required",
+    "invalidEmail": "Invalid email address",
+    "resetPasswordTitle": "Reset Password",
+    "emailRequired": "Email is required",
+    "invalidEmail": "Invalid email",
+    "sendRecovery": "Send Recovery Link",
+    "requestSent": "Request sent",
+    "backToLogin": "Back to Login",
     "@addedToCart": {
         "placeholders": {
             "product": {

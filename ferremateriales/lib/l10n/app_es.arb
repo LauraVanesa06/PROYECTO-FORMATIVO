@@ -62,5 +62,21 @@
                 "type": "String"
             }
         }
-    }
+    },
+    "registrationSuccess": "Usuario registrado exitosamente",
+    "noAccount": "¿No tienes cuenta? Regístrate aquí",
+    "yesAccount": "Do have an account? Login here",
+    "forgotPassword": "¿Olvidaste tu contraseña?",
+    "resetPassword": "Recuperar contraseña",
+    "confirmPassword": "Confirmar Contraseña",
+    "sendReset": "Enviar recuperación",
+    "backToLogin": "Volver al inicio de sesión",
+    "passwordsDontMatch": "Las contraseñas no coinciden",
+    "required": "Campo requerido",
+    "invalidEmail": "Correo no válido",
+    "resetPasswordTitle": "Recuperar contraseña",
+    "emailRequired": "El correo es obligatorio",
+    "sendRecovery": "Enviar recuperación",
+    "requestSent": "Solicitud enviada",
+    "backToLogin": "Volver al inicio de sesión"
 }

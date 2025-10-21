@@ -21,7 +21,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get donthaveproductcategory => 'There are no products in this category';
 
   @override
-  String get productsin => 'Products in ';
+  String get productsin => 'Products in';
 
   @override
   String get buy => 'Buy';
@@ -165,4 +165,49 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get noNotifications => 'No notifications';
+
+  @override
+  String get registrationSuccess => 'User registered successfully';
+
+  @override
+  String get noAccount => 'Don\'t have an account? Register here';
+
+  @override
+  String get yesAccount => 'Do have an account? Login here';
+
+  @override
+  String get forgotPassword => 'Forgot your password?';
+
+  @override
+  String get resetPassword => 'Reset Password';
+
+  @override
+  String get confirmPassword => 'Confirm Password';
+
+  @override
+  String get sendReset => 'Send Reset Link';
+
+  @override
+  String get backToLogin => 'Back to Login';
+
+  @override
+  String get passwordsDontMatch => 'Passwords don\'t match';
+
+  @override
+  String get required => 'This field is required';
+
+  @override
+  String get invalidEmail => 'Invalid email';
+
+  @override
+  String get resetPasswordTitle => 'Reset Password';
+
+  @override
+  String get emailRequired => 'Email is required';
+
+  @override
+  String get sendRecovery => 'Send Recovery Link';
+
+  @override
+  String get requestSent => 'Request sent';
 }

@@ -1,3 +1,4 @@
+import 'package:ferremateriales/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../bloc/auth_bloc.dart';
@@ -16,6 +17,7 @@ class _LoginFormState extends State<LoginForm> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return Form(
       key: _formKey,
       
@@ -26,7 +28,7 @@ class _LoginFormState extends State<LoginForm> {
             style: const TextStyle(color: Colors.white),
             decoration: InputDecoration(
               prefixIcon: const Icon(Icons.person, color: Colors.orange),
-              hintText: 'Usuario',
+              hintText: l10n.name,
               hintStyle: const TextStyle(color: Colors.white54),
               filled: true,
               fillColor: Colors.black.withOpacity(0.7),
@@ -50,7 +52,7 @@ class _LoginFormState extends State<LoginForm> {
             style: const TextStyle(color: Colors.white),
             decoration: InputDecoration(
               prefixIcon: const Icon(Icons.lock, color: Colors.orange),
-              hintText: 'Contraseña',
+              hintText: l10n.password,
               hintStyle: const TextStyle(color: Colors.white54),
               filled: true,
               fillColor: Colors.black.withOpacity(0.7),
@@ -98,8 +100,8 @@ class _LoginFormState extends State<LoginForm> {
                 foregroundColor: Colors.white,  
                 
               ),
-              child: const Text(
-                "Iniciar sesión",
+              child: Text(
+                l10n.login,
                 style: TextStyle(
                   fontSize: 18,
                   fontWeight: FontWeight.bold,

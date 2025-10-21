@@ -122,7 +122,7 @@ abstract class AppLocalizations {
   /// No description provided for @productsin.
   ///
   /// In en, this message translates to:
-  /// **'Products in '**
+  /// **'Products in'**
   String get productsin;
 
   /// No description provided for @buy.
@@ -406,6 +406,96 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'No notifications'**
   String get noNotifications;
+
+  /// No description provided for @registrationSuccess.
+  ///
+  /// In en, this message translates to:
+  /// **'User registered successfully'**
+  String get registrationSuccess;
+
+  /// No description provided for @noAccount.
+  ///
+  /// In en, this message translates to:
+  /// **'Don\'t have an account? Register here'**
+  String get noAccount;
+
+  /// No description provided for @yesAccount.
+  ///
+  /// In en, this message translates to:
+  /// **'Do have an account? Login here'**
+  String get yesAccount;
+
+  /// No description provided for @forgotPassword.
+  ///
+  /// In en, this message translates to:
+  /// **'Forgot your password?'**
+  String get forgotPassword;
+
+  /// No description provided for @resetPassword.
+  ///
+  /// In en, this message translates to:
+  /// **'Reset Password'**
+  String get resetPassword;
+
+  /// No description provided for @confirmPassword.
+  ///
+  /// In en, this message translates to:
+  /// **'Confirm Password'**
+  String get confirmPassword;
+
+  /// No description provided for @sendReset.
+  ///
+  /// In en, this message translates to:
+  /// **'Send Reset Link'**
+  String get sendReset;
+
+  /// No description provided for @backToLogin.
+  ///
+  /// In en, this message translates to:
+  /// **'Back to Login'**
+  String get backToLogin;
+
+  /// No description provided for @passwordsDontMatch.
+  ///
+  /// In en, this message translates to:
+  /// **'Passwords don\'t match'**
+  String get passwordsDontMatch;
+
+  /// No description provided for @required.
+  ///
+  /// In en, this message translates to:
+  /// **'This field is required'**
+  String get required;
+
+  /// No description provided for @invalidEmail.
+  ///
+  /// In en, this message translates to:
+  /// **'Invalid email'**
+  String get invalidEmail;
+
+  /// No description provided for @resetPasswordTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Reset Password'**
+  String get resetPasswordTitle;
+
+  /// No description provided for @emailRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Email is required'**
+  String get emailRequired;
+
+  /// No description provided for @sendRecovery.
+  ///
+  /// In en, this message translates to:
+  /// **'Send Recovery Link'**
+  String get sendRecovery;
+
+  /// No description provided for @requestSent.
+  ///
+  /// In en, this message translates to:
+  /// **'Request sent'**
+  String get requestSent;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {
