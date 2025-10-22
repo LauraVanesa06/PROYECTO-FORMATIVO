@@ -3,16 +3,15 @@
   <head>
     <title><%= content_for(:title) || "Appsena" %></title>
     <meta name="viewport" content="width=device-width,initial-scale=1">
+    <meta name="csrf-token" content="<%= form_authenticity_token %>">
+
     <%= csrf_meta_tags %>
     <%= csp_meta_tag %>
     <%= yield :head %>
-    <%# Enable PWA manifest for installable apps (make sure to enable in config/routes.rb too!) %>
-    <%#= tag.link rel: "manifest", href: pwa_manifest_path(format: :json) %>
 
     <link rel="icon" href="/icon.png" type="image/png">
     <link rel="apple-touch-icon" href="/icon.png">
 
-    <%# Includes all stylesheet files in app/assets/stylesheets %>
     <%= stylesheet_link_tag :abootstrap, "data-turbo-track": "reload" %>
     <%= stylesheet_link_tag :application, "data-turbo-track": "reload" %>
     <%= javascript_importmap_tags %>
@@ -20,14 +19,13 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    
   </head>
 
   <body>
-
     <main>
       <!-- HEADER -->
       <header class="container-header"> 
-        <!-- Navegación -->
         <nav class="main-nav d-flex gap-3">
           <%= link_to t("nav.home"), authenticated_root_path, id:"nav-home", class: "text-white fw-bold" %>
           <%= link_to t("nav.products"), productos_path, class: "text-white fw-bold" %>
@@ -35,7 +33,6 @@
         </nav>
 
         <!-- Iconos -->
-        
         <div class="header-icons d-flex align-items-center gap-3 text-white fs-5">
           <div class="dropdown">
             <button class="btn btn-sm btn-outline-light dropdown-toggle" type="button" data-bs-toggle="dropdown">
@@ -46,82 +43,115 @@
               <li><%= link_to t("languages.english"), url_for(locale: :en), class: "dropdown-item" %></li>
             </ul>
           </div>
+
           <%= link_to favoritos_path, class: "text-white1" do %>
             <i class="fa-solid fa-star"></i>
           <% end %>
 
-          <!-- Carrito: abre SIEMPRE el offcanvas derecho y muestra contador -->
           <% unless current_page?(cart_path) %>
             <%= link_to "#",
                         class: "text-white1 position-relative",
                         data: { bs_toggle: "offcanvas", bs_target: "#cartOffcanvas" } do %>
               <i class="fa-solid fa-cart-shopping"></i>
-              <%# render partial: "carts/cart_count", locals: { count: @cart_items.sum(&:cantidad) } %>
             <% end %>
           <% end %>
 
-          <!--
-            <%= link_to notificaciones_path, class: "text-white" do %>
-              <i class="fa-solid fa-bell"></i>
-            <% end %>
-          -->
+          <!-- Botón de usuario que abre el sidebar -->
+          <button id="userButton" class="btn btn-outline-light border-0" aria-label="Perfil">
+            <i class="fa-solid fa-user"></i>
+          </button>
+        </div>
+      </header>
 
-          <!-- Usuario con dropdown -->
-          <div class="dropdown">
-            <a href="#" class="text-white1 dropdown-toggle" role="button" data-bs-toggle="dropdown" aria-expanded="false" id="userDropdown">
-              <i class="fa-solid fa-user"></i>
-            </a>
-            <ul class="dropdown-menu dropdown-menu-end">
-              <% if user_signed_in? %>
-                <li><%= link_to t("user.profile"), edit_user_registration_path, class: "dropdown-item" %></li>
-                <li>
-                  <%= button_to t("user.logout"), destroy_user_session_path,
-                                method: :delete,
-                                data: { confirm: t("user.logout_confirm") },
-                                class: "dropdown-item text-danger" %>
-                </li>
-              <% else %>
-                <li><%= link_to t("user.login"), new_user_session_path, class: "dropdown-item" %></li>
-                <li><%= link_to t("user.register"), new_user_registration_path, class: "dropdown-item" %></li>
-              <% end %>
-            </ul>
+      <!-- CONTENIDO PRINCIPAL -->
+      <%= yield %>
+
+      <!-- FOOTER -->
+      <footer id="footer" class="bg-dark text-white text-center p-3 mt-auto">
+        &copy; 2025 <%= t("app.name") %> - v3.1.4
+      </footer>
+    </main>
+
+    <%= javascript_include_tag 'application2', "data-turbo-track": "reload" %>
+    <%= javascript_include_tag 'mi_script', "data-turbo-track": "reload" %>
+
+    <!-- Offcanvas del carrito -->
+    <% unless current_page?(cart_path) %>
+      <div class="offcanvas offcanvas-end" tabindex="-1" id="cartOffcanvas">
+        <div class="offcanvas-header" style="position: relative; padding-bottom: 0;">
+          <div class="section-header" style="width: 100%;">
+            <h2 class="titulo"><%= t("cart.title") %></h2>
+            <center><hr class="linea-bonita"></center>
           </div>
+          <button type="button" class="btn-close" data-bs-dismiss="offcanvas"></button>
         </div>
-    </header>
-
-    <!-- CONTENIDO -->
-    <%= yield %>
-
-    <!-- FOOTER -->
-    <footer id="footer"class="bg-dark text-white text-center p-3 mt-auto">
-      &copy; 2025 <%= t("app.name") %> - v3.1.4
-    </footer>
-  </main>
-
-  <%= javascript_include_tag 'application2', "data-turbo-track": "reload" %>
-  <%= javascript_include_tag 'mi_script', "data-turbo-track": "reload" %>
-
-  <!-- Offcanvas DERECHO (ÚNICO) -->
-  <% unless current_page?(cart_path) %>
-    <div class="offcanvas offcanvas-end" tabindex="-1" id="cartOffcanvas">
-      <div class="offcanvas-header" style="position: relative; padding-bottom: 0;">
-        <div class="section-header" style="width: 100%;">
-          <h2 class="titulo"><%= t("cart.title") %></h2>
-          <center><hr class="linea-bonita"></center>
+        <div class="offcanvas-body" id="cart-offcanvas-body">
+          <%= render partial: "carts/cart_items", locals: { cart_items: @cart&.cart_items || [] } %>
         </div>
-        <button type="button" class="btn-close" data-bs-dismiss="offcanvas"></button>
       </div>
-      <div class="offcanvas-body" id="cart-offcanvas-body">
-        <%= render partial: "carts/cart_items", locals: { cart_items: @cart&.cart_items || [] } %>
+    <% end %>
+
+    <!-- 🧩 Sidebar del perfil (logueado o no) -->
+    <div id="profileSidebar" class="sidebar shadow-lg">
+      <div class="sidebar-header d-flex justify-content-between align-items-center mb-3">
+        <h5 class="mb-0">Mi Perfil</h5>
+        <button id="closeSidebar" class="btn btn-light btn-sm border">✕</button>
       </div>
+
+      <div class="text-center mb-4">
+        <% if user_signed_in? %>
+          <% avatar = current_user.respond_to?(:avatar_url) && current_user.avatar_url.present? ? current_user.avatar_url : "avatar.png" %>
+          <%= image_tag avatar, id: "profile-pic", class: "rounded-circle mb-2", width: 100, height: 100 %>
+          <br>
+          <label for="avatar-upload" class="btn btn-sm btn-outline-primary mt-1">Cambiar foto</label>
+          <input type="file" id="avatar-upload" style="display:none">
+        <% else %>
+          <%= image_tag "avatar.png", id: "profile-pic", class: "rounded-circle mb-2", width: 100, height: 100 %>
+        <% end %>
+      </div>
+
+      <div class="sidebar-body">
+        <% if user_signed_in? %>
+          <p class="text-center">Bienvenido, <%= current_user.email %> 👋</p>
+          <p class="text-muted text-center">Aquí pronto podrás editar tu perfil.</p>
+        <% else %>
+          <div class="text-center">
+            <p>Inicia sesión para acceder a tu perfil.</p>
+            <%= link_to "Ir al login", new_user_session_path, class: "btn btn-primary w-100" %>
+          </div>
+        <% end %>
+
+      </div>
+
+      <% if user_signed_in? %>
+        <hr>
+        <div class="mt-3 text-center">
+          <button id="darkModeToggle" class="btn btn-outline-secondary w-100 mb-2">🌙 Modo oscuro</button>
+          <%= button_to t("user.logout"), destroy_user_session_path,
+                        method: :delete,
+                        class: "btn btn-outline-danger w-100" %>
+        </div>
+      <% end %>
     </div>
-  <% end %>
-</body>
-</html>
 
-<% if flash[:notice] %>
-  <div class="alert alert-success"><%= flash[:notice] %></div>
-<% end %>
-<% if flash[:alert] %>
-  <div class="alert alert-danger"><%= flash[:alert] %></div>
-<% end %>
+    <!-- Fondo borroso -->
+
+    <script>
+      window.isLoggedIn = <%= user_signed_in? ? 'true' : 'false' %>;
+    </script>
+
+    <% if flash[:notice] %>
+      <div class="alert alert-success"><%= flash[:notice] %></div>
+    <% end %>
+    <% if flash[:alert] %>
+      <div class="alert alert-danger"><%= flash[:alert] %></div>
+    <% end %>
+    <script>
+      console.log("CSRF:", document.querySelector('meta[name=csrf-token]').content);
+    </script>
+
+    <div id="deviseSidebarContainer"></div>
+
+
+  </body>
+</html>
