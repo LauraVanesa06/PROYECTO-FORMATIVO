@@ -1,3 +1,4 @@
+import 'package:ferremateriales/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../bloc/product_bloc.dart';
@@ -5,8 +6,15 @@ import '../widgets/product_list.dart';
 
 class CategoryProductsView extends StatefulWidget {
   final String categoryName;
+  final int categoryId;
+  final String displayName;
 
-  const CategoryProductsView({super.key, required this.categoryName});
+  const CategoryProductsView({
+    super.key, 
+    required this.categoryName,
+    required this.categoryId,
+    required this.displayName,
+  });
 
   @override
   State<CategoryProductsView> createState() => _CategoryProductsViewState();
@@ -16,11 +24,16 @@ class _CategoryProductsViewState extends State<CategoryProductsView> {
   @override
   void initState() {
     super.initState();
-    context.read<ProductBloc>().add(ProductFilterByCategory(widget.categoryName));
+  context
+      .read<ProductBloc>()
+      .add(ProductFilterByCategory(widget.categoryId));
+
   }
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+
     return Scaffold(
       appBar: AppBar(
         title: Text(widget.categoryName),
@@ -34,8 +47,8 @@ class _CategoryProductsViewState extends State<CategoryProductsView> {
               return const Center(child: CircularProgressIndicator());
             } else if (state is ProductLoadSuccess) {
               if (state.productos.isEmpty) {
-                return const Center(
-                  child: Text('No hay productos en esta categoría'),
+                return Center(
+                  child: Text(l10n.donthaveproductcategory),
                 );
               }
 
@@ -45,7 +58,7 @@ class _CategoryProductsViewState extends State<CategoryProductsView> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      'Productos en ${widget.categoryName}',
+                      '${l10n.productsin} ${widget.categoryName}',
                       style: TextStyle(
                         fontSize: 18,
                         fontWeight: FontWeight.bold,
@@ -58,8 +71,8 @@ class _CategoryProductsViewState extends State<CategoryProductsView> {
                 ),
               );
             } else if (state is ProductLoadFailure) {
-              return const Center(
-                child: Text('Error al cargar productos'),
+              return Center(
+                child: Text(l10n.errorLoadingProducts),
               );
             } else {
               return const SizedBox.shrink();

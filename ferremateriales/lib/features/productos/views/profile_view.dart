@@ -1,3 +1,4 @@
+import 'package:ferremateriales/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../auth/bloc/auth_bloc.dart';
@@ -8,14 +9,18 @@ import 'config_view.dart';
 class ProfileView extends StatelessWidget {
   final String userName;
   final String? userPhotoUrl; 
+  
 
   const ProfileView({super.key, this.userName = "", this.userPhotoUrl});
+  
 
   @override
   Widget build(BuildContext context) {
+    final I10n = AppLocalizations.of(context)!;
+    
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Perfil"),
+        title: Text(I10n.profile),
         centerTitle: true,
         backgroundColor: Colors.deepPurple,
       ),
@@ -49,7 +54,7 @@ class ProfileView extends StatelessWidget {
               children: [
                 ListTile(
                   leading: const Icon(Icons.account_circle, color: Colors.deepPurple),
-                  title: const Text("Cuenta"),
+                  title: Text(I10n.account),
                   onTap: () {
                     final authState = context.read<AuthBloc>().state;
                     Navigator.push(
@@ -65,7 +70,7 @@ class ProfileView extends StatelessWidget {
                 ),
                 ListTile(
                   leading: const Icon(Icons.settings, color: Colors.deepPurple),
-                  title: const Text("Configuración"),
+                  title: Text(I10n.settings),
                   onTap: () {
                     Navigator.push(
                       context,
@@ -75,7 +80,7 @@ class ProfileView extends StatelessWidget {
                 ),
                 ListTile(
                   leading: const Icon(Icons.logout, color: Colors.red),
-                  title: const Text("Cerrar sesión"),
+                  title: Text(I10n.logout),
                   onTap: () {
                     Navigator.pushReplacement(
                       context,

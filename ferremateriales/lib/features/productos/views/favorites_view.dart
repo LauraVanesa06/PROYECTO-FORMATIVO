@@ -1,6 +1,10 @@
 
 import 'package:ferremateriales/features/productos/bloc/product_bloc.dart';
 import 'package:flutter/material.dart';
+
+import 'package:ferremateriales/l10n/app_localizations.dart';
+import 'package:http/http.dart' as http;
+
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../bloc/cart_bloc.dart';
 import '../bloc/cart_event.dart';
@@ -10,11 +14,13 @@ class FavoritesView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Favoritos ❤️"),
-        centerTitle: true,
-      ),
+        title: Text(l10n.favorite),
+          centerTitle: true,
+        ),
       body: BlocBuilder<ProductBloc, ProductState>(
         builder: (context, state) {
           if (state is ProductLoadInProgress) {
@@ -23,7 +29,7 @@ class FavoritesView extends StatelessWidget {
             final favoritos = state.productos.where((p) => p.isFavorite).toList();
 
             if (favoritos.isEmpty) {
-              return const Center(child: Text("No tienes productos favoritos"));
+              return Center(child: Text(l10n.donthavefavorite));
             }
 
             return ListView.builder(
@@ -64,8 +70,8 @@ class FavoritesView extends StatelessWidget {
                             ),
                           ),
                           icon: const Icon(Icons.shopping_cart, size: 16, color: Colors.white),
-                          label: const Text(
-                            "Comprar",
+                          label: Text(
+                            l10n.buy,
                             style: TextStyle(fontSize: 13, color: Colors.white),
                           ),
                           onPressed: () {
@@ -82,7 +88,7 @@ class FavoritesView extends StatelessWidget {
                             // Notificación visual
                             ScaffoldMessenger.of(context).showSnackBar(
                               SnackBar(
-                                content: Text('${fav.nombre} agregado al carrito 🛒'),
+                                content: Text('${fav.nombre} ${l10n.addToCart}'),
                                 duration: const Duration(seconds: 2),
                               ),
                             );
@@ -95,7 +101,7 @@ class FavoritesView extends StatelessWidget {
               },
             );
           } else {
-            return const Center(child: Text("Error al cargar productos"));
+            return Center(child: Text(l10n.errorLoadingProducts));
           }
         },
       ),

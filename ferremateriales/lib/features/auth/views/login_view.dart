@@ -1,3 +1,4 @@
+import 'package:ferremateriales/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -14,6 +15,8 @@ class LoginView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+
     return BlocListener<AuthBloc, AuthState>(
       listener: (context, state) {
         if (state.status == AuthStatus.success || state.status == AuthStatus.guest) {
@@ -45,7 +48,7 @@ class LoginView extends StatelessWidget {
                   const SizedBox(height: 16),
 
                   Text(
-                    'Inicia sesión',
+                    l10n.login,
                     style: GoogleFonts.montserrat(
                       fontSize: 28,
                       fontWeight: FontWeight.bold,
@@ -66,8 +69,10 @@ class LoginView extends StatelessWidget {
                         MaterialPageRoute(builder: (_) => RegisterView()),
                       );
                     },
-                    child: const Text("¿No tienes cuenta? Regístrate aquí",
-                        style: TextStyle(color: Colors.white)),
+                    child: Text(
+                      l10n.noAccount,
+                      style: TextStyle(color: Colors.white),
+                    ),
                   ),
                   TextButton(
                     onPressed: () {
@@ -76,9 +81,10 @@ class LoginView extends StatelessWidget {
                         MaterialPageRoute(builder: (_) => ResetPasswordView()),
                       );
                     },
-                    child: const Text("¿Olvidaste tu contraseña?",
-                        style: TextStyle(color: Colors.white)),
-                  ),
+                    child: Text(
+                      l10n.forgotPassword,
+                      style: TextStyle(color: Colors.white),
+
                   const SizedBox(height: 12),
 
                   // --- Botón Invitado ---

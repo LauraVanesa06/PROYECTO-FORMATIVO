@@ -86,33 +86,36 @@ class ProductBloc extends Bloc<ProductEvent, ProductState> {
     }
   }
 
-  // 🔍 Filtrar productos por categoría
-  Future<void> _onFilterByCategory(
-      ProductFilterByCategory event, Emitter<ProductState> emit) async {
-    emit(ProductLoadInProgress());
+// 🔍 Filtrar productos por categoría (por ID)
+    Future<void> _onFilterByCategory(
+        ProductFilterByCategory event, Emitter<ProductState> emit) async {
+      emit(ProductLoadInProgress());
 
-    try {
-      final response = await http.get(Uri.parse(
-          'http://localhost:3000/api/v1/products?category=${Uri.encodeComponent(event.categoryName)}'));
+      try {
+        // ✅ Llamamos al backend con category_id en lugar de category
+        final response = await http.get(Uri.parse(
+            'http://localhost:3000/api/v1/products?category_id=${event.categoryId}'));
 
-      if (response.statusCode == 200) {
-        final decoded = jsonDecode(response.body);
-        if (decoded is List) {
-          final products = decoded
-              .whereType<Map<String, dynamic>>()
-              .map((item) => ProductModel.fromJson(item))
-              .toList();
-          emit(ProductLoadSuccess(products));
+        if (response.statusCode == 200) {
+          final decoded = jsonDecode(response.body);
+          if (decoded is List) {
+            final products = decoded
+                .whereType<Map<String, dynamic>>()
+                .map((item) => ProductModel.fromJson(item))
+                .toList();
+            emit(ProductLoadSuccess(products));
+          } else {
+            emit(ProductLoadFailure());
+          }
         } else {
           emit(ProductLoadFailure());
         }
-      } else {
+      } catch (e) {
+        print('❌ Error filtrando productos por categoría: $e');
         emit(ProductLoadFailure());
       }
-    } catch (e) {
-      emit(ProductLoadFailure());
     }
-  }
+
 
   // ❤️ Marcar/desmarcar favoritos
   void _onToggleFavorite(ToggleFavorite event, Emitter<ProductState> emit) {

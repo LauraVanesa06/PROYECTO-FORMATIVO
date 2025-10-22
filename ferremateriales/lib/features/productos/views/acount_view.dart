@@ -1,3 +1,4 @@
+import 'package:ferremateriales/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../auth/bloc/auth_bloc.dart';
@@ -37,47 +38,48 @@ class _AcountViewState extends State<AcountView> {
 
   @override
   Widget build(BuildContext context) {
+    final I10n = AppLocalizations.of(context)!;
     return Scaffold(
-      appBar: AppBar(title: const Text('Cuenta')),
+      appBar: AppBar(title: Text(I10n.account)),
       body: ListView(
         children: [
           ExpansionTile(
-            title: const Text('Datos personales'),
+            title: Text(I10n.personalinformation),
             trailing: const Icon(Icons.keyboard_arrow_right),
             children: [
               ListTile(
-                title: const Text('Nombre'),
+                title:  Text(I10n.name),
                 subtitle: Text(widget.nombre),
               ),
               ListTile(
-                title: const Text('Email'),
+                title: Text(I10n.email),
                 subtitle: Text(widget.email),
               ),
               ListTile(
                 leading: const Icon(Icons.edit, color: Colors.deepPurple),
-                title: const Text('Editar datos'),
+                title: Text(I10n.modifyinformation),
                 onTap: () async {
                   await showDialog(
                     context: context,
                     builder: (context) => AlertDialog(
-                      title: const Text('Editar datos personales'),
+                      title: Text(I10n.modifyinformation),
                       content: Column(
                         mainAxisSize: MainAxisSize.min,
                         children: [
                           TextField(
                             controller: nombreController,
-                            decoration: const InputDecoration(labelText: 'Nombre'),
+                            decoration: InputDecoration(labelText: I10n.name),
                           ),
                           TextField(
                             controller: emailController,
-                            decoration: const InputDecoration(labelText: 'Correo'),
+                            decoration: InputDecoration(labelText: I10n.email),
                           ),
                         ],
                       ),
                       actions: [
                         TextButton(
                           onPressed: () => Navigator.pop(context),
-                          child: const Text('Cancelar'),
+                          child: Text(I10n.cancel),
                         ),
                         ElevatedButton(
                           onPressed: () {
@@ -89,7 +91,7 @@ class _AcountViewState extends State<AcountView> {
                             );
                             Navigator.pop(context);
                           },
-                          child: const Text('Guardar'),
+                          child: Text(I10n.save),
                         ),
                       ],
                     ),

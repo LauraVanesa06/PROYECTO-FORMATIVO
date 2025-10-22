@@ -1,7 +1,9 @@
+import 'package:ferremateriales/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'firebase_options.dart';
 import 'features/productos/bloc/cart_bloc.dart';
 import 'features/productos/bloc/product_bloc.dart';
@@ -17,12 +19,17 @@ void main() async {
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
+  final prefs = await SharedPreferences.getInstance();
 
-  runApp(const FerreteriaApp());
+  ErrorWidget.builder = (FlutterErrorDetails details) => const SizedBox.shrink();
+
+  runApp(MyApp(prefs: prefs));
 }
 
-class FerreteriaApp extends StatelessWidget {
-  const FerreteriaApp({super.key});
+class MyApp extends StatelessWidget {
+  final SharedPreferences prefs;
+
+  const MyApp({super.key, required this.prefs});
 
   @override
   Widget build(BuildContext context) {
@@ -31,7 +38,7 @@ class FerreteriaApp extends StatelessWidget {
         BlocProvider(create: (_) => AuthBloc()..add(AuthStarted())),
         BlocProvider(create: (_) => CartBloc()),
         BlocProvider(create: (_) => ProductBloc()),
-        BlocProvider(create: (_) => ThemeCubit()),
+        BlocProvider(create: (_) => ThemeCubit(prefs)),
       ],
       child: BlocBuilder<ThemeCubit, ThemeState>(
         builder: (context, themeState) {
@@ -39,11 +46,15 @@ class FerreteriaApp extends StatelessWidget {
             debugShowCheckedModeBanner: false,
             theme: themeState.isDarkMode ? ThemeData.dark() : ThemeData.light(),
             locale: themeState.locale,
-            supportedLocales: const [Locale('es'), Locale('en')],
             localizationsDelegates: const [
+              AppLocalizations.delegate,
               GlobalMaterialLocalizations.delegate,
               GlobalWidgetsLocalizations.delegate,
               GlobalCupertinoLocalizations.delegate,
+            ],
+            supportedLocales: const [
+              Locale('es'),
+              Locale('en'),
             ],
             home: BlocBuilder<AuthBloc, AuthState>(
               builder: (context, authState) {

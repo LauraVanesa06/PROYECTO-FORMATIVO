@@ -1,3 +1,4 @@
+import 'package:ferremateriales/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -20,11 +21,13 @@ class _RegisterViewState extends State<RegisterView> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+
     return BlocListener<AuthBloc, AuthState>(
       listener: (context, state) {
         if (state.status == AuthStatus.success) {
           ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('Usuario registrado exitosamente')),
+            SnackBar(content: Text(l10n.registrationSuccess ?? 'Usuario registrado exitosamente')),
           );
           Navigator.pop(context);
         } else if (state.status == AuthStatus.failure) {
@@ -54,7 +57,7 @@ class _RegisterViewState extends State<RegisterView> {
                   ),
                   const SizedBox(height: 16),
                   Text(
-                    'Crea tu cuenta',
+                    l10n.register,
                     style: GoogleFonts.montserrat(
                       fontSize: 28,
                       fontWeight: FontWeight.bold,
@@ -71,7 +74,7 @@ class _RegisterViewState extends State<RegisterView> {
                           style: const TextStyle(color: Colors.white),
                           decoration: InputDecoration(
                             prefixIcon: const Icon(Icons.person, color: Colors.orange),
-                            hintText: 'Nombre completo',
+                            hintText: l10n.name,
                             hintStyle: const TextStyle(color: Colors.white54),
                             filled: true,
                             fillColor: Colors.black.withOpacity(0.7),
@@ -94,7 +97,7 @@ class _RegisterViewState extends State<RegisterView> {
                           style: const TextStyle(color: Colors.white),
                           decoration: InputDecoration(
                             prefixIcon: const Icon(Icons.email, color: Colors.orange),
-                            hintText: 'Correo electrónico',
+                            hintText: l10n.email,
                             hintStyle: const TextStyle(color: Colors.white54),
                             filled: true,
                             fillColor: Colors.black.withOpacity(0.7),
@@ -118,7 +121,7 @@ class _RegisterViewState extends State<RegisterView> {
                           style: const TextStyle(color: Colors.white),
                           decoration: InputDecoration(
                             prefixIcon: const Icon(Icons.lock, color: Colors.orange),
-                            hintText: 'Contraseña',
+                            hintText: l10n.password,
                             hintStyle: const TextStyle(color: Colors.white54),
                             filled: true,
                             fillColor: Colors.black.withOpacity(0.7),
@@ -155,7 +158,7 @@ class _RegisterViewState extends State<RegisterView> {
                           style: const TextStyle(color: Colors.white),
                           decoration: InputDecoration(
                             prefixIcon: const Icon(Icons.lock, color: Colors.orange),
-                            hintText: 'Confirmar contraseña',
+                            hintText: l10n.confirmPassword,
                             hintStyle: const TextStyle(color: Colors.white54),
                             filled: true,
                             fillColor: Colors.black.withOpacity(0.7),
@@ -201,7 +204,7 @@ class _RegisterViewState extends State<RegisterView> {
                                 borderRadius: BorderRadius.circular(12),
                               ),
                             ),
-                            child: const Text('Registrarse'),
+                            child: Text(l10n.register),
                           ),
                         ),
 
@@ -210,8 +213,8 @@ class _RegisterViewState extends State<RegisterView> {
                           onPressed: () {
                             Navigator.pop(context);
                           },
-                          child: const Text(
-                            '¿Ya tienes cuenta? Inicia sesión',
+                          child: Text(
+                            l10n.yesAccount,
                             style: TextStyle(color: Colors.white),
                           ),
                         ),

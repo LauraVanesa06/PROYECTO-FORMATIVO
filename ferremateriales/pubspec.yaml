@@ -47,8 +47,8 @@ dependencies:
   image_picker: ^1.0.4
   flutter_localizations:
     sdk: flutter
-
-
+  intl: ^0.20.2
+  shared_preferences: ^2.2.2
 
 dev_dependencies:
   flutter_launcher_icons: ^0.13.1
@@ -119,3 +119,4 @@ flutter:
   #
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/to/font-from-package
+  generate: true
