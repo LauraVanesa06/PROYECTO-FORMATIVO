@@ -58,7 +58,12 @@ window.addEventListener('DOMContentLoaded', () => {
         // Evitar duplicados
         if (document.querySelector('.login-sidebar')) return;
 
-        fetch("/users/sign_in")
+        // 🔥 Fetch con header personalizado para que Rails no mande layout
+        fetch("/users/sign_in", {
+          headers: {
+            "X-Requested-Sidebar": "true"
+          }
+        })
           .then(res => res.text())
           .then(html => {
             // Crear contenedor del sidebar

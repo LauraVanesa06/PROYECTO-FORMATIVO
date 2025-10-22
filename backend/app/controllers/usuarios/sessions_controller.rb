@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class Usuarios::SessionsController < Devise::SessionsController
-  layout 'application'
+  layout :resolve_layout
 
   def create
     self.resource = warden.authenticate(auth_options)
@@ -14,6 +14,17 @@ class Usuarios::SessionsController < Devise::SessionsController
       self.resource = resource_class.new(sign_in_params)
       clean_up_passwords(resource)
       respond_with_navigational(resource) { render :new, status: :unprocessable_entity }
+    end
+  end
+
+  private
+
+  def resolve_layout
+    # 👇 Detecta la cabecera que mandamos desde JS
+    if request.headers["X-Requested-Sidebar"] == "true"
+      false
+    else
+      "application"
     end
   end
 end
