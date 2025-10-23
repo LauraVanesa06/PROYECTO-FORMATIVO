@@ -21,7 +21,6 @@ window.addEventListener('DOMContentLoaded', () => {
       } else if (rect.top > 1 && logo) {
         logo.classList.remove('fade-in');
         logo.classList.add('fade-out');
-
         logo.addEventListener('animationend', () => {
           if (logo && logo.parentElement === links) {
             links.removeChild(logo);
@@ -32,7 +31,7 @@ window.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // === SECCIÓN: SIDEBAR PERFIL ===
+  // === SECCIÓN: SIDEBAR PERFIL Y LOGIN ===
   const profileBtn = document.querySelector('#userButton');
   const sidebar = document.querySelector('#profileSidebar');
   const overlay = document.querySelector('#overlay');
@@ -46,54 +45,66 @@ window.addEventListener('DOMContentLoaded', () => {
     return;
   }
 
-  // --- SIDEBAR PERFIL ---
+  // --- FUNCIONES AUXILIARES ---
+  const loadSidebarView = (url) => {
+    return fetch(url, { headers: { "X-Requested-Sidebar": "true" } })
+      .then(res => res.text());
+  };
+
+  const renderSidebar = (html) => {
+    // Si ya existe el contenedor, reemplazar el contenido
+    let container = document.querySelector("#deviseSidebarContainer");
+    if (!container) {
+      container = document.createElement("div");
+      container.id = "deviseSidebarContainer";
+      document.body.appendChild(container);
+    }
+
+    container.innerHTML = `
+      <div class="login-sidebar active">
+        <div class="login-content">
+          <button class="close-login">&times;</button>
+          ${html}
+        </div>
+      </div>
+      <div id="overlay" class="show"></div>
+    `;
+
+    // Cerrar sidebar
+    const closeLogin = container.querySelector(".close-login");
+    closeLogin.addEventListener("click", () => container.remove());
+    const overlayEl = container.querySelector("#overlay");
+    overlayEl.addEventListener("click", () => container.remove());
+
+    // 🎯 Escuchar enlaces de cambio entre login y registro
+    const registerLink = container.querySelector('a[href*="sign_up"]');
+    const loginLink = container.querySelector('a[href*="sign_in"]');
+
+    if (registerLink) {
+      registerLink.addEventListener("click", (e) => {
+        e.preventDefault();
+        loadSidebarView("/users/sign_up").then(renderSidebar);
+      });
+    }
+
+    if (loginLink) {
+      loginLink.addEventListener("click", (e) => {
+        e.preventDefault();
+        loadSidebarView("/users/sign_in").then(renderSidebar);
+      });
+    }
+  };
+
+  // --- ABRIR LOGIN O PERFIL ---
   if (sidebar) {
     profileBtn.addEventListener('click', (e) => {
       e.preventDefault();
 
-      // ✅ Si no está logueado, mostrar el login real de Devise en un sidebar
+      // ✅ Si no está logueado, cargar el login sidebar
       if (window.isLoggedIn === false) {
         console.log("🟢 Cargando vista real de Devise en sidebar...");
-
-        // Evitar duplicados
-        if (document.querySelector('.login-sidebar')) return;
-
-        // 🔥 Fetch con header personalizado para que Rails no mande layout
-        fetch("/users/sign_in", {
-          headers: {
-            "X-Requested-Sidebar": "true"
-          }
-        })
-          .then(res => res.text())
-          .then(html => {
-            // Crear contenedor del sidebar
-            const container = document.createElement("div");
-            container.id = "deviseSidebarContainer";
-            container.innerHTML = `
-              <div class="login-sidebar active">
-                <div class="login-content">
-                  <button class="close-login">&times;</button>
-                  ${html}
-                </div>
-              </div>
-              <div id="overlay" class="show"></div>
-            `;
-            document.body.appendChild(container);
-
-            // Botón de cerrar
-            const closeLogin = container.querySelector(".close-login");
-            closeLogin.addEventListener("click", () => {
-              container.remove();
-            });
-
-            // Cerrar con overlay
-            const overlayEl = container.querySelector("#overlay");
-            overlayEl.addEventListener("click", () => {
-              container.remove();
-            });
-          })
+        loadSidebarView("/users/sign_in").then(renderSidebar)
           .catch(err => console.error("❌ Error al cargar el login de Devise:", err));
-
         return;
       }
 
@@ -103,6 +114,7 @@ window.addEventListener('DOMContentLoaded', () => {
       console.log("📂 Sidebar:", sidebar.classList.contains('open') ? "ABIERTO" : "CERRADO");
     });
 
+    // --- Cerrar Sidebar Perfil ---
     closeSidebar?.addEventListener('click', () => {
       sidebar.classList.remove('open');
       overlay.classList.remove('show');
@@ -113,7 +125,7 @@ window.addEventListener('DOMContentLoaded', () => {
       overlay.classList.remove('show');
     });
 
-    // Cambiar foto de perfil (preview)
+    // --- Preview de foto ---
     if (avatarUpload && profilePic) {
       avatarUpload.addEventListener('change', (event) => {
         const file = event.target.files[0];
@@ -136,7 +148,30 @@ window.addEventListener('DOMContentLoaded', () => {
     }
   }
 
-  // === 💀 LOGIN SIDEBAR ELIMINADO ===
-  // El bloque del formulario falso fue reemplazado por un fetch real a Devise.
-  // Devise maneja la autenticación, y el formulario se muestra dentro de un panel lateral dinámico.
+  // ✅ Detectar clic en enlace "Registrarse" dentro del sidebar (versión extendida)
+  document.addEventListener("click", (e) => {
+    if (e.target.matches(".register-link")) {
+      e.preventDefault();
+
+      console.log("🟢 Cargando formulario de registro...");
+
+      fetch("/users/sign_up", {
+        headers: {
+          "X-Requested-Sidebar": "true"
+        }
+      })
+        .then(res => res.text())
+        .then(html => {
+          const container = document.querySelector("#deviseSidebarContainer");
+          if (container) {
+            const content = container.querySelector(".login-content");
+            content.innerHTML = `
+              <button class="close-login">&times;</button>
+              ${html}
+            `;
+          }
+        })
+        .catch(err => console.error("❌ Error al cargar registro:", err));
+    }
+  });
 });

@@ -1,50 +1,27 @@
-<div class="login d-flex justify-content-center align-items-center vh-100">
-  <div class="hex-wrapper position-relative">
-    <%= image_tag "hexagono.png", alt: "Hexágono", class: "hex-bg"%>
+<div class="login-form-container">
+  <h3 class="text-center mb-4">Registrarse</h3>
 
-    <div class="user-icon position-absolute top-0 start-50 translate-middle">
-      <%= image_tag "user.png", alt: "Usuario", class: "rounded-circle user-img" %>
+  <%= form_for(resource, as: resource_name, url: registration_path(resource_name)) do |f| %>
+    <div class="form-group">
+      <%= f.email_field :email, autofocus: true, class: "form-control", placeholder: "correo@ejemplo.com" %>
     </div>
 
-    <div class="hex-content position-absolute top-50 start-50 translate-middle text-center">
-      <% resource = User.new %>
-      <% resource_name = :user %>
-      <% devise_mapping = Devise.mappings[:user] %>
-
-      <%= render "devise/shared/error_messages", resource: resource %>
-
-      <%= form_for(resource, as: resource_name, url: registration_path(resource_name)) do |f| %>
-        <div class="text-sg" id="regis">
-          Regístrate
-        </div>
-        <p class="info">Complete el siguiente formulario para crear su cuenta.</p>
-
-        <div class="input-wrapper">
-          <%= image_tag "avatar.png", class: "icon-img", alt: "Usuario" %>
-          <div class="divider"></div>
-          <%= f.email_field :email, placeholder: "Correo", autocomplete: "email" %>
-        </div>
-
-        <div class="input-wrapper">
-          <%= image_tag "candado.png", class: "icon-img", alt: "Contraseña" %>
-          <div class="divider"></div>
-          <%= f.password_field :password, placeholder: "Contraseña", autocomplete: "new-password" %>
-        </div>
-
-        <div class="input-wrapper">
-          <%= image_tag "candado.png", class: "icon-img", alt: "Confirmar Contraseña" %>
-          <div class="divider"></div>
-          <%= f.password_field :password_confirmation, placeholder: "Confirmar Contraseña", autocomplete: "new-password" %>
-        </div>
-
-        <div class="hex-button-wrapper mb-3" id="btn-regis">
-          <%= f.submit "Registrarse", class: "hex-button" %>
-        </div>
-      <% end %>
-
-      <div class="bottom-links">
-        <%= render "devise/shared/links" %>
-      </div>
+    <div class="mb-3">
+      <%= f.password_field :password, autocomplete: "new-password", class: "form-control", placeholder: "Contraseña" %>
     </div>
-  </div>
+
+    <div class="mb-3">
+      <%= f.password_field :password_confirmation, autocomplete: "new-password", class: "form-control", placeholder: "Confirma tu contraseña" %>
+    </div>
+
+    <div class="actions">
+      <%= f.submit "Registrarse", class: "btn btn-primary w-100 login-btn" %>
+    </div>
+  <% end %>
+
+  <hr class="my-4">
+  <p class="text-center mb-0">
+    ¿Ya tienes cuenta?
+    <%= link_to "Inicia sesión", new_user_session_path, class: "text-decoration-none login-link", data: { turbo: false } %>
+  </p>
 </div>
