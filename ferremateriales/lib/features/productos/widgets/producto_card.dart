@@ -103,44 +103,32 @@ class _ProductCardState extends State<ProductCard> {
                       borderRadius: BorderRadius.circular(8),
                     ),
                   ),
-                ),
-                icon: const Icon(Icons.shopping_cart, size: 16, color: Colors.white),
-                label: Text(
-                  l10n.buy,
-                  style: const TextStyle(fontSize: 13, color: Colors.white),
-                ),
-                onPressed: () {
-                  if (authState.status == AuthStatus.guest) {
-                    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-                      content:
-                          Text('Inicia sesión para añadir productos al carrito 🛒'),
-                      backgroundColor: Colors.orange,
-                    ));
-                    return;
-                  }
-                  // 🛒 Enviamos el producto como Map<String, dynamic> al CartBloc
-                  context.read<CartBloc>().add(
-                    AddToCart({
-                      "name": product.nombre ?? '',
-                      "price": product.precio ?? 0.0,
-                      "quantity": 1,
-                      "image": product.imagenUrl ?? '',
-                    }),
-                  );
-
-                  // ✅ Mostrar notificación breve
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(
-                      content: Text(l10n.addedToCart(product.nombre ?? '')),
-                      duration: const Duration(seconds: 2),
-                    ),
-                  );
-                },
-              ),
+                  icon: const Icon(Icons.shopping_cart, size: 16, color: Colors.white),
+                  label: Text(
+                    l10n.buy,
+                    style: const TextStyle(fontSize: 13, color: Colors.white),
+                  ),
+                  onPressed: () {
+                    if (authState.status == AuthStatus.guest) {
+                      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                        content: Text('Inicia sesión para añadir productos al carrito 🛒'),
+                        backgroundColor: Colors.orange,
+                      ));
+                      return;
+                    }
+                    
+                    context.read<CartBloc>().add(
+                      AddToCart({
+                        "name": product.nombre ?? '',
+                        "price": product.precio ?? 0.0,
+                        "quantity": 1,
+                        "image": product.imagenUrl ?? '',
+                      }),
+                    );
 
                     ScaffoldMessenger.of(context).showSnackBar(
                       SnackBar(
-                        content: Text('${product.nombre} agregado al carrito 🛒'),
+                        content: Text(l10n.addedToCart(product.nombre ?? '')),
                         duration: const Duration(seconds: 2),
                       ),
                     );
