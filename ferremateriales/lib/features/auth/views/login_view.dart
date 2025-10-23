@@ -84,10 +84,11 @@ class LoginView extends StatelessWidget {
                     child: Text(
                       l10n.forgotPassword,
                       style: TextStyle(color: Colors.white),
+                    ),
+                  ),
 
                   const SizedBox(height: 12),
 
-                  // --- Botón Invitado ---
                   ElevatedButton.icon(
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.orange,
