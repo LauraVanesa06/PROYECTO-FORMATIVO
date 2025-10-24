@@ -21,7 +21,9 @@
         <%= f.check_box :remember_me, class: "form-check-input" %>
         <%= f.label :remember_me, "Recordarme", class: "form-check-label" %>
       </div>
-      <%= link_to "¿Olvidaste tu contraseña?", new_user_password_path, class: "small text-decoration-none" %>
+      <%= link_to "¿Olvidaste tu contraseña?", new_user_password_path, class: "forgot-link text-decoration-none" %>
+
+
     </div>
 
     <%= f.submit "Entrar", class: "btn btn-primary w-100 login-btn" %>

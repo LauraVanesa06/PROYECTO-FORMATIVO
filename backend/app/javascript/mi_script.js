@@ -79,6 +79,7 @@ window.addEventListener('DOMContentLoaded', () => {
     // 🎯 Escuchar enlaces de cambio entre login y registro
     const registerLink = container.querySelector('a[href*="sign_up"]');
     const loginLink = container.querySelector('a[href*="sign_in"]');
+    const forgotLink = container.querySelector('a[href*="password/new"]');
 
     if (registerLink) {
       registerLink.addEventListener("click", (e) => {
@@ -91,6 +92,13 @@ window.addEventListener('DOMContentLoaded', () => {
       loginLink.addEventListener("click", (e) => {
         e.preventDefault();
         loadSidebarView("/users/sign_in").then(renderSidebar);
+      });
+    }
+
+    if (forgotLink) {
+      forgotLink.addEventListener("click", (e) => {
+        e.preventDefault();
+        loadSidebarView("/users/password/new").then(renderSidebar);
       });
     }
   };
@@ -148,18 +156,13 @@ window.addEventListener('DOMContentLoaded', () => {
     }
   }
 
-  // ✅ Detectar clic en enlace "Registrarse" dentro del sidebar (versión extendida)
+  // ✅ Detectar clic en enlace "Registrarse" dentro del sidebar
   document.addEventListener("click", (e) => {
     if (e.target.matches(".register-link")) {
       e.preventDefault();
-
       console.log("🟢 Cargando formulario de registro...");
 
-      fetch("/users/sign_up", {
-        headers: {
-          "X-Requested-Sidebar": "true"
-        }
-      })
+      fetch("/users/sign_up", { headers: { "X-Requested-Sidebar": "true" } })
         .then(res => res.text())
         .then(html => {
           const container = document.querySelector("#deviseSidebarContainer");
@@ -172,6 +175,50 @@ window.addEventListener('DOMContentLoaded', () => {
           }
         })
         .catch(err => console.error("❌ Error al cargar registro:", err));
+    }
+  });
+
+  // ✅ Detectar clic en enlace "¿Olvidaste tu contraseña?" dentro del sidebar
+  document.addEventListener("click", (e) => {
+    if (e.target.matches(".forgot-link")) {
+      e.preventDefault();
+      console.log("🟢 Cargando formulario de recuperación de contraseña...");
+
+      fetch("/users/password/new", { headers: { "X-Requested-Sidebar": "true" } })
+        .then(res => res.text())
+        .then(html => {
+          const container = document.querySelector("#deviseSidebarContainer");
+          if (container) {
+            const content = container.querySelector(".login-content");
+            content.innerHTML = `
+              <button class="close-login">&times;</button>
+              ${html}
+            `;
+          }
+        })
+        .catch(err => console.error("❌ Error al cargar recuperación:", err));
+    }
+  });
+
+  // ✅ Detectar clic en enlace "Inicia sesión aquí" dentro del sidebar
+  document.addEventListener("click", (e) => {
+    if (e.target.matches(".login-link")) {
+      e.preventDefault();
+      console.log("🟢 Volviendo al formulario de inicio de sesión...");
+
+      fetch("/users/sign_in", { headers: { "X-Requested-Sidebar": "true" } })
+        .then(res => res.text())
+        .then(html => {
+          const container = document.querySelector("#deviseSidebarContainer");
+          if (container) {
+            const content = container.querySelector(".login-content");
+            content.innerHTML = `
+              <button class="close-login">&times;</button>
+              ${html}
+            `;
+          }
+        })
+        .catch(err => console.error("❌ Error al cargar login:", err));
     }
   });
 });

@@ -1,48 +1,30 @@
-<% provide(:title, 'Recuperar contraseña') %>
-<%= stylesheet_link_tag "application", media: "all" %>
+<!-- backend/app/views/devise/passwords/new.html.erb -->
 
-<div class="login d-flex justify-content-center align-items-center vh-100">
+<turbo-frame id="auth_frame">
+  <div class="auth-form">
+    <h2 class="text-center mb-4">Recuperar contraseña</h2>
 
-  <div class="hex-wrapper position-relative">
+    <p class="text-center mb-3 text-muted">
+      Ingresa tu correo electrónico y te enviaremos instrucciones para restablecer tu contraseña.
+    </p>
 
-    <!-- Imagen del hexágono como fondo -->
-    <%= image_tag "hexagono.png", alt: "Hexágono", class: "hex-bg" %>
-
-    <!-- Icono del usuario superpuesto -->
-    <div class="user-icon position-absolute top-0 start-50 translate-middle">
-      <%= image_tag "user.png", alt: "Usuario", class: "rounded-circle user-img" %>
-    </div>
-
-    <!-- Contenido del login sobre el hexágono -->
-    <div class="hex-content position-absolute top-50 start-50 translate-middle text-center">
-      <% resource = User.new %>
-      <% resource_name = :user %>
-      <% devise_mapping = Devise.mappings[:user] %>
-
-      <!-- Mensajes de error -->
-      <%= render "devise/shared/error_messages", resource: resource %>
-
-      <%= form_for(resource, as: resource_name, url: password_path(resource_name), html: { method: :post }) do |f| %>
-        <div class="text-sg mb-3" id="recupe">
-          Recuperar contraseña
-        </div>
-        <p class="info">Por favor, ingresa tu correo electrónico. Te enviaremos un mensaje con la clave de acceso.</p>
-
-        <div class="input-wrapper iwp">
-          <%= image_tag "avatar.png", class: "icon-img", alt: "Email" %>
-          <div class="divider"></div>
-          <%= f.email_field :email, placeholder: "Correo electrónico", autocomplete: "email" %>
-        </div>
-
-        <div class="hex-button-wrapper mb-3">
-          <%= f.submit "Solicitar", class: "hex-button" %>
-        </div>
-      <% end %>
-
-      <!-- Links al fondo -->
-      <div class="bottom-links">
-        <%= render "devise/shared/links" %>
+    <%= form_for(resource, as: resource_name, url: password_path(resource_name), html: { method: :post }) do |f| %>
+      <div class="mb-3">
+        <%= f.label :email, "Correo electrónico", class: "form-label" %>
+        <%= f.email_field :email, class: "form-control", placeholder: "correo@ejemplo.com", autofocus: true %>
       </div>
-    </div>
+
+      <div class="d-grid mb-3">
+        <%= f.submit "Enviar instrucciones", class: "btn btn-primary" %>
+      </div>
+    <% end %>
+
+    <hr class="my-4">
+
+    <p class="text-center mb-0">
+      ¿Ya tienes cuenta?
+      <%= link_to "Inicia sesión aquí", new_user_session_path, class: "login-link text-decoration-none" %>
+    </p>
+
   </div>
-</div>
+</turbo-frame>
