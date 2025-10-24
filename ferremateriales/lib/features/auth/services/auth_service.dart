@@ -73,24 +73,38 @@ class AuthService {
     }
   }
 
-  Future<Map<String, dynamic>> getCurrentUser() async {
-    final token = await storage.read(key: 'auth_token');
-    if (token == null) throw Exception('No token found');
+  Future<Map<String, dynamic>?> getCurrentUser() async {
+    try {
+      final token = await storage.read(key: 'auth_token');
+      if (token == null) {
+        print('⚠️ No token found');
+        return null; // 👈 no lanzamos excepción
+      }
 
-    final response = await http.get(
-      Uri.parse('$baseUrl/api/v1/auth/me'),
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': 'Bearer $token'
-      },
-    );
+      final response = await http
+          .get(
+            Uri.parse('$baseUrl/api/v1/auth/me'),
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': 'Bearer $token',
+            },
+          )
+          .timeout(const Duration(seconds: 5)); // 👈 evita cuelgue por red
 
-    if (response.statusCode == 200) {
-      return jsonDecode(response.body);
-    } else {
-      throw Exception('Failed to get user');
+      print('getCurrentUser status: ${response.statusCode}');
+
+      if (response.statusCode == 200) {
+        return jsonDecode(response.body);
+      } else {
+        print('⚠️ Error getting user: ${response.body}');
+        return null; // 👈 devolvemos null en vez de lanzar
+      }
+    } catch (e) {
+      print('❌ getCurrentUser error: $e');
+      return null; // 👈 no propagamos error
     }
   }
+
 
   Future<void> logout() async {
     await storage.delete(key: 'auth_token');

@@ -11,15 +11,24 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     on<AuthStarted>((event, emit) async {
       try {
         final user = await _authService.getCurrentUser();
-        emit(state.copyWith(
-          status: AuthStatus.success,
-          nombre: user['name'],
-          email: user['email'],
-        ));
-      } catch (_) {
+
+        if (user != null && user['email'] != null) {
+          emit(state.copyWith(
+            status: AuthStatus.success,
+            nombre: user['name'],
+            email: user['email'],
+          ));
+          print('✅ Sesión activa detectada');
+        } else {
+          emit(const AuthState(status: AuthStatus.loggedOut));
+          print('ℹ️ No hay sesión activa, mostrar login');
+        }
+      } catch (e) {
         emit(const AuthState(status: AuthStatus.loggedOut));
+        print('❌ Error comprobando sesión: $e');
       }
     });
+
 
     // Iniciar sesión
     on<LoginSubmitted>((event, emit) async {
@@ -69,6 +78,17 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         ));
       }
     });
+
+    // Continuar como invitado
+    on<ContinueAsGuest>((event, emit) async {
+      print('👤 Continuar como invitado');
+      emit(state.copyWith(
+        status: AuthStatus.guest,
+        nombre: 'Invitado',
+        email: '',
+      ));
+    });
+
 
     // Cerrar sesión
     on<LogoutRequested>((event, emit) async {

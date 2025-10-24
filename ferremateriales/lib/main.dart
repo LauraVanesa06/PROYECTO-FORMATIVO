@@ -76,9 +76,7 @@ class MyApp extends StatelessWidget {
                     case AuthStatus.loggedOut:
                       return const LoginView();
                     default:
-                      return const Scaffold(
-                        body: Center(child: CircularProgressIndicator()),
-                      );
+                      return const LoginView();
                   }
                 },
               ),
