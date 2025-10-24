@@ -1,22 +1,22 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:firebase_auth/firebase_auth.dart';
+import '../services/auth_service.dart';
 import 'auth_event.dart';
 import 'auth_state.dart';
 
 class AuthBloc extends Bloc<AuthEvent, AuthState> {
-  final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
+  final AuthService _authService;
 
-  AuthBloc() : super(const AuthState()) {
+  AuthBloc(this._authService) : super(const AuthState()) {
     // Comprobar sesión activa al iniciar la app
     on<AuthStarted>((event, emit) async {
-      final user = _firebaseAuth.currentUser;
-      if (user != null) {
+      try {
+        final user = await _authService.getCurrentUser();
         emit(state.copyWith(
           status: AuthStatus.success,
-          nombre: user.displayName ?? '',
-          email: user.email ?? '',
+          nombre: user['name'],
+          email: user['email'],
         ));
-      } else {
+      } catch (_) {
         emit(const AuthState(status: AuthStatus.loggedOut));
       }
     });
@@ -25,20 +25,25 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     on<LoginSubmitted>((event, emit) async {
       emit(state.copyWith(status: AuthStatus.loading));
       try {
-        await _firebaseAuth.signInWithEmailAndPassword(
-          email: event.email,
-          password: event.password,
-        );
-        final user = _firebaseAuth.currentUser;
-        emit(state.copyWith(
-          status: AuthStatus.success,
-          nombre: user?.displayName ?? '',
-          email: event.email,
-        ));
-      } on FirebaseAuthException catch (e) {
+        print('Iniciando login...'); // Debug
+        final response = await _authService.login(event.email, event.password);
+        print('Respuesta login: $response'); // Debug
+
+        if (response['token'] != null) {
+          emit(state.copyWith(
+            status: AuthStatus.success,
+            email: response['user']['email'],
+            nombre: response['user']['name'],
+          ));
+          print('Login exitoso'); // Debug
+        } else {
+          throw Exception('Token no encontrado');
+        }
+      } catch (e) {
+        print('Error en login: $e'); // Debug
         emit(state.copyWith(
           status: AuthStatus.failure,
-          error: e.message ?? "Credenciales incorrectas",
+          error: 'Error de autenticación',
         ));
       }
     });
@@ -47,49 +52,28 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     on<RegisterRequested>((event, emit) async {
       emit(state.copyWith(status: AuthStatus.loading));
       try {
-        final userCredential = await _firebaseAuth.createUserWithEmailAndPassword(
-          email: event.email,
-          password: event.password,
+        final response = await _authService.register(
+          event.nombre,
+          event.email,
+          event.password,
         );
-        await userCredential.user?.updateDisplayName(event.nombre);
         emit(state.copyWith(
           status: AuthStatus.success,
-          nombre: event.nombre,
-          email: event.email,
+          nombre: response['user']['name'],
+          email: response['user']['email'],
         ));
-      } on FirebaseAuthException catch (e) {
+      } catch (e) {
         emit(state.copyWith(
           status: AuthStatus.failure,
-          error: e.message ?? "Error al registrar usuario",
+          error: 'Error al registrar usuario',
         ));
       }
     });
 
     // Cerrar sesión
     on<LogoutRequested>((event, emit) async {
-      await _firebaseAuth.signOut();
+      await _authService.logout();
       emit(const AuthState(status: AuthStatus.loggedOut));
-    });
-
-    // Actualizar usuario
-    on<UpdateUserRequested>((event, emit) async {
-      final user = _firebaseAuth.currentUser;
-      if (user != null) {
-        await user.updateDisplayName(event.nombre);
-        await user.updateEmail(event.email);
-        emit(state.copyWith(nombre: event.nombre, email: event.email));
-      }
-    });
-
-    // Continuar como invitado (sin Firebase)
-    on<ContinueAsGuest>((event, emit) async {
-      emit(state.copyWith(status: AuthStatus.loading));
-      await Future.delayed(const Duration(milliseconds: 300));
-      emit(state.copyWith(
-        status: AuthStatus.guest,
-        nombre: "Invitado",
-        email: null,
-      ));
     });
   }
 }
