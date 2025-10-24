@@ -103,7 +103,7 @@ class LoginView extends StatelessWidget {
                         const SizedBox(height: 12),
 
                         // 🔸 Botón de invitado
-                        ElevatedButton.icon(
+                      /*  ElevatedButton.icon(
                           style: ElevatedButton.styleFrom(
                             backgroundColor: Colors.orange,
                             padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
@@ -119,7 +119,7 @@ class LoginView extends StatelessWidget {
                             "Continuar como invitado",
                             style: TextStyle(color: Colors.white, fontSize: 16),
                           ),
-                        ),
+                        ),*/
                       ],
                     ),
                   ),
