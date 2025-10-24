@@ -40,6 +40,8 @@ class AuthService {
     }
   }
 
+
+
   Future<Map<String, dynamic>> register(String name, String email, String password) async {
     try {
       print('Registering user with email: $email'); // Debug

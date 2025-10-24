@@ -50,6 +50,7 @@ class Api::V1::AuthController < ApplicationController
 
   private
 
+
   def login_params
     params.permit(:email, :password)
   end
