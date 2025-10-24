@@ -41,24 +41,35 @@ class AuthService {
   }
 
   Future<Map<String, dynamic>> register(String name, String email, String password) async {
-    final response = await http.post(
-      Uri.parse('$baseUrl/api/v1/auth/register'),
-      headers: {'Content-Type': 'application/json'},
-      body: jsonEncode({
-        'user': {
+    try {
+      print('Registering user with email: $email'); // Debug
+      
+      final response = await http.post(
+        Uri.parse('$baseUrl/api/v1/auth/register'),
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+        },
+        body: jsonEncode({
           'name': name,
           'email': email,
-          'password': password
-        }
-      }),
-    );
+          'password': password,
+        }),
+      );
 
-    if (response.statusCode == 201) {
-      final data = jsonDecode(response.body);
-      await storage.write(key: 'auth_token', value: data['token']);
-      return data;
-    } else {
-      throw Exception('Failed to register');
+      print('Register response status: ${response.statusCode}'); // Debug
+      print('Register response body: ${response.body}'); // Debug
+
+      if (response.statusCode == 201) {
+        final data = jsonDecode(response.body);
+        await storage.write(key: 'auth_token', value: data['token']);
+        return data;
+      } else {
+        throw Exception('Registration failed: ${response.body}');
+      }
+    } catch (e) {
+      print('Register error: $e'); // Debug
+      rethrow;
     }
   }
 

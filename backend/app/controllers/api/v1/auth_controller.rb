@@ -26,7 +26,8 @@ class Api::V1::AuthController < ApplicationController
   end
 
   def register
-    user = User.new(user_params)
+    user = User.new(register_params)
+    
     if user.save
       token = JsonWebToken.encode({ user_id: user.id })
       render json: {
@@ -34,6 +35,7 @@ class Api::V1::AuthController < ApplicationController
         token: token,
         user: {
           id: user.id,
+          name: user.name,
           email: user.email,
           role: user.role
         }
@@ -48,7 +50,11 @@ class Api::V1::AuthController < ApplicationController
 
   private
 
-  def user_params
+  def login_params
     params.permit(:email, :password)
+  end
+
+  def register_params
+    params.permit(:name, :email, :password)
   end
 end
