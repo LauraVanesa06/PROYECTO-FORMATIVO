@@ -1,4 +1,7 @@
 Rails.application.routes.draw do
+  # token para el widget Wompi (AJAX desde lateral)
+  get 'payments/widget_token', to: 'payments#widget_token', defaults: { format: :json }
+
   # Autenticación (Devise)
   devise_for :users, controllers: {
     sessions: 'usuarios/sessions',
@@ -107,6 +110,9 @@ Rails.application.routes.draw do
 
   post "/payments/webhook", to: "payments#webhook"
     post "/webhooks/wompi", to: "webhooks#wompi"
+  
+  get 'up', to: 'rails/health#show', as: :rails_health_check
+  get 'payments/widget_token', to: 'payments#widget_token', defaults: { format: :json }
 
 
   # API
@@ -129,6 +135,5 @@ Rails.application.routes.draw do
     end
   end
 
-  # Salud del sistema
-  get 'up', to: 'rails/health#show', as: :rails_health_check
+ 
 end
