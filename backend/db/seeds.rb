@@ -48,9 +48,10 @@ reset_postgres_sequences(
 
 
 User.create!([
-  { email: "user@gmail.com", password: "123456", role: "admin" },
-  { email: "cliente@gmail.com", password: "123456", role: "user" },
+  { name: "Administrador", email: "user@gmail.com", password: "123456", role: "admin" },
+  { name: "Cliente", email: "cliente@gmail.com", password: "123456", role: "user" },
 ])
+
 
 categories = Category.create!([
   { nombre: "Herramientas" },

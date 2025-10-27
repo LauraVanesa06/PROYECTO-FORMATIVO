@@ -43,7 +43,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_10_24_022211) do
   end
 
   create_table "buys", force: :cascade do |t|
-    t.integer "customer_id", null: false
+    t.bigint "customer_id", null: false
     t.datetime "fecha"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
@@ -53,8 +53,8 @@ ActiveRecord::Schema[8.0].define(version: 2025_10_24_022211) do
   end
 
   create_table "cart_items", force: :cascade do |t|
-    t.integer "cart_id", null: false
-    t.integer "product_id", null: false
+    t.bigint "cart_id", null: false
+    t.bigint "product_id", null: false
     t.integer "cantidad"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
@@ -65,7 +65,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_10_24_022211) do
   create_table "carts", force: :cascade do |t|
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.integer "user_id"
+    t.bigint "user_id"
     t.index ["user_id"], name: "index_carts_on_user_id"
   end
 
@@ -84,8 +84,8 @@ ActiveRecord::Schema[8.0].define(version: 2025_10_24_022211) do
   end
 
   create_table "favorites", force: :cascade do |t|
-    t.integer "user_id", null: false
-    t.integer "product_id", null: false
+    t.bigint "user_id", null: false
+    t.bigint "product_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["product_id"], name: "index_favorites_on_product_id"
@@ -99,26 +99,26 @@ ActiveRecord::Schema[8.0].define(version: 2025_10_24_022211) do
   end
 
   create_table "payments", force: :cascade do |t|
-    t.integer "cart_id", null: false
-    t.string "transaction_id"
-    t.integer "status", default: 0, null: false
     t.decimal "amount", precision: 12, scale: 2, null: false
+    t.string "currency", default: "COP", null: false
+    t.integer "status", default: 0, null: false
+    t.string "wompi_id", null: false
     t.string "pay_method", null: false
+    t.bigint "user_id", null: false
+    t.bigint "cart_id", null: false
+    t.jsonb "raw_response", default: {}, null: false
     t.string "token", null: false
+    t.string "account_info", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.string "currency", default: "COP", null: false
-    t.string "wompi_id", null: false
-    t.integer "user_id", null: false
-    t.json "raw_response", default: {}, null: false
-    t.string "account_info", null: false
     t.index ["cart_id"], name: "index_payments_on_cart_id"
     t.index ["user_id"], name: "index_payments_on_user_id"
+    t.index ["wompi_id"], name: "index_payments_on_wompi_id", unique: true
   end
 
   create_table "pedido_products", force: :cascade do |t|
-    t.integer "product_id", null: false
-    t.integer "pedido_id", null: false
+    t.bigint "product_id", null: false
+    t.bigint "pedido_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.integer "cantidad"
@@ -129,7 +129,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_10_24_022211) do
   create_table "pedidos", force: :cascade do |t|
     t.datetime "fecha"
     t.json "productos"
-    t.integer "supplier_id", null: false
+    t.bigint "supplier_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.integer "stock"
@@ -145,8 +145,8 @@ ActiveRecord::Schema[8.0].define(version: 2025_10_24_022211) do
     t.integer "stock"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.integer "category_id", null: false
-    t.integer "supplier_id", null: false
+    t.bigint "category_id", null: false
+    t.bigint "supplier_id", null: false
     t.boolean "disponible", default: true
     t.string "codigo_producto", null: false
     t.string "modelo"
@@ -159,8 +159,8 @@ ActiveRecord::Schema[8.0].define(version: 2025_10_24_022211) do
   end
 
   create_table "purchasedetails", force: :cascade do |t|
-    t.integer "buy_id", null: false
-    t.integer "product_id", null: false
+    t.bigint "buy_id", null: false
+    t.bigint "product_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.integer "cantidad"
