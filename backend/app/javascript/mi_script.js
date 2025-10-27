@@ -1,7 +1,7 @@
 window.addEventListener('DOMContentLoaded', () => {
   console.log("✅ mi_script.js cargado correctamente");
 
-  // === SCRIPT ORIGINAL: NAVBAR ===
+  // === NAVBAR SCROLL LOGO ===
   const navbar = document.querySelector('.navbar');
   const links = document.querySelector('.navbar-links');
   let logo = null;
@@ -9,7 +9,6 @@ window.addEventListener('DOMContentLoaded', () => {
   if (navbar && links) {
     window.addEventListener('scroll', () => {
       const rect = navbar.getBoundingClientRect();
-
       if (rect.top <= 1 && !logo) {
         const template = document.querySelector('.header-logo2');
         if (template) {
@@ -31,7 +30,7 @@ window.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // === SECCIÓN: SIDEBAR PERFIL Y LOGIN ===
+  // === PERFIL Y LOGIN SIDEBAR ===
   const profileBtn = document.querySelector('#userButton');
   const sidebar = document.querySelector('#profileSidebar');
   const overlay = document.querySelector('#overlay');
@@ -40,11 +39,6 @@ window.addEventListener('DOMContentLoaded', () => {
   const avatarUpload = document.querySelector('#avatar-upload');
   const profilePic = document.querySelector('#profile-pic');
 
-  if (!profileBtn) {
-    console.warn("⚠️ No se encontró el botón de usuario.");
-    return;
-  }
-
   // --- FUNCIONES AUXILIARES ---
   const loadSidebarView = (url) => {
     return fetch(url, { headers: { "X-Requested-Sidebar": "true" } })
@@ -52,7 +46,9 @@ window.addEventListener('DOMContentLoaded', () => {
   };
 
   const renderSidebar = (html) => {
-    // Si ya existe el contenedor, reemplazar el contenido
+    const cleanHTML = html.replace(/<\/?(html|body|head)[^>]*>/gi, "");
+
+    // Crear contenedor si no existe
     let container = document.querySelector("#deviseSidebarContainer");
     if (!container) {
       container = document.createElement("div");
@@ -60,165 +56,109 @@ window.addEventListener('DOMContentLoaded', () => {
       document.body.appendChild(container);
     }
 
+    // Estructura flotante
     container.innerHTML = `
-      <div class="login-sidebar active">
-        <div class="login-content">
-          <button class="close-login">&times;</button>
-          ${html}
+      <div class="login-sidebar active" style="
+        position: fixed;
+        top: 0;
+        right: 0;
+        width: 380px;
+        height: 100%;
+        background: white;
+        box-shadow: -4px 0 20px rgba(0,0,0,0.2);
+        z-index: 9999;
+        overflow-y: auto;
+        transition: transform 0.3s ease;
+        transform: translateX(0);
+        display: flex;
+        flex-direction: column;
+      ">
+        <div class="login-content" style="padding: 20px;">
+          <button class="close-login" style="
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+          ">&times;</button>
+          ${cleanHTML}
         </div>
       </div>
-      <div id="overlay" class="show"></div>
+      <div id="overlay" style="
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0,0,0,0.5);
+        z-index: 9998;
+      "></div>
     `;
 
     // Cerrar sidebar
     const closeLogin = container.querySelector(".close-login");
-    closeLogin.addEventListener("click", () => container.remove());
     const overlayEl = container.querySelector("#overlay");
+    closeLogin.addEventListener("click", () => container.remove());
     overlayEl.addEventListener("click", () => container.remove());
 
-    // 🎯 Escuchar enlaces de cambio entre login y registro
-    const registerLink = container.querySelector('a[href*="sign_up"]');
-    const loginLink = container.querySelector('a[href*="sign_in"]');
-    const forgotLink = container.querySelector('a[href*="password/new"]');
-
-    if (registerLink) {
-      registerLink.addEventListener("click", (e) => {
+    // Enlaces dentro del sidebar (login/signup/forgot)
+    container.querySelectorAll('a[href*="sign_in"], a[href*="sign_up"], a[href*="password/new"]').forEach(link => {
+      link.addEventListener("click", (e) => {
         e.preventDefault();
-        loadSidebarView("/users/sign_up").then(renderSidebar);
+        loadSidebarView(link.getAttribute("href")).then(renderSidebar);
       });
-    }
-
-    if (loginLink) {
-      loginLink.addEventListener("click", (e) => {
-        e.preventDefault();
-        loadSidebarView("/users/sign_in").then(renderSidebar);
-      });
-    }
-
-    if (forgotLink) {
-      forgotLink.addEventListener("click", (e) => {
-        e.preventDefault();
-        loadSidebarView("/users/password/new").then(renderSidebar);
-      });
-    }
+    });
   };
 
-  // --- ABRIR LOGIN O PERFIL ---
-  if (sidebar) {
+  // --- ABRIR SIDEBAR DE PERFIL O LOGIN ---
+  if (profileBtn) {
     profileBtn.addEventListener('click', (e) => {
       e.preventDefault();
 
-      // ✅ Si no está logueado, cargar el login sidebar
+      // Si no está logueado, carga login desde Devise
       if (window.isLoggedIn === false) {
-        console.log("🟢 Cargando vista real de Devise en sidebar...");
-        loadSidebarView("/users/sign_in").then(renderSidebar)
-          .catch(err => console.error("❌ Error al cargar el login de Devise:", err));
+        console.log("🔒 Mostrando login sidebar...");
+        loadSidebarView("/users/sign_in").then(renderSidebar);
         return;
       }
 
-      // Si está logueado, abre el sidebar de perfil
-      sidebar.classList.toggle('open');
-      overlay.classList.toggle('show');
-      console.log("📂 Sidebar:", sidebar.classList.contains('open') ? "ABIERTO" : "CERRADO");
+      // Si está logueado, abre el sidebar normal del perfil
+      sidebar?.classList.toggle('open');
+      overlay?.classList.toggle('show');
     });
-
-    // --- Cerrar Sidebar Perfil ---
-    closeSidebar?.addEventListener('click', () => {
-      sidebar.classList.remove('open');
-      overlay.classList.remove('show');
-    });
-
-    overlay?.addEventListener('click', () => {
-      sidebar.classList.remove('open');
-      overlay.classList.remove('show');
-    });
-
-    // --- Preview de foto ---
-    if (avatarUpload && profilePic) {
-      avatarUpload.addEventListener('change', (event) => {
-        const file = event.target.files[0];
-        if (file) {
-          const reader = new FileReader();
-          reader.onload = (e) => (profilePic.src = e.target.result);
-          reader.readAsDataURL(file);
-        }
-      });
-    }
-
-    // --- Modo oscuro ---
-    if (darkModeToggle) {
-      darkModeToggle.addEventListener('click', () => {
-        document.body.classList.toggle('dark-mode');
-        darkModeToggle.textContent = document.body.classList.contains('dark-mode')
-          ? '☀️ Modo claro'
-          : '🌙 Modo oscuro';
-      });
-    }
   }
 
-  // ✅ Detectar clic en enlace "Registrarse" dentro del sidebar
-  document.addEventListener("click", (e) => {
-    if (e.target.matches(".register-link")) {
-      e.preventDefault();
-      console.log("🟢 Cargando formulario de registro...");
-
-      fetch("/users/sign_up", { headers: { "X-Requested-Sidebar": "true" } })
-        .then(res => res.text())
-        .then(html => {
-          const container = document.querySelector("#deviseSidebarContainer");
-          if (container) {
-            const content = container.querySelector(".login-content");
-            content.innerHTML = `
-              <button class="close-login">&times;</button>
-              ${html}
-            `;
-          }
-        })
-        .catch(err => console.error("❌ Error al cargar registro:", err));
-    }
+  // Cerrar sidebar manual
+  closeSidebar?.addEventListener('click', () => {
+    sidebar?.classList.remove('open');
+    overlay?.classList.remove('show');
   });
 
-  // ✅ Detectar clic en enlace "¿Olvidaste tu contraseña?" dentro del sidebar
-  document.addEventListener("click", (e) => {
-    if (e.target.matches(".forgot-link")) {
-      e.preventDefault();
-      console.log("🟢 Cargando formulario de recuperación de contraseña...");
-
-      fetch("/users/password/new", { headers: { "X-Requested-Sidebar": "true" } })
-        .then(res => res.text())
-        .then(html => {
-          const container = document.querySelector("#deviseSidebarContainer");
-          if (container) {
-            const content = container.querySelector(".login-content");
-            content.innerHTML = `
-              <button class="close-login">&times;</button>
-              ${html}
-            `;
-          }
-        })
-        .catch(err => console.error("❌ Error al cargar recuperación:", err));
-    }
+  overlay?.addEventListener('click', () => {
+    sidebar?.classList.remove('open');
+    overlay?.classList.remove('show');
   });
 
-  // ✅ Detectar clic en enlace "Inicia sesión aquí" dentro del sidebar
-  document.addEventListener("click", (e) => {
-    if (e.target.matches(".login-link")) {
-      e.preventDefault();
-      console.log("🟢 Volviendo al formulario de inicio de sesión...");
+  // === DARK MODE Y AVATAR ===
+  if (avatarUpload && profilePic) {
+    avatarUpload.addEventListener('change', (event) => {
+      const file = event.target.files[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = (e) => (profilePic.src = e.target.result);
+        reader.readAsDataURL(file);
+      }
+    });
+  }
 
-      fetch("/users/sign_in", { headers: { "X-Requested-Sidebar": "true" } })
-        .then(res => res.text())
-        .then(html => {
-          const container = document.querySelector("#deviseSidebarContainer");
-          if (container) {
-            const content = container.querySelector(".login-content");
-            content.innerHTML = `
-              <button class="close-login">&times;</button>
-              ${html}
-            `;
-          }
-        })
-        .catch(err => console.error("❌ Error al cargar login:", err));
-    }
-  });
+  if (darkModeToggle) {
+    darkModeToggle.addEventListener('click', () => {
+      document.body.classList.toggle('dark-mode');
+      darkModeToggle.textContent = document.body.classList.contains('dark-mode')
+        ? '☀️ Modo claro'
+        : '🌙 Modo oscuro';
+    });
+  }
 });

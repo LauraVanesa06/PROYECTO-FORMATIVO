@@ -1,6 +1,8 @@
+# frozen_string_literal: true
+
 class CartItemsController < ApplicationController
-  before_action :authenticate_user!
   before_action :set_cart
+  before_action :authenticate_user_with_sidebar!
 
   def create
     product = Product.find(params[:product_id])
@@ -27,7 +29,6 @@ class CartItemsController < ApplicationController
           ]
         end
 
-        # 🟢 AQUÍ AÑADIMOS EL HTML DEL CARRITO PARA LA RESPUESTA JSON
         format.json do
           rendered_cart = render_to_string(
             partial: "carts/cart_items",
@@ -42,20 +43,19 @@ class CartItemsController < ApplicationController
           }, status: :created
         end
 
-        format.html { redirect_to cart_path, notice: 'Producto agregado al carrito' }
+        format.html { redirect_to cart_path, notice: "Producto agregado al carrito" }
       end
     else
       respond_to do |format|
         format.json { render json: { success: false, error: "No se pudo agregar el producto" }, status: :unprocessable_entity }
-        format.html { redirect_to root_path, alert: 'No se pudo agregar el producto' }
+        format.html { redirect_to root_path, alert: "No se pudo agregar el producto" }
       end
     end
   end
 
-
   def update
     @cart_item = @cart.cart_items.find(params[:id])
-    
+
     if @cart_item.update(cart_item_params)
       @cart_items = @cart.cart_items.includes(:product)
 
@@ -68,37 +68,55 @@ class CartItemsController < ApplicationController
           )
         end
         format.json { render json: { success: true, item_id: @cart_item.id, quantity: @cart_item.cantidad }, status: :ok }
-        format.html { redirect_to cart_path, notice: 'Cantidad actualizada.' }
+        format.html { redirect_to cart_path, notice: "Cantidad actualizada." }
       end
     else
       respond_to do |format|
-        format.json { render json: { success: true, item_id: @cart_item.id, quantity: @cart_item.cantidad }, status: :ok }
-        format.html { redirect_to cart_path, alert: 'Error al actualizar cantidad.' }
+        format.json { render json: { success: false }, status: :unprocessable_entity }
+        format.html { redirect_to cart_path, alert: "Error al actualizar cantidad." }
       end
     end
   end
 
-def destroy
-  @cart_item = @cart.cart_items.find(params[:id])
-  @cart_item.destroy
+  def destroy
+    @cart_item = @cart.cart_items.find(params[:id])
+    @cart_item.destroy
 
-  @cart_items = @cart.cart_items.includes(:product)
+    @cart_items = @cart.cart_items.includes(:product)
 
-  respond_to do |format|
-    format.turbo_stream
-    format.json { render json: { success: true, count: @cart_items.sum(&:cantidad) }, status: :ok }
-    format.html { redirect_to cart_path, notice: 'Producto eliminado del carrito' }
+    respond_to do |format|
+      format.turbo_stream
+      format.json { render json: { success: true, count: @cart_items.sum(&:cantidad) }, status: :ok }
+      format.html { redirect_to cart_path, notice: "Producto eliminado del carrito" }
+    end
   end
-end
 
   private
 
+  # 🧩 Controla el acceso y muestra el sidebar si el usuario no está logueado
+  def authenticate_user_with_sidebar!
+    return if user_signed_in?
+
+    respond_to do |format|
+      # 🚀 Si viene de fetch() o AJAX, devolver JSON para que JS abra el sidebar
+      format.json { render json: { show_login_sidebar: true }, status: :unauthorized }
+
+      # 🚀 Si viene de HTML pero con cabecera de sidebar (fetch con headers especiales)
+      format.html do
+        if request.headers["X-Requested-Sidebar"] == "true"
+          render partial: "devise/sessions/form", layout: false
+        else
+          redirect_to new_user_session_path, alert: "Debes iniciar sesión para agregar productos al carrito."
+        end
+      end
+    end
+  end
+
   def set_cart
-    @cart = current_user.cart
-    
+    @cart = current_user&.cart || current_user&.create_cart || Cart.new
   end
 
   def cart_item_params
-    params.require(:cart_item).permit(:quantity)
+    params.require(:cart_item).permit(:cantidad)
   end
 end
