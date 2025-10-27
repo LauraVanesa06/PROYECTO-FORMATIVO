@@ -13,6 +13,7 @@ import 'features/auth/bloc/auth_state.dart';
 import 'features/productos/cubit/theme_cubit.dart';
 import 'features/auth/views/login_view.dart';
 import 'features/productos/views/main_view.dart';
+import 'features/auth/services/auth_service.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -35,7 +36,11 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiBlocProvider(
       providers: [
-        BlocProvider(create: (_) => AuthBloc()..add(AuthStarted())),
+        BlocProvider(
+          create: (_) => AuthBloc(
+            AuthService(baseUrl: 'http://localhost:3000')
+          )..add(AuthStarted()),
+        ),
         BlocProvider(create: (_) => CartBloc()),
         BlocProvider(create: (_) => ProductBloc()),
         BlocProvider(create: (_) => ThemeCubit(prefs)),
@@ -56,21 +61,25 @@ class MyApp extends StatelessWidget {
               Locale('es'),
               Locale('en'),
             ],
-            home: BlocBuilder<AuthBloc, AuthState>(
-              builder: (context, authState) {
-                switch (authState.status) {
-                  case AuthStatus.success:
-                  case AuthStatus.guest:
-                    return const MainView();
-                  case AuthStatus.failure:
-                  case AuthStatus.loggedOut:
-                    return const LoginView();
-                  default:
-                    return const Scaffold(
-                      body: Center(child: CircularProgressIndicator()),
-                    );
-                }
+            home: BlocListener<AuthBloc, AuthState>(
+              listener: (context, state) {
+                print('Main - Estado de auth: ${state.status}'); // Debug
               },
+              child: BlocBuilder<AuthBloc, AuthState>(
+                builder: (context, authState) {
+                  print('Main - Construyendo con estado: ${authState.status}'); // Debug
+                  switch (authState.status) {
+                    case AuthStatus.success:
+                    case AuthStatus.guest:
+                      return const MainView();
+                    case AuthStatus.failure:
+                    case AuthStatus.loggedOut:
+                      return const LoginView();
+                    default:
+                      return const LoginView();
+                  }
+                },
+              ),
             ),
           );
         },

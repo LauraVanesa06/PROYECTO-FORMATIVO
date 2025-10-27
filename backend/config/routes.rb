@@ -120,6 +120,9 @@ Rails.application.routes.draw do
       get 'ventas_por_metodo_pago', to: 'dashboard#ventas_por_metodo_pago'
       get 'ventas_periodo', to: 'dashboard#ventas_periodo'
       get 'finanzas', to: 'dashboard#finanzas'
+      post 'auth/login', to: 'auth#login'
+      post 'auth/register', to: 'auth#register'
+      get 'auth/me', to: 'auth#me'
     end
   end
 
