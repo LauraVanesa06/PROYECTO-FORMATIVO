@@ -2,6 +2,7 @@ import 'package:ferremateriales/features/productos/bloc/cart_bloc.dart';
 import 'package:ferremateriales/features/productos/bloc/cart_event.dart';
 import 'package:ferremateriales/features/productos/bloc/product_bloc.dart';
 import 'package:ferremateriales/features/productos/model/product_model.dart';
+import 'package:ferremateriales/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../auth/bloc/auth_bloc.dart';
@@ -21,6 +22,7 @@ class _ProductCardState extends State<ProductCard> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     final product = widget.product;
     final authState = context.watch<AuthBloc>().state;
 
@@ -102,28 +104,31 @@ class _ProductCardState extends State<ProductCard> {
                     ),
                   ),
                   icon: const Icon(Icons.shopping_cart, size: 16, color: Colors.white),
-                  label: const Text("Comprar",
-                      style: TextStyle(fontSize: 13, color: Colors.white)),
+                  label: Text(
+                    l10n.buy,
+                    style: const TextStyle(fontSize: 13, color: Colors.white),
+                  ),
                   onPressed: () {
                     if (authState.status == AuthStatus.guest) {
                       ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-                        content:
-                            Text('Inicia sesión para añadir productos al carrito 🛒'),
+                        content: Text('Inicia sesión para añadir productos al carrito 🛒'),
                         backgroundColor: Colors.orange,
                       ));
                       return;
                     }
-
-                    context.read<CartBloc>().add(AddToCart({
-                      "name": product.nombre ?? '',
-                      "price": product.precio ?? 0.0,
-                      "quantity": 1,
-                      "image": product.imagenUrl ?? '',
-                    }));
+                    
+                    context.read<CartBloc>().add(
+                      AddToCart({
+                        "name": product.nombre ?? '',
+                        "price": product.precio ?? 0.0,
+                        "quantity": 1,
+                        "image": product.imagenUrl ?? '',
+                      }),
+                    );
 
                     ScaffoldMessenger.of(context).showSnackBar(
                       SnackBar(
-                        content: Text('${product.nombre} agregado al carrito 🛒'),
+                        content: Text(l10n.addedToCart(product.nombre ?? '')),
                         duration: const Duration(seconds: 2),
                       ),
                     );
@@ -153,9 +158,9 @@ class _ProductCardState extends State<ProductCard> {
                     });
                     ScaffoldMessenger.of(context).showSnackBar(
                       SnackBar(
-                        content: Text(isFavorite
-                            ? 'Agregado a favoritos ❤️'
-                            : 'Eliminado de favoritos 💔'),
+                        content: Text(
+                          isFavorite ? l10n.addedToFavorites : l10n.removedFromFavorites,
+                        ),
                         duration: const Duration(seconds: 1),
                       ),
                     );

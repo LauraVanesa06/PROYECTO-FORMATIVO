@@ -1,14 +1,10 @@
 Rails.application.routes.draw do
-  # token para el widget Wompi (AJAX desde lateral)
-  get 'payments/widget_token', to: 'payments#widget_token', defaults: { format: :json }
-
   # Autenticación (Devise)
   devise_for :users, controllers: {
     sessions: 'usuarios/sessions',
     registrations: 'usuarios/registrations',
     passwords: 'usuarios/passwords'
   }
-
 
   devise_scope :user do
     get '/acceso', to: 'usuarios/sessions#new', as: :custom_login
@@ -34,9 +30,11 @@ Rails.application.routes.draw do
     post "add_item/:product_id", to: "carts#add_item", as: :add_item
     delete "remove_item/:id", to: "carts#remove_item", as: :remove_item
     patch "update_item/:id", to: "carts#update_item", as: :update_item
-  end
-  
 
+    # 🔥 NUEVA RUTA PARA EL CARRITO LATERAL (panel o modal)
+    get "side_panel", to: "carts#side_panel", as: :side_panel
+  end
+  # 👆 esta es la nueva ruta, NO interfiere con nada más
 
 
   # Dashboard principal
@@ -53,12 +51,10 @@ Rails.application.routes.draw do
   post 'dashboard/suppliers', to: 'suppliers#crear_supplier'
   patch 'dashboard/suppliers/:id', to: 'suppliers#actualizar_supplier', as: :dashboard_supplier
 
-
   # Traduccion
-
   scope "(:locale)", locale: /en|es/ do
     root "home#index"
-    resources :products do
+    resources :products do 
       collection do 
         patch :update_disponibilidad
         get :generate_code
@@ -66,15 +62,11 @@ Rails.application.routes.draw do
     end
   end
 
-  # Recursos principale
-
-  
+  # Recursos principales
   resources :carts, only: [:show]
   resources :favorites, only: [:index, :create, :destroy]
-
-  resources :cart_items, only: [:create, :update, :destroy] 
-  #resources :products
- 
+  resources :cart_items, only: [:create, :update, :destroy]
+  
   resources :categories do
     member do
       get :products
@@ -106,14 +98,8 @@ Rails.application.routes.draw do
   end
 
   resources :payments, only: [:new, :create, :show]
-  
-
   post "/payments/webhook", to: "payments#webhook"
-    post "/webhooks/wompi", to: "webhooks#wompi"
-  
-  get 'up', to: 'rails/health#show', as: :rails_health_check
-  get 'payments/widget_token', to: 'payments#widget_token', defaults: { format: :json }
-
+  post "/webhooks/wompi", to: "webhooks#wompi"
 
   # API
   namespace :api do
@@ -126,14 +112,18 @@ Rails.application.routes.draw do
       get 'ventas_por_metodo_pago', to: 'dashboard#ventas_por_metodo_pago'
       get 'ventas_periodo', to: 'dashboard#ventas_periodo'
       get 'finanzas', to: 'dashboard#finanzas'
+      post 'auth/login', to: 'auth#login'
+      post 'auth/register', to: 'auth#register'
+      get 'auth/me', to: 'auth#me'
     end
   end
 
   namespace :api do
     namespace :v1 do
-      resources :products, only: [ :index ]
+      resources :products, only: [:index]
     end
   end
 
- 
+  # Salud del sistema
+  get 'up', to: 'rails/health#show', as: :rails_health_check
 end

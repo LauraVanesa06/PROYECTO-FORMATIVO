@@ -1,3 +1,16 @@
+
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:carousel_slider/carousel_slider.dart';
+
+import 'package:ferremateriales/features/productos/bloc/product_bloc.dart';
+import 'package:ferremateriales/features/productos/bloc/category_bloc.dart';
+import 'package:ferremateriales/features/productos/views/category_products_view.dart';
+import 'package:ferremateriales/features/productos/views/product_view.dart';
+import 'package:ferremateriales/features/productos/widgets/product_list.dart';
+import 'package:ferremateriales/l10n/app_localizations.dart';
+import '../model/category_model.dart';
+
 import 'package:ferremateriales/features/productos/views/category_products_view.dart';
 import 'package:ferremateriales/features/productos/widgets/product_list.dart';
 import 'package:flutter/material.dart';
@@ -27,6 +40,8 @@ class _HomeViewState extends State<HomeView> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+
     final authState = context.watch<AuthBloc>().state;
 
     final bannerImages = [
@@ -35,23 +50,25 @@ class _HomeViewState extends State<HomeView> {
       'assets/images/oferta3.jpg',
     ];
 
+    // 🔧 Lista de categorías con IDs únicos
     final categories = [
-      {'icon': Icons.construction, 'label': 'Herramientas'},
-      {'icon': Icons.handyman, 'label': 'Tornillería y Fijaciones'},
-      {'icon': Icons.plumbing, 'label': 'Plomería'},
-      {'icon': Icons.flash_on, 'label': 'Electricidad'},
-      {'icon': Icons.business, 'label': 'Construcción y Materiales'},
-      {'icon': Icons.format_paint, 'label': 'Pintura y Acabados'},
-      {'icon': Icons.home_repair_service, 'label': 'Ferretería para el hogar'},
-      {'icon': Icons.cleaning_services, 'label': 'Limpieza y Mantenimiento'},
-      {'icon': Icons.sticky_note_2, 'label': 'Adhesivos y Selladores'},
-      {'icon': Icons.grass, 'label': 'Jardinería'},
+      {'icon': Icons.construction, 'label': 'Herramientas', 'display': l10n.tools, 'id': 1},
+      {'icon': Icons.handyman, 'label': 'Tornillería y Fijaciones', 'display': l10n.hardware, 'id': 2},
+      {'icon': Icons.plumbing, 'label': 'Plomería', 'display': l10n.plumbing, 'id': 3},
+      {'icon': Icons.flash_on, 'label': 'Electricidad', 'display': l10n.electricity, 'id': 4},
+      {'icon': Icons.business, 'label': 'Construcción y Materiales', 'display': l10n.construction, 'id': 5},
+      {'icon': Icons.format_paint, 'label': 'Pintura y Acabados', 'display': l10n.paint, 'id': 6},
+      {'icon': Icons.home_repair_service, 'label': 'Ferretería para el hogar', 'display': l10n.homeHardware, 'id': 7},
+      {'icon': Icons.cleaning_services, 'label': 'Limpieza y Mantenimiento', 'display': l10n.cleaning, 'id': 8},
+      {'icon': Icons.sticky_note_2, 'label': 'Adhesivos y Selladores', 'display': l10n.adhesives, 'id': 9},
+      {'icon': Icons.grass, 'label': 'Jardinería', 'display': l10n.gardening, 'id': 10},
     ];
 
+    // 🔁 Construcción dinámica de botones de categoría
     final categoryItems = categories.map((category) {
       return _HoverCategoryButton(
         icon: category['icon'] as IconData,
-        label: category['label'] as String,
+        label: category['display'] as String,
         onTap: () {
           Navigator.push(
             context,
@@ -60,6 +77,8 @@ class _HomeViewState extends State<HomeView> {
                 value: context.read<ProductBloc>(),
                 child: CategoryProductsView(
                   categoryName: category['label'] as String,
+                  categoryId: category['id'] as int,
+                  displayName: category['display'] as String,
                 ),
               ),
             ),
@@ -171,7 +190,7 @@ class _HomeViewState extends State<HomeView> {
 
               const SizedBox(height: 24),
 
-              // Carrusel de imágenes
+              // 🖼️ Carrusel de imágenes
               CarouselSlider(
                 options: CarouselOptions(
                   height: 140,
@@ -196,7 +215,7 @@ class _HomeViewState extends State<HomeView> {
 
               const SizedBox(height: 28),
 
-              // Carrusel de categorías
+              // 🧩 Carrusel de categorías
               CarouselSlider(
                 options: CarouselOptions(
                   height: 110,
@@ -214,7 +233,7 @@ class _HomeViewState extends State<HomeView> {
               Padding(
                 padding: const EdgeInsets.only(left: 16.0),
                 child: Text(
-                  "Productos Destacados",
+                  l10n.featuredProducts,
                   style: TextStyle(
                     fontSize: 18,
                     fontWeight: FontWeight.bold,
@@ -223,7 +242,7 @@ class _HomeViewState extends State<HomeView> {
                 ),
               ),
 
-              // Mostrar productos usando BlocBuilder
+              // 🛒 Productos destacados
               BlocBuilder<ProductBloc, ProductState>(
                 builder: (context, state) {
                   if (state is ProductLoadInProgress) {
@@ -235,8 +254,8 @@ class _HomeViewState extends State<HomeView> {
                       child: ProductsList(products: state.productos),
                     );
                   } else if (state is ProductLoadFailure) {
-                    return const Center(
-                      child: Text('Error al cargar productos'),
+                    return Center(
+                      child: Text(l10n.errorLoadingProducts),
                     );
                   } else {
                     return const ProductsPageView();
@@ -253,7 +272,7 @@ class _HomeViewState extends State<HomeView> {
   }
 }
 
-// 🔸 Botón de categoría con hover
+// 🎨 Widget personalizado con efecto hover
 class _HoverCategoryButton extends StatefulWidget {
   final IconData icon;
   final String label;

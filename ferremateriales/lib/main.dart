@@ -1,7 +1,9 @@
+import 'package:ferremateriales/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'firebase_options.dart';
 import 'features/productos/bloc/cart_bloc.dart';
 import 'features/productos/bloc/product_bloc.dart';
@@ -11,27 +13,37 @@ import 'features/auth/bloc/auth_state.dart';
 import 'features/productos/cubit/theme_cubit.dart';
 import 'features/auth/views/login_view.dart';
 import 'features/productos/views/main_view.dart';
+import 'features/auth/services/auth_service.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
+  final prefs = await SharedPreferences.getInstance();
 
-  runApp(const FerreteriaApp());
+  ErrorWidget.builder = (FlutterErrorDetails details) => const SizedBox.shrink();
+
+  runApp(MyApp(prefs: prefs));
 }
 
-class FerreteriaApp extends StatelessWidget {
-  const FerreteriaApp({super.key});
+class MyApp extends StatelessWidget {
+  final SharedPreferences prefs;
+
+  const MyApp({super.key, required this.prefs});
 
   @override
   Widget build(BuildContext context) {
     return MultiBlocProvider(
       providers: [
-        BlocProvider(create: (_) => AuthBloc()..add(AuthStarted())),
+        BlocProvider(
+          create: (_) => AuthBloc(
+            AuthService(baseUrl: 'http://localhost:3000')
+          )..add(AuthStarted()),
+        ),
         BlocProvider(create: (_) => CartBloc()),
         BlocProvider(create: (_) => ProductBloc()),
-        BlocProvider(create: (_) => ThemeCubit()),
+        BlocProvider(create: (_) => ThemeCubit(prefs)),
       ],
       child: BlocBuilder<ThemeCubit, ThemeState>(
         builder: (context, themeState) {
@@ -39,27 +51,35 @@ class FerreteriaApp extends StatelessWidget {
             debugShowCheckedModeBanner: false,
             theme: themeState.isDarkMode ? ThemeData.dark() : ThemeData.light(),
             locale: themeState.locale,
-            supportedLocales: const [Locale('es'), Locale('en')],
             localizationsDelegates: const [
+              AppLocalizations.delegate,
               GlobalMaterialLocalizations.delegate,
               GlobalWidgetsLocalizations.delegate,
               GlobalCupertinoLocalizations.delegate,
             ],
-            home: BlocBuilder<AuthBloc, AuthState>(
-              builder: (context, authState) {
-                switch (authState.status) {
-                  case AuthStatus.success:
-                  case AuthStatus.guest:
-                    return const MainView();
-                  case AuthStatus.failure:
-                  case AuthStatus.loggedOut:
-                    return const LoginView();
-                  default:
-                    return const Scaffold(
-                      body: Center(child: CircularProgressIndicator()),
-                    );
-                }
+            supportedLocales: const [
+              Locale('es'),
+              Locale('en'),
+            ],
+            home: BlocListener<AuthBloc, AuthState>(
+              listener: (context, state) {
+                print('Main - Estado de auth: ${state.status}'); // Debug
               },
+              child: BlocBuilder<AuthBloc, AuthState>(
+                builder: (context, authState) {
+                  print('Main - Construyendo con estado: ${authState.status}'); // Debug
+                  switch (authState.status) {
+                    case AuthStatus.success:
+                    case AuthStatus.guest:
+                      return const MainView();
+                    case AuthStatus.failure:
+                    case AuthStatus.loggedOut:
+                      return const LoginView();
+                    default:
+                      return const LoginView();
+                  }
+                },
+              ),
             ),
           );
         },

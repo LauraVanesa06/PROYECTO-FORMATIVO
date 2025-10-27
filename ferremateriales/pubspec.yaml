@@ -44,11 +44,12 @@ dependencies:
   firebase_core: ^2.31.0
   logger: ^2.0.2
   carousel_slider: ^5.1.1
+  flutter_secure_storage: ^8.0.0
   image_picker: ^1.0.4
   flutter_localizations:
     sdk: flutter
-
-
+  intl: ^0.20.2
+  shared_preferences: ^2.2.2
 
 dev_dependencies:
   flutter_launcher_icons: ^0.13.1
@@ -119,3 +120,4 @@ flutter:
   #
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/to/font-from-package
+  generate: true

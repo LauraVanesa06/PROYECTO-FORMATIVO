@@ -1,3 +1,4 @@
+import 'package:ferremateriales/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -15,6 +16,8 @@ class _ResetPasswordViewState extends State<ResetPasswordView> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+
     return Scaffold(
       body: Container(
         decoration: const BoxDecoration(
@@ -36,7 +39,7 @@ class _ResetPasswordViewState extends State<ResetPasswordView> {
                 ),
                 const SizedBox(height: 16),
                 Text(
-                  'Recuperar contraseña',
+                  l10n.resetPasswordTitle,
                   style: GoogleFonts.montserrat(
                     fontSize: 28,
                     fontWeight: FontWeight.bold,
@@ -54,7 +57,7 @@ class _ResetPasswordViewState extends State<ResetPasswordView> {
                         decoration: InputDecoration(
                           prefixIcon:
                               const Icon(Icons.email, color: Colors.orange),
-                          hintText: 'Correo electrónico',
+                          hintText: l10n.email,
                           hintStyle: const TextStyle(color: Colors.white54),
                           filled: true,
                           fillColor: Colors.black.withOpacity(0.7),
@@ -69,12 +72,12 @@ class _ResetPasswordViewState extends State<ResetPasswordView> {
                         onChanged: (value) => _email = value,
                         validator: (value) {
                           if (value == null || value.isEmpty) {
-                            return 'El correo es obligatorio';
+                            return l10n.emailRequired;
                           }
                           final emailRegex =
                               RegExp(r"^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$");
                           if (!emailRegex.hasMatch(value)) {
-                            return 'Correo no válido';
+                            return l10n.invalidEmail;
                           }
                           return null;
                         },
@@ -89,8 +92,7 @@ class _ResetPasswordViewState extends State<ResetPasswordView> {
                                 ResetPasswordRequested(email: _email),
                               );
                               ScaffoldMessenger.of(context).showSnackBar(
-                                const SnackBar(
-                                    content: Text("Solicitud enviada")),
+                                SnackBar(content: Text(l10n.requestSent)),
                               );
                             }
                           },
@@ -101,7 +103,7 @@ class _ResetPasswordViewState extends State<ResetPasswordView> {
                               borderRadius: BorderRadius.circular(12),
                             ),
                           ),
-                          child: const Text("Enviar recuperación"),
+                          child: Text(l10n.sendRecovery),
                         ),
                       ),
                       const SizedBox(height: 10),
@@ -109,8 +111,8 @@ class _ResetPasswordViewState extends State<ResetPasswordView> {
                         onPressed: () {
                           Navigator.pop(context);
                         },
-                        child: const Text(
-                          'Volver al inicio de sesión',
+                        child: Text(
+                          l10n.backToLogin,
                           style: TextStyle(color: Colors.white),
                         ),
                       ),

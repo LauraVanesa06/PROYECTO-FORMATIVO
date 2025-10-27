@@ -71,4 +71,16 @@ class ApplicationController < ActionController::Base
       authenticated_root_path
     end
   end
+  layout :layout_by_resource
+
+    private
+
+    def layout_by_resource
+      if devise_controller?
+        "login"
+      else
+        "application"
+      end
+    end
+
 end

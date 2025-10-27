@@ -1,82 +1,37 @@
-<div class="login d-flex justify-content-center align-items-center vh-100">
+<div class="login-form-container">
+  <h3 class="text-center mb-4">Inicia sesión</h3>
 
-  <div class="hex-wrapper position-relative">
-  
-    <!-- Imagen del hexágono como fondo -->
-    <%= image_tag "hexagono.png", alt: "Hexágono", class: "hex-bg" %>
+  <% if flash[:alert] %>
+    <div class="alert alert-danger py-2 text-center"><%= flash[:alert] %></div>
+  <% elsif flash[:notice] %>
+    <div class="alert alert-success py-2 text-center"><%= flash[:notice] %></div>
+  <% end %>
 
-    <!-- Icono del usuario superpuesto -->
-    <div class="user-icon position-absolute top-0 start-50 translate-middle">
-      <%= image_tag "user.png", alt: "Usuario", class: "rounded-circle user-img" %>
+  <%= form_with(model: resource, url: session_path(resource_name), local: true, data: { turbo: false }) do |f| %>
+    <div class="mb-3">
+      <%= f.email_field :email, class: "form-control login-input", placeholder: "Correo electrónico", required: true %>
     </div>
 
-    <!-- Contenido del login sobre el hexágono -->
-      <div class="hex-content position-absolute top-50 start-50 translate-middle text-center">
+    <div class="mb-3">
+      <%= f.password_field :password, class: "form-control login-input", placeholder: "Contraseña", required: true %>
+    </div>
 
-        <!-- Mensajes flash (alertas y notificaciones) -->
-        <% if flash[:alert] %>
-          <div class="flash flash-alert">
-            <%= flash[:alert] %>
-          </div>
-        <% end %>
-
-        <% if flash[:notice] %>
-          <div class="flash flash-notice">
-            <%= flash[:notice] %>
-          </div>
-        <% end %>
-
-
-      <%= form_for(resource, as: resource_name, url: session_path(resource_name)) do |f| %>
-        <div class="text-sg">
-          Iniciar Sesión
-        </div>
-
-        <div class="input-wrapper">
-          <%= image_tag "avatar.png", class: "icon-img", alt: "Usuario" %>
-          <div class="divider"></div>
-          <%= f.email_field :email, placeholder: "Usuario", autocomplete: "email" %>
-        </div>
-
-        <div class="input-wrapper">
-          <%= image_tag "candado.png", class: "icon-img", alt: "Contraseña" %>
-          <div class="divider"></div>
-          <%= f.password_field :password, placeholder: "Contraseña", autocomplete: "current-password", id: "password" %>
-          <%= image_tag "ojo.png", id: "eye-icon", class: "toggle-password eye-img", onclick: "togglePassword()", alt: "Ver contraseña" %> 
-        </div>
-
-        <% if devise_mapping.rememberable? %>
-          <div class="field mb-1 form-check text-start">
-            <%= f.check_box :remember_me, class: "form-check-input" %>
-            <%= f.label :remember_me, "Recordarme", class: "form-check-label" %>
-          </div>
-        <% end %>
-
-        <div class="hex-button-wrapper mb-3">
-          <%= f.submit "Iniciar sesión", class: "hex-button" %>
-        </div>
-      <% end %>
-
-      <!-- Links al fondo -->
-      <div class="bottom-links">
-        <%= render "devise/shared/links" %>
+    <div class="d-flex justify-content-between align-items-center mb-3">
+      <div class="form-check">
+        <%= f.check_box :remember_me, class: "form-check-input" %>
+        <%= f.label :remember_me, "Recordarme", class: "form-check-label" %>
       </div>
+      <%= link_to "¿Olvidaste tu contraseña?", new_user_password_path, class: "forgot-link text-decoration-none" %>
+
 
     </div>
-  </div>
+
+    <%= f.submit "Entrar", class: "btn btn-primary w-100 login-btn" %>
+  <% end %>
+
+  <hr class="my-4">
+  <p class="text-center mb-0">
+    ¿No tienes cuenta?
+    <%= link_to "Regístrate aquí", new_user_registration_path, class: "text-decoration-none" %>
+  </p>
 </div>
-
-<script>
-  function togglePassword() {
-    const field = document.getElementById("password");
-    const icon = document.getElementById("eye-icon");
-
-    if (field.type === "password") {
-      field.type = "text";
-      icon.src = "<%= asset_path('ojo-abierto.png') %>";
-    } else {
-      field.type = "password";
-      icon.src = "<%= asset_path('ojo.png') %>";
-    }
-  }
-</script>

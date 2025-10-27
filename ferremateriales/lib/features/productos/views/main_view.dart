@@ -15,6 +15,8 @@ class MainView extends StatefulWidget {
   State<MainView> createState() => _MainViewState();
 }
 
+
+
 class _MainViewState extends State<MainView> {
   int _selectedIndex = 0;
 
@@ -31,84 +33,83 @@ class _MainViewState extends State<MainView> {
       ProfileView(userName: nombre),
     ];
 
-    return Scaffold(
-      body: _screens[_selectedIndex],
-      bottomNavigationBar: SizedBox(
-        height: 70,
-        child: Stack(
-          alignment: Alignment.topCenter,
-          clipBehavior: Clip.none,
-          children: [
-            Container(
-              height: 70,
-              decoration: const BoxDecoration(
-                image: DecorationImage(
-                  image: AssetImage('assets/images/madera2.jpg'),
-                  fit: BoxFit.cover,
-                ),
-              ),
-            ),
-            BottomNavigationBar(
-              currentIndex: _selectedIndex,
-              onTap: (index) {
-                // 🚫 Restringimos accesos para invitados
-                if (authState.status == AuthStatus.guest &&
-                    (index == 1 || index == 2)) {
-                  ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-                    content: Text('Inicia sesión para acceder a esta sección 🔒'),
-                    backgroundColor: Colors.orange,
-                  ));
-                  return;
-                }
+return Scaffold(
+  extendBody: true, // Permite que el fondo se extienda detrás del BottomAppBar
+  body: _screens[_selectedIndex],
 
-                setState(() => _selectedIndex = index);
-              },
-              selectedItemColor: const Color.fromARGB(255, 130, 204, 238),
-              unselectedItemColor: Colors.white,
-              backgroundColor: Colors.transparent,
-              type: BottomNavigationBarType.fixed,
-              showSelectedLabels: false,
-              showUnselectedLabels: false,
-              items: [
-                const BottomNavigationBarItem(icon: Icon(Icons.home), label: ''),
-                const BottomNavigationBarItem(icon: Icon(Icons.star), label: ''),
-                BottomNavigationBarItem(
-                  icon: Transform.translate(
-                    offset: const Offset(0, -15),
-                    child: Container(
-                      width: 55,
-                      height: 55,
-                      decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        gradient: const LinearGradient(
-                          colors: [
-                            Color.fromARGB(255, 130, 204, 238),
-                            Color.fromARGB(255, 91, 165, 207)
-                          ],
-                        ),
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.black.withOpacity(0.3),
-                            blurRadius: 6,
-                            offset: const Offset(0, 3),
-                          ),
-                        ],
-                      ),
-                      child: const Icon(Icons.shopping_cart,
-                          color: Colors.white, size: 24),
-                    ),
-                  ),
-                  label: '',
-                ),
-                const BottomNavigationBarItem(
-                    icon: Icon(Icons.notifications), label: ''),
-                const BottomNavigationBarItem(
-                    icon: Icon(Icons.person), label: ''),
-              ],
-            ),
+  // 🪵 Barra inferior personalizada
+  bottomNavigationBar: ClipRRect(
+    borderRadius: const BorderRadius.only(
+      topLeft: Radius.circular(16),
+      topRight: Radius.circular(16),
+    ),
+    child: BottomAppBar(
+      shape: const CircularNotchedRectangle(),
+      notchMargin: 8.0,
+      height: 65, // altura controlada
+      padding: EdgeInsets.zero,
+      child: Container(
+        decoration: const BoxDecoration(
+          image: DecorationImage(
+            image: AssetImage('assets/images/madera2.jpg'),
+            fit: BoxFit.cover,
+          ),
+        ),
+        child: BottomNavigationBar(
+          elevation: 0,
+          currentIndex: _selectedIndex,
+          onTap: (index) {
+            if (authState.status == AuthStatus.guest &&
+                (index == 1 || index == 2)) {
+              ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                content: Text('Inicia sesión para acceder a esta sección 🔒'),
+                backgroundColor: Colors.orange,
+              ));
+              return;
+            }
+            setState(() => _selectedIndex = index);
+          },
+          selectedItemColor: const Color.fromARGB(255, 130, 204, 238),
+          unselectedItemColor: Colors.white,
+          backgroundColor: Colors.transparent,
+          type: BottomNavigationBarType.fixed,
+          showSelectedLabels: false,
+          showUnselectedLabels: false,
+          items: const [
+            BottomNavigationBarItem(icon: Icon(Icons.home), label: ''),
+            BottomNavigationBarItem(icon: Icon(Icons.star), label: ''),
+            BottomNavigationBarItem(icon: SizedBox.shrink(), label: ''), // espacio FAB
+            BottomNavigationBarItem(icon: Icon(Icons.notifications), label: ''),
+            BottomNavigationBarItem(icon: Icon(Icons.person), label: ''),
           ],
         ),
       ),
-    );
+    ),
+  ),
+
+  // 🛒 FAB centrado perfectamente
+  floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
+  floatingActionButton: Transform.translate(
+    offset: const Offset(0, 5), // 🔧 bajamos el FAB 5px
+    child: FloatingActionButton(
+      onPressed: () {
+        if (authState.status == AuthStatus.guest) {
+          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+            content: Text('Inicia sesión para acceder al carrito 🔒'),
+            backgroundColor: Colors.orange,
+          ));
+          return;
+        }
+        setState(() => _selectedIndex = 2);
+      },
+      backgroundColor: const Color.fromARGB(255, 91, 165, 207),
+      child: const Icon(Icons.shopping_cart, color: Colors.white),
+    ),
+  ),
+);
+
+
+
+
   }
 }

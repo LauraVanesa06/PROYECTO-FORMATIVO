@@ -12,12 +12,12 @@ class ProductEntrarPressed extends ProductEvent {}
 class ProductRefrescar extends ProductEvent {} // 👈 NUEVO EVENTO
 
 class ProductFilterByCategory extends ProductEvent {
-  final String categoryName;
+  final int categoryId; // ✅ solo ID
 
-  const ProductFilterByCategory(this.categoryName);
+  const ProductFilterByCategory(this.categoryId);
 
   @override
-  List<Object?> get props => [categoryName];
+  List<Object?> get props => [categoryId];
 }
 
 class ToggleFavorite extends ProductEvent {

@@ -1,3 +1,4 @@
+import 'package:ferremateriales/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 
 class NotificationsView extends StatelessWidget {
@@ -5,9 +6,11 @@ class NotificationsView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Scaffold(
+    final l10n = AppLocalizations.of(context)!;
+    
+    return Scaffold(
       body: Center(
-        child: Text('Notificaciones', style: TextStyle(fontSize: 24)),
+        child: Text(l10n.notifications, style: TextStyle(fontSize: 24)),
       ),
     );
   }

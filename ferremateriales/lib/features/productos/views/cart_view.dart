@@ -1,3 +1,4 @@
+import 'package:ferremateriales/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../bloc/cart_bloc.dart';
@@ -10,6 +11,8 @@ class CartView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+
     return BlocBuilder<CartBloc, CartState>(
       builder: (context, state) {
         final totalItems = state.items.fold<int>(
@@ -19,11 +22,11 @@ class CartView extends StatelessWidget {
 
         return Scaffold(
           appBar: AppBar(
-            title: Text("Mi Carrito ($totalItems)"),
+            title: Text("${l10n.myCart} ($totalItems)"),
             centerTitle: true,
           ),
           body: state.items.isEmpty
-              ? const Center(child: Text("Tu carrito está vacío 🛒"))
+              ? Center(child: Text(l10n.emptyCart))
               : Column(
                   children: [
                     Expanded(
@@ -113,9 +116,9 @@ class CartView extends StatelessWidget {
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              const Text(
-                                "Total:",
-                                style: TextStyle(
+                              Text(
+                                l10n.total,
+                                style: const TextStyle(
                                   fontSize: 18,
                                   fontWeight: FontWeight.bold,
                                 ),
@@ -131,17 +134,14 @@ class CartView extends StatelessWidget {
                           ),
                           const SizedBox(height: 10),
                           ElevatedButton.icon(
-                            onPressed: () {
-                              // 👇 Navegamos a la vista de pago
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (_) => PaymentView(total: state.total),
-                                ),
-                              );
-                            },
+                            onPressed: () => Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (_) => PaymentView(total: state.total),
+                              ),
+                            ),
                             icon: const Icon(Icons.payment),
-                            label: const Text("Finalizar Compra"),
+                            label: Text(l10n.finishPurchase),
                             style: ElevatedButton.styleFrom(
                               backgroundColor: const Color(0xFF2196F3),
                               foregroundColor: Colors.white,
