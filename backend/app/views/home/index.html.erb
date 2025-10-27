@@ -105,9 +105,11 @@
               <!-- Botón comprar -->
               <button 
                 class="btn btn-sm btn-outline-primary d-flex align-items-center justify-content-center add-to-cart-btn" 
-                data-url="<%= cart_items_path(product_id: producto.id) %>">
+                data-url="<%= cart_items_path(product_id: producto.id) %>" 
+                type="button">
                 <i class="fa-solid fa-cart-plus"></i>
               </button>
+
 
               <!-- Botón favoritos con lógica AJAX -->
               <% if current_user %>
@@ -149,46 +151,57 @@
 
 <script>
   document.addEventListener("click", async (e) => {
-    // CARRITO
-    if (e.target.closest(".add-to-cart-btn")) {
-      e.preventDefault();
-      e.stopPropagation();
+  // CARRITO
+  if (e.target.closest(".add-to-cart-btn")) {
+    e.preventDefault();
+    e.stopPropagation();
 
-      const btn = e.target.closest(".add-to-cart-btn");
-      const url = btn.dataset.url;
+    const btn = e.target.closest(".add-to-cart-btn");
+    const url = btn.dataset.url;
 
-      const response = await fetch(url, {
-        method: "POST",
-        headers: {
-          "X-CSRF-Token": document.querySelector("meta[name='csrf-token']").content,
-          "Accept": "application/json"
-        }
-      });
+    // 🚨 Verificación de sesión antes de agregar al carrito
+    if (!window.isLoggedIn) {
+      const sidebarContainer = document.getElementById("deviseSidebarContainer");
 
-      if (response.ok) {
-        const data = await response.json();
+      fetch("/users/sign_in")
+        .then((response) => response.text())
+        .then((html) => {
+          sidebarContainer.innerHTML = html;
+          sidebarContainer.classList.add("active");
+        });
 
-        // 🔹 Actualiza el contenido del carrito (offcanvas)
-        if (data.cart_html) {
-          const cartBody = document.querySelector("#cart-offcanvas-body");
-          if (cartBody) cartBody.innerHTML = data.cart_html;
-        }
-
-        // 🔹 Actualiza el contador
-        const cartCount = document.querySelector("#cart-count");
-        if (cartCount && data.count !== undefined) {
-          cartCount.textContent = data.count;
-        }
-
-        // 🔹 Muestra notificación
-        showToast("Producto agregado al carrito", "success");
-
-
-      } else {
-        showToast("Error al agregar al carrito", "danger");
-      }
-      return;
+      return; // 👈 detiene la acción
     }
+
+    // 👇 Aquí sigue tu lógica normal si está logueado
+    const response = await fetch(url, {
+      method: "POST",
+      headers: {
+        "X-CSRF-Token": document.querySelector("meta[name='csrf-token']").content,
+        "Accept": "application/json"
+      }
+    });
+
+    if (response.ok) {
+      const data = await response.json();
+
+      if (data.cart_html) {
+        const cartBody = document.querySelector("#cart-offcanvas-body");
+        if (cartBody) cartBody.innerHTML = data.cart_html;
+      }
+
+      const cartCount = document.querySelector("#cart-count");
+      if (cartCount && data.count !== undefined) {
+        cartCount.textContent = data.count;
+      }
+
+      showToast("Producto agregado al carrito", "success");
+    } else {
+      showToast("Error al agregar al carrito", "danger");
+    }
+    return;
+  }
+
 
     // FAVORITOS
     if (e.target.closest(".favorite-btn")) {

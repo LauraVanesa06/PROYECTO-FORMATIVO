@@ -73,7 +73,8 @@ class Api::V1::DashboardController < ApplicationController
     end
     def clientes_por_mes
         clientes = User.where(created_at: Time.current.beginning_of_year..Time.current.end_of_year)
-                        .group("strftime('%m', created_at)").count
+                        .group("TO_CHAR(created_at, 'MM')")
+                        .count
 
         datos_ordenados = (1..12).map do |mes|
             mes_str = mes.to_s.rjust(2, '0')
@@ -82,6 +83,7 @@ class Api::V1::DashboardController < ApplicationController
 
         render json: datos_ordenados
     end
+
 
     def por_tipo
         hoy     = Buy.where(fecha: Date.current).count
