@@ -347,16 +347,6 @@ body {
     transform: scale(1.05);
 }
 
-/* Asegurar que solo haya un botón hamburguesa */
-@media (min-width: 769px) {
-    .mobile-menu-toggle {
-        display: none !important;
-        position: relative !important;
-        top: auto !important;
-        right: auto !important;
-        z-index: auto !important;
-    }
-}
 
 @media (max-width: 768px) {
     /* Ocultar solo los enlaces de navegación, mantener el botón CTA */
@@ -378,7 +368,7 @@ body {
 .mobile-nav-menu {
     display: none;
     position: fixed;
-    top: 0;
+    top: 10 px;
     left: 0;
     width: 100%;
     height: 100vh;
@@ -463,7 +453,7 @@ body {
     .mobile-menu-toggle {
         display: flex !important;
         position: fixed !important;
-        top: 20px !important;
+        top: 10px !important;
         right: 20px !important;
         z-index: 10000 !important;
     }

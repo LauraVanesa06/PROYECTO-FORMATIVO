@@ -158,50 +158,6 @@ document.addEventListener('DOMContentLoaded', function() {
             }, 900);
         }
     });
-
-    // ===== MOBILE MENU TOGGLE =====
-    function createMobileMenu() {
-        const navContainer = document.querySelector('.nav-container');
-        const navLinks = document.querySelector('.nav-links');
-        
-        if (navContainer && navLinks && window.innerWidth <= 768) {
-            const mobileMenuBtn = document.createElement('button');
-            mobileMenuBtn.className = 'mobile-menu-btn';
-            mobileMenuBtn.innerHTML = '<i class="fas fa-bars"></i>';
-            mobileMenuBtn.style.cssText = `
-                background: none;
-                border: none;
-                color: var(--text-light);
-                font-size: 1.5rem;
-                cursor: pointer;
-                display: none;
-            `;
-            
-            if (window.innerWidth <= 768) {
-                mobileMenuBtn.style.display = 'block';
-                navLinks.style.display = 'none';
-            }
-            
-            navContainer.appendChild(mobileMenuBtn);
-            
-            mobileMenuBtn.addEventListener('click', function() {
-                const isVisible = navLinks.style.display === 'flex';
-                navLinks.style.display = isVisible ? 'none' : 'flex';
-                navLinks.style.flexDirection = 'column';
-                navLinks.style.position = 'absolute';
-                navLinks.style.top = '100%';
-                navLinks.style.left = '0';
-                navLinks.style.right = '0';
-                navLinks.style.background = 'rgba(15, 15, 35, 0.95)';
-                navLinks.style.padding = '1rem';
-                navLinks.style.borderTop = '1px solid rgba(255,255,255,0.1)';
-            });
-        }
-    }
-
-    // Inicializar menú móvil
-    createMobileMenu();
-    window.addEventListener('resize', createMobileMenu);
 });
 
 // ===== CSS ANIMATIONS =====

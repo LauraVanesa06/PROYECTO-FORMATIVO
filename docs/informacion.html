@@ -107,6 +107,11 @@
                     50% { transform: translateY(-20px) rotate(180deg); }
                 }
                 
+                @keyframes rotate {
+                    from { transform: rotate(0deg); }
+                    to { transform: rotate(360deg); }
+                }
+                
                 /* Responsive Styles */
                 @media (max-width: 768px) {
                     .hero-section h1 {
@@ -255,75 +260,94 @@
                     </div>
                     
                     <!-- Creative Diagram Layout -->
-                    <div style="display: flex; justify-content: center; gap: 4rem; flex-wrap: wrap;">
-                        <!-- Diagram 1: Clases -->
-                        <div style="position: relative; max-width: 450px;">
-                            <div style="background: linear-gradient(145deg, rgba(102, 126, 234, 0.15) 0%, rgba(118, 75, 162, 0.1) 100%); border-radius: 2rem; padding: 3rem 2rem; border: 1px solid rgba(102, 126, 234, 0.2); backdrop-filter: blur(20px); transition: all 0.4s ease; position: relative; overflow: hidden;" onmouseover="this.style.transform='translateY(-10px)'; this.style.boxShadow='0 25px 50px rgba(102, 126, 234, 0.3)'" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='none'">
-                                <!-- Decorative Corner -->
-                                <div style="position: absolute; top: -20px; right: -20px; width: 80px; height: 80px; background: linear-gradient(135deg, #667eea, #764ba2); border-radius: 50%; opacity: 0.2;"></div>
-                                
-                                <!-- Header -->
-                                <div style="text-align: center; margin-bottom: 2rem;">
-                                    <div style="width: 100px; height: 100px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 50%; margin: 0 auto 1.5rem; display: flex; align-items: center; justify-content: center; box-shadow: 0 15px 35px rgba(102, 126, 234, 0.4);">
-                                        <i class="fas fa-project-diagram" style="font-size: 2.5rem; color: white;"></i>
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(400px, 1fr)); gap: 4rem; max-width: 1000px; margin: 0 auto; justify-items: center;">
+                        
+                        <!-- Diagrama de Clases -->
+                        <div style="background: rgba(255, 255, 255, 0.03); backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 2rem; padding: 3rem 2rem; width: 100%; max-width: 450px; min-height: 650px; position: relative; overflow: hidden; cursor: pointer; transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); display: flex; flex-direction: column;" onmouseover="this.style.transform='translateY(-10px) scale(1.02)'; this.style.boxShadow='0 30px 60px rgba(102, 126, 234, 0.3)';" onmouseout="this.style.transform='translateY(0) scale(1)'; this.style.boxShadow='0 10px 30px rgba(0,0,0,0.1)';">
+                            
+                            <!-- Creative Header -->
+                            <div style="text-align: center; margin-bottom: 2rem;">
+                                <div style="display: inline-block; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 1.5rem; border-radius: 50%; margin-bottom: 1.5rem; box-shadow: 0 10px 30px rgba(102, 126, 234, 0.4);">
+                                    <i class="fas fa-project-diagram" style="font-size: 2rem; color: white;"></i>
+                                </div>
+                                <h3 style="color: #667eea; font-size: 1.5rem; font-weight: 700; margin-bottom: 0.5rem;">Diagrama de Clases</h3>
+                                <div style="width: 80px; height: 4px; background: linear-gradient(90deg, #667eea, #764ba2); margin: 0 auto; border-radius: 2px;"></div>
+                            </div>
+                            
+                            <!-- PDF Preview -->
+                            <div style="background: rgba(255, 255, 255, 0.95); border-radius: 1.5rem; padding: 1rem; margin-bottom: 2rem; position: relative; z-index: 2; overflow: hidden; flex-grow: 1;">
+                                <div style="position: relative; width: 100%; height: 200px; border-radius: 0.8rem; overflow: hidden; box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);">
+                                    <iframe src="document/diagrama de clases.pdf#toolbar=1&navpanes=1&scrollbar=1&page=1&zoom=FitH" 
+                                            style="width: 100%; height: 100%; border: none; display: block;" 
+                                            title="Vista previa Diagrama de Clases">
+                                    </iframe>
+                                    <!-- Overlay clickeable para abrir PDF -->
+                                    <div onclick="window.open('document/diagrama de clases.pdf', '_blank')" style="position: absolute; top: 0; left: 0; right: 0; bottom: 0; cursor: pointer; z-index: 10;"></div>
+                                    <!-- Indicador de PDF -->
+                                    <div style="position: absolute; top: 10px; right: 10px; background: rgba(102, 126, 234, 0.9); color: white; padding: 0.3rem 0.6rem; border-radius: 15px; font-size: 0.7rem; font-weight: 600; backdrop-filter: blur(5px); pointer-events: none;">
+                                        Vista Previa
                                     </div>
-                                    <h4 style="color: #ffffff; font-size: 1.5rem; font-weight: 700; margin-bottom: 0.5rem;">Diagrama de Clases</h4>
-                                    <div style="width: 60px; height: 3px; background: linear-gradient(90deg, #667eea, #764ba2); margin: 0 auto; border-radius: 2px;"></div>
-                                </div>
-                                
-                                <!-- Preview -->
-                                <div style="background: #ffffff; border-radius: 1rem; padding: 1.5rem; margin-bottom: 2rem; box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);">
-                                    <img src="assets/img/diagramas/relaciones.png" alt="Diagrama de Clases" style="width: 100%; height: auto; border-radius: 0.5rem;">
-                                </div>
-                                
-                                <!-- Description -->
-                                <p style="color: rgba(255, 255, 255, 0.8); text-align: center; margin-bottom: 2rem; line-height: 1.6;">
-                                    Estructura completa de clases, métodos y relaciones del sistema S.E.I.E
-                                </p>
-                                
-                                <!-- Action Button -->
-                                <div style="text-align: center;">
-                                    <button onclick="window.open('diagrama-clases.html', '_blank')" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border: none; padding: 1rem 2.5rem; border-radius: 50px; color: white; font-weight: 600; font-size: 1rem; cursor: pointer; transition: all 0.3s ease; display: inline-flex; align-items: center; gap: 0.75rem; box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);" onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 12px 35px rgba(102, 126, 234, 0.4)'" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 8px 25px rgba(102, 126, 234, 0.3)'">
-                                        <i class="fas fa-eye"></i>
-                                        Visualizar Completo
-                                    </button>
                                 </div>
                             </div>
+                            
+                            <!-- Description & Button -->
+                            <div style="text-align: center; position: relative; z-index: 2; margin-top: auto;">
+                                <p style="color: rgba(255, 255, 255, 0.8); margin-bottom: 2rem; line-height: 1.6; font-size: 0.95rem;">
+                                    Estructura detallada de las clases del sistema, sus métodos, atributos y relaciones de herencia
+                                </p>
+                                <button onclick="window.open('document/diagrama de clases.pdf', '_blank')" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border: none; padding: 1rem 2.5rem; border-radius: 50px; color: white; font-weight: 600; font-size: 1rem; cursor: pointer; transition: all 0.3s ease; display: inline-flex; align-items: center; gap: 0.75rem; box-shadow: 0 10px 25px rgba(102, 126, 234, 0.3); width: 100%;" onmouseover="this.style.transform='translateY(-3px)'; this.style.boxShadow='0 15px 35px rgba(102, 126, 234, 0.4)'" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 10px 25px rgba(102, 126, 234, 0.3)'">
+                                    <i class="fas fa-download"></i>
+                                    <span style="flex: 1;">Ver Diagrama</span>
+                                    <i class="fas fa-arrow-right"></i>
+                                </button>
+                            </div>
+                            
+                            <!-- Creative Background Effect -->
+                            <div style="position: absolute; top: -50%; left: -50%; width: 200%; height: 200%; background: conic-gradient(from 0deg, transparent, rgba(102, 126, 234, 0.1), transparent, rgba(118, 75, 162, 0.1), transparent); animation: rotate 20s linear infinite; z-index: 0; opacity: 0.5;"></div>
                         </div>
                         
-                        <!-- Diagram 2: Entidad-Relación -->
-                        <div style="position: relative; max-width: 450px;">
-                            <div style="background: linear-gradient(145deg, rgba(79, 172, 254, 0.15) 0%, rgba(0, 242, 254, 0.1) 100%); border-radius: 2rem; padding: 3rem 2rem; border: 1px solid rgba(79, 172, 254, 0.2); backdrop-filter: blur(20px); transition: all 0.4s ease; position: relative; overflow: hidden;" onmouseover="this.style.transform='translateY(-10px)'; this.style.boxShadow='0 25px 50px rgba(79, 172, 254, 0.3)'" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='none'">
-                                <!-- Decorative Corner -->
-                                <div style="position: absolute; top: -20px; right: -20px; width: 80px; height: 80px; background: linear-gradient(135deg, #4facfe, #00f2fe); border-radius: 50%; opacity: 0.2;"></div>
-                                
-                                <!-- Header -->
-                                <div style="text-align: center; margin-bottom: 2rem;">
-                                    <div style="width: 100px; height: 100px; background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); border-radius: 50%; margin: 0 auto 1.5rem; display: flex; align-items: center; justify-content: center; box-shadow: 0 15px 35px rgba(79, 172, 254, 0.4);">
-                                        <i class="fas fa-sitemap" style="font-size: 2.5rem; color: white;"></i>
+                        <!-- Modelo Relacional de Base de Datos -->
+                        <div style="background: rgba(255, 255, 255, 0.03); backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 2rem; padding: 3rem 2rem; width: 100%; max-width: 450px; min-height: 650px; position: relative; overflow: hidden; cursor: pointer; transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); display: flex; flex-direction: column;" onmouseover="this.style.transform='translateY(-10px) scale(1.02)'; this.style.boxShadow='0 30px 60px rgba(245, 166, 35, 0.3)';" onmouseout="this.style.transform='translateY(0) scale(1)'; this.style.boxShadow='0 10px 30px rgba(0,0,0,0.1)';">
+                            
+                            <!-- Creative Header -->
+                            <div style="text-align: center; margin-bottom: 2rem;">
+                                <div style="display: inline-block; background: linear-gradient(135deg, #f5a623 0%, #f76707 100%); padding: 1.5rem; border-radius: 50%; margin-bottom: 1.5rem; box-shadow: 0 10px 30px rgba(245, 166, 35, 0.4);">
+                                    <i class="fas fa-database" style="font-size: 2rem; color: white;"></i>
+                                </div>
+                                <h3 style="color: #f5a623; font-size: 1.5rem; font-weight: 700; margin-bottom: 0.5rem;">Modelo Relacional</h3>
+                                <div style="width: 80px; height: 4px; background: linear-gradient(90deg, #f5a623, #f76707); margin: 0 auto; border-radius: 2px;"></div>
+                            </div>
+                            
+                            <!-- PDF Preview -->
+                            <div style="background: rgba(255, 255, 255, 0.95); border-radius: 1.5rem; padding: 1rem; margin-bottom: 2rem; position: relative; z-index: 2; overflow: hidden; flex-grow: 1;">
+                                <div style="position: relative; width: 100%; height: 200px; border-radius: 0.8rem; overflow: hidden; box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);">
+                                    <iframe src="document/modelo_relacional_basededatos.pdf#toolbar=1&navpanes=1&scrollbar=1&page=1&zoom=FitH" 
+                                            style="width: 100%; height: 100%; border: none; display: block;" 
+                                            title="Vista previa Modelo Relacional">
+                                    </iframe>
+                                    <!-- Overlay clickeable para abrir PDF -->
+                                    <div onclick="window.open('document/modelo_relacional_basededatos.pdf', '_blank')" style="position: absolute; top: 0; left: 0; right: 0; bottom: 0; cursor: pointer; z-index: 10;"></div>
+                                    <!-- Indicador de PDF -->
+                                    <div style="position: absolute; top: 10px; right: 10px; background: rgba(245, 166, 35, 0.9); color: white; padding: 0.3rem 0.6rem; border-radius: 15px; font-size: 0.7rem; font-weight: 600; backdrop-filter: blur(5px); pointer-events: none;">
+                                        Vista Previa
                                     </div>
-                                    <h4 style="color: #ffffff; font-size: 1.5rem; font-weight: 700; margin-bottom: 0.5rem;">Entidad-Relación</h4>
-                                    <div style="width: 60px; height: 3px; background: linear-gradient(90deg, #4facfe, #00f2fe); margin: 0 auto; border-radius: 2px;"></div>
-                                </div>
-                                
-                                <!-- Preview -->
-                                <div style="background: #ffffff; border-radius: 1rem; padding: 1.5rem; margin-bottom: 2rem; box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);">
-                                    <img src="assets/img/diagramas/Asociaciones.png" alt="Diagrama Entidad-Relación" style="width: 100%; height: auto; border-radius: 0.5rem;">
-                                </div>
-                                
-                                <!-- Description -->
-                                <p style="color: rgba(255, 255, 255, 0.8); text-align: center; margin-bottom: 2rem; line-height: 1.6;">
-                                    Modelo de datos y asociaciones entre entidades de la base de datos
-                                </p>
-                                
-                                <!-- Action Button -->
-                                <div style="text-align: center;">
-                                    <button onclick="window.open('diagrama-entidad-relacion.html', '_blank')" style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); border: none; padding: 1rem 2.5rem; border-radius: 50px; color: white; font-weight: 600; font-size: 1rem; cursor: pointer; transition: all 0.3s ease; display: inline-flex; align-items: center; gap: 0.75rem; box-shadow: 0 8px 25px rgba(79, 172, 254, 0.3);" onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 12px 35px rgba(79, 172, 254, 0.4)'" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 8px 25px rgba(79, 172, 254, 0.3)'">
-                                        <i class="fas fa-eye"></i>
-                                        Visualizar Completo
-                                    </button>
                                 </div>
                             </div>
+                            
+                            <!-- Description & Button -->
+                            <div style="text-align: center; position: relative; z-index: 2; margin-top: auto;">
+                                <p style="color: rgba(255, 255, 255, 0.8); margin-bottom: 2rem; line-height: 1.6; font-size: 0.95rem;">
+                                    Diseño detallado de la base de datos con tablas, campos, tipos de datos y relaciones
+                                </p>
+                                <button onclick="window.open('document/modelo_relacional_basededatos.pdf', '_blank')" style="background: linear-gradient(135deg, #f5a623 0%, #f76707 100%); border: none; padding: 1rem 2.5rem; border-radius: 50px; color: white; font-weight: 600; font-size: 1rem; cursor: pointer; transition: all 0.3s ease; display: inline-flex; align-items: center; gap: 0.75rem; box-shadow: 0 10px 25px rgba(245, 166, 35, 0.3); width: 100%;" onmouseover="this.style.transform='translateY(-3px)'; this.style.boxShadow='0 15px 35px rgba(245, 166, 35, 0.4)'" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 10px 25px rgba(245, 166, 35, 0.3)'">
+                                    <i class="fas fa-download"></i>
+                                    <span style="flex: 1;">Ver Diagrama</span>
+                                    <i class="fas fa-arrow-right"></i>
+                                </button>
+                            </div>
+                            
+                            <!-- Creative Background Effect -->
+                            <div style="position: absolute; top: -50%; left: -50%; width: 200%; height: 200%; background: conic-gradient(from 45deg, transparent, rgba(245, 166, 35, 0.1), transparent, rgba(247, 103, 7, 0.1), transparent); animation: rotate 25s linear infinite; z-index: 0; opacity: 0.5;"></div>
                         </div>
                     </div>
                 </div>
@@ -353,17 +377,18 @@
                                 <div style="position: absolute; top: -30px; right: -30px; width: 100px; height: 100px; background: radial-gradient(circle, rgba(240, 147, 251, 0.2) 0%, transparent 70%); border-radius: 50%;"></div>
                                 
                                 <div style="text-align: center;">
-                                    <div style="width: 80px; height: 80px; background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); border-radius: 50%; margin: 0 auto 1.5rem; display: flex; align-items: center; justify-content: center; position: relative; z-index: 2;">
-                                        <i class="fas fa-user-check" style="font-size: 2rem; color: white;"></i>
-                                    </div>
-                                    <h5 style="color: #ffffff; font-size: 1.3rem; font-weight: 700; margin-bottom: 1rem;">Registro Usuario</h5>
-                                    <div style="background: rgba(255, 255, 255, 0.95); border-radius: 1rem; padding: 1.5rem; margin-bottom: 1.5rem;">
-                                        <div style="color: #6c757d; text-align: center;">
-                                            <i class="fas fa-user-plus" style="font-size: 2.5rem; color: #f093fb; margin-bottom: 0.5rem;"></i>
-                                            <p style="margin: 0; font-weight: 600;">CU01 - Registro</p>
+                                    <h5 style="color: #ffffff; font-size: 1.3rem; font-weight: 700; margin-bottom: 1rem;">Caso 01</h5>
+                                    <p style="color: rgba(255, 255, 255, 0.8); margin-bottom: 1.5rem; font-size: 0.9rem; line-height: 1.4;">REGISTRAR PEDIDO DE PROVEEDOR </p>
+                                    
+                                    <!-- Vista Previa -->
+                                    <div style="background: rgba(255, 255, 255, 0.95); border-radius: 1rem; padding: 1rem; margin-bottom: 1.5rem; position: relative; overflow: hidden; cursor: pointer;" onclick="window.open('document/casos_de_uso_web/caso01.pdf', '_blank')">
+                                        <img src="assets/img/casos_uso_web/cu01-preview.jpg" alt="Vista previa Caso 01" style="width: 100%; height: 150px; object-fit: cover; border-radius: 0.5rem; transition: transform 0.3s ease;" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
+                                        <div style="position: absolute; top: 10px; right: 10px; background: rgba(240, 147, 251, 0.9); color: white; padding: 0.3rem 0.6rem; border-radius: 15px; font-size: 0.7rem; font-weight: 600;">
+                                            Vista Previa
                                         </div>
                                     </div>
-                                    <button style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); border: none; padding: 0.8rem 2rem; border-radius: 50px; color: white; font-weight: 600; cursor: pointer; width: 100%; transition: all 0.3s ease;">
+                                    
+                                    <button onclick="window.open('document/casos_de_uso_web/caso01.pdf', '_blank')" style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); border: none; padding: 0.8rem 2rem; border-radius: 50px; color: white; font-weight: 600; cursor: pointer; width: 100%; transition: all 0.3s ease;">
                                         <i class="fas fa-download"></i> Obtener Ficha
                                     </button>
                                 </div>
@@ -374,17 +399,18 @@
                                 <div style="position: absolute; top: -30px; right: -30px; width: 100px; height: 100px; background: radial-gradient(circle, rgba(102, 126, 234, 0.2) 0%, transparent 70%); border-radius: 50%;"></div>
                                 
                                 <div style="text-align: center;">
-                                    <div style="width: 80px; height: 80px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 50%; margin: 0 auto 1.5rem; display: flex; align-items: center; justify-content: center; position: relative; z-index: 2;">
-                                        <i class="fas fa-shopping-cart" style="font-size: 2rem; color: white;"></i>
-                                    </div>
-                                    <h5 style="color: #ffffff; font-size: 1.3rem; font-weight: 700; margin-bottom: 1rem;">Gestión Compras</h5>
-                                    <div style="background: rgba(255, 255, 255, 0.95); border-radius: 1rem; padding: 1.5rem; margin-bottom: 1.5rem;">
-                                        <div style="color: #6c757d; text-align: center;">
-                                            <i class="fas fa-cart-plus" style="font-size: 2.5rem; color: #667eea; margin-bottom: 0.5rem;"></i>
-                                            <p style="margin: 0; font-weight: 600;">CU02 - Compras</p>
+                                    <h5 style="color: #ffffff; font-size: 1.3rem; font-weight: 700; margin-bottom: 1rem;">Caso 02</h5>
+                                    <p style="color: rgba(255, 255, 255, 0.8); margin-bottom: 1.5rem; font-size: 0.9rem; line-height: 1.4;">FORMULARIO DE CONSULTAS</p>
+                                    
+                                    <!-- Vista Previa -->
+                                    <div style="background: rgba(255, 255, 255, 0.95); border-radius: 1rem; padding: 1rem; margin-bottom: 1.5rem; position: relative; overflow: hidden; cursor: pointer;" onclick="window.open('document/casos_de_uso_web/caso02.pdf', '_blank')">
+                                        <img src="assets/img/casos_uso_web/cu02-preview.jpg" alt="Vista previa Caso 02" style="width: 100%; height: 150px; object-fit: cover; border-radius: 0.5rem; transition: transform 0.3s ease;" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
+                                        <div style="position: absolute; top: 10px; right: 10px; background: rgba(102, 126, 234, 0.9); color: white; padding: 0.3rem 0.6rem; border-radius: 15px; font-size: 0.7rem; font-weight: 600;">
+                                            Vista Previa
                                         </div>
                                     </div>
-                                    <button style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border: none; padding: 0.8rem 2rem; border-radius: 50px; color: white; font-weight: 600; cursor: pointer; width: 100%; transition: all 0.3s ease;">
+                                    
+                                    <button onclick="window.open('document/casos_de_uso_web/caso02.pdf', '_blank')" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border: none; padding: 0.8rem 2rem; border-radius: 50px; color: white; font-weight: 600; cursor: pointer; width: 100%; transition: all 0.3s ease;">
                                         <i class="fas fa-download"></i> Obtener Ficha
                                     </button>
                                 </div>
@@ -395,17 +421,18 @@
                                 <div style="position: absolute; top: -30px; right: -30px; width: 100px; height: 100px; background: radial-gradient(circle, rgba(79, 172, 254, 0.2) 0%, transparent 70%); border-radius: 50%;"></div>
                                 
                                 <div style="text-align: center;">
-                                    <div style="width: 80px; height: 80px; background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); border-radius: 50%; margin: 0 auto 1.5rem; display: flex; align-items: center; justify-content: center; position: relative; z-index: 2;">
-                                        <i class="fas fa-tools" style="font-size: 2rem; color: white;"></i>
-                                    </div>
-                                    <h5 style="color: #ffffff; font-size: 1.3rem; font-weight: 700; margin-bottom: 1rem;">Gestión Productos</h5>
-                                    <div style="background: rgba(255, 255, 255, 0.95); border-radius: 1rem; padding: 1.5rem; margin-bottom: 1.5rem;">
-                                        <div style="color: #6c757d; text-align: center;">
-                                            <i class="fas fa-box-open" style="font-size: 2.5rem; color: #4facfe; margin-bottom: 0.5rem;"></i>
-                                            <p style="margin: 0; font-weight: 600;">CU03 - Productos</p>
+                                    <h5 style="color: #ffffff; font-size: 1.3rem; font-weight: 700; margin-bottom: 1rem;">Caso 03</h5>
+                                    <p style="color: rgba(255, 255, 255, 0.8); margin-bottom: 1.5rem; font-size: 0.9rem; line-height: 1.4;">ATENCIÓN AL CLIENTE VÍA WHATSAPP</p>
+                                    
+                                    <!-- Vista Previa -->
+                                    <div style="background: rgba(255, 255, 255, 0.95); border-radius: 1rem; padding: 1rem; margin-bottom: 1.5rem; position: relative; overflow: hidden; cursor: pointer;" onclick="window.open('document/casos_de_uso_web/caso03.pdf', '_blank')">
+                                        <img src="assets/img/casos_uso_web/cu03-preview.jpg" alt="Vista previa Caso 03" style="width: 100%; height: 150px; object-fit: cover; border-radius: 0.5rem; transition: transform 0.3s ease;" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
+                                        <div style="position: absolute; top: 10px; right: 10px; background: rgba(79, 172, 254, 0.9); color: white; padding: 0.3rem 0.6rem; border-radius: 15px; font-size: 0.7rem; font-weight: 600;">
+                                            Vista Previa
                                         </div>
                                     </div>
-                                    <button style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); border: none; padding: 0.8rem 2rem; border-radius: 50px; color: white; font-weight: 600; cursor: pointer; width: 100%; transition: all 0.3s ease;">
+                                    
+                                    <button onclick="window.open('document/casos_de_uso_web/caso03.pdf', '_blank')" style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); border: none; padding: 0.8rem 2rem; border-radius: 50px; color: white; font-weight: 600; cursor: pointer; width: 100%; transition: all 0.3s ease;">
                                         <i class="fas fa-download"></i> Obtener Ficha
                                     </button>
                                 </div>
@@ -416,17 +443,18 @@
                                 <div style="position: absolute; top: -30px; right: -30px; width: 100px; height: 100px; background: radial-gradient(circle, rgba(255, 154, 158, 0.2) 0%, transparent 70%); border-radius: 50%;"></div>
                                 
                                 <div style="text-align: center;">
-                                    <div style="width: 80px; height: 80px; background: linear-gradient(135deg, #ff9a9e 0%, #fecfef 100%); border-radius: 50%; margin: 0 auto 1.5rem; display: flex; align-items: center; justify-content: center; position: relative; z-index: 2;">
-                                        <i class="fas fa-cog" style="font-size: 2rem; color: white;"></i>
-                                    </div>
-                                    <h5 style="color: #ffffff; font-size: 1.3rem; font-weight: 700; margin-bottom: 1rem;">Configuración</h5>
-                                    <div style="background: rgba(255, 255, 255, 0.95); border-radius: 1rem; padding: 1.5rem; margin-bottom: 1.5rem;">
-                                        <div style="color: #6c757d; text-align: center;">
-                                            <i class="fas fa-sliders-h" style="font-size: 2.5rem; color: #ff9a9e; margin-bottom: 0.5rem;"></i>
-                                            <p style="margin: 0; font-weight: 600;">CU04 - Config</p>
+                                    <h5 style="color: #ffffff; font-size: 1.3rem; font-weight: 700; margin-bottom: 1rem;">Caso 04</h5>
+                                    <p style="color: rgba(255, 255, 255, 0.8); margin-bottom: 1.5rem; font-size: 0.9rem; line-height: 1.4;">VER PRODUCTOS SIN REGISTRARSE</p>
+                                    
+                                    <!-- Vista Previa -->
+                                    <div style="background: rgba(255, 255, 255, 0.95); border-radius: 1rem; padding: 1rem; margin-bottom: 1.5rem; position: relative; overflow: hidden; cursor: pointer;" onclick="window.open('document/casos_de_uso_web/caso04.pdf', '_blank')">
+                                        <img src="assets/img/casos_uso_web/cu04-preview.jpg" alt="Vista previa Caso 04" style="width: 100%; height: 150px; object-fit: cover; border-radius: 0.5rem; transition: transform 0.3s ease;" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
+                                        <div style="position: absolute; top: 10px; right: 10px; background: rgba(255, 154, 158, 0.9); color: white; padding: 0.3rem 0.6rem; border-radius: 15px; font-size: 0.7rem; font-weight: 600;">
+                                            Vista Previa
                                         </div>
                                     </div>
-                                    <button style="background: linear-gradient(135deg, #ff9a9e 0%, #fecfef 100%); border: none; padding: 0.8rem 2rem; border-radius: 50px; color: white; font-weight: 600; cursor: pointer; width: 100%; transition: all 0.3s ease;">
+                                    
+                                    <button onclick="window.open('document/casos_de_uso_web/caso04.pdf', '_blank')" style="background: linear-gradient(135deg, #ff9a9e 0%, #fecfef 100%); border: none; padding: 0.8rem 2rem; border-radius: 50px; color: white; font-weight: 600; cursor: pointer; width: 100%; transition: all 0.3s ease;">
                                         <i class="fas fa-download"></i> Obtener Ficha
                                     </button>
                                 </div>
@@ -437,17 +465,18 @@
                                 <div style="position: absolute; top: -30px; right: -30px; width: 100px; height: 100px; background: radial-gradient(circle, rgba(168, 237, 234, 0.2) 0%, transparent 70%); border-radius: 50%;"></div>
                                 
                                 <div style="text-align: center;">
-                                    <div style="width: 80px; height: 80px; background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%); border-radius: 50%; margin: 0 auto 1.5rem; display: flex; align-items: center; justify-content: center; position: relative; z-index: 2;">
-                                        <i class="fas fa-chart-line" style="font-size: 2rem; color: white;"></i>
-                                    </div>
-                                    <h5 style="color: #ffffff; font-size: 1.3rem; font-weight: 700; margin-bottom: 1rem;">Reportes</h5>
-                                    <div style="background: rgba(255, 255, 255, 0.95); border-radius: 1rem; padding: 1.5rem; margin-bottom: 1.5rem;">
-                                        <div style="color: #6c757d; text-align: center;">
-                                            <i class="fas fa-chart-bar" style="font-size: 2.5rem; color: #a8edea; margin-bottom: 0.5rem;"></i>
-                                            <p style="margin: 0; font-weight: 600;">CU05 - Reportes</p>
+                                    <h5 style="color: #ffffff; font-size: 1.3rem; font-weight: 700; margin-bottom: 1rem;">Caso 05</h5>
+                                    <p style="color: rgba(255, 255, 255, 0.8); margin-bottom: 1.5rem; font-size: 0.9rem; line-height: 1.4;">REGISTRO DE VENTAS</p>
+                                    
+                                    <!-- Vista Previa -->
+                                    <div style="background: rgba(255, 255, 255, 0.95); border-radius: 1rem; padding: 1rem; margin-bottom: 1.5rem; position: relative; overflow: hidden; cursor: pointer;" onclick="window.open('document/casos_de_uso_web/caso05.pdf', '_blank')">
+                                        <img src="assets/img/casos_uso_web/cu05-preview.jpg" alt="Vista previa Caso 05" style="width: 100%; height: 150px; object-fit: cover; border-radius: 0.5rem; transition: transform 0.3s ease;" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
+                                        <div style="position: absolute; top: 10px; right: 10px; background: rgba(168, 237, 234, 0.9); color: white; padding: 0.3rem 0.6rem; border-radius: 15px; font-size: 0.7rem; font-weight: 600;">
+                                            Vista Previa
                                         </div>
                                     </div>
-                                    <button style="background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%); border: none; padding: 0.8rem 2rem; border-radius: 50px; color: #333; font-weight: 600; cursor: pointer; width: 100%; transition: all 0.3s ease;">
+                                    
+                                    <button onclick="window.open('document/casos_de_uso_web/caso05.pdf', '_blank')" style="background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%); border: none; padding: 0.8rem 2rem; border-radius: 50px; color: #333; font-weight: 600; cursor: pointer; width: 100%; transition: all 0.3s ease;">
                                         <i class="fas fa-download"></i> Obtener Ficha
                                     </button>
                                 </div>
@@ -458,18 +487,41 @@
                                 <div style="position: absolute; top: -30px; right: -30px; width: 100px; height: 100px; background: radial-gradient(circle, rgba(102, 126, 234, 0.2) 0%, transparent 70%); border-radius: 50%;"></div>
                                 
                                 <div style="text-align: center;">
-                                    <div style="width: 80px; height: 80px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 50%; margin: 0 auto 1.5rem; display: flex; align-items: center; justify-content: center; position: relative; z-index: 2;">
-                                        <i class="fas fa-database" style="font-size: 2rem; color: white;"></i>
-                                    </div>
-                                    <h5 style="color: #ffffff; font-size: 1.3rem; font-weight: 700; margin-bottom: 1rem;">Base de Datos</h5>
-                                    <div style="background: rgba(255, 255, 255, 0.95); border-radius: 1rem; padding: 1.5rem; margin-bottom: 1.5rem;">
-                                        <div style="color: #6c757d; text-align: center;">
-                                            <i class="fas fa-server" style="font-size: 2.5rem; color: #667eea; margin-bottom: 0.5rem;"></i>
-                                            <p style="margin: 0; font-weight: 600;">CU06 - BD</p>
+                                    <h5 style="color: #ffffff; font-size: 1.3rem; font-weight: 700; margin-bottom: 1rem;">Caso 06</h5>
+                                    <p style="color: rgba(255, 255, 255, 0.8); margin-bottom: 1.5rem; font-size: 0.9rem; line-height: 1.4;">AGREGAR PRODUCTOS</p>
+                                    
+                                    <!-- Vista Previa -->
+                                    <div style="background: rgba(255, 255, 255, 0.95); border-radius: 1rem; padding: 1rem; margin-bottom: 1.5rem; position: relative; overflow: hidden; cursor: pointer;" onclick="window.open('document/casos_de_uso_web/caso06.pdf', '_blank')">
+                                        <img src="assets/img/casos_uso_web/cu06-preview.jpg" alt="Vista previa Caso 06" style="width: 100%; height: 150px; object-fit: cover; border-radius: 0.5rem; transition: transform 0.3s ease;" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
+                                        <div style="position: absolute; top: 10px; right: 10px; background: rgba(102, 126, 234, 0.9); color: white; padding: 0.3rem 0.6rem; border-radius: 15px; font-size: 0.7rem; font-weight: 600;">
+                                            Vista Previa
                                         </div>
                                     </div>
-                                    <button style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border: none; padding: 0.8rem 2rem; border-radius: 50px; color: white; font-weight: 600; cursor: pointer; width: 100%; transition: all 0.3s ease;">
-                                        <i class="fas fa-file-image"></i> Obtener PNG
+                                    
+                                    <button onclick="window.open('document/casos_de_uso_web/caso06.pdf', '_blank')" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border: none; padding: 0.8rem 2rem; border-radius: 50px; color: white; font-weight: 600; cursor: pointer; width: 100%; transition: all 0.3s ease;">
+                                        <i class="fas fa-download"></i> Obtener Ficha
+                                    </button>
+                                </div>
+                            </div>
+                            
+                            <!-- CU07 -->
+                            <div style="background: linear-gradient(145deg, rgba(245, 166, 35, 0.1) 0%, rgba(80, 200, 120, 0.05) 100%); border-radius: 1.5rem; padding: 2rem; border: 1px solid rgba(245, 166, 35, 0.2); backdrop-filter: blur(15px); transition: all 0.4s ease; position: relative; overflow: hidden;" onmouseover="this.style.transform='rotate(2deg) scale(1.05)'; this.style.boxShadow='0 20px 40px rgba(245, 166, 35, 0.3)'" onmouseout="this.style.transform='rotate(0deg) scale(1)'; this.style.boxShadow='none'">
+                                <div style="position: absolute; top: -30px; right: -30px; width: 100px; height: 100px; background: radial-gradient(circle, rgba(245, 166, 35, 0.2) 0%, transparent 70%); border-radius: 50%;"></div>
+                                
+                                <div style="text-align: center;">
+                                    <h5 style="color: #ffffff; font-size: 1.3rem; font-weight: 700; margin-bottom: 1rem;">Caso 07</h5>
+                                    <p style="color: rgba(255, 255, 255, 0.8); margin-bottom: 1.5rem; font-size: 0.9rem; line-height: 1.4;">DASHBOARD CON ESTADÍSTICAS</p>
+                                    
+                                    <!-- Vista Previa -->
+                                    <div style="background: rgba(255, 255, 255, 0.95); border-radius: 1rem; padding: 1rem; margin-bottom: 1.5rem; position: relative; overflow: hidden; cursor: pointer;" onclick="window.open('document/casos_de_uso_web/caso07.pdf', '_blank')">
+                                        <img src="assets/img/casos_uso_web/cu07-preview.jpg" alt="Vista previa Caso 07" style="width: 100%; height: 150px; object-fit: cover; border-radius: 0.5rem; transition: transform 0.3s ease;" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
+                                        <div style="position: absolute; top: 10px; right: 10px; background: rgba(245, 166, 35, 0.9); color: white; padding: 0.3rem 0.6rem; border-radius: 15px; font-size: 0.7rem; font-weight: 600;">
+                                            Vista Previa
+                                        </div>
+                                    </div>
+                                    
+                                    <button onclick="window.open('document/casos_de_uso_web/caso07.pdf', '_blank')" style="background: linear-gradient(135deg, #f5a623 0%, #50c878 100%); border: none; padding: 0.8rem 2rem; border-radius: 50px; color: white; font-weight: 600; cursor: pointer; width: 100%; transition: all 0.3s ease;">
+                                        <i class="fas fa-download"></i> Obtener Ficha
                                     </button>
                                 </div>
                             </div>
@@ -519,24 +571,16 @@
                                     <div style="width: 80px; height: 4px; background: linear-gradient(90deg, #f5a623, #f76b1c); margin: 0 auto; border-radius: 2px;"></div>
                                 </div>
                                 
-                                <!-- Content Preview -->
-                                <div style="background: rgba(255, 255, 255, 0.95); border-radius: 1.5rem; padding: 2rem; margin-bottom: 2rem; position: relative; z-index: 2;">
-                                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; text-align: center; color: #6c757d;">
-                                        <div>
-                                            <i class="fas fa-mouse-pointer" style="font-size: 1.5rem; color: #f5a623; margin-bottom: 0.5rem;"></i>
-                                            <p style="margin: 0; font-size: 0.8rem; font-weight: 600;">Navegación</p>
-                                        </div>
-                                        <div>
-                                            <i class="fas fa-shopping-bag" style="font-size: 1.5rem; color: #f5a623; margin-bottom: 0.5rem;"></i>
-                                            <p style="margin: 0; font-size: 0.8rem; font-weight: 600;">Compras</p>
-                                        </div>
-                                        <div>
-                                            <i class="fas fa-user-cog" style="font-size: 1.5rem; color: #f5a623; margin-bottom: 0.5rem;"></i>
-                                            <p style="margin: 0; font-size: 0.8rem; font-weight: 600;">Perfil</p>
-                                        </div>
-                                        <div>
-                                            <i class="fas fa-headset" style="font-size: 1.5rem; color: #f5a623; margin-bottom: 0.5rem;"></i>
-                                            <p style="margin: 0; font-size: 0.8rem; font-weight: 600;">Soporte</p>
+                                <!-- PDF Preview -->
+                                <div style="background: rgba(255, 255, 255, 0.95); border-radius: 1.5rem; padding: 1rem; margin-bottom: 2rem; position: relative; z-index: 2; overflow: hidden;">
+                                    <div style="position: relative; width: 100%; height: 200px; border-radius: 0.8rem; overflow: hidden; box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);">
+                                        <iframe src="document/Manual_Usuario_Web.pdf#toolbar=1&navpanes=1&scrollbar=1&page=1&zoom=FitH" 
+                                                style="width: 100%; height: 100%; border: none; display: block;" 
+                                                title="Vista previa Manual de Usuario Web">
+                                        </iframe>
+                                        <!-- Indicador de PDF -->
+                                        <div style="position: absolute; top: 10px; right: 10px; background: rgba(245, 166, 35, 0.9); color: white; padding: 0.3rem 0.6rem; border-radius: 15px; font-size: 0.7rem; font-weight: 600; backdrop-filter: blur(5px); pointer-events: none;">
+                                            Vista Previa
                                         </div>
                                     </div>
                                 </div>
@@ -545,14 +589,10 @@
                                 <div style="text-align: center; position: relative; z-index: 2;">
                                     <p style="color: rgba(255, 255, 255, 0.8); margin-bottom: 2rem; line-height: 1.6; font-size: 0.95rem;">
                                         Guía completa para usuarios finales de la aplicación web con instrucciones paso a paso
-                                        <span style="display: inline-flex; align-items: center; gap: 0.5rem; color: #4ade80; font-weight: 600; margin-top: 0.5rem;">
-                                            <i class="fas fa-check-circle"></i>
-                                            ¡Ya disponible!
-                                        </span>
                                     </p>
-                                    <button onclick="window.open('manual-usuario.html')" style="background: linear-gradient(135deg, #f5a623 0%, #f76b1c 100%); border: none; padding: 1rem 2.5rem; border-radius: 50px; color: white; font-weight: 600; font-size: 1rem; cursor: pointer; transition: all 0.3s ease; display: inline-flex; align-items: center; gap: 0.75rem; box-shadow: 0 10px 25px rgba(245, 166, 35, 0.3); width: 100%;" onmouseover="this.style.transform='translateY(-3px)'; this.style.boxShadow='0 15px 35px rgba(245, 166, 35, 0.4)'" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 10px 25px rgba(245, 166, 35, 0.3)'">
+                                    <button onclick="window.open('document/Manual_Usuario_Web.pdf', '_blank')" style="background: linear-gradient(135deg, #f5a623 0%, #f76b1c 100%); border: none; padding: 1rem 2.5rem; border-radius: 50px; color: white; font-weight: 600; font-size: 1rem; cursor: pointer; transition: all 0.3s ease; display: inline-flex; align-items: center; gap: 0.75rem; box-shadow: 0 10px 25px rgba(245, 166, 35, 0.3); width: 100%;" onmouseover="this.style.transform='translateY(-3px)'; this.style.boxShadow='0 15px 35px rgba(245, 166, 35, 0.4)'" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 10px 25px rgba(245, 166, 35, 0.3)'">
                                         <i class="fas fa-download"></i>
-                                        <span style="flex: 1;">Descargar Manual</span>
+                                        <span style="flex: 1;">Ver Manual</span>
                                         <i class="fas fa-arrow-right"></i>
                                     </button>
                                 </div>
@@ -580,24 +620,16 @@
                                     <div style="width: 80px; height: 4px; background: linear-gradient(90deg, #50c878, #00a86b); margin: 0 auto; border-radius: 2px;"></div>
                                 </div>
                                 
-                                <!-- Content Preview -->
-                                <div style="background: rgba(255, 255, 255, 0.95); border-radius: 1.5rem; padding: 2rem; margin-bottom: 2rem; position: relative; z-index: 2;">
-                                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; text-align: center; color: #6c757d;">
-                                        <div>
-                                            <i class="fas fa-server" style="font-size: 1.5rem; color: #50c878; margin-bottom: 0.5rem;"></i>
-                                            <p style="margin: 0; font-size: 0.8rem; font-weight: 600;">Instalación</p>
-                                        </div>
-                                        <div>
-                                            <i class="fas fa-cogs" style="font-size: 1.5rem; color: #50c878; margin-bottom: 0.5rem;"></i>
-                                            <p style="margin: 0; font-size: 0.8rem; font-weight: 600;">Config</p>
-                                        </div>
-                                        <div>
-                                            <i class="fas fa-database" style="font-size: 1.5rem; color: #50c878; margin-bottom: 0.5rem;"></i>
-                                            <p style="margin: 0; font-size: 0.8rem; font-weight: 600;">BD</p>
-                                        </div>
-                                        <div>
-                                            <i class="fas fa-bug" style="font-size: 1.5rem; color: #50c878; margin-bottom: 0.5rem;"></i>
-                                            <p style="margin: 0; font-size: 0.8rem; font-weight: 600;">Debug</p>
+                                <!-- PDF Preview -->
+                                <div style="background: rgba(255, 255, 255, 0.95); border-radius: 1.5rem; padding: 1rem; margin-bottom: 2rem; position: relative; z-index: 2; overflow: hidden;">
+                                    <div style="position: relative; width: 100%; height: 200px; border-radius: 0.8rem; overflow: hidden; box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);">
+                                        <iframe src="document/Manual_Tecnico_Web.pdf#toolbar=1&navpanes=1&scrollbar=1&page=1&zoom=FitH"
+                                                style="width: 100%; height: 100%; border: none; display: block;" 
+                                                title="Vista previa Manual Técnico Web">
+                                        </iframe>
+                                        <!-- Indicador de PDF -->
+                                        <div style="position: absolute; top: 10px; right: 10px; background: rgba(80, 200, 120, 0.9); color: white; padding: 0.3rem 0.6rem; border-radius: 15px; font-size: 0.7rem; font-weight: 600; backdrop-filter: blur(5px); pointer-events: none;">
+                                            Vista Previa
                                         </div>
                                     </div>
                                 </div>
@@ -607,9 +639,9 @@
                                     <p style="color: rgba(255, 255, 255, 0.8); margin-bottom: 2rem; line-height: 1.6; font-size: 0.95rem;">
                                         Documentación técnica para desarrolladores y administradores del sistema web
                                     </p>
-                                    <button onclick="window.open('manual-tecnico.html', '_blank')" style="background: linear-gradient(135deg, #50c878 0%, #00a86b 100%); border: none; padding: 1rem 2.5rem; border-radius: 50px; color: white; font-weight: 600; font-size: 1rem; cursor: pointer; transition: all 0.3s ease; display: inline-flex; align-items: center; gap: 0.75rem; box-shadow: 0 10px 25px rgba(80, 200, 120, 0.3); width: 100%;" onmouseover="this.style.transform='translateY(-3px)'; this.style.boxShadow='0 15px 35px rgba(80, 200, 120, 0.4)'" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 10px 25px rgba(80, 200, 120, 0.3)'">
+                                    <button onclick="window.open('document/Manual_Tecnico_Web.pdf', '_blank')" style="background: linear-gradient(135deg, #50c878 0%, #00a86b 100%); border: none; padding: 1rem 2.5rem; border-radius: 50px; color: white; font-weight: 600; font-size: 1rem; cursor: pointer; transition: all 0.3s ease; display: inline-flex; align-items: center; gap: 0.75rem; box-shadow: 0 10px 25px rgba(80, 200, 120, 0.3); width: 100%;" onmouseover="this.style.transform='translateY(-3px)'; this.style.boxShadow='0 15px 35px rgba(80, 200, 120, 0.4)'" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 10px 25px rgba(80, 200, 120, 0.3)'">
                                         <i class="fas fa-download"></i>
-                                        <span style="flex: 1;">Descargar Manual</span>
+                                        <span style="flex: 1;">Ver Manual</span>
                                         <i class="fas fa-arrow-right"></i>
                                     </button>
                                 </div>
