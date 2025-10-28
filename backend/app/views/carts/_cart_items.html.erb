@@ -55,15 +55,30 @@
       <div class="d-flex gap-3 mt-3" style="margin: 0 !important;">
         <% if cart_items.any? %>
           <div id="wompi-container">
-            <script
-              src="https://checkout.wompi.co/widget.js"
-              data-render="button"
-              data-public-key="pub_test_f0bOPKD5aHr1J6hgSEc9KhPLAFFrOk66"
-              data-currency="COP"
-              data-amount-in-cents="<%= ((cart_items.sum { |i| (i.product&.precio || 0) * (i.quantity || 0) }) * 100).to_i %>"
-              data-reference="<%= current_page?(cart_path) ? @payment_reference : "sidebar_#{Time.current.to_i}" %>"
-              data-signature-integrity="<%= current_page?(cart_path) ? @signature : '' %>"
-            ></script>
+            <% pub_key = Rails.application.credentials.dig(:wompi, :public_key) || ENV['WOMPI_PUBLIC_KEY'] %>
+            <% amount_cents = ((cart_items.sum { |i| (i.product&.precio || 0) * (i.quantity || 0) }) * 100).to_i %>
+            <p><strong>Firma generada:</strong> <%= @signature %></p>
+            <p><strong>Referencia:</strong> <%= @payment_reference %></p>
+
+            <% if current_page?(cart_path) && pub_key.present? && @payment_reference.present? && @signature.present? %>
+              <script
+                src="https://checkout.wompi.co/widget.js"
+                data-render="button"
+                data-public-key="<%= Rails.application.credentials.dig(:wompi, :public_key) %>"
+                data-currency="COP"
+                 data-amount-in-cents="<%= ((@cart.total || 0) * 100).to_i %>"
+    
+               data-reference="<%= @payment_reference %>"
+               data-signature-integrity="<%= @signature %>"
+              </script>
+
+              </script>
+              
+
+            <% else %>
+              <%# En sidebar o cuando no haya signature en servidor mostramos el widget via AJAX (script inyectado) %>
+              <div id="wompi-sidebar-placeholder"></div>
+            <% end %>
           </div>
         <% end %>
       </div>
@@ -75,6 +90,40 @@
     </div>
   <% end %>
 </div>
+<div id="wompi-sidebar-container">
+  <div id="wompi-sidebar-placeholder" aria-live="polite"></div>
+</div>
+
+<script>
+(function(){
+  const placeholder = document.getElementById('wompi-sidebar-placeholder');
+  if (!placeholder) return;
+
+  fetch('/payments/widget_token.json', { credentials: 'same-origin' })
+    .then(r => {
+      if (!r.ok) throw new Error('widget_token failed: ' + r.status);
+      return r.json();
+    })
+    .then(data => {
+      if (!data.public_key || !data.signature) throw new Error('Missing wompi data');
+      const script = document.createElement('script');
+      script.src = 'https://checkout.wompi.co/widget.js';
+      script.setAttribute('data-render', 'button');
+      script.setAttribute('data-public-key', data.public_key);
+      script.setAttribute('data-currency', 'COP');
+      script.setAttribute('data-amount-in-cents', data.amount_in_cents);
+      script.setAttribute('data-reference', data.reference);
+      script.setAttribute('data-signature', data.signature);
+      placeholder.innerHTML = '';
+      placeholder.appendChild(script);
+    })
+    .catch(err => {
+      console.warn('[Wompi] sidebar widget error:', err);
+      placeholder.innerHTML = '<button class="btn btn-dark" disabled><i class="fa-solid fa-lock"></i> Pagar (no disponible)</button>';
+    });
+})();
+</script>
+
 <script>
 document.addEventListener('DOMContentLoaded', function() {
   const csrfToken = document.querySelector('meta[name="csrf-token"]').content;
@@ -235,26 +284,36 @@ document.addEventListener('DOMContentLoaded', function() {
 
   // 🔹 Función para actualizar el botón de Wompi
   function updateWompiButton(newTotal) {
-    const wompiContainer = document.getElementById('wompi-container');
+    const wompiContainer = document.getElementById('wompi-container') || document.getElementById('wompi-sidebar-placeholder');
     if (!wompiContainer) return;
 
     const amountInCents = Math.round(newTotal * 100);
-    const reference = `cart_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
 
-    // Remover el script anterior
-    wompiContainer.innerHTML = '';
-
-    // Crear nuevo script con el total actualizado
-    const newScript = document.createElement('script');
-    newScript.src = 'https://checkout.wompi.co/widget.js';
-    newScript.setAttribute('data-render', 'button');
-    newScript.setAttribute('data-public-key', 'pub_test_f0bOPKD5aHr1J6hgSEc9KhPLAFFrOk66');
-    newScript.setAttribute('data-currency', 'COP');
-    newScript.setAttribute('data-amount-in-cents', amountInCents);
-    newScript.setAttribute('data-reference', reference);
-    newScript.setAttribute('data-signature-integrity', '');
-
-    wompiContainer.appendChild(newScript);
+    // pedir signature al servidor antes de inyectar el script
+    fetch(`/payments/widget_token.json?amount_in_cents=${amountInCents}`, { credentials: 'same-origin' })
+      .then(r => {
+        if (!r.ok) throw new Error('widget_token failed: ' + r.status);
+        return r.json();
+      })
+      .then(data => {
+        if (!data.public_key || !data.signature) throw new Error('Missing wompi data');
+        // Reemplazar contenido con script del widget usando la signature generada en el servidor
+        wompiContainer.innerHTML = '';
+        const script = document.createElement('script');
+        script.src = 'https://checkout.wompi.co/widget.js';
+        script.setAttribute('data-render', 'button');
+        script.setAttribute('data-public-key', data.public_key);
+        script.setAttribute('data-currency', 'COP');
+        script.setAttribute('data-amount-in-cents', data.amount_in_cents);
+        script.setAttribute('data-reference', data.reference);
+        script.setAttribute('data-signature', data.signature);
+        wompiContainer.appendChild(script);
+      })
+      .catch(err => {
+        console.warn('[Wompi] update button error:', err);
+        // dejar fallback visual si falla
+        wompiContainer.innerHTML = '<button class="btn btn-dark" disabled><i class="fa-solid fa-lock"></i> Pagar (no disponible)</button>';
+      });
   }
 
   // 🔹 Funciones de formato de precio

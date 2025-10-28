@@ -1,8 +1,46 @@
 class PaymentsController < ApplicationController
   skip_before_action :verify_authenticity_token, only: [:webhook]
   protect_from_forgery except: :webhook
-  require 'faraday'
   require 'securerandom'
+  require 'faraday'
+  # GET /payments/widget_token.json
+  # Devuelve: { public_key, amount_in_cents, reference, signature }
+  def widget_token
+    # Busca el carrito actual.
+    cart = current_user&.cart || Cart.find_by(id: session[:cart_id]) || Cart.find_by(id: params[:cart_id])
+    
+    unless cart && cart.cart_items.any?
+      render json: { error: 'Carrito no encontrado o vacío' }, status: :not_found and return
+    end
+
+    amount_in_cents = if params[:amount_in_cents].present?
+                        params[:amount_in_cents].to_i
+                      else
+                        ((cart.cart_items.sum { |i| (i.product&.precio || 0) * (i.try(:cantidad) || i.try(:quantity) || 1) }).to_f * 100).to_i
+                      end
+
+    reference = params[:reference].presence || "cart_#{cart.id}_#{Time.now.to_i}"
+
+    begin
+      signature = WompiService.new.signature_for(reference: reference, amount_in_cents: amount_in_cents, currency: 'COP')
+    rescue => e
+      Rails.logger.error("[Wompi] widget_token signature error: #{e.message}")
+      render json: { error: 'No se pudo generar signature' }, status: :internal_server_error and return
+    end
+
+    public_key = Rails.application.credentials.dig(:wompi, :public_key) || ENV['WOMPI_PUBLIC_KEY']
+    unless public_key.present?
+      Rails.logger.error("[Wompi] public_key missing")
+      render json: { error: 'Public key missing' }, status: :internal_server_error and return
+    end
+
+    render json: {
+      public_key: public_key,
+      amount_in_cents: amount_in_cents,
+      reference: reference,
+      signature: signature
+    }
+  end
 
   def new
     @payment = Payment.new(cart: current_cart, amount: (current_cart.try(:total) || 0))
@@ -148,6 +186,17 @@ class PaymentsController < ApplicationController
   def show
     @payment = Payment.find(params[:id])
     render json: { id: @payment.id, status: @payment.status, amount: @payment.amount, wompi_id: @payment.wompi_id }
+    @cart_items = current_user.cart.cart_items.includes(:product)
+  total_amount = (@cart_items.sum(&:total_price) || 0).to_f
+
+  @amount_cents = (total_amount * 100).to_i
+  @payment_reference = params[:reference].presence || "cart_#{@cart&.id || 'anon'}_#{Time.now.to_i}"
+
+  @signature = WompiService.new.signature_for(
+    reference: @payment_reference,
+    amount_in_cents: @amount_cents,
+    currency: "COP"
+  )
   end
 
   def confirm
