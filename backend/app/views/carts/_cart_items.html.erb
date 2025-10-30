@@ -56,28 +56,28 @@
         <% if cart_items.any? %>
           <div id="wompi-container">
             <% pub_key = Rails.application.credentials.dig(:wompi, :public_key) || ENV['WOMPI_PUBLIC_KEY'] %>
-            <% amount_cents = ((cart_items.sum { |i| (i.product&.precio || 0) * (i.quantity || 0) }) * 100).to_i %>
-            <p><strong>Firma generada:</strong> <%= @signature %></p>
-            <p><strong>Referencia:</strong> <%= @payment_reference %></p>
-
-            <% if current_page?(cart_path) && pub_key.present? && @payment_reference.present? && @signature.present? %>
+            <% if pub_key.present? && @amount_cents.to_i > 0 && @payment_reference.present? && @signature.present? %>
               <script
                 src="https://checkout.wompi.co/widget.js"
                 data-render="button"
-                data-public-key="<%= Rails.application.credentials.dig(:wompi, :public_key) %>"
+                data-public-key="<%= pub_key %>"
                 data-currency="COP"
-                 data-amount-in-cents="<%= ((@cart.total || 0) * 100).to_i %>"
-    
-               data-reference="<%= @payment_reference %>"
-               data-signature-integrity="<%= @signature %>"
+                data-amount-in-cents="<%= @amount_cents %>"
+                data-reference="<%= @payment_reference %>"
+                data-signature="<%= @signature %>">
               </script>
-
-              </script>
-              
-
             <% else %>
-              <%# En sidebar o cuando no haya signature en servidor mostramos el widget via AJAX (script inyectado) %>
-              <div id="wompi-sidebar-placeholder"></div>
+              <div class="alert alert-warning">
+                <% if !pub_key.present? %>
+                  Error: Falta configurar WOMPI_PUBLIC_KEY
+                <% elsif !@signature.present? %>
+                  Error: No se pudo generar la firma
+                <% elsif @amount_cents.to_i <= 0 %>
+                  Error: Monto inválido
+                <% else %>
+                  Error: Faltan datos para el pago
+                <% end %>
+              </div>
             <% end %>
           </div>
         <% end %>

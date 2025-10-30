@@ -25,7 +25,11 @@ class WompiService
   # 2) Generar firma: SHA256( reference + amount_in_cents + currency + integrity_secret )
   def signature_for(reference:, amount_in_cents:, currency: "COP")
     raise "Wompi integrity_secret missing" if @integrity_secret.blank?
+    
+    # Concatenar en orden correcto
     payload = "#{reference}#{amount_in_cents}#{currency}#{@integrity_secret}"
+    
+    # Generar hash SHA256
     OpenSSL::Digest::SHA256.hexdigest(payload)
   end
 

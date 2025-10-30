@@ -2,15 +2,27 @@ class CartsController < ApplicationController
   before_action :set_cart
 
   def show
-    Rails.logger.info "[DEBUG Wompi] Firma generada: #{@signature}"
     @cart_items = @cart.cart_items.includes(:product)
-    total_amount = @cart_items.sum { |i| (i.product&.precio || 0) * (i.try(:cantidad) || i.try(:quantity) || 1) }.to_f
+    
+    # Calcular monto total y convertir a centavos
+    total_amount = @cart_items.sum { |item| (item.product&.precio || 0) * (item.cantidad || 0) }
     @amount_cents = (total_amount * 100).to_i
-    @payment_reference = params[:reference].presence || "cart_#{@cart&.id || 'anon'}_#{Time.now.to_i}"
+    
+    # Generar referencia única
+    @payment_reference = "cart_#{@cart.id}_#{Time.current.to_i}"
+    
     begin
-      @signature = WompiService.new.signature_for(reference: @payment_reference, amount_in_cents: @amount_cents, currency: 'COP')
+      wompi_service = WompiService.new
+      @signature = wompi_service.signature_for(
+        reference: @payment_reference,
+        amount_in_cents: @amount_cents,
+        currency: 'COP'
+      )
+      
+      Rails.logger.info "[DEBUG Wompi] Amount: #{@amount_cents}, Reference: #{@payment_reference}"
+      Rails.logger.info "[DEBUG Wompi] Signature: #{@signature}"
     rescue => e
-      Rails.logger.error("[Wompi] signature error in carts#show: #{e.message}")
+      Rails.logger.error("[Wompi] Error generando firma: #{e.full_message}")
       @signature = nil
     end
   end
