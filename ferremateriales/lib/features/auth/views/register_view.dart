@@ -1,10 +1,11 @@
-import 'package:ferremateriales/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../bloc/auth_bloc.dart';
 import '../bloc/auth_state.dart';
 import '../bloc/auth_event.dart';
+import '../utils/email_validator.dart';
+import '../utils/password_validator.dart';
 
 class RegisterView extends StatefulWidget {
   @override
@@ -17,22 +18,66 @@ class _RegisterViewState extends State<RegisterView> {
   String _nombre = "";
   String _email = "";
   String _password = "";
-  String _confirmPassword = "";
+  String? _emailError;
 
   @override
   Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context)!;
-
     return BlocListener<AuthBloc, AuthState>(
       listener: (context, state) {
         if (state.status == AuthStatus.success) {
           ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text(l10n.registrationSuccess ?? 'Usuario registrado exitosamente')),
+            const SnackBar(
+              content: Text('Usuario registrado exitosamente'),
+              backgroundColor: Colors.green,
+              duration: Duration(seconds: 3),
+            ),
           );
           Navigator.pop(context);
         } else if (state.status == AuthStatus.failure) {
+          print('🔴 Error en registro: ${state.error}'); // Debug
+          
+          // Verificar si el error es de email duplicado
+          if (state.error != null && 
+              (state.error!.contains('DUPLICATE_EMAIL') ||
+               state.error!.contains('ya está registrado') || 
+               state.error!.contains('already exists') ||
+               state.error!.contains('already registered') ||
+               state.error!.contains('duplicado') ||
+               (state.error!.toLowerCase().contains('email') && state.error!.toLowerCase().contains('taken')))) {
+            // Marcar error en el campo de email
+            setState(() {
+              _emailError = 'Este correo electrónico ya está registrado';
+            });
+            // Revalidar el formulario para mostrar el error en rojo
+            _formKey.currentState?.validate();
+          }
+          
+          // Mostrar UN SOLO SnackBar con el mensaje específico
           ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text(state.error ?? 'Error desconocido')),
+            SnackBar(
+              content: Row(
+                children: [
+                  const Icon(Icons.error_outline, color: Colors.white),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: Text(
+                      state.error ?? 'Error desconocido',
+                      style: GoogleFonts.inter(
+                        fontSize: 14,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+              backgroundColor: Colors.red.shade700,
+              behavior: SnackBarBehavior.floating,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(12),
+              ),
+              duration: const Duration(seconds: 4),
+              margin: const EdgeInsets.all(16),
+            ),
           );
         }
       },
@@ -151,20 +196,59 @@ class _RegisterViewState extends State<RegisterView> {
                                 focusedBorder: const UnderlineInputBorder(
                                   borderSide: BorderSide(color: Color(0xFF2e67a3), width: 2),
                                 ),
+                                errorBorder: const UnderlineInputBorder(
+                                  borderSide: BorderSide(color: Colors.red, width: 2),
+                                ),
+                                focusedErrorBorder: const UnderlineInputBorder(
+                                  borderSide: BorderSide(color: Colors.red, width: 2),
+                                ),
                                 contentPadding: const EdgeInsets.symmetric(vertical: 12, horizontal: 0),
                               ),
                               keyboardType: TextInputType.emailAddress,
-                              onChanged: (value) => _email = value,
+                              onChanged: (value) {
+                                setState(() {
+                                  _email = value;
+                                  // Limpiar error al escribir
+                                  if (_emailError != null) {
+                                    _emailError = null;
+                                  }
+                                });
+                              },
                               validator: (value) {
-                                if (value == null || value.isEmpty) {
-                                  return 'Este campo es requerido';
+                                // Si hay un error de email duplicado, mostrarlo
+                                if (_emailError != null) {
+                                  return _emailError;
                                 }
-                                if (!value.contains('@')) {
-                                  return 'Ingresa un correo válido';
-                                }
-                                return null;
+                                // Si no, validar formato normal
+                                return EmailValidator.validate(value);
                               },
                             ),
+                            
+                            // Mensaje adicional si el email está duplicado
+                            if (_emailError != null)
+                              Padding(
+                                padding: const EdgeInsets.only(top: 8),
+                                child: Row(
+                                  children: [
+                                    const Icon(
+                                      Icons.info_outline,
+                                      color: Colors.red,
+                                      size: 16,
+                                    ),
+                                    const SizedBox(width: 6),
+                                    Expanded(
+                                      child: Text(
+                                        'Intenta iniciar sesión o usa otro correo',
+                                        style: GoogleFonts.inter(
+                                          fontSize: 12,
+                                          color: Colors.red.shade700,
+                                          fontWeight: FontWeight.w500,
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
                             const SizedBox(height: 24),
 
                             // Contraseña
@@ -207,11 +291,52 @@ class _RegisterViewState extends State<RegisterView> {
                                   },
                                 ),
                               ),
-                              onChanged: (value) => _password = value,
-                              validator: (value) =>
-                                  value == null || value.isEmpty ? 'Este campo es requerido' : null,
+                              onChanged: (value) {
+                                setState(() {
+                                  _password = value;
+                                });
+                              },
+                              validator: PasswordValidator.validate,
                             ),
-                            const SizedBox(height: 24),
+                            const SizedBox(height: 12),
+
+                            // Indicador de fortaleza de contraseña
+                            if (_password.isNotEmpty)
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Row(
+                                    children: [
+                                      Expanded(
+                                        child: LinearProgressIndicator(
+                                          value: PasswordValidator.getStrength(_password) / 100,
+                                          backgroundColor: Colors.grey.shade200,
+                                          valueColor: AlwaysStoppedAnimation<Color>(
+                                            Color(PasswordValidator.getStrengthColor(
+                                              PasswordValidator.getStrength(_password),
+                                            )),
+                                          ),
+                                          minHeight: 4,
+                                        ),
+                                      ),
+                                      const SizedBox(width: 8),
+                                      Text(
+                                        PasswordValidator.getStrengthText(
+                                          PasswordValidator.getStrength(_password),
+                                        ),
+                                        style: GoogleFonts.inter(
+                                          fontSize: 12,
+                                          color: Color(PasswordValidator.getStrengthColor(
+                                            PasswordValidator.getStrength(_password),
+                                          )),
+                                          fontWeight: FontWeight.w500,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ],
+                              ),
+                            const SizedBox(height: 12),
 
                             // Confirmar contraseña
                             TextFormField(
@@ -239,10 +364,9 @@ class _RegisterViewState extends State<RegisterView> {
                                 ),
                                 contentPadding: const EdgeInsets.symmetric(vertical: 12, horizontal: 0),
                               ),
-                              onChanged: (value) => _confirmPassword = value,
                               validator: (value) {
                                 if (value == null || value.isEmpty) {
-                                  return 'Este campo es requerido';
+                                  return 'Debes confirmar tu contraseña';
                                 }
                                 if (value != _password) {
                                   return 'Las contraseñas no coinciden';

@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../bloc/auth_bloc.dart';
 import '../bloc/auth_event.dart';
+import '../utils/email_validator.dart';
 
 class LoginForm extends StatefulWidget {
   @override
@@ -50,15 +51,7 @@ class _LoginFormState extends State<LoginForm> {
             ),
             keyboardType: TextInputType.emailAddress,
             onChanged: (value) => _username = value,
-            validator: (value) {
-              if (value == null || value.isEmpty) {
-                return 'Este campo es requerido';
-              }
-              if (!value.contains('@')) {
-                return 'Ingresa un correo válido';
-              }
-              return null;
-            },
+            validator: EmailValidator.validate,
           ),
           const SizedBox(height: 24),
 
