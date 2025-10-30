@@ -12,24 +12,28 @@ class CartView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
 
     return BlocBuilder<CartBloc, CartState>(
       builder: (context, state) {
         return Scaffold(
-          backgroundColor: Colors.grey.shade50,
+          backgroundColor: isDark ? Colors.grey.shade900 : Colors.grey.shade50,
           appBar: AppBar(
-            backgroundColor: Colors.white,
+            backgroundColor: isDark ? Colors.grey.shade800 : Colors.white,
             elevation: 0,
             title: Text(
               l10n.myCart,
-              style: const TextStyle(
-                color: Color(0xFF222222),
+              style: TextStyle(
+                color: isDark ? Colors.white : const Color(0xFF222222),
                 fontWeight: FontWeight.bold,
               ),
             ),
             centerTitle: true,
             leading: IconButton(
-              icon: const Icon(Icons.arrow_back, color: Color(0xFF222222)),
+              icon: Icon(
+                Icons.arrow_back,
+                color: isDark ? Colors.white : const Color(0xFF222222),
+              ),
               onPressed: () => Navigator.pop(context),
             ),
           ),
@@ -41,14 +45,14 @@ class CartView extends StatelessWidget {
                       Icon(
                         Icons.shopping_cart_outlined,
                         size: 100,
-                        color: Colors.grey.shade300,
+                        color: isDark ? Colors.grey.shade600 : Colors.grey.shade300,
                       ),
                       const SizedBox(height: 16),
                       Text(
                         l10n.emptyCart,
                         style: TextStyle(
                           fontSize: 18,
-                          color: Colors.grey.shade600,
+                          color: isDark ? Colors.grey.shade400 : Colors.grey.shade600,
                         ),
                       ),
                     ],
@@ -65,16 +69,20 @@ class CartView extends StatelessWidget {
                           return Container(
                             margin: const EdgeInsets.only(bottom: 16),
                             decoration: BoxDecoration(
-                              color: Colors.white,
+                              color: isDark ? Colors.grey.shade800 : Colors.white,
                               borderRadius: BorderRadius.circular(16),
-                              border: Border.all(color: Colors.grey.shade200),
-                              boxShadow: [
-                                BoxShadow(
-                                  color: Colors.black.withOpacity(0.03),
-                                  blurRadius: 8,
-                                  offset: const Offset(0, 2),
-                                ),
-                              ],
+                              border: Border.all(
+                                color: isDark ? Colors.grey.shade700 : Colors.grey.shade200,
+                              ),
+                              boxShadow: isDark
+                                  ? []
+                                  : [
+                                      BoxShadow(
+                                        color: Colors.black.withOpacity(0.03),
+                                        blurRadius: 8,
+                                        offset: const Offset(0, 2),
+                                      ),
+                                    ],
                             ),
                             child: Padding(
                               padding: const EdgeInsets.all(12),
@@ -86,7 +94,7 @@ class CartView extends StatelessWidget {
                                     width: 80,
                                     height: 80,
                                     decoration: BoxDecoration(
-                                      color: Colors.grey.shade100,
+                                      color: isDark ? Colors.grey.shade700 : Colors.grey.shade100,
                                       borderRadius: BorderRadius.circular(12),
                                     ),
                                     child: ClipRRect(
@@ -117,10 +125,10 @@ class CartView extends StatelessWidget {
                                       children: [
                                         Text(
                                           item["name"],
-                                          style: const TextStyle(
+                                          style: TextStyle(
                                             fontSize: 16,
                                             fontWeight: FontWeight.bold,
-                                            color: Color(0xFF2e67a3),
+                                            color: isDark ? Colors.blue.shade300 : const Color(0xFF2e67a3),
                                           ),
                                           maxLines: 2,
                                           overflow: TextOverflow.ellipsis,
@@ -130,7 +138,7 @@ class CartView extends StatelessWidget {
                                           "COP ${(item["price"] as num).toStringAsFixed(2)}",
                                           style: TextStyle(
                                             fontSize: 14,
-                                            color: Colors.grey.shade600,
+                                            color: isDark ? Colors.grey.shade400 : Colors.grey.shade600,
                                           ),
                                         ),
                                         const SizedBox(height: 12),
@@ -140,7 +148,9 @@ class CartView extends StatelessWidget {
                                           children: [
                                             Container(
                                               decoration: BoxDecoration(
-                                                border: Border.all(color: Colors.grey.shade300),
+                                                border: Border.all(
+                                                  color: isDark ? Colors.grey.shade700 : Colors.grey.shade300,
+                                                ),
                                                 borderRadius: BorderRadius.circular(8),
                                               ),
                                               child: Row(
@@ -195,10 +205,10 @@ class CartView extends StatelessWidget {
                                             const Spacer(),
                                             Text(
                                               "COP ${((item["price"] as num) * (item["quantity"] as int)).toStringAsFixed(2)}",
-                                              style: const TextStyle(
+                                              style: TextStyle(
                                                 fontSize: 16,
                                                 fontWeight: FontWeight.bold,
-                                                color: Color(0xFF2e67a3),
+                                                color: isDark ? Colors.blue.shade300 : const Color(0xFF2e67a3),
                                               ),
                                             ),
                                           ],
@@ -239,15 +249,17 @@ class CartView extends StatelessWidget {
                     Container(
                       padding: const EdgeInsets.all(20),
                       decoration: BoxDecoration(
-                        color: Colors.white,
+                        color: isDark ? Colors.grey.shade800 : Colors.white,
                         borderRadius: const BorderRadius.only(
                           topLeft: Radius.circular(24),
                           topRight: Radius.circular(24),
                         ),
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.black.withOpacity(0.1),
-                            blurRadius: 20,
+                        boxShadow: isDark
+                            ? []
+                            : [
+                                BoxShadow(
+                                  color: Colors.black.withOpacity(0.1),
+                                  blurRadius: 20,
                             offset: const Offset(0, -5),
                           ),
                         ],
@@ -262,15 +274,15 @@ class CartView extends StatelessWidget {
                                   "Total general:",
                                   style: TextStyle(
                                     fontSize: 16,
-                                    color: Colors.grey.shade600,
+                                    color: isDark ? Colors.grey.shade400 : Colors.grey.shade600,
                                   ),
                                 ),
                                 Text(
                                   "COP ${state.total.toStringAsFixed(2)}",
-                                  style: const TextStyle(
+                                  style: TextStyle(
                                     fontSize: 24,
                                     fontWeight: FontWeight.bold,
-                                    color: Color(0xFF2e67a3),
+                                    color: isDark ? Colors.blue.shade300 : const Color(0xFF2e67a3),
                                   ),
                                 ),
                               ],

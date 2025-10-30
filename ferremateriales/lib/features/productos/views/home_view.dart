@@ -1,26 +1,14 @@
-
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:carousel_slider/carousel_slider.dart';
-
-import 'package:ferremateriales/features/productos/bloc/product_bloc.dart';
-import 'package:ferremateriales/features/productos/bloc/category_bloc.dart';
-import 'package:ferremateriales/features/productos/views/category_products_view.dart';
-import 'package:ferremateriales/features/productos/views/product_view.dart';
-import 'package:ferremateriales/features/productos/widgets/product_list.dart';
 import 'package:ferremateriales/l10n/app_localizations.dart';
-import '../model/category_model.dart';
 
-import 'package:ferremateriales/features/productos/views/category_products_view.dart';
-import 'package:ferremateriales/features/productos/widgets/product_list.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:carousel_slider/carousel_slider.dart';
 import '../../auth/views/login_view.dart';
 import '../../auth/bloc/auth_bloc.dart';
 import '../../auth/bloc/auth_state.dart';
 import '../bloc/product_bloc.dart';
-import 'product_view.dart';
+import '../widgets/product_list.dart';
+import 'category_products_view.dart';
 
 class HomeView extends StatefulWidget {
   const HomeView({super.key});
@@ -41,7 +29,7 @@ class _HomeViewState extends State<HomeView> {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
-
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     final authState = context.watch<AuthBloc>().state;
 
     final bannerImages = [
@@ -90,7 +78,7 @@ class _HomeViewState extends State<HomeView> {
     }).toList();
 
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: isDark ? Colors.grey.shade900 : Colors.grey.shade50,
       body: SafeArea(
         child: SingleChildScrollView(
           padding: const EdgeInsets.only(bottom: 80),
@@ -101,14 +89,16 @@ class _HomeViewState extends State<HomeView> {
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
                 decoration: BoxDecoration(
-                  color: Colors.white,
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.black.withOpacity(0.05),
-                      blurRadius: 10,
-                      offset: const Offset(0, 2),
-                    ),
-                  ],
+                  color: isDark ? Colors.grey.shade800 : Colors.white,
+                  boxShadow: isDark
+                      ? []
+                      : [
+                          BoxShadow(
+                            color: Colors.black.withOpacity(0.05),
+                            blurRadius: 10,
+                            offset: const Offset(0, 2),
+                          ),
+                        ],
                 ),
                 child: Row(
                   children: [
@@ -233,10 +223,10 @@ class _HomeViewState extends State<HomeView> {
                 padding: const EdgeInsets.only(left: 16.0),
                 child: Text(
                   l10n.featuredProducts,
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontSize: 22,
                     fontWeight: FontWeight.bold,
-                    color: Color(0xFF222222),
+                    color: isDark ? Colors.white : const Color(0xFF222222),
                   ),
                 ),
               ),
@@ -269,7 +259,9 @@ class _HomeViewState extends State<HomeView> {
                       child: Text(l10n.errorLoadingProducts),
                     );
                   } else {
-                    return const ProductsPageView();
+                    return const Center(
+                      child: CircularProgressIndicator(),
+                    );
                   }
                 },
               ),
@@ -304,6 +296,8 @@ class _HoverCategoryButtonState extends State<_HoverCategoryButton> {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    
     return MouseRegion(
       onEnter: (_) => setState(() => _isHovered = true),
       onExit: (_) => setState(() => _isHovered = false),
@@ -314,13 +308,14 @@ class _HoverCategoryButtonState extends State<_HoverCategoryButton> {
           children: [
             CircleAvatar(
               radius: 28,
-              backgroundColor:
-                  _isHovered ? Colors.brown.shade100 : Colors.grey.shade200,
+              backgroundColor: _isHovered 
+                  ? const Color(0xFF2e67a3).withOpacity(0.2)
+                  : (isDark ? Colors.grey.shade800 : Colors.grey.shade200),
               child: Icon(
                 widget.icon,
                 color: _isHovered
-                    ? Colors.brown.shade800
-                    : const Color.fromARGB(255, 130, 204, 238),
+                    ? const Color(0xFF2e67a3)
+                    : (isDark ? Colors.blue.shade300 : const Color(0xFF2e67a3)),
                 size: 22,
               ),
             ),
@@ -330,7 +325,9 @@ class _HoverCategoryButtonState extends State<_HoverCategoryButton> {
               textAlign: TextAlign.center,
               style: TextStyle(
                 fontSize: 12,
-                color: _isHovered ? Colors.brown.shade800 : Colors.black,
+                color: _isHovered 
+                    ? const Color(0xFF2e67a3)
+                    : (isDark ? Colors.grey.shade300 : Colors.black87),
               ),
             ),
           ],

@@ -22,6 +22,7 @@ class _MainViewState extends State<MainView> {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     final authState = context.watch<AuthBloc>().state;
     final nombre = authState.nombre ?? "";
 
@@ -40,14 +41,16 @@ return Scaffold(
   // 🎨 Barra inferior moderna y limpia
   bottomNavigationBar: Container(
     decoration: BoxDecoration(
-      color: Colors.white,
-      boxShadow: [
-        BoxShadow(
-          color: Colors.black.withOpacity(0.1),
-          blurRadius: 20,
-          offset: const Offset(0, -5),
-        ),
-      ],
+      color: isDark ? Colors.grey.shade800 : Colors.white,
+      boxShadow: isDark
+          ? []
+          : [
+              BoxShadow(
+                color: Colors.black.withOpacity(0.1),
+                blurRadius: 20,
+                offset: const Offset(0, -5),
+              ),
+            ],
     ),
     child: SafeArea(
       child: Container(
@@ -75,6 +78,7 @@ return Scaffold(
 
   // Widget para cada item del navigation bar
   Widget _buildNavItem(IconData icon, int index, AuthState authState) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     final isSelected = _selectedIndex == index;
     
     return GestureDetector(
@@ -96,7 +100,9 @@ return Scaffold(
         ),
         child: Icon(
           icon,
-          color: isSelected ? const Color(0xFF2e67a3) : Colors.grey.shade600,
+          color: isSelected 
+              ? const Color(0xFF2e67a3) 
+              : (isDark ? Colors.grey.shade400 : Colors.grey.shade600),
           size: 28,
         ),
       ),

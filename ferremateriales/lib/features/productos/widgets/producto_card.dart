@@ -23,16 +23,20 @@ class _ProductCardState extends State<ProductCard> {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     final product = widget.product;
     final authState = context.watch<AuthBloc>().state;
 
     return Card(
-      elevation: 2,
+      elevation: isDark ? 0 : 2,
       margin: const EdgeInsets.all(8),
-      color: Colors.white,
+      color: isDark ? Colors.grey.shade800 : Colors.white,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(12),
-        side: BorderSide(color: Colors.grey.shade200, width: 1),
+        side: BorderSide(
+          color: isDark ? Colors.grey.shade700 : Colors.grey.shade200, 
+          width: 1,
+        ),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -41,20 +45,29 @@ class _ProductCardState extends State<ProductCard> {
           Expanded(
             child: Stack(
               children: [
-                // Imagen del producto
+                // Imagen del producto con fondo adaptable
                 Container(
                   width: double.infinity,
                   padding: const EdgeInsets.all(16),
-                  child: ClipRRect(
+                  decoration: BoxDecoration(
+                    color: isDark ? Colors.grey.shade700 : Colors.white,
                     borderRadius: const BorderRadius.vertical(top: Radius.circular(12)),
+                  ),
+                  child: Center(
                     child: (product.imagenUrl != null && product.imagenUrl!.isNotEmpty)
                         ? Image.network(
                             product.imagenUrl!,
                             fit: BoxFit.contain,
-                            errorBuilder: (_, __, ___) =>
-                                const Icon(Icons.broken_image, size: 80, color: Colors.grey),
+                            errorBuilder: (_, __, ___) => Icon(
+                              Icons.broken_image,
+                              size: 80,
+                              color: isDark ? Colors.grey.shade500 : Colors.grey,
+                            ),
                           )
-                        : Image.asset('assets/images/Default_not_img.png', fit: BoxFit.contain),
+                        : Image.asset(
+                            'assets/images/Default_not_img.png',
+                            fit: BoxFit.contain,
+                          ),
                   ),
                 ),
                 
@@ -64,16 +77,18 @@ class _ProductCardState extends State<ProductCard> {
                   left: 8,
                   child: Container(
                     decoration: BoxDecoration(
-                      color: Colors.white,
+                      color: isDark ? Colors.grey.shade800 : Colors.white,
                       shape: BoxShape.circle,
                       border: Border.all(color: Colors.orange.shade200, width: 2),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.black.withOpacity(0.1),
-                          blurRadius: 4,
-                          offset: const Offset(0, 2),
-                        ),
-                      ],
+                      boxShadow: isDark
+                          ? []
+                          : [
+                              BoxShadow(
+                                color: Colors.black.withOpacity(0.1),
+                                blurRadius: 4,
+                                offset: const Offset(0, 2),
+                              ),
+                            ],
                     ),
                     child: IconButton(
                       icon: Icon(
@@ -126,10 +141,10 @@ class _ProductCardState extends State<ProductCard> {
                 // Nombre del producto
                 Text(
                   product.nombre ?? '',
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontWeight: FontWeight.bold,
                     fontSize: 16,
-                    color: Color(0xFF2e67a3),
+                    color: isDark ? Colors.blue.shade300 : const Color(0xFF2e67a3),
                   ),
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
@@ -142,7 +157,7 @@ class _ProductCardState extends State<ProductCard> {
                   maxLines: 2,
                   overflow: TextOverflow.ellipsis,
                   style: TextStyle(
-                    color: Colors.grey.shade600,
+                    color: isDark ? Colors.grey.shade400 : Colors.grey.shade600,
                     fontSize: 12,
                     height: 1.3,
                   ),
@@ -157,10 +172,10 @@ class _ProductCardState extends State<ProductCard> {
                     // Precio
                     Text(
                       'COP ${product.precio?.toStringAsFixed(2) ?? '0.00'}',
-                      style: const TextStyle(
+                      style: TextStyle(
                         fontWeight: FontWeight.bold,
                         fontSize: 18,
-                        color: Color(0xFF2e67a3),
+                        color: isDark ? Colors.blue.shade300 : const Color(0xFF2e67a3),
                       ),
                     ),
 
