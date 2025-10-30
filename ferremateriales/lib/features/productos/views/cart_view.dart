@@ -15,79 +15,212 @@ class CartView extends StatelessWidget {
 
     return BlocBuilder<CartBloc, CartState>(
       builder: (context, state) {
-        final totalItems = state.items.fold<int>(
-          0,
-          (sum, item) => sum + (item["quantity"] as int),
-        );
-
         return Scaffold(
+          backgroundColor: Colors.grey.shade50,
           appBar: AppBar(
-            title: Text("${l10n.myCart} ($totalItems)"),
+            backgroundColor: Colors.white,
+            elevation: 0,
+            title: Text(
+              l10n.myCart,
+              style: const TextStyle(
+                color: Color(0xFF222222),
+                fontWeight: FontWeight.bold,
+              ),
+            ),
             centerTitle: true,
+            leading: IconButton(
+              icon: const Icon(Icons.arrow_back, color: Color(0xFF222222)),
+              onPressed: () => Navigator.pop(context),
+            ),
           ),
           body: state.items.isEmpty
-              ? Center(child: Text(l10n.emptyCart))
+              ? Center(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Icon(
+                        Icons.shopping_cart_outlined,
+                        size: 100,
+                        color: Colors.grey.shade300,
+                      ),
+                      const SizedBox(height: 16),
+                      Text(
+                        l10n.emptyCart,
+                        style: TextStyle(
+                          fontSize: 18,
+                          color: Colors.grey.shade600,
+                        ),
+                      ),
+                    ],
+                  ),
+                )
               : Column(
                   children: [
                     Expanded(
                       child: ListView.builder(
+                        padding: const EdgeInsets.all(16),
                         itemCount: state.items.length,
                         itemBuilder: (context, index) {
                           final item = state.items[index];
-                          return Card(
-                            margin: const EdgeInsets.symmetric(
-                              horizontal: 8,
-                              vertical: 4,
+                          return Container(
+                            margin: const EdgeInsets.only(bottom: 16),
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                              borderRadius: BorderRadius.circular(16),
+                              border: Border.all(color: Colors.grey.shade200),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.black.withOpacity(0.03),
+                                  blurRadius: 8,
+                                  offset: const Offset(0, 2),
+                                ),
+                              ],
                             ),
-                            child: ListTile(
-                              leading: const Icon(Icons.shopping_bag),
-                              title: Text(item["name"]),
-                              subtitle: Row(
+                            child: Padding(
+                              padding: const EdgeInsets.all(12),
+                              child: Row(
+                                crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  // Botón restar
-                                  IconButton(
-                                    icon: const Icon(
-                                      Icons.remove_circle_outline,
-                                      color: Colors.orange,
+                                  // Imagen del producto
+                                  Container(
+                                    width: 80,
+                                    height: 80,
+                                    decoration: BoxDecoration(
+                                      color: Colors.grey.shade100,
+                                      borderRadius: BorderRadius.circular(12),
                                     ),
-                                    onPressed: () {
-                                      context
-                                          .read<CartBloc>()
-                                          .add(DecreaseQuantity(item["name"]));
-                                    },
-                                  ),
-                                  // Cantidad
-                                  Text(
-                                    "${item["quantity"]}",
-                                    style: const TextStyle(fontSize: 16),
-                                  ),
-                                  // Botón sumar
-                                  IconButton(
-                                    icon: const Icon(
-                                      Icons.add_circle_outline,
-                                      color: Colors.green,
-                                    ),
-                                    onPressed: () {
-                                      context
-                                          .read<CartBloc>()
-                                          .add(IncreaseQuantity(item["name"]));
-                                    },
-                                  ),
-                                ],
-                              ),
-                              trailing: Row(
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  Text(
-                                    "\$${item["price"] * item["quantity"]}",
-                                    style: const TextStyle(
-                                      fontWeight: FontWeight.bold,
+                                    child: ClipRRect(
+                                      borderRadius: BorderRadius.circular(12),
+                                      child: item["image"] != null && item["image"].toString().isNotEmpty
+                                          ? Image.network(
+                                              item["image"],
+                                              fit: BoxFit.cover,
+                                              errorBuilder: (_, __, ___) => Icon(
+                                                Icons.image_not_supported,
+                                                color: Colors.grey.shade400,
+                                                size: 40,
+                                              ),
+                                            )
+                                          : Icon(
+                                              Icons.shopping_bag_outlined,
+                                              color: Colors.grey.shade400,
+                                              size: 40,
+                                            ),
                                     ),
                                   ),
-                                  const SizedBox(width: 10),
+                                  const SizedBox(width: 12),
+                                  
+                                  // Información del producto
+                                  Expanded(
+                                    child: Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          item["name"],
+                                          style: const TextStyle(
+                                            fontSize: 16,
+                                            fontWeight: FontWeight.bold,
+                                            color: Color(0xFF2e67a3),
+                                          ),
+                                          maxLines: 2,
+                                          overflow: TextOverflow.ellipsis,
+                                        ),
+                                        const SizedBox(height: 8),
+                                        Text(
+                                          "COP ${(item["price"] as num).toStringAsFixed(2)}",
+                                          style: TextStyle(
+                                            fontSize: 14,
+                                            color: Colors.grey.shade600,
+                                          ),
+                                        ),
+                                        const SizedBox(height: 12),
+                                        
+                                        // Controles de cantidad
+                                        Row(
+                                          children: [
+                                            Container(
+                                              decoration: BoxDecoration(
+                                                border: Border.all(color: Colors.grey.shade300),
+                                                borderRadius: BorderRadius.circular(8),
+                                              ),
+                                              child: Row(
+                                                children: [
+                                                  IconButton(
+                                                    icon: Icon(
+                                                      Icons.remove,
+                                                      color: Colors.grey.shade700,
+                                                      size: 18,
+                                                    ),
+                                                    padding: const EdgeInsets.all(4),
+                                                    constraints: const BoxConstraints(
+                                                      minWidth: 32,
+                                                      minHeight: 32,
+                                                    ),
+                                                    onPressed: () {
+                                                      context
+                                                          .read<CartBloc>()
+                                                          .add(DecreaseQuantity(item["name"]));
+                                                    },
+                                                  ),
+                                                  Container(
+                                                    padding: const EdgeInsets.symmetric(horizontal: 12),
+                                                    child: Text(
+                                                      "${item["quantity"]}",
+                                                      style: const TextStyle(
+                                                        fontSize: 16,
+                                                        fontWeight: FontWeight.bold,
+                                                      ),
+                                                    ),
+                                                  ),
+                                                  IconButton(
+                                                    icon: const Icon(
+                                                      Icons.add,
+                                                      color: Color(0xFF2e67a3),
+                                                      size: 18,
+                                                    ),
+                                                    padding: const EdgeInsets.all(4),
+                                                    constraints: const BoxConstraints(
+                                                      minWidth: 32,
+                                                      minHeight: 32,
+                                                    ),
+                                                    onPressed: () {
+                                                      context
+                                                          .read<CartBloc>()
+                                                          .add(IncreaseQuantity(item["name"]));
+                                                    },
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                            const Spacer(),
+                                            Text(
+                                              "COP ${((item["price"] as num) * (item["quantity"] as int)).toStringAsFixed(2)}",
+                                              style: const TextStyle(
+                                                fontSize: 16,
+                                                fontWeight: FontWeight.bold,
+                                                color: Color(0xFF2e67a3),
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                  
+                                  // Botón eliminar
                                   IconButton(
-                                    icon: const Icon(Icons.close,
-                                        color: Colors.red),
+                                    icon: Container(
+                                      padding: const EdgeInsets.all(6),
+                                      decoration: BoxDecoration(
+                                        color: Colors.red.shade50,
+                                        shape: BoxShape.circle,
+                                      ),
+                                      child: const Icon(
+                                        Icons.delete_outline,
+                                        color: Colors.red,
+                                        size: 20,
+                                      ),
+                                    ),
                                     onPressed: () {
                                       context
                                           .read<CartBloc>()
@@ -101,57 +234,84 @@ class CartView extends StatelessWidget {
                         },
                       ),
                     ),
+                    
                     // Footer con el total
                     Container(
-                      padding: const EdgeInsets.all(16),
+                      padding: const EdgeInsets.all(20),
                       decoration: BoxDecoration(
-                        color: Colors.grey.shade200,
+                        color: Colors.white,
                         borderRadius: const BorderRadius.only(
-                          topLeft: Radius.circular(20),
-                          topRight: Radius.circular(20),
+                          topLeft: Radius.circular(24),
+                          topRight: Radius.circular(24),
                         ),
-                      ),
-                      child: Column(
-                        children: [
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Text(
-                                l10n.total,
-                                style: const TextStyle(
-                                  fontSize: 18,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                              Text(
-                                "\$${state.total}",
-                                style: const TextStyle(
-                                  fontSize: 18,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                            ],
-                          ),
-                          const SizedBox(height: 10),
-                          ElevatedButton.icon(
-                            onPressed: () => Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (_) => PaymentView(total: state.total),
-                              ),
-                            ),
-                            icon: const Icon(Icons.payment),
-                            label: Text(l10n.finishPurchase),
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: const Color(0xFF2196F3),
-                              foregroundColor: Colors.white,
-                              minimumSize: const Size(double.infinity, 50),
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(15),
-                              ),
-                            ),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black.withOpacity(0.1),
+                            blurRadius: 20,
+                            offset: const Offset(0, -5),
                           ),
                         ],
+                      ),
+                      child: SafeArea(
+                        child: Column(
+                          children: [
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Text(
+                                  "Total general:",
+                                  style: TextStyle(
+                                    fontSize: 16,
+                                    color: Colors.grey.shade600,
+                                  ),
+                                ),
+                                Text(
+                                  "COP ${state.total.toStringAsFixed(2)}",
+                                  style: const TextStyle(
+                                    fontSize: 24,
+                                    fontWeight: FontWeight.bold,
+                                    color: Color(0xFF2e67a3),
+                                  ),
+                                ),
+                              ],
+                            ),
+                            const SizedBox(height: 16),
+                            SizedBox(
+                              width: double.infinity,
+                              height: 56,
+                              child: ElevatedButton(
+                                onPressed: () => Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (_) => PaymentView(total: state.total),
+                                  ),
+                                ),
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: const Color(0xFF2e67a3),
+                                  foregroundColor: Colors.white,
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(16),
+                                  ),
+                                  elevation: 0,
+                                ),
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    const Icon(Icons.shopping_bag_outlined),
+                                    const SizedBox(width: 12),
+                                    Text(
+                                      l10n.finishPurchase,
+                                      style: const TextStyle(
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
                       ),
                     ),
                   ],
