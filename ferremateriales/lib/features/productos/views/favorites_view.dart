@@ -15,16 +15,17 @@ class FavoritesView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
 
     return Scaffold(
-      backgroundColor: Colors.grey.shade50,
+      backgroundColor: isDark ? Colors.grey.shade900 : Colors.grey.shade50,
       appBar: AppBar(
-        backgroundColor: Colors.white,
+        backgroundColor: isDark ? Colors.grey.shade800 : Colors.white,
         elevation: 0,
         title: Text(
           l10n.favorite,
-          style: const TextStyle(
-            color: Color(0xFF222222),
+          style: TextStyle(
+            color: isDark ? Colors.white : const Color(0xFF222222),
             fontWeight: FontWeight.bold,
           ),
         ),
@@ -49,14 +50,14 @@ class FavoritesView extends StatelessWidget {
                     Icon(
                       Icons.favorite_border,
                       size: 100,
-                      color: Colors.grey.shade300,
+                      color: isDark ? Colors.grey.shade600 : Colors.grey.shade300,
                     ),
                     const SizedBox(height: 16),
                     Text(
                       l10n.donthavefavorite,
                       style: TextStyle(
                         fontSize: 18,
-                        color: Colors.grey.shade600,
+                        color: isDark ? Colors.grey.shade400 : Colors.grey.shade600,
                       ),
                     ),
                   ],
@@ -72,12 +73,16 @@ class FavoritesView extends StatelessWidget {
                 return Container(
                   margin: const EdgeInsets.only(bottom: 16),
                   decoration: BoxDecoration(
-                    color: Colors.white,
+                    color: isDark ? Colors.grey.shade800 : Colors.white,
                     borderRadius: BorderRadius.circular(16),
-                    border: Border.all(color: Colors.grey.shade200),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.black.withOpacity(0.03),
+                    border: Border.all(
+                      color: isDark ? Colors.grey.shade700 : Colors.grey.shade200,
+                    ),
+                    boxShadow: isDark
+                        ? []
+                        : [
+                            BoxShadow(
+                              color: Colors.black.withOpacity(0.03),
                         blurRadius: 8,
                         offset: const Offset(0, 2),
                       ),
@@ -93,7 +98,7 @@ class FavoritesView extends StatelessWidget {
                           width: 90,
                           height: 90,
                           decoration: BoxDecoration(
-                            color: Colors.grey.shade100,
+                            color: isDark ? Colors.grey.shade700 : Colors.grey.shade100,
                             borderRadius: BorderRadius.circular(12),
                           ),
                           child: ClipRRect(
@@ -118,10 +123,10 @@ class FavoritesView extends StatelessWidget {
                             children: [
                               Text(
                                 fav.nombre ?? '',
-                                style: const TextStyle(
+                                style: TextStyle(
                                   fontSize: 16,
                                   fontWeight: FontWeight.bold,
-                                  color: Color(0xFF2e67a3),
+                                  color: isDark ? Colors.blue.shade300 : const Color(0xFF2e67a3),
                                 ),
                                 maxLines: 2,
                                 overflow: TextOverflow.ellipsis,
@@ -139,10 +144,10 @@ class FavoritesView extends StatelessWidget {
                               const SizedBox(height: 8),
                               Text(
                                 'COP ${fav.precio?.toStringAsFixed(2)}',
-                                style: const TextStyle(
+                                style: TextStyle(
                                   fontSize: 18,
                                   fontWeight: FontWeight.bold,
-                                  color: Color(0xFF2e67a3),
+                                  color: isDark ? Colors.blue.shade300 : const Color(0xFF2e67a3),
                                 ),
                               ),
                               const SizedBox(height: 12),
@@ -238,14 +243,14 @@ class FavoritesView extends StatelessWidget {
                   Icon(
                     Icons.error_outline,
                     size: 80,
-                    color: Colors.grey.shade400,
+                    color: isDark ? Colors.grey.shade600 : Colors.grey.shade400,
                   ),
                   const SizedBox(height: 16),
                   Text(
                     l10n.errorLoadingProducts,
                     style: TextStyle(
                       fontSize: 16,
-                      color: Colors.grey.shade600,
+                      color: isDark ? Colors.grey.shade400 : Colors.grey.shade600,
                     ),
                   ),
                 ],
