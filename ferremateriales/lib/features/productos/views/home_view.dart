@@ -97,17 +97,16 @@ class _HomeViewState extends State<HomeView> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // 🔸 Barra superior con buscador y botón condicional
+              // 🔸 Barra superior con buscador moderna
               Container(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
                 decoration: BoxDecoration(
-                  color: Colors.brown.shade700,
+                  color: Colors.white,
                   boxShadow: [
                     BoxShadow(
-                      color: Colors.brown.shade200.withOpacity(0.5),
-                      blurRadius: 6,
-                      offset: const Offset(0, 3),
+                      color: Colors.black.withOpacity(0.05),
+                      blurRadius: 10,
+                      offset: const Offset(0, 2),
                     ),
                   ],
                 ),
@@ -115,10 +114,11 @@ class _HomeViewState extends State<HomeView> {
                   children: [
                     Expanded(
                       child: Container(
-                        height: 40,
+                        height: 48,
                         decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.circular(12),
+                          color: Colors.grey.shade100,
+                          borderRadius: BorderRadius.circular(24),
+                          border: Border.all(color: Colors.grey.shade300, width: 1),
                         ),
                         child: TextField(
                           controller: _searchController,
@@ -135,18 +135,17 @@ class _HomeViewState extends State<HomeView> {
                           },
                           decoration: InputDecoration(
                             hintText: "Buscar productos...",
-                            prefixIcon:
-                                const Icon(Icons.search, color: Colors.brown),
+                            hintStyle: TextStyle(color: Colors.grey.shade500),
+                            prefixIcon: const Icon(Icons.search, color: Color(0xFF2e67a3)),
                             suffixIcon: _searchController.text.isNotEmpty
                                 ? IconButton(
-                                    icon: const Icon(Icons.close,
-                                        color: Colors.brown),
+                                    icon: Icon(Icons.close, color: Colors.grey.shade600),
                                     onPressed: () {
                                       _searchController.clear();
                                       context
                                           .read<ProductBloc>()
                                           .add(ProductEntrarPressed());
-                                      setState(() {}); // refresca el icono
+                                      setState(() {});
                                     },
                                   )
                                 : null,
@@ -160,7 +159,7 @@ class _HomeViewState extends State<HomeView> {
                     const SizedBox(width: 12),
                     // 👇 Solo se muestra el botón si es invitado
                     if (authState.status == AuthStatus.guest)
-                      TextButton.icon(
+                      ElevatedButton.icon(
                         onPressed: () {
                           Navigator.pushReplacement(
                             context,
@@ -168,20 +167,20 @@ class _HomeViewState extends State<HomeView> {
                                 builder: (context) => const LoginView()),
                           );
                         },
-                        style: TextButton.styleFrom(
+                        style: ElevatedButton.styleFrom(
                           foregroundColor: Colors.white,
-                          backgroundColor: Colors.brown.shade900,
+                          backgroundColor: const Color(0xFF2e67a3),
                           padding: const EdgeInsets.symmetric(
-                              horizontal: 12, vertical: 10),
+                              horizontal: 16, vertical: 12),
                           shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(10),
+                            borderRadius: BorderRadius.circular(24),
                           ),
+                          elevation: 0,
                         ),
-                        icon: const Icon(Icons.login,
-                            size: 18, color: Colors.white),
+                        icon: const Icon(Icons.login, size: 18),
                         label: const Text(
                           "Iniciar sesión",
-                          style: TextStyle(color: Colors.white),
+                          style: TextStyle(fontWeight: FontWeight.w600),
                         ),
                       ),
                   ],
@@ -228,16 +227,28 @@ class _HomeViewState extends State<HomeView> {
                 items: categoryItems,
               ),
 
-              const SizedBox(height: 24),
+              const SizedBox(height: 32),
 
               Padding(
                 padding: const EdgeInsets.only(left: 16.0),
                 child: Text(
                   l10n.featuredProducts,
-                  style: TextStyle(
-                    fontSize: 18,
+                  style: const TextStyle(
+                    fontSize: 22,
                     fontWeight: FontWeight.bold,
-                    color: Colors.brown.shade700,
+                    color: Color(0xFF222222),
+                  ),
+                ),
+              ),
+              const SizedBox(height: 4),
+              Padding(
+                padding: const EdgeInsets.only(left: 16.0, right: 16.0),
+                child: Container(
+                  height: 3,
+                  width: 50,
+                  decoration: BoxDecoration(
+                    color: const Color(0xFF2e67a3),
+                    borderRadius: BorderRadius.circular(2),
                   ),
                 ),
               ),
