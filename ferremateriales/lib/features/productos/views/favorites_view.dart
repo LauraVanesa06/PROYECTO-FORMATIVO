@@ -17,82 +17,212 @@ class FavoritesView extends StatelessWidget {
     final l10n = AppLocalizations.of(context)!;
 
     return Scaffold(
+      backgroundColor: Colors.grey.shade50,
       appBar: AppBar(
-        title: Text(l10n.favorite),
-          centerTitle: true,
+        backgroundColor: Colors.white,
+        elevation: 0,
+        title: Text(
+          l10n.favorite,
+          style: const TextStyle(
+            color: Color(0xFF222222),
+            fontWeight: FontWeight.bold,
+          ),
         ),
+        centerTitle: true,
+      ),
       body: BlocBuilder<ProductBloc, ProductState>(
         builder: (context, state) {
           if (state is ProductLoadInProgress) {
-            return const Center(child: CircularProgressIndicator());
+            return const Center(
+              child: CircularProgressIndicator(
+                color: Color(0xFF2e67a3),
+              ),
+            );
           } else if (state is ProductLoadSuccess) {
             final favoritos = state.productos.where((p) => p.isFavorite).toList();
 
             if (favoritos.isEmpty) {
-              return Center(child: Text(l10n.donthavefavorite));
+              return Center(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Icon(
+                      Icons.favorite_border,
+                      size: 100,
+                      color: Colors.grey.shade300,
+                    ),
+                    const SizedBox(height: 16),
+                    Text(
+                      l10n.donthavefavorite,
+                      style: TextStyle(
+                        fontSize: 18,
+                        color: Colors.grey.shade600,
+                      ),
+                    ),
+                  ],
+                ),
+              );
             }
 
             return ListView.builder(
+              padding: const EdgeInsets.all(16),
               itemCount: favoritos.length,
               itemBuilder: (context, index) {
                 final fav = favoritos[index];
-                return Card(
-                  margin: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-                  child: ListTile(
-                    leading: Image.network(
-                      fav.imagenUrl ?? '',
-                      width: 60,
-                      height: 60,
-                      fit: BoxFit.cover,
-                      errorBuilder: (_, __, ___) => const Icon(Icons.broken_image),
-                    ),
-                    title: Text(fav.nombre ?? ''),
-                    subtitle: Text('\$${fav.precio?.toStringAsFixed(0)}'),
-                    trailing: Row(
-                      mainAxisSize: MainAxisSize.min,
+                return Container(
+                  margin: const EdgeInsets.only(bottom: 16),
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(16),
+                    border: Border.all(color: Colors.grey.shade200),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withOpacity(0.03),
+                        blurRadius: 8,
+                        offset: const Offset(0, 2),
+                      ),
+                    ],
+                  ),
+                  child: Padding(
+                    padding: const EdgeInsets.all(12),
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        // ❤️ Botón de favoritos
-                        IconButton(
-                          icon: const Icon(Icons.favorite, color: Colors.red),
-                          onPressed: () {
-                            context.read<ProductBloc>().add(ToggleFavorite(fav.id!));
-                          },
-                        ),
-
-                        // 🛒 Botón de comprar (copiado de ProductCard)
-                        ElevatedButton.icon(
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: Colors.brown[700],
-                            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
-                            minimumSize: const Size(90, 35),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(8),
+                        // Imagen del producto
+                        Container(
+                          width: 90,
+                          height: 90,
+                          decoration: BoxDecoration(
+                            color: Colors.grey.shade100,
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          child: ClipRRect(
+                            borderRadius: BorderRadius.circular(12),
+                            child: Image.network(
+                              fav.imagenUrl ?? '',
+                              fit: BoxFit.cover,
+                              errorBuilder: (_, __, ___) => Icon(
+                                Icons.image_not_supported,
+                                color: Colors.grey.shade400,
+                                size: 40,
+                              ),
                             ),
                           ),
-                          icon: const Icon(Icons.shopping_cart, size: 16, color: Colors.white),
-                          label: Text(
-                            l10n.buy,
-                            style: TextStyle(fontSize: 13, color: Colors.white),
-                          ),
-                          onPressed: () {
-                            // Enviar al carrito 🛒
-                            context.read<CartBloc>().add(
-                              AddToCart({
-                                "name": fav.nombre ?? '',
-                                "price": fav.precio ?? 0.0,
-                                "quantity": 1,
-                                "image": fav.imagenUrl ?? '',
-                              }),
-                            );
-
-                            // Notificación visual
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(
-                                content: Text('${fav.nombre} ${l10n.addToCart}'),
-                                duration: const Duration(seconds: 2),
+                        ),
+                        const SizedBox(width: 12),
+                        
+                        // Información del producto
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                fav.nombre ?? '',
+                                style: const TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.bold,
+                                  color: Color(0xFF2e67a3),
+                                ),
+                                maxLines: 2,
+                                overflow: TextOverflow.ellipsis,
                               ),
-                            );
-                          },
+                              const SizedBox(height: 4),
+                              Text(
+                                fav.descripcion ?? '',
+                                style: TextStyle(
+                                  fontSize: 13,
+                                  color: Colors.grey.shade600,
+                                ),
+                                maxLines: 2,
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                              const SizedBox(height: 8),
+                              Text(
+                                'COP ${fav.precio?.toStringAsFixed(2)}',
+                                style: const TextStyle(
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.bold,
+                                  color: Color(0xFF2e67a3),
+                                ),
+                              ),
+                              const SizedBox(height: 12),
+                              
+                              // Botones de acción
+                              Row(
+                                children: [
+                                  // Botón de agregar al carrito
+                                  Expanded(
+                                    child: SizedBox(
+                                      height: 36,
+                                      child: ElevatedButton.icon(
+                                        style: ElevatedButton.styleFrom(
+                                          backgroundColor: const Color(0xFF2e67a3),
+                                          foregroundColor: Colors.white,
+                                          padding: const EdgeInsets.symmetric(horizontal: 12),
+                                          shape: RoundedRectangleBorder(
+                                            borderRadius: BorderRadius.circular(10),
+                                          ),
+                                          elevation: 0,
+                                        ),
+                                        icon: const Icon(Icons.shopping_cart_outlined, size: 18),
+                                        label: Text(
+                                          l10n.buy,
+                                          style: const TextStyle(
+                                            fontSize: 14,
+                                            fontWeight: FontWeight.w600,
+                                          ),
+                                        ),
+                                        onPressed: () {
+                                          context.read<CartBloc>().add(
+                                            AddToCart({
+                                              "name": fav.nombre ?? '',
+                                              "price": fav.precio ?? 0.0,
+                                              "quantity": 1,
+                                              "image": fav.imagenUrl ?? '',
+                                            }),
+                                          );
+
+                                          ScaffoldMessenger.of(context).showSnackBar(
+                                            SnackBar(
+                                              content: Text('${fav.nombre} ${l10n.addToCart}'),
+                                              duration: const Duration(seconds: 2),
+                                              backgroundColor: const Color(0xFF2e67a3),
+                                              behavior: SnackBarBehavior.floating,
+                                              shape: RoundedRectangleBorder(
+                                                borderRadius: BorderRadius.circular(10),
+                                              ),
+                                            ),
+                                          );
+                                        },
+                                      ),
+                                    ),
+                                  ),
+                                  const SizedBox(width: 8),
+                                  
+                                  // Botón de eliminar de favoritos
+                                  Container(
+                                    width: 36,
+                                    height: 36,
+                                    decoration: BoxDecoration(
+                                      color: Colors.red.shade50,
+                                      borderRadius: BorderRadius.circular(10),
+                                    ),
+                                    child: IconButton(
+                                      icon: const Icon(
+                                        Icons.favorite,
+                                        color: Colors.red,
+                                        size: 20,
+                                      ),
+                                      padding: EdgeInsets.zero,
+                                      onPressed: () {
+                                        context.read<ProductBloc>().add(ToggleFavorite(fav.id!));
+                                      },
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ],
+                          ),
                         ),
                       ],
                     ),
@@ -101,7 +231,26 @@ class FavoritesView extends StatelessWidget {
               },
             );
           } else {
-            return Center(child: Text(l10n.errorLoadingProducts));
+            return Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(
+                    Icons.error_outline,
+                    size: 80,
+                    color: Colors.grey.shade400,
+                  ),
+                  const SizedBox(height: 16),
+                  Text(
+                    l10n.errorLoadingProducts,
+                    style: TextStyle(
+                      fontSize: 16,
+                      color: Colors.grey.shade600,
+                    ),
+                  ),
+                ],
+              ),
+            );
           }
         },
       ),
