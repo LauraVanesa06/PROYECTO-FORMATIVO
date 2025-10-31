@@ -6,6 +6,7 @@ import '../bloc/auth_state.dart';
 import '../bloc/auth_event.dart';
 import '../utils/email_validator.dart';
 import '../utils/password_validator.dart';
+import '../../productos/views/main_view.dart';
 
 class RegisterView extends StatefulWidget {
   @override
@@ -29,10 +30,13 @@ class _RegisterViewState extends State<RegisterView> {
             const SnackBar(
               content: Text('Usuario registrado exitosamente'),
               backgroundColor: Colors.green,
-              duration: Duration(seconds: 3),
+              duration: Duration(seconds: 2),
             ),
           );
-          Navigator.pop(context);
+          // Redirigir al MainView después del registro exitoso
+          Navigator.of(context).pushReplacement(
+            MaterialPageRoute(builder: (_) => const MainView()),
+          );
         } else if (state.status == AuthStatus.failure) {
           print('🔴 Error en registro: ${state.error}'); // Debug
           

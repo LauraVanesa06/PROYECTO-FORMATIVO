@@ -108,14 +108,6 @@ class ProfileView extends StatelessWidget {
                         color: const Color(0xFF2e67a3).withOpacity(0.1),
                         borderRadius: BorderRadius.circular(20),
                       ),
-                      child: Text(
-                        'Miembro activo',
-                        style: TextStyle(
-                          fontSize: 14,
-                          color: isDark ? Colors.blue.shade300 : const Color(0xFF2e67a3),
-                          fontWeight: FontWeight.w600,
-                        ),
-                      ),
                     ),
                   ],
                 ),
