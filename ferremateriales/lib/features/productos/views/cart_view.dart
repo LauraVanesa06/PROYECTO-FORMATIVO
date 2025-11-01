@@ -44,6 +44,11 @@ class _CartViewState extends State<CartView> {
     final l10n = AppLocalizations.of(context)!;
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
+  final total = _cartItems.fold<double>(
+    0,
+    (sum, item) => sum + ((item.product.precio ?? 0) * item.quantity),
+  );
+
     return BlocBuilder<CartBloc, CartState>(
       builder: (context, state) {
         return Scaffold(
@@ -318,7 +323,7 @@ class _CartViewState extends State<CartView> {
                                       ),
                                     ),
                                     Text(
-                                      "COP ${state.total.toStringAsFixed(2)}",
+                                      "COP ${total.toStringAsFixed(2)}",
                                       style: TextStyle(
                                         fontSize: 24,
                                         fontWeight: FontWeight.bold,
@@ -335,7 +340,7 @@ class _CartViewState extends State<CartView> {
                                     onPressed: () => Navigator.push(
                                       context,
                                       MaterialPageRoute(
-                                        builder: (_) => PaymentView(total: state.total),
+                                        builder: (_) => PaymentView(total: total),
                                       ),
                                     ),
                                     style: ElevatedButton.styleFrom(

@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:ferremateriales/features/auth/services/auth_service.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
@@ -37,6 +38,25 @@ class FavoritesService {
     } catch (e) {
       print('Error loading favorites: $e');
       rethrow;
+    }
+  }
+
+  Future<void> toggleFavorite(int productId) async {
+    final token = await storage.read(key: 'auth_token');
+    if (token == null) throw Exception('No token found');
+
+    final url = Uri.parse('$baseUrl/api/v1/favorites/$productId');
+
+    final response = await http.delete(
+      url,
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": "Bearer $token",
+      },
+    );
+
+    if (response.statusCode != 200) {
+      throw Exception("Error al eliminar favorito");
     }
   }
 }

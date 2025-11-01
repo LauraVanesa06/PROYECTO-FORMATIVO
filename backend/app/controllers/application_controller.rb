@@ -83,31 +83,4 @@ class ApplicationController < ActionController::Base
       end
     end
 
-  protected
-
-  def authenticate_user_from_token!
-    token = request.headers['Authorization']&.split(' ')&.last
-    return unless token
-
-    payload = JsonWebToken.decode(token)
-    @current_user = User.find_by(id: payload['user_id'])
-  rescue JWT::DecodeError
-    render json: { error: 'Token inválido' }, status: :unauthorized
-  end
-
-  def current_user
-    @current_user ||= super || User.find_by(id: decoded_token['user_id']) if token_present?
-  end
-
-  private
-
-  def token_present?
-    request.headers['Authorization'].present?
-  end
-
-  def decoded_token
-    JsonWebToken.decode(request.headers['Authorization']&.split(' ')&.last)
-  rescue JWT::DecodeError
-    {}
-  end
 end
