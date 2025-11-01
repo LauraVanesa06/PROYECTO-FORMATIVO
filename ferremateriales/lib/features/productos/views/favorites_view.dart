@@ -1,16 +1,54 @@
-
 import 'package:ferremateriales/features/productos/bloc/product_bloc.dart';
+import 'package:ferremateriales/features/productos/services/favorites_service.dart';
 import 'package:flutter/material.dart';
 
 import 'package:ferremateriales/l10n/app_localizations.dart';
-import 'package:http/http.dart' as http;
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../bloc/cart_bloc.dart';
 import '../bloc/cart_event.dart';
 
-class FavoritesView extends StatelessWidget {
+class FavoritesView extends StatefulWidget {
   const FavoritesView({super.key});
+
+  @override
+  _FavoritesViewState createState() => _FavoritesViewState();
+}
+
+class _FavoritesViewState extends State<FavoritesView> {
+  final FavoritesService _favoritesService = FavoritesService();
+  bool _isLoading = true;
+  List<Map<String, dynamic>> _favorites = [];
+  bool _mounted = true;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadFavorites();
+  }
+
+  @override 
+  void dispose() {
+    _mounted = false;
+    super.dispose();
+  }
+
+  Future<void> _loadFavorites() async {
+    try {
+      final favorites = await _favoritesService.getFavorites();
+      if (_mounted) {
+        setState(() {
+          _favorites = favorites;
+          _isLoading = false;
+        });
+      }
+    } catch (e) {
+      print('Error: $e');
+      if (_mounted) {
+        setState(() => _isLoading = false);
+      }
+    }
+  }
 
   @override
   Widget build(BuildContext context) {

@@ -115,6 +115,8 @@ Rails.application.routes.draw do
       post 'auth/login', to: 'auth#login'
       post 'auth/register', to: 'auth#register'
       get 'auth/me', to: 'auth#me'
+      resources :cart_items, only: [:index]
+      resources :favorites, only: [:index]
     end
   end
 
