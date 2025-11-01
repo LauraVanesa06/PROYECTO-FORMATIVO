@@ -1,3 +1,4 @@
+import 'package:ferremateriales/features/productos/models/cart_item_model.dart';
 import 'package:ferremateriales/features/productos/services/cart_service.dart';
 import 'package:ferremateriales/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
@@ -17,7 +18,7 @@ class CartView extends StatefulWidget {
 class _CartViewState extends State<CartView> {
   final CartService _cartService = CartService();
   bool _isLoading = true;
-  List<Map<String, dynamic>> _cartItems = [];
+  List<CartItemModel> _cartItems = [];
 
   @override
   void initState() {
@@ -74,7 +75,8 @@ class _CartViewState extends State<CartView> {
                     ),
                   ),
                 )
-              : state.items.isEmpty
+              : _cartItems.isEmpty
+
                   ? Center(
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
@@ -100,9 +102,11 @@ class _CartViewState extends State<CartView> {
                         Expanded(
                           child: ListView.builder(
                             padding: const EdgeInsets.all(16),
-                            itemCount: state.items.length,
+                            itemCount: _cartItems.length,
                             itemBuilder: (context, index) {
-                              final item = state.items[index];
+                              final item = _cartItems[index];
+                              final product = item.product;
+
                               return Container(
                                 margin: const EdgeInsets.only(bottom: 16),
                                 decoration: BoxDecoration(
@@ -126,7 +130,7 @@ class _CartViewState extends State<CartView> {
                                   child: Row(
                                     crossAxisAlignment: CrossAxisAlignment.start,
                                     children: [
-                                      // Imagen del producto
+                                      // 🖼 Imagen del producto
                                       Container(
                                         width: 80,
                                         height: 80,
@@ -136,9 +140,9 @@ class _CartViewState extends State<CartView> {
                                         ),
                                         child: ClipRRect(
                                           borderRadius: BorderRadius.circular(12),
-                                          child: item["image"] != null && item["image"].toString().isNotEmpty
+                                          child: (product.imagenUrl != null && product.imagenUrl!.isNotEmpty)
                                               ? Image.network(
-                                                  item["image"],
+                                                  product.imagenUrl!,
                                                   fit: BoxFit.cover,
                                                   errorBuilder: (_, __, ___) => Icon(
                                                     Icons.image_not_supported,
@@ -154,14 +158,14 @@ class _CartViewState extends State<CartView> {
                                         ),
                                       ),
                                       const SizedBox(width: 12),
-                                      
-                                      // Información del producto
+
+                                      // 📝 Información del producto
                                       Expanded(
                                         child: Column(
                                           crossAxisAlignment: CrossAxisAlignment.start,
                                           children: [
                                             Text(
-                                              item["name"],
+                                              product.nombre ?? 'Producto sin nombre',
                                               style: TextStyle(
                                                 fontSize: 16,
                                                 fontWeight: FontWeight.bold,
@@ -172,15 +176,16 @@ class _CartViewState extends State<CartView> {
                                             ),
                                             const SizedBox(height: 8),
                                             Text(
-                                              "COP ${(item["price"] as num).toStringAsFixed(2)}",
+                                              "COP ${(product.precio ?? 0) * item.quantity}",
                                               style: TextStyle(
-                                                fontSize: 14,
-                                                color: isDark ? Colors.grey.shade400 : Colors.grey.shade600,
+                                                fontSize: 16,
+                                                fontWeight: FontWeight.bold,
+                                                color: isDark ? Colors.blue.shade300 : const Color(0xFF2e67a3),
                                               ),
                                             ),
                                             const SizedBox(height: 12),
-                                            
-                                            // Controles de cantidad
+
+                                            // ➕➖ Controles de cantidad
                                             Row(
                                               children: [
                                                 Container(
@@ -206,13 +211,13 @@ class _CartViewState extends State<CartView> {
                                                         onPressed: () {
                                                           context
                                                               .read<CartBloc>()
-                                                              .add(DecreaseQuantity(item["name"]));
+                                                              .add(DecreaseQuantity(product.nombre ?? ''));
                                                         },
                                                       ),
                                                       Container(
                                                         padding: const EdgeInsets.symmetric(horizontal: 12),
                                                         child: Text(
-                                                          "${item["quantity"]}",
+                                                          "${item.quantity}",
                                                           style: const TextStyle(
                                                             fontSize: 16,
                                                             fontWeight: FontWeight.bold,
@@ -233,7 +238,7 @@ class _CartViewState extends State<CartView> {
                                                         onPressed: () {
                                                           context
                                                               .read<CartBloc>()
-                                                              .add(IncreaseQuantity(item["name"]));
+                                                              .add(IncreaseQuantity(product.nombre ?? ''));
                                                         },
                                                       ),
                                                     ],
@@ -241,7 +246,7 @@ class _CartViewState extends State<CartView> {
                                                 ),
                                                 const Spacer(),
                                                 Text(
-                                                  "COP ${((item["price"] as num) * (item["quantity"] as int)).toStringAsFixed(2)}",
+                                                  "COP ${(product.precio ?? 0) * item.quantity}",
                                                   style: TextStyle(
                                                     fontSize: 16,
                                                     fontWeight: FontWeight.bold,
@@ -253,8 +258,8 @@ class _CartViewState extends State<CartView> {
                                           ],
                                         ),
                                       ),
-                                      
-                                      // Botón eliminar
+
+                                      // 🗑 Botón eliminar
                                       IconButton(
                                         icon: Container(
                                           padding: const EdgeInsets.all(6),
@@ -269,9 +274,7 @@ class _CartViewState extends State<CartView> {
                                           ),
                                         ),
                                         onPressed: () {
-                                          context
-                                              .read<CartBloc>()
-                                              .add(RemoveFromCart(item["name"]));
+                                          context.read<CartBloc>().add(RemoveFromCart(product.nombre ?? ''));
                                         },
                                       ),
                                     ],
