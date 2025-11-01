@@ -43,10 +43,28 @@ class _PaymentViewState extends State<PaymentView> {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    
     return Scaffold(
+      backgroundColor: isDark ? Colors.grey.shade900 : Colors.grey.shade50,
       appBar: AppBar(
-        title: const Text("Método de Pago"),
+        backgroundColor: isDark ? Colors.grey.shade800 : Colors.white,
+        elevation: 0,
+        title: Text(
+          "Método de Pago",
+          style: TextStyle(
+            color: isDark ? Colors.white : const Color(0xFF222222),
+            fontWeight: FontWeight.bold,
+          ),
+        ),
         centerTitle: true,
+        leading: IconButton(
+          icon: Icon(
+            Icons.arrow_back,
+            color: isDark ? Colors.white : const Color(0xFF222222),
+          ),
+          onPressed: () => Navigator.pop(context),
+        ),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16),
@@ -54,13 +72,24 @@ class _PaymentViewState extends State<PaymentView> {
           key: _formKey,
           child: ListView(
             children: [
-              Text(
-                "Total a pagar: \$${widget.total}",
-                style: const TextStyle(
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold,
+              Container(
+                padding: const EdgeInsets.all(20),
+                decoration: BoxDecoration(
+                  color: isDark ? Colors.grey.shade800 : Colors.white,
+                  borderRadius: BorderRadius.circular(16),
+                  border: Border.all(
+                    color: isDark ? Colors.grey.shade700 : Colors.grey.shade200,
+                  ),
                 ),
-                textAlign: TextAlign.center,
+                child: Text(
+                  "Total a pagar: COP ${widget.total.toStringAsFixed(2)}",
+                  style: TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                    color: const Color(0xFF2e67a3),
+                  ),
+                  textAlign: TextAlign.center,
+                ),
               ),
               const SizedBox(height: 20),
 
@@ -137,16 +166,25 @@ class _PaymentViewState extends State<PaymentView> {
               const SizedBox(height: 30),
 
               // Botón pagar
-              ElevatedButton.icon(
-                onPressed: _confirmPayment,
-                icon: const Icon(Icons.check_circle),
-                label: const Text("Confirmar Pago"),
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.green,
-                  foregroundColor: Colors.white,
-                  minimumSize: const Size(double.infinity, 50),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(15),
+              SizedBox(
+                height: 56,
+                child: ElevatedButton.icon(
+                  onPressed: _confirmPayment,
+                  icon: const Icon(Icons.check_circle),
+                  label: const Text(
+                    "Confirmar Pago",
+                    style: TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: const Color(0xFF2e67a3),
+                    foregroundColor: Colors.white,
+                    elevation: 0,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(16),
+                    ),
                   ),
                 ),
               ),
