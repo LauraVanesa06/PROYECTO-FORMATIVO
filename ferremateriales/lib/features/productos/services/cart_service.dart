@@ -35,4 +35,34 @@ class CartService {
       rethrow;
     }
   }
+
+  Future<void> increaseQuantity(int id) async {
+    final response = await http.patch(
+      Uri.parse('$baseUrl/api/v1/cart_items/$id'),
+      headers: {'Content-Type': 'application/json'},
+      body: jsonEncode({'quantity_action': 'increase'}),
+    );
+    if (response.statusCode != 200) {
+      throw Exception('Error al aumentar cantidad');
+    }
+  }
+
+
+  Future<void> decreaseQuantity(int id) async {
+    final response = await http.patch(
+      Uri.parse('$baseUrl/api/v1/cart_items/$id'),
+      headers: {'Content-Type': 'application/json'},
+      body: jsonEncode({'quantity_action': 'decrease'}),
+    );
+    if (response.statusCode != 200) {
+      throw Exception('Error al disminuir cantidad');
+    }
+  }
+
+  Future<void> removeItem(int id) async {
+    final response = await http.delete(Uri.parse('$baseUrl/api/v1/cart_items/$id'));
+    if (response.statusCode != 204) {
+      throw Exception('Error al eliminar producto del carrito');
+    }
+  }
 }

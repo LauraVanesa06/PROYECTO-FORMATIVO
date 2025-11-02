@@ -4,7 +4,6 @@ import 'package:ferremateriales/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../bloc/cart_bloc.dart';
-import '../bloc/cart_event.dart';
 import '../bloc/cart_state.dart';
 import 'payment_view.dart';
 
@@ -213,10 +212,9 @@ class _CartViewState extends State<CartView> {
                                                           minWidth: 32,
                                                           minHeight: 32,
                                                         ),
-                                                        onPressed: () {
-                                                          context
-                                                              .read<CartBloc>()
-                                                              .add(DecreaseQuantity(product.nombre ?? ''));
+                                                        onPressed: () async {
+                                                          await _cartService.decreaseQuantity(item.id);
+                                                          _loadCartItems(); // recarga la lista desde Rails
                                                         },
                                                       ),
                                                       Container(
@@ -240,10 +238,9 @@ class _CartViewState extends State<CartView> {
                                                           minWidth: 32,
                                                           minHeight: 32,
                                                         ),
-                                                        onPressed: () {
-                                                          context
-                                                              .read<CartBloc>()
-                                                              .add(IncreaseQuantity(product.nombre ?? ''));
+                                                        onPressed: () async {
+                                                          await _cartService.increaseQuantity(item.id);
+                                                          _loadCartItems();
                                                         },
                                                       ),
                                                     ],
@@ -278,8 +275,9 @@ class _CartViewState extends State<CartView> {
                                             size: 20,
                                           ),
                                         ),
-                                        onPressed: () {
-                                          context.read<CartBloc>().add(RemoveFromCart(product.nombre ?? ''));
+                                        onPressed: () async {
+                                          await _cartService.removeItem(item.id);
+                                          _loadCartItems();
                                         },
                                       ),
                                     ],
