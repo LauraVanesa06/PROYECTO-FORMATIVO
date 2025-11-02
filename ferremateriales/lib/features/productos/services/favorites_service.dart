@@ -3,8 +3,48 @@ import 'package:http/http.dart' as http;
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 class FavoritesService {
+  static final FavoritesService _instance = FavoritesService._internal();
+  factory FavoritesService() => _instance;
+  FavoritesService._internal();
+
   final String baseUrl = 'http://localhost:3000';
   final storage = const FlutterSecureStorage();
+
+  List<int> _favoriteProductIds = [];
+
+  Future<void> loadFavoritesCache() async {
+    final token = await storage.read(key: 'auth_token');
+    if (token == null) return;
+
+    final response = await http.get(
+      Uri.parse('$baseUrl/api/v1/favorites'),
+      headers: {
+        'Authorization': 'Bearer $token',
+        'Content-Type': 'application/json',
+      },
+    );
+
+    if (response.statusCode == 200) {
+      final List<dynamic> data = json.decode(response.body);
+      _favoriteProductIds = data
+          .map((f) => f['product_id'])
+          .where((id) => id != null)
+          .map<int>((id) => id as int)
+          .toList();
+    }
+  }
+
+  bool isFavoriteCached(int productId) => _favoriteProductIds.contains(productId);
+
+  void toggleFavoriteCache(int productId) {
+    if (_favoriteProductIds.contains(productId)) {
+      _favoriteProductIds.remove(productId);
+    } else {
+      _favoriteProductIds.add(productId);
+    }
+  }
+
+  List<int> get favoriteIds => _favoriteProductIds;
 
   Future<List<Map<String, dynamic>>> getFavorites() async {
     try {

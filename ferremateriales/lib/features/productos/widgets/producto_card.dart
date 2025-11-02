@@ -1,3 +1,5 @@
+import 'package:cached_network_image/cached_network_image.dart';
+import 'package:ferremateriales/core/utils/custom_cache_manager.dart';
 import 'package:ferremateriales/features/productos/model/product_model.dart';
 import 'package:ferremateriales/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
@@ -28,14 +30,8 @@ class _ProductCardState extends State<ProductCard> {
   }
 
   Future<void> _checkIfFavorite() async {
-    try {
-      final result = await favoritesService.isFavorite(widget.product.id!);
-      if (mounted) {
-        setState(() => isFavorite = result);
-      }
-    } catch (e) {
-      print('Error checking favorite: $e');
-    }
+    final result = favoritesService.isFavoriteCached(widget.product.id!);
+    setState(() => isFavorite = result);
   }
 
   Future<void> _toggleFavorite(BuildContext context) async {
@@ -120,16 +116,24 @@ class _ProductCardState extends State<ProductCard> {
                         const BorderRadius.vertical(top: Radius.circular(12)),
                   ),
                   child: Center(
-                    child: (product.imagenUrl != null &&
-                            product.imagenUrl!.isNotEmpty)
-                        ? Image.network(
-                            product.imagenUrl!,
+                    child: (product.imagenUrl != null && product.imagenUrl!.isNotEmpty)
+                        ? CachedNetworkImage(
+                            imageUrl: product.imagenUrl!,
+                            cacheManager: CustomCacheManager.instance, // <-- caché personalizada
                             fit: BoxFit.contain,
-                            errorBuilder: (_, __, ___) => Icon(
+                            fadeInDuration: const Duration(milliseconds: 200), // animación rápida
+                            fadeOutDuration: const Duration(milliseconds: 100),
+                            placeholder: (context, url) => const SizedBox(
+                              height: 60,
+                              width: 60,
+                              child: Center(
+                                child: CircularProgressIndicator(strokeWidth: 2),
+                              ),
+                            ),
+                            errorWidget: (context, url, error) => Icon(
                               Icons.broken_image,
                               size: 80,
-                              color:
-                                  isDark ? Colors.grey.shade500 : Colors.grey,
+                              color: isDark ? Colors.grey.shade500 : Colors.grey,
                             ),
                           )
                         : Image.asset(

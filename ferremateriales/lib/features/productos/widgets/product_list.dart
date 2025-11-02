@@ -1,42 +1,74 @@
-import 'package:ferremateriales/features/productos/model/product_model.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-
+import '../model/product_model.dart';
 import 'producto_card.dart';
 
-class ProductsList extends StatelessWidget {
+class ProductsList extends StatefulWidget {
   final List<ProductModel> products;
 
   const ProductsList({Key? key, required this.products}) : super(key: key);
 
   @override
+  State<ProductsList> createState() => _ProductsListState();
+}
+
+class _ProductsListState extends State<ProductsList> {
+  bool _imagesCached = false; // Evita recargar varias veces
+
+  @override
+  void didUpdateWidget(covariant ProductsList oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.products != widget.products) {
+      _precacheProductImages();
+    }
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+
+    if (!_imagesCached) {
+      _precacheProductImages();
+      _imagesCached = true;
+    }
+  }
+
+  Future<void> _precacheProductImages() async {
+    for (final product in widget.products.take(20)) {
+      if (product.imagenUrl != null && product.imagenUrl!.isNotEmpty) {
+        // Verifica que el widget siga montado antes de usar context
+        if (!mounted) return;
+
+        try {
+          await precacheImage(
+            CachedNetworkImageProvider(product.imagenUrl!),
+            context,
+          );
+        } catch (e) {
+          debugPrint("Error precargando imagen: $e");
+        }
+      }
+    }
+  }
+
+
+  @override
   Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        const Padding(
-          padding: EdgeInsets.symmetric(horizontal: 16, vertical: 10),
-          child: Text(
-            '',
-            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-          ),
-        ),
-        GridView.builder(
-          padding: const EdgeInsets.symmetric(horizontal: 10),
-          shrinkWrap: true,
-          physics: const NeverScrollableScrollPhysics(),
-          itemCount: products.length,
-          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-            crossAxisCount: 2,
-            crossAxisSpacing: 10,
-            mainAxisSpacing: 10,
-            childAspectRatio: 0.75, // puedes ajustar entre 0.7 y 0.85 según diseño
-          ),
-          itemBuilder: (context, index) {
-            final product = products[index];
-            return ProductCard(product: product);
-          },
-        ),
-      ],
+    return GridView.builder(
+      padding: const EdgeInsets.symmetric(horizontal: 10),
+      shrinkWrap: true,
+      physics: const NeverScrollableScrollPhysics(),
+      itemCount: widget.products.length,
+      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+        crossAxisCount: 2,
+        crossAxisSpacing: 10,
+        mainAxisSpacing: 10,
+        childAspectRatio: 0.75,
+      ),
+      itemBuilder: (context, index) {
+        final product = widget.products[index];
+        return ProductCard(product: product);
+      },
     );
   }
 }

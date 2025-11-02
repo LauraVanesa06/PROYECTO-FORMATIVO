@@ -1,3 +1,4 @@
+import 'package:ferremateriales/features/productos/services/favorites_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:carousel_slider/carousel_slider.dart';
@@ -9,6 +10,7 @@ import '../../auth/bloc/auth_state.dart';
 import '../bloc/product_bloc.dart';
 import '../widgets/product_list.dart';
 import 'category_products_view.dart';
+import '../widgets/product_shimmer.dart'; // 👈 Importamos el nuevo shimmer
 
 class HomeView extends StatefulWidget {
   const HomeView({super.key});
@@ -24,6 +26,10 @@ class _HomeViewState extends State<HomeView> {
   void initState() {
     super.initState();
     context.read<ProductBloc>().add(ProductEntrarPressed());
+    
+    // ⚡ Cargar los favoritos en caché al entrar al Home
+    final favoritesService = FavoritesService();
+    favoritesService.loadFavoritesCache();
   }
 
   @override
@@ -247,7 +253,10 @@ class _HomeViewState extends State<HomeView> {
               BlocBuilder<ProductBloc, ProductState>(
                 builder: (context, state) {
                   if (state is ProductLoadInProgress) {
-                    return const Center(child: CircularProgressIndicator());
+                    return const Padding(
+                      padding: EdgeInsets.all(8.0),
+                      child: ProductShimmer(),  // 👈 Nuevo widget de carga
+                    );
                   }
                   if (state is ProductLoadSuccess) {
                     return Padding(
@@ -260,7 +269,7 @@ class _HomeViewState extends State<HomeView> {
                     );
                   } else {
                     return const Center(
-                      child: CircularProgressIndicator(),
+                      child: ProductShimmer(),  // 👈 También lo usamos aquí
                     );
                   }
                 },
