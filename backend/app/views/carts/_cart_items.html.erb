@@ -1,128 +1,99 @@
 <% if cart_items.any? %>
-    <div class="cart-items-list">
-      <% cart_items.each do |item| %>
-        <div style="width: 95%;" class="cart-item-card d-flex flex-row align-items-center position-relative mb-3 p-3 shadow-sm rounded-4 bg-white" id="<%= dom_id(item) %>" data-producto-id="<%= item.product.id %>" style="cursor: pointer;">
-          <div class="cart-item-thumb me-3" id="div-foto">
-            <% if item.product.images.present? %>
-              <%= image_tag url_for(item.product.images.first), alt: item.product.nombre, class: "rounded-3 border" %>
-            <% else %>
-              <%= image_tag "ProductoNoDisponible.png", alt: t('productos.sin_imagen'), class: "img-fluid rounded-3 border" %>
-            <% end %>
+  <div class="cart-items-list">
+    <% cart_items.each do |item| %>
+      <div style="width: 95%;" class="cart-item-card d-flex flex-row align-items-center position-relative mb-3 p-3 shadow-sm rounded-4 bg-white" id="<%= dom_id(item) %>" data-producto-id="<%= item.product.id %>" style="cursor: pointer;">
+        <div class="cart-item-thumb me-3" id="div-foto">
+          <% if item.product.images.present? %>
+            <%= image_tag url_for(item.product.images.first), alt: item.product.nombre, class: "rounded-3 border" %>
+          <% else %>
+            <%= image_tag "ProductoNoDisponible.png", alt: t('productos.sin_imagen'), class: "img-fluid rounded-3 border" %>
+          <% end %>
+        </div>
+        <div class="cart-item-info flex-grow-1" style="width: 100%;">
+          <div class="d-flex justify-content-between align-items-center">
+            <strong class="fs-5 text-primary"><%= item.product.nombre %></strong>
+            <span class="cart-item-price fs-5 fw-bold text-success">
+              COP <%= number_with_precision(item.product.precio, delimiter: '.', separator: ',', precision: 2) %>
+            </span>
           </div>
-          <div class="cart-item-info flex-grow-1" style="width: 100%;">
-            <div class="d-flex justify-content-between align-items-center">
-              <strong class="fs-5 text-primary"><%= item.product.nombre %></strong>
-              <span class="cart-item-price fs-5 fw-bold text-success">
-                COP <%= number_with_precision(item.product.precio, delimiter: '.', separator: ',', precision: 2) %>
-              </span>
-            </div>
-            <div class="cart-item-desc text-muted mb-2" style="font-size: 14px;">
-              <%= truncate(item.product.descripcion, length: 60) %>
-            </div>
-            <div class="d-flex align-items-center gap-3 mt-2">
-              <div class="cart-item-qty">
-                <%= form_with(model: item, class: "quantity-form d-inline-flex align-items-center", data: { item_id: item.id }) do |f| %>
-                  <span class="me-1">Cantidad:</span>
-                  <%= f.number_field :quantity, min: 1, class: "form-control text-center quantity-field", value: item.quantity, style: "width: 60px; display: inline-block;", onkeypress: "return event.charCode >= 48 && event.charCode <= 57" %>
-                <% end %>
-              </div>
-              <span class="cart-item-subtotal fw-semibold text-secondary" style="font-size: 15px;">
-                Subtotal: COP <%= number_with_precision((item.product.precio || 0) * item.quantity.to_i, delimiter: '.', separator: ',', precision: 2) %>
-              </span>
-            </div>
+          <div class="cart-item-desc text-muted mb-2" style="font-size: 14px;">
+            <%= truncate(item.product.descripcion, length: 60) %>
           </div>
-          <div class="cart-item-actions ms-3">
-            <%= button_to cart_item_path(item),
-                          method: :delete,
-                          data: { turbo: false },
-                          remote: true,
-                          class: "btn btn-outline-danger btn-sm delete-item rounded-circle position-absolute",
-                          style: "top: 78px; right: 8px;",
-                          form: { "data-item-id": item.id } do %>
-              <i class="fa-solid fa-trash"></i>
-            <% end %>
+          <div class="d-flex align-items-center gap-3 mt-2">
+            <div class="cart-item-qty">
+              <%= form_with(model: item, class: "cantidad-form d-inline-flex align-items-center", data: { item_id: item.id }) do |f| %>
+                <span class="me-1">Cantidad:</span>
+                <%= f.number_field :cantidad, min: 1, class: "form-control text-center cantidad-field", value: item.cantidad, style: "width: 60px; display: inline-block;", onkeypress: "return event.charCode >= 48 && event.charCode <= 57" %>
+              <% end %>
+            </div>
+            <span class="cart-item-subtotal fw-semibold text-secondary" style="font-size: 15px;">
+              Subtotal: COP <%= number_with_precision((item.product.precio || 0) * item.cantidad.to_i, delimiter: '.', separator: ',', precision: 2) %>
+            </span>
           </div>
         </div>
-      <% end %>
-    </div>
-    <div id="cart-summary" class="cart-summary card p-4 mt-4 shadow-sm border-0 rounded-4 bg-light">
-      <div class="d-flex justify-content-between align-items-center mb-2">
-        <h4 class="mb-0"><%= t("cart.total") %>: </h4>
-        <span class="fs-4 fw-bold text-success">
-          COP <%= number_with_precision(cart_items.sum { |i| (i.product&.precio || 0) * (i.quantity || 0) }, delimiter: '.', separator: ',', precision: 2) %>
-        </span>
+        <div class="cart-item-actions ms-3">
+          <%= button_to cart_item_path(item),
+                        method: :delete,
+                        data: { turbo: false },
+                        remote: true,
+                        class: "btn btn-outline-danger btn-sm delete-item rounded-circle position-absolute",
+                        style: "top: 78px; right: 8px;",
+                        form: { "data-item-id": item.id } do %>
+            <i class="fa-solid fa-trash"></i>
+          <% end %>
+        </div>
       </div>
-      <div class="d-flex gap-3 mt-3" style="margin: 0 !important;">
-        <% if cart_items.any? %>
-          <div id="wompi-container">
-            <% pub_key = Rails.application.credentials.dig(:wompi, :public_key) || ENV['WOMPI_PUBLIC_KEY'] %>
-            <% if pub_key.present? && @amount_cents.to_i > 0 && @payment_reference.present? && @signature.present? %>
-              <script
-                src="https://checkout.wompi.co/widget.js"
-                data-render="button"
-                data-public-key="<%= pub_key %>"
-                data-currency="COP"
-                data-amount-in-cents="<%= @amount_cents %>"
-                data-reference="<%= @payment_reference %>"
-                data-signature="<%= @signature %>">
-              </script>
-            <% else %>
-              <div class="alert alert-warning">
-                <% if !pub_key.present? %>
-                  Error: Falta configurar WOMPI_PUBLIC_KEY
-                <% elsif !@signature.present? %>
-                  Error: No se pudo generar la firma
-                <% elsif @amount_cents.to_i <= 0 %>
-                  Error: Monto inválido
-                <% else %>
-                  Error: Faltan datos para el pago
-                <% end %>
-              </div>
-            <% end %>
-          </div>
+    <% end %>
+  </div>
+
+  <div class="cart-summary card p-4 mt-4 shadow-sm border-0 rounded-4 bg-light">
+    <div class="d-flex justify-content-between align-items-center mb-2">
+      <h4 class="mb-0"><%= t("cart.total") %>: </h4>
+      <span class="fs-4 fw-bold text-success">
+        COP <%= number_with_precision(cart_items.sum { |i| (i.product&.precio || 0) * (i.cantidad || 0) }, delimiter: '.', separator: ',', precision: 2) %>
+      </span>
+    </div>
+    
+    <%# Nuevo: Botón "Ir al carrito" en el sidebar %>
+    <% if !current_page?(cart_path) %>
+      <%= link_to cart_path, class: "btn btn-primary w-100 mb-3" do %>
+        <i class="fa-solid fa-shopping-cart"></i> Ir al carrito para pagar
+      <% end %>
+    <% end %>
+
+   <%# El botón de Wompi solo se muestra en la página del carrito %>
+<% if current_page?(cart_path) %>
+  <% pub_key = Rails.application.credentials.dig(:wompi, :public_key) || ENV['WOMPI_PUBLIC_KEY'] %>
+
+  <div id="wompi-container">
+    <% if pub_key.present? && @amount_cents.to_i > 0 && @payment_reference.present? && @signature.present? %>
+      <script
+        src="https://checkout.wompi.co/widget.js"
+        data-render="button"
+        data-public-key="<%= pub_key %>"
+        data-currency="COP"
+        data-amount-in-cents="<%= @amount_cents %>"
+        data-reference="<%= @payment_reference %>"
+        data-signature="<%= @signature %>">
+      </script>
+    <% else %>
+      <div class="alert alert-warning">
+        <% if !pub_key.present? %>
+          Error: Falta configurar WOMPI_PUBLIC_KEY
+        <% elsif !@signature.present? %>
+          Error: No se pudo generar la firma
+        <% elsif @amount_cents.to_i <= 0 %>
+          Error: Monto inválido
+        <% else %>
+          Error: Faltan datos para el pago
         <% end %>
       </div>
-    </div>
-  <% else %>
-    <div class="alert alert-info text-center p-4 mt-4">
-      <i class="fa-solid fa-cart-arrow-down fa-2x mb-2"></i><br>
-      <span class="fs-5"><%= t("cart.empty") %></span>
-    </div>
-  <% end %>
-</div>
-<div id="wompi-sidebar-container">
-  <div id="wompi-sidebar-placeholder" aria-live="polite"></div>
-</div>
+    <% end %>
+  </div>
+<% end %>
 
-<script>
-(function(){
-  const placeholder = document.getElementById('wompi-sidebar-placeholder');
-  if (!placeholder) return;
-
-  fetch('/payments/widget_token.json', { credentials: 'same-origin' })
-    .then(r => {
-      if (!r.ok) throw new Error('widget_token failed: ' + r.status);
-      return r.json();
-    })
-    .then(data => {
-      if (!data.public_key || !data.signature) throw new Error('Missing wompi data');
-      const script = document.createElement('script');
-      script.src = 'https://checkout.wompi.co/widget.js';
-      script.setAttribute('data-render', 'button');
-      script.setAttribute('data-public-key', data.public_key);
-      script.setAttribute('data-currency', 'COP');
-      script.setAttribute('data-amount-in-cents', data.amount_in_cents);
-      script.setAttribute('data-reference', data.reference);
-      script.setAttribute('data-signature', data.signature);
-      placeholder.innerHTML = '';
-      placeholder.appendChild(script);
-    })
-    .catch(err => {
-      console.warn('[Wompi] sidebar widget error:', err);
-      placeholder.innerHTML = '<button class="btn btn-dark" disabled><i class="fa-solid fa-lock"></i> Pagar (no disponible)</button>';
-    });
-})();
-</script>
+</div>
+<% end %>
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {
@@ -143,13 +114,13 @@ document.addEventListener('DOMContentLoaded', function() {
   }
   // 🔹 Actualizar subtotal automáticamente al cambiar cantidad
   document.addEventListener('input', function(e) {
-    const field = e.target.closest('.quantity-field');
+    const field = e.target.closest('.cantidad-field');
     if (!field) return;
-    let quantity = parseInt(field.value) || 1;
+    let cantidad = parseInt(field.value) || 1;
     
     // 🔹 Validar que no sea 0 o negativo
-    if (quantity < 1) {
-      quantity = 1;
+    if (cantidad < 1) {
+      cantidad = 1;
       field.value = 1;
     }
     const cartItem = field.closest('.cart-item-card');
@@ -160,7 +131,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const price = parsePrice(priceText);
     
     // Calcular nuevo subtotal
-    const subtotal = price * quantity;
+    const subtotal = price * cantidad;
     
     // Actualizar subtotal en pantalla
     const subtotalElement = cartItem.querySelector('.cart-item-subtotal');
@@ -171,10 +142,10 @@ document.addEventListener('DOMContentLoaded', function() {
   });
   // 🔹 Enviar cambio al servidor cuando se pierde el foco
   document.addEventListener('change', async function(e) {
-    const field = e.target.closest('.quantity-field');
+    const field = e.target.closest('.cantidad-field');
     if (!field) return;
     const form = field.closest('form');
-    const quantity = field.value;
+    const cantidad = field.value;
     try {
       const response = await fetch(form.action, {
         method: 'PATCH',
@@ -182,7 +153,7 @@ document.addEventListener('DOMContentLoaded', function() {
           'Content-Type': 'application/json',
           'X-CSRF-Token': csrfToken
         },
-        body: JSON.stringify({ cart_item: { quantity: quantity } })
+        body: JSON.stringify({ cart_item: { cantidad: cantidad } })
       });
 
       if (response.ok) {
@@ -260,16 +231,16 @@ document.addEventListener('DOMContentLoaded', function() {
 
   // 🔹 Recalcular total general del carrito
   function updateCartTotal() {
-    const quantityFields = document.querySelectorAll('.quantity-field');
+    const cantidadFields = document.querySelectorAll('.cantidad-field');
     let total = 0;
-    quantityFields.forEach(input => {
+    cantidadFields.forEach(input => {
       const cartItem = input.closest('.cart-item-card');
       const priceElement = cartItem.querySelector('.cart-item-price');
       const priceText = priceElement.textContent.trim();
       const price = parsePrice(priceText);
-      const quantity = parseInt(input.value) || 1;
-      
-      total += price * quantity;
+      const cantidad = parseInt(input.value) || 1;
+
+      total += price * cantidad;
     });
     
     // Actualizar el total en el resumen del carrito

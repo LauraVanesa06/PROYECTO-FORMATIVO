@@ -18,11 +18,8 @@ class CartsController < ApplicationController
         amount_in_cents: @amount_cents,
         currency: 'COP'
       )
-      
-      Rails.logger.info "[DEBUG Wompi] Amount: #{@amount_cents}, Reference: #{@payment_reference}"
-      Rails.logger.info "[DEBUG Wompi] Signature: #{@signature}"
     rescue => e
-      Rails.logger.error("[Wompi] Error generando firma: #{e.full_message}")
+      Rails.logger.error("[Wompi] Error generando firma: #{e.message}")
       @signature = nil
     end
   end

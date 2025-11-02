@@ -67,7 +67,7 @@ class CartItemsController < ApplicationController
             locals: { cart_items: @cart_items }
           )
         end
-        format.json { render json: { success: true, item_id: @cart_item.id, quantity: @cart_item.cantidad }, status: :ok }
+        format.json { render json: { success: true, item_id: @cart_item.id, cantidad: @cart_item.cantidad }, status: :ok }
         format.html { redirect_to cart_path, notice: "Cantidad actualizada." }
       end
     else

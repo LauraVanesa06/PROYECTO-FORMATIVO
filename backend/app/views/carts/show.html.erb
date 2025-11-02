@@ -7,4 +7,10 @@
   <%= turbo_frame_tag "cart_items" do %>
     <%= render partial: "carts/cart_items", locals: { cart_items: @cart_items } %>
   <% end %>
+
+  <% total = @cart_items.sum { |item| item.product.precio * item.cantidad } %>
+
+ 
 </div>
+
+<script src="https://checkout.wompi.co/widget.js"></script>

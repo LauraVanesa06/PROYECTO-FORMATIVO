@@ -63,7 +63,7 @@ Rails.application.routes.draw do
   end
 
   # Recursos principales
-  resources :carts, only: [:show]
+  resource :cart, only: [:show]
   resources :favorites, only: [:index, :create, :destroy]
   resources :cart_items, only: [:create, :update, :destroy]
   

@@ -16,7 +16,7 @@ class PaymentsController < ApplicationController
     amount_in_cents = if params[:amount_in_cents].present?
                         params[:amount_in_cents].to_i
                       else
-                        ((cart.cart_items.sum { |i| (i.product&.precio || 0) * (i.try(:cantidad) || i.try(:quantity) || 1) }).to_f * 100).to_i
+                        ((cart.cart_items.sum { |i| (i.product&.precio || 0) * (i.try(:cantidad) || i.try(:cantidad) || 1) }).to_f * 100).to_i
                       end
 
     reference = params[:reference].presence || "cart_#{cart.id}_#{Time.now.to_i}"
@@ -50,37 +50,33 @@ class PaymentsController < ApplicationController
   def checkout; end
 
   def webhook
-    data = JSON.parse(request.body.read) rescue {}
-    transaction = data.dig("data", "transaction") || {}
+  payload = request.raw_post
+  data = JSON.parse(payload) rescue {}
+  transaction = data.dig("data", "transaction") || data.dig("data") || {}
 
-    payment = Payment.find_by(transaction_id: transaction["id"])
+  wompi_id = transaction["id"] || transaction.dig("transaction", "id")
+  status = transaction["status"] || transaction.dig("transaction", "status") || data.dig("event", "name")
 
-    if payment
-      status = transaction["status"].to_s.downcase
-      mapped_status = case status
-                      when "approved", "confirmed" then :paid
-                      when "declined", "failed" then :failed
-                      when "cancelled" then :cancelled
-                      else :pending
-                      end
+  payment = Payment.find_by(wompi_id: wompi_id) ||
+            Payment.find_by("raw_response ->> 'reference' = ?", transaction["reference"]) rescue nil
 
-      payment.update(status: mapped_status)
+  if payment
+    payment.update(raw_response: payment.raw_response.to_h.merge(webhook: data))
+    normalized_status = status.to_s.downcase
+
+    if ["approved", "paid", "payment_successful"].include?(normalized_status)
+      payment.update(status: "paid")
+      create_buy_from_payment(payment)
+    else
+      payment.update(status: normalized_status) rescue nil
     end
-
-
-    @payment = Payment.find_by(transaction_id: transaction["id"])
-    @payment.update(status: :paid)
-    if @payment.status == "paid" && @payment.cart.present?
-  Buy.create!(
-    customer_id: @payment.user.customer.id,
-    fecha: Time.current,
-    tipo: "Minorista",
-    metodo_pago: "Wompi",
-    payment_id: @payment.id
-  )
-    head :ok
-    
+  else
+    Rails.logger.info("[WOMPI] webhook: payment not found for wompi_id=#{wompi_id} payload=#{payload}")
   end
+
+  head :ok
+end
+
 
   def create
     cart = current_cart || Cart.find_by(id: params[:cart_id])
@@ -155,33 +151,6 @@ class PaymentsController < ApplicationController
     render json: { payment_id: payment.id, wompi_id: actual_wompi_id, checkout_url: checkout_url, data: body }
   end
 
-  # POST /payments/webhook
-  def webhook
-    payload = request.raw_post
-    data = JSON.parse(payload) rescue {}
-    transaction = data.dig("data", "transaction") || data.dig("data") || {}
-
-    wompi_id = transaction["id"] || transaction.dig("transaction", "id")
-    status = transaction["status"] || transaction.dig("transaction", "status") || data.dig("event", "name")
-
-    payment = Payment.find_by(wompi_id: wompi_id) ||
-              Payment.find_by("raw_response ->> 'reference' = ?", transaction["reference"]) rescue nil
-
-    if payment
-      payment.update(raw_response: payment.raw_response.to_h.merge(webhook: data))
-      normalized_status = status.to_s.downcase
-      if ["approved", "paid", "payment_successful"].include?(normalized_status)
-        payment.update(status: "paid")
-        create_buy_from_payment(payment)
-      else
-        payment.update(status: normalized_status) rescue nil
-      end
-    else
-      Rails.logger.info("[WOMPI] webhook: payment not found for wompi_id=#{wompi_id} payload=#{payload}")
-    end
-
-    head :ok
-  end
 
   def show
     @payment = Payment.find(params[:id])
@@ -255,11 +224,11 @@ end
         product_id = ci.respond_to?(:product_id) ? ci.product_id : (ci.product&.id rescue nil)
         detail_attrs["product_id"] = product_id if product_id && pd_cols.include?("product_id")
 
-        qty = (ci.respond_to?(:quantity) ? ci.quantity.to_i : (ci.respond_to?(:qty) ? ci.qty.to_i : 1))
+        qty = (ci.respond_to?(:cantidad) ? ci.cantidad.to_i : (ci.respond_to?(:qty) ? ci.qty.to_i : 1))
         if pd_cols.include?("cantidad")
           detail_attrs["cantidad"] = qty
-        elsif pd_cols.include?("quantity")
-          detail_attrs["quantity"] = qty
+        elsif pd_cols.include?("cantidad")
+          detail_attrs["cantidad"] = qty
         end
 
         price = (ci.respond_to?(:price) ? ci.price.to_f : (ci.product&.try(:precio) || 0)).to_f
