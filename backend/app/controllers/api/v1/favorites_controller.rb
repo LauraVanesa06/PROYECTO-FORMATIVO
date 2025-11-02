@@ -22,6 +22,16 @@ class Api::V1::FavoritesController < Api::V1::ApiController
       render json: { error: 'Error interno del servidor' }, status: :internal_server_error
     end
   end
+  
+  def destroy
+    favorite = current_user.favorites.find_by(product_id: params[:id])
+    if favorite
+      favorite.destroy
+      render json: { message: 'Eliminado de favoritos' }, status: :ok
+    else
+      render json: { error: 'Producto no encontrado en favoritos' }, status: :not_found
+    end
+  end
 
   private
 

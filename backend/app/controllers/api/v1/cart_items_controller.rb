@@ -30,6 +30,19 @@ class Api::V1::CartItemsController < Api::V1::ApiController
     end
   end
 
+  def create
+    cart = current_user.cart
+    cart_item = cart.cart_items.find_or_initialize_by(product_id: params[:product_id])
+    cart_item.cantidad = (cart_item.cantidad || 0) + (params[:cantidad] || 1).to_i
+
+    if cart_item.save
+      render json: cart_item, status: :created
+    else
+      render json: { error: cart_item.errors.full_messages }, status: :unprocessable_entity
+    end
+  end
+
+
   # PATCH /api/v1/cart_items/:id
   def update
     case params[:quantity_action]

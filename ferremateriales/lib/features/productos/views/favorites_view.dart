@@ -206,27 +206,26 @@ body: _isLoading
                                           fontWeight: FontWeight.w600,
                                         ),
                                       ),
-                                      onPressed: () {
-                                        context.read<CartBloc>().add(
-                                              AddToCart({
-                                                "name": fav["nombre"] ?? '',
-                                                "price": fav["precio"] ?? 0.0,
-                                                "quantity": 1,
-                                                "image": fav["imagen_url"] ?? '',
-                                              }),
-                                            );
-
-                                        ScaffoldMessenger.of(context).showSnackBar(
-                                          SnackBar(
-                                            content: Text('${fav["nombre"]} ${l10n.addToCart}'),
-                                            duration: const Duration(seconds: 2),
-                                            backgroundColor: const Color(0xFF2e67a3),
-                                            behavior: SnackBarBehavior.floating,
-                                            shape: RoundedRectangleBorder(
-                                              borderRadius: BorderRadius.circular(10),
+                                      onPressed: () async {
+                                        try {
+                                          await _favoritesService.addToCart(fav["id"]);
+                                          ScaffoldMessenger.of(context).showSnackBar(
+                                            SnackBar(
+                                              content: Text('${fav["nombre"]} agregado al carrito'),
+                                              backgroundColor: const Color(0xFF2e67a3),
+                                              duration: const Duration(seconds: 2),
                                             ),
-                                          ),
-                                        );
+                                          );
+                                        } catch (e) {
+                                          print('Error al agregar al carrito: $e');
+                                          ScaffoldMessenger.of(context).showSnackBar(
+                                            const SnackBar(
+                                              content: Text('Error al agregar al carrito'),
+                                              backgroundColor: Colors.red,
+                                              duration: Duration(seconds: 2),
+                                            ),
+                                          );
+                                        }
                                       },
                                     ),
                                   ),
