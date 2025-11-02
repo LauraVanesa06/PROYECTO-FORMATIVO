@@ -1,5 +1,6 @@
 import 'package:ferremateriales/features/productos/models/cart_item_model.dart';
 import 'package:ferremateriales/features/productos/services/cart_service.dart';
+import 'package:ferremateriales/features/productos/widgets/loading_shimmer.dart';
 import 'package:ferremateriales/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -72,13 +73,7 @@ class _CartViewState extends State<CartView> {
             ),
           ),
           body: _isLoading
-              ? Center(
-                  child: CircularProgressIndicator(
-                    valueColor: AlwaysStoppedAnimation<Color>(
-                      isDark ? Colors.blue.shade300 : const Color(0xFF2e67a3),
-                    ),
-                  ),
-                )
+              ? const LoadingShimmer(isGrid: false) // 👈 Use the new shimmer
               : _cartItems.isEmpty
 
                   ? Center(

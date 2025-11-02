@@ -30,8 +30,14 @@ class _ProductCardState extends State<ProductCard> {
   }
 
   Future<void> _checkIfFavorite() async {
-    final result = favoritesService.isFavoriteCached(widget.product.id!);
-    setState(() => isFavorite = result);
+    try {
+      final result = await favoritesService.isFavorite(widget.product.id!);
+      if (mounted) {
+        setState(() => isFavorite = result);
+      }
+    } catch (e) {
+      print('Error checking favorite: $e');
+    }
   }
 
   Future<void> _toggleFavorite(BuildContext context) async {
