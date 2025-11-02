@@ -65,4 +65,30 @@ class CartService {
       throw Exception('Error al eliminar producto del carrito');
     }
   }
+
+  Future<void> addToCart(int productId) async {
+    final token = await storage.read(key: 'auth_token');
+    if (token == null) throw Exception('No token found');
+
+    final url = Uri.parse('$baseUrl/api/v1/cart_items');
+
+    final response = await http.post(
+      url,
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": "Bearer $token",
+      },
+      body: jsonEncode({
+        "product_id": productId,
+        "cantidad": 1,
+      }),
+    );
+
+    print('addToCart status: ${response.statusCode}');
+    print('addToCart body: ${response.body}');
+
+    if (response.statusCode != 201) {
+      throw Exception("Error al agregar al carrito");
+    }
+  }
 }

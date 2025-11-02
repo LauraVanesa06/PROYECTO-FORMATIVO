@@ -40,13 +40,35 @@ class FavoritesService {
     }
   }
 
+  Future<bool> isFavorite(int productId) async {
+    final token = await storage.read(key: 'auth_token');
+    if (token == null) return false;
+
+    final response = await http.get(
+      Uri.parse('$baseUrl/api/v1/favorites/$productId/check'),
+      headers: {
+        'Authorization': 'Bearer $token',
+        'Accept': 'application/json',
+      },
+    );
+
+    if (response.statusCode == 200) {
+      final data = json.decode(response.body);
+      return data['favorite'] == true;
+    } else {
+      return false;
+    }
+  }
+
+
   Future<void> toggleFavorite(int productId) async {
     final token = await storage.read(key: 'auth_token');
     if (token == null) throw Exception('No token found');
 
     final url = Uri.parse('$baseUrl/api/v1/favorites/$productId');
 
-    final response = await http.delete(
+    // Primero intenta eliminar (si ya es favorito)
+    final deleteResponse = await http.delete(
       url,
       headers: {
         "Content-Type": "application/json",
@@ -54,10 +76,24 @@ class FavoritesService {
       },
     );
 
-    if (response.statusCode != 200) {
-      throw Exception("Error al eliminar favorito");
+    // Si el DELETE fue exitoso, simplemente retorna
+    if (deleteResponse.statusCode == 200) return;
+
+    // Si no existía, intenta agregar
+    final postResponse = await http.post(
+      Uri.parse('$baseUrl/api/v1/favorites'),
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": "Bearer $token",
+      },
+      body: jsonEncode({"product_id": productId}),
+    );
+
+    if (postResponse.statusCode != 201) {
+      throw Exception("Error al agregar/eliminar favorito");
     }
   }
+
 
   Future<void> addToCart(int productId) async {
     final token = await storage.read(key: 'auth_token');

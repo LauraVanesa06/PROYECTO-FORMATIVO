@@ -116,7 +116,11 @@ Rails.application.routes.draw do
       post 'auth/register', to: 'auth#register'
       get 'auth/me', to: 'auth#me'
       resources :cart_items, only: [:index, :update, :destroy, :create]
-      resources :favorites, only: [:index, :destroy]
+      resources :favorites, only: [:index, :destroy, :create] do
+        member do
+          get :check
+        end
+      end
     end
   end
 

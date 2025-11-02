@@ -22,7 +22,29 @@ class Api::V1::FavoritesController < Api::V1::ApiController
       render json: { error: 'Error interno del servidor' }, status: :internal_server_error
     end
   end
-  
+
+  def create
+    return render json: { error: 'No autorizado' }, status: :unauthorized unless current_user
+
+    product = Product.find_by(id: params[:product_id])
+    unless product
+      return render json: { error: 'Producto no encontrado' }, status: :not_found
+    end
+
+    favorite = current_user.favorites.find_or_create_by(product: product)
+
+    render json: {
+      message: 'Agregado a favoritos',
+      product_id: favorite.product.id
+    }, status: :created
+  end
+
+  def check
+    is_favorite = current_user.favorites.exists?(product_id: params[:id])
+    render json: { favorite: is_favorite }, status: :ok
+  end
+
+
   def destroy
     favorite = current_user.favorites.find_by(product_id: params[:id])
     if favorite
