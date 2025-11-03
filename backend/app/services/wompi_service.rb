@@ -8,6 +8,7 @@ class WompiService
 
   def initialize
     @public_key       = Rails.application.credentials.dig(:wompi, :public_key) || ENV['WOMPI_PUBLIC_KEY']
+    @private_key      = Rails.application.credentials.dig(:wompi, :private_key) || ENV['WOMPI_PRIVATE_KEY']
     @integrity_secret = Rails.application.credentials.dig(:wompi, :integrity_secret) || ENV['WOMPI_INTEGRITY_SECRET']
   end
 

@@ -1673,53 +1673,19 @@ body.dark-mode a {
 }
 
 /* Estilos para el botón de Wompi */
-.wompi-button-container {
-  text-align: center;
+#wompi-button-container {
   margin-top: 1rem;
 }
 
-.wompi-custom-button {
-  background: linear-gradient(45deg, #00a1e4, #0052cc);
-  color: white;
-  border: none;
-  padding: 15px 30px;
-  border-radius: 10px;
-  font-size: 1.1em;
-  font-weight: 600;
+.form-wompi {
   width: 100%;
-  transition: all 0.3s ease;
-  box-shadow: 0 4px 15px rgba(0,161,228,0.2);
 }
 
-.wompi-custom-button:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 6px 20px rgba(0,161,228,0.3);
-  background: linear-gradient(45deg, #0052cc, #00a1e4);
-}
-
-/* Animación de carga para el botón */
-.wompi-custom-button.loading {
-  position: relative;
-  color: transparent;
-}
-
-.wompi-custom-button.loading::after {
-  content: "";
-  position: absolute;
-  left: 50%;
-  top: 50%;
-  transform: translate(-50%, -50%);
-  width: 20px;
-  height: 20px;
-  border: 2px solid #ffffff;
-  border-top: 2px solid transparent;
-  border-radius: 50%;
-  animation: spin 1s linear infinite;
-}
-
-@keyframes spin {
-  0% { transform: translate(-50%, -50%) rotate(0deg); }
-  100% { transform: translate(-50%, -50%) rotate(360deg); }
+/* Estilo para el botón de Wompi */
+.wompi-button {
+  width: 100% !important;
+  height: 50px !important;
+  font-size: 1.1rem !important;
 }
 
 /* Estilos para el resumen del carrito */

@@ -7,10 +7,10 @@
     </p>
     <p>
   <strong>Tipo de venta:</strong>
-  <%= buy.transaction_id.present? ? "Venta en línea (Wompi)" : "Venta física" %>
+  <%= buy.payment_id.present? ? "Venta en línea (Wompi)" : "Venta física" %>
 </p>
 
-<% if buy.transaction_id.present? && buy.payment&.pay_method.present? %>
+<% if buy.payment_id.present? && buy.payment&.pay_method.present? %>
   <p>
     <strong>Método de pago:</strong>
     <%= buy.payment.pay_method.capitalize %>
@@ -46,7 +46,7 @@
 
     <% if buy.payment.present? %>
       <p><strong>Método de pago:</strong> <%= buy.payment.pay_method %></p>
-      <p><strong>Transacción:</strong> <%= buy.payment.transaction_id %></p>
+      <p><strong>Transacción:</strong> <%= buy.payment.payment_id %></p>
       <p><strong>Monto:</strong> $<%= buy.payment.amount %> <%= buy.payment.currency %></p>
     <% end %>
   </div>
