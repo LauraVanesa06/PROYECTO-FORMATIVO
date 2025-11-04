@@ -1638,8 +1638,10 @@ body.dark-mode a {
   padding: 2rem;
 }
 
-/* Icono de usuario circular */
-.login-user-icon {
+/* Iconos circulares */
+.login-user-icon,
+.register-user-icon,
+.recover-password-icon {
   width: 80px;
   height: 80px;
   background: linear-gradient(135deg, #4472b8 0%, #3a5f9e 100%);
@@ -1770,6 +1772,27 @@ body.dark-mode a {
 
 .forgot-password-link:hover {
   color: #3a5f9e;
+}
+
+/* Subtítulo en recuperar contraseña */
+.subtitle-text {
+  color: #888;
+  font-size: 0.95rem;
+  line-height: 1.4;
+}
+
+/* Enlace volver al inicio de sesión */
+.back-to-login-link {
+  color: #4472b8;
+  text-decoration: none;
+  font-size: 0.9rem;
+  font-weight: 500;
+  transition: color 0.2s ease;
+}
+
+.back-to-login-link:hover {
+  color: #3a5f9e;
+  text-decoration: underline;
 }
 
 .login-btn {
