@@ -1521,23 +1521,25 @@ hr{
 
 /*  Perfil User  */
 /* Sidebar limpio y moderno */
-#profileSidebar {
+#profileSidebar,
+.profile-sidebar {
   position: fixed;
   top: 0;
-  right: -400px; /* 👈 ahora desde la derecha */
-  width: 340px;
+  right: -420px;
+  width: 380px;
   height: 100%;
   background-color: #ffffff;
-  border-left: 1px solid #ddd;
-  box-shadow: -4px 0 20px rgba(0, 0, 0, 0.1);
-  transition: right 0.3s ease;
+  border-left: none;
+  box-shadow: -4px 0 20px rgba(0, 0, 0, 0.15);
+  transition: right 0.4s ease;
   z-index: 1050;
-  padding: 20px;
+  padding: 30px;
   overflow-y: auto;
 }
 
-#profileSidebar.open {
-  right: 0; /* 👈 entra desde la derecha */
+#profileSidebar.open,
+.profile-sidebar.open {
+  right: 0;
 }
 
 
@@ -1557,6 +1559,135 @@ hr{
   display: block;
 }
 
+/* Header del sidebar de perfil */
+.profile-sidebar-header {
+  border-bottom: 2px solid #f0f0f0;
+  padding-bottom: 15px;
+}
+
+.profile-title {
+  font-weight: 700;
+  color: #222;
+  font-size: 1.4rem;
+}
+
+.btn-close-profile {
+  background: none;
+  border: none;
+  font-size: 1.8rem;
+  color: #666;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  padding: 0;
+  width: 30px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.btn-close-profile:hover {
+  color: #000;
+  transform: rotate(90deg);
+}
+
+/* Icono de usuario en perfil (igual que login) */
+.profile-user-icon {
+  width: 90px;
+  height: 90px;
+  background: linear-gradient(135deg, #4472b8 0%, #3a5f9e 100%);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 10px rgba(68, 114, 184, 0.3);
+}
+
+/* Botón cambiar foto */
+.btn-change-photo {
+  background: none;
+  border: 2px solid #4472b8;
+  color: #4472b8;
+  padding: 6px 16px;
+  border-radius: 20px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.btn-change-photo:hover {
+  background: #4472b8;
+  color: white;
+  transform: translateY(-2px);
+}
+
+/* Textos del perfil */
+.profile-welcome-text {
+  background: #f8f9fa;
+  padding: 15px;
+  border-radius: 12px;
+  margin-bottom: 1rem;
+}
+
+.profile-greeting {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #222;
+  margin-bottom: 0.5rem;
+}
+
+.profile-email {
+  font-size: 0.9rem;
+  color: #666 !important;
+}
+
+.profile-info-text {
+  color: #888;
+  font-size: 0.95rem;
+  line-height: 1.5;
+}
+
+/* Botones de acciones del perfil */
+.profile-actions {
+  border-top: 2px solid #f0f0f0;
+  padding-top: 20px;
+}
+
+.btn-profile-action {
+  background: #f8f9fa;
+  border: 2px solid #e0e0e0;
+  color: #555;
+  padding: 12px;
+  border-radius: 10px;
+  font-weight: 600;
+  transition: all 0.3s ease;
+}
+
+.btn-profile-action:hover {
+  background: #4472b8;
+  border-color: #4472b8;
+  color: white;
+  transform: translateY(-2px);
+}
+
+.btn-profile-logout {
+  background: white;
+  border: 2px solid #dc3545;
+  color: #dc3545;
+  padding: 12px;
+  border-radius: 10px;
+  font-weight: 600;
+  transition: all 0.3s ease;
+}
+
+.btn-profile-logout:hover {
+  background: #dc3545;
+  border-color: #dc3545;
+  color: white;
+  transform: translateY(-2px);
+}
+
 /* Imagen de perfil */
 #profile-pic {
   object-fit: cover;
@@ -1570,10 +1701,34 @@ body.dark-mode {
   color: #e0e0e0;
 }
 
-body.dark-mode .sidebar {
+body.dark-mode .sidebar,
+body.dark-mode .profile-sidebar {
   background-color: #1e1e1e;
   color: white;
   border-color: #333;
+}
+
+body.dark-mode .profile-title,
+body.dark-mode .profile-greeting {
+  color: #e0e0e0;
+}
+
+body.dark-mode .profile-welcome-text {
+  background: #2a2a2a;
+}
+
+body.dark-mode .btn-close-profile {
+  color: #ccc;
+}
+
+body.dark-mode .btn-close-profile:hover {
+  color: white;
+}
+
+body.dark-mode .btn-profile-action {
+  background: #2a2a2a;
+  border-color: #444;
+  color: #e0e0e0;
 }
 
 body.dark-mode .btn-outline-light {
