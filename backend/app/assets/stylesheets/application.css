@@ -1633,26 +1633,143 @@ body.dark-mode a {
 /* Formulario minimalista */
 .login-form-container {
   width: 100%;
+  max-width: 400px;
+  margin: 0 auto;
+  padding: 2rem;
+}
+
+/* Icono de usuario circular */
+.login-user-icon {
+  width: 80px;
+  height: 80px;
+  background: linear-gradient(135deg, #4472b8 0%, #3a5f9e 100%);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto;
+  box-shadow: 0 4px 10px rgba(68, 114, 184, 0.3);
 }
 
 .login-form-container h3 {
   font-weight: 600;
   color: #222;
+  font-size: 1.8rem;
 }
 
-.login-input {
-  border: none;
-  border-bottom: 2px solid #ddd;
-  border-radius: 0;
-  background: transparent;
+/* Campos de entrada con bordes completos */
+.login-input-box {
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  padding: 0.85rem 1rem;
+  background: #f8f9fa;
   box-shadow: none;
-  transition: border-color 0.3s ease;
+  transition: all 0.3s ease;
+  font-size: 0.95rem;
 }
 
-.login-input:focus {
-  border-color: #007bff;
+.login-input-box:focus {
+  border-color: #4472b8;
   outline: none;
-  box-shadow: none;
+  box-shadow: 0 0 0 3px rgba(68, 114, 184, 0.1);
+  background: white;
+}
+
+.login-input-box::placeholder {
+  color: #999;
+}
+
+/* Botón toggle de contraseña */
+.position-relative {
+  position: relative;
+}
+
+.password-toggle-btn {
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #666;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: color 0.2s ease;
+}
+
+.password-toggle-btn:hover {
+  color: #4472b8;
+}
+
+/* Checkbox personalizado */
+.form-check-input:checked {
+  background-color: #4472b8;
+  border-color: #4472b8;
+}
+
+.form-check-label {
+  color: #555;
+  font-size: 0.9rem;
+}
+
+/* Botón de entrar */
+.login-btn-submit {
+  border-radius: 50px;
+  padding: 0.85rem;
+  background: linear-gradient(135deg, #4472b8 0%, #3a5f9e 100%);
+  border: none;
+  font-weight: 600;
+  font-size: 1rem;
+  letter-spacing: 0.5px;
+  box-shadow: 0 4px 12px rgba(68, 114, 184, 0.3);
+  transition: all 0.3s ease;
+}
+
+.login-btn-submit:hover {
+  background: linear-gradient(135deg, #3a5f9e 0%, #2d4a7c 100%);
+  box-shadow: 0 6px 16px rgba(68, 114, 184, 0.4);
+  transform: translateY(-2px);
+}
+
+/* Texto de ayuda */
+.help-text {
+  color: #888;
+  font-size: 0.9rem;
+  margin-bottom: 0.5rem;
+}
+
+/* Texto de registro */
+.register-text {
+  color: #555;
+  font-size: 0.95rem;
+  margin-bottom: 0;
+}
+
+.register-link {
+  color: #4472b8;
+  text-decoration: none;
+  font-weight: 600;
+  transition: color 0.2s ease;
+}
+
+.register-link:hover {
+  color: #3a5f9e;
+  text-decoration: underline;
+}
+
+/* Enlace olvidaste contraseña */
+.forgot-password-link {
+  color: #4472b8;
+  text-decoration: underline;
+  font-size: 0.9rem;
+  transition: color 0.2s ease;
+}
+
+.forgot-password-link:hover {
+  color: #3a5f9e;
 }
 
 .login-btn {
