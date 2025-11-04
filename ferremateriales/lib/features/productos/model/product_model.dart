@@ -59,4 +59,17 @@ class ProductModel extends Equatable {
         imagenUrl,
         isFavorite,
       ];
+
+      Map<String, dynamic> toJson() {
+        return {
+          'id': id,
+          'nombre': nombre,
+          'descripcion': descripcion,
+          'precio': precio,
+          'stock': stock,
+          'imagen_url': imagenUrl,
+          'favorito': isFavorite,
+        };
+      }
+
 }

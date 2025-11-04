@@ -1,12 +1,13 @@
-import 'package:ferremateriales/features/productos/bloc/cart_bloc.dart';
-import 'package:ferremateriales/features/productos/bloc/cart_event.dart';
-import 'package:ferremateriales/features/productos/bloc/product_bloc.dart';
+import 'package:cached_network_image/cached_network_image.dart';
+import 'package:ferremateriales/core/utils/custom_cache_manager.dart';
 import 'package:ferremateriales/features/productos/model/product_model.dart';
 import 'package:ferremateriales/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../auth/bloc/auth_bloc.dart';
 import '../../auth/bloc/auth_state.dart';
+import '../services/favorites_service.dart';
+import '../services/cart_service.dart';
 
 class ProductCard extends StatefulWidget {
   final ProductModel product;
@@ -19,6 +20,72 @@ class ProductCard extends StatefulWidget {
 
 class _ProductCardState extends State<ProductCard> {
   bool isFavorite = false;
+  final favoritesService = FavoritesService();
+  final cartService = CartService();
+
+  @override
+  void initState() {
+    super.initState();
+    _checkIfFavorite();
+  }
+
+  Future<void> _checkIfFavorite() async {
+    try {
+      final result = await favoritesService.isFavorite(widget.product.id!);
+      if (mounted) {
+        setState(() => isFavorite = result);
+      }
+    } catch (e) {
+      print('Error checking favorite: $e');
+    }
+  }
+
+  Future<void> _toggleFavorite(BuildContext context) async {
+    try {
+      await favoritesService.toggleFavorite(widget.product.id!);
+      setState(() => isFavorite = !isFavorite);
+      ScaffoldMessenger.of(context)
+        ..hideCurrentSnackBar()
+        ..showSnackBar(
+          SnackBar(
+            content: Text(
+              isFavorite
+                  ? 'Agregado a favoritos ⭐'
+                  : 'Eliminado de favoritos ❌',
+            ),
+            duration: const Duration(seconds: 1),
+          ),
+        );
+    } catch (_) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Error al actualizar favorito'),
+          backgroundColor: Colors.red,
+        ),
+      );
+    }
+  }
+
+  Future<void> _addToCart(BuildContext context) async {
+    try {
+      await cartService.addToCart(widget.product.id!);
+      ScaffoldMessenger.of(context)
+        ..hideCurrentSnackBar()
+        ..showSnackBar(
+          SnackBar(
+            content: Text('Agregado al carrito 🛒'),
+            duration: const Duration(seconds: 2),
+          ),
+        );
+    } catch (_) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Error al agregar al carrito'),
+          backgroundColor: Colors.red,
+        ),
+      );
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -34,7 +101,7 @@ class _ProductCardState extends State<ProductCard> {
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(12),
         side: BorderSide(
-          color: isDark ? Colors.grey.shade700 : Colors.grey.shade200, 
+          color: isDark ? Colors.grey.shade700 : Colors.grey.shade200,
           width: 1,
         ),
       ),
@@ -51,14 +118,25 @@ class _ProductCardState extends State<ProductCard> {
                   padding: const EdgeInsets.all(16),
                   decoration: BoxDecoration(
                     color: isDark ? Colors.grey.shade700 : Colors.white,
-                    borderRadius: const BorderRadius.vertical(top: Radius.circular(12)),
+                    borderRadius:
+                        const BorderRadius.vertical(top: Radius.circular(12)),
                   ),
                   child: Center(
                     child: (product.imagenUrl != null && product.imagenUrl!.isNotEmpty)
-                        ? Image.network(
-                            product.imagenUrl!,
+                        ? CachedNetworkImage(
+                            imageUrl: product.imagenUrl!,
+                            cacheManager: CustomCacheManager.instance, // <-- caché personalizada
                             fit: BoxFit.contain,
-                            errorBuilder: (_, __, ___) => Icon(
+                            fadeInDuration: const Duration(milliseconds: 200), // animación rápida
+                            fadeOutDuration: const Duration(milliseconds: 100),
+                            placeholder: (context, url) => const SizedBox(
+                              height: 60,
+                              width: 60,
+                              child: Center(
+                                child: CircularProgressIndicator(strokeWidth: 2),
+                              ),
+                            ),
+                            errorWidget: (context, url, error) => Icon(
                               Icons.broken_image,
                               size: 80,
                               color: isDark ? Colors.grey.shade500 : Colors.grey,
@@ -70,7 +148,7 @@ class _ProductCardState extends State<ProductCard> {
                           ),
                   ),
                 ),
-                
+
                 // Botón de favorito en la esquina superior izquierda
                 Positioned(
                   top: 8,
@@ -79,7 +157,10 @@ class _ProductCardState extends State<ProductCard> {
                     decoration: BoxDecoration(
                       color: isDark ? Colors.grey.shade800 : Colors.white,
                       shape: BoxShape.circle,
-                      border: Border.all(color: Colors.orange.shade200, width: 2),
+                      border: Border.all(
+                        color: Colors.orange.shade200,
+                        width: 2,
+                      ),
                       boxShadow: isDark
                           ? []
                           : [
@@ -103,27 +184,16 @@ class _ProductCardState extends State<ProductCard> {
                       ),
                       onPressed: () {
                         if (authState.status == AuthStatus.guest) {
-                          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-                            content: Text('Inicia sesión para agregar favoritos ⭐'),
-                            backgroundColor: Colors.orange,
-                          ));
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                              content: Text(
+                                  'Inicia sesión para agregar favoritos ⭐'),
+                              backgroundColor: Colors.orange,
+                            ),
+                          );
                           return;
                         }
-
-                        context
-                            .read<ProductBloc>()
-                            .add(ToggleFavorite(widget.product.id!));
-                        setState(() {
-                          isFavorite = !isFavorite;
-                        });
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(
-                            content: Text(
-                              isFavorite ? l10n.addedToFavorites : l10n.removedFromFavorites,
-                            ),
-                            duration: const Duration(seconds: 1),
-                          ),
-                        );
+                        _toggleFavorite(context);
                       },
                     ),
                   ),
@@ -144,7 +214,9 @@ class _ProductCardState extends State<ProductCard> {
                   style: TextStyle(
                     fontWeight: FontWeight.bold,
                     fontSize: 16,
-                    color: isDark ? Colors.blue.shade300 : const Color(0xFF2e67a3),
+                    color: isDark
+                        ? Colors.blue.shade300
+                        : const Color(0xFF2e67a3),
                   ),
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
@@ -157,7 +229,9 @@ class _ProductCardState extends State<ProductCard> {
                   maxLines: 2,
                   overflow: TextOverflow.ellipsis,
                   style: TextStyle(
-                    color: isDark ? Colors.grey.shade400 : Colors.grey.shade600,
+                    color: isDark
+                        ? Colors.grey.shade400
+                        : Colors.grey.shade600,
                     fontSize: 12,
                     height: 1.3,
                   ),
@@ -171,11 +245,13 @@ class _ProductCardState extends State<ProductCard> {
                   children: [
                     // Precio
                     Text(
-                      'COP ${product.precio?.toStringAsFixed(2) ?? '0.00'}',
+                      'COP ${double.tryParse(product.precio.toString())?.toStringAsFixed(2) ?? '0.00'}',
                       style: TextStyle(
                         fontWeight: FontWeight.bold,
                         fontSize: 18,
-                        color: isDark ? Colors.blue.shade300 : const Color(0xFF2e67a3),
+                        color: isDark
+                            ? Colors.blue.shade300
+                            : const Color(0xFF2e67a3),
                       ),
                     ),
 
@@ -186,7 +262,8 @@ class _ProductCardState extends State<ProductCard> {
                         borderRadius: BorderRadius.circular(8),
                         boxShadow: [
                           BoxShadow(
-                            color: const Color(0xFF2e67a3).withOpacity(0.3),
+                            color:
+                                const Color(0xFF2e67a3).withOpacity(0.3),
                             blurRadius: 4,
                             offset: const Offset(0, 2),
                           ),
@@ -205,28 +282,16 @@ class _ProductCardState extends State<ProductCard> {
                         ),
                         onPressed: () {
                           if (authState.status == AuthStatus.guest) {
-                            ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-                              content: Text('Inicia sesión para añadir productos al carrito 🛒'),
-                              backgroundColor: Colors.orange,
-                            ));
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                content: Text(
+                                    'Inicia sesión para añadir productos al carrito 🛒'),
+                                backgroundColor: Colors.orange,
+                              ),
+                            );
                             return;
                           }
-                          
-                          context.read<CartBloc>().add(
-                            AddToCart({
-                              "name": product.nombre ?? '',
-                              "price": product.precio ?? 0.0,
-                              "quantity": 1,
-                              "image": product.imagenUrl ?? '',
-                            }),
-                          );
-
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(
-                              content: Text(l10n.addedToCart(product.nombre ?? '')),
-                              duration: const Duration(seconds: 2),
-                            ),
-                          );
+                          _addToCart(context);
                         },
                       ),
                     ),

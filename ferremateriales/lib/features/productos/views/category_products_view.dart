@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../bloc/product_bloc.dart';
 import '../widgets/product_list.dart';
+import '../widgets/loading_shimmer.dart'; // Import the shimmer widget
 
 class CategoryProductsView extends StatefulWidget {
   final String categoryName;
@@ -59,7 +60,10 @@ class _CategoryProductsViewState extends State<CategoryProductsView> {
         child: BlocBuilder<ProductBloc, ProductState>(
           builder: (context, state) {
             if (state is ProductLoadInProgress) {
-              return const Center(child: CircularProgressIndicator());
+              return const Padding(
+                padding: EdgeInsets.all(8.0),
+                child: LoadingShimmer(isGrid: true), // 👈 Use the new shimmer
+              );
             } else if (state is ProductLoadSuccess) {
               if (state.productos.isEmpty) {
                 return Center(
