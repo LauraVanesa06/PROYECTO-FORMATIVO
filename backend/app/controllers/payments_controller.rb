@@ -206,61 +206,37 @@ end
     end
 
     ActiveRecord::Base.transaction do
-      # construir atributos para Buy según columnas disponibles
-      buy_attrs = {}
-      buy_attrs[:customer_id] = payment.user.id if payment.user && Buy.column_names.include?("customer_id")
-      buy_attrs[:fecha] = Time.current if Buy.column_names.include?("fecha")
-      buy_attrs[:total] = (cart.total || 0) if Buy.column_names.include?("total")
-      buy_attrs[:payment_id] = payment.id if Buy.column_names.include?("payment_id")
+     total_compra = cart.cart_items.sum { |i| (i.product&.precio || 0) * (i.try(:cantidad) || 1) }
 
-      buy = Buy.create!(buy_attrs)
+      buy = Buy.create!(
+        customer_id: payment.user.id,
+        fecha: Time.current,
+        tipo: "Online",
+        metodo_pago: payment.pay_method || "Wompi",
+        total: total_compra,
+        payment_id: payment.id
+      )
 
-      pd_cols = (defined?(Purchasedetail) ? Purchasedetail.column_names : [])
 
-      cart.cart_items.each do |ci|
-        detail_attrs = {}
-        detail_attrs["buy_id"] = buy.id if pd_cols.include?("buy_id")
-
-        product_id = ci.respond_to?(:product_id) ? ci.product_id : (ci.product&.id rescue nil)
-        detail_attrs["product_id"] = product_id if product_id && pd_cols.include?("product_id")
-
-        qty = (ci.respond_to?(:cantidad) ? ci.cantidad.to_i : (ci.respond_to?(:qty) ? ci.qty.to_i : 1))
-        if pd_cols.include?("cantidad")
-          detail_attrs["cantidad"] = qty
-        elsif pd_cols.include?("cantidad")
-          detail_attrs["cantidad"] = qty
-        end
-
-        price = (ci.respond_to?(:price) ? ci.price.to_f : (ci.product&.try(:precio) || 0)).to_f
-        if pd_cols.include?("precio")
-          detail_attrs["precio"] = price
-        elsif pd_cols.include?("price")
-          detail_attrs["price"] = price
-        end
-
-        total_line = price * qty
-        if pd_cols.include?("total")
-          detail_attrs["total"] = total_line
-        elsif pd_cols.include?("subtotal")
-          detail_attrs["subtotal"] = total_line
-        end
-
-        Purchasedetail.create!(detail_attrs)
+      cart.cart_items.each do |item|
+        Purchasedetail.create!(
+          buy_id: buy.id,
+          product_id: item.product_id,
+          cantidad: item.cantidad || 1,
+          precio: item.product&.precio || 0,
+        total: (item.product&.precio || 0) * (item.try(:cantidad) || 1)
+        )
       end
 
       # marcar carrito como completado si el modelo tiene campo o método
-      if cart.respond_to?(:complete=)
-        cart.update!(complete: true)
-      elsif cart.respond_to?(:status=)
-        cart.update!(status: "completed") rescue nil
-      end
+     cart.update!(status: "completed") if cart.respond_to?(:status=)
 
-      # ligar buy id en payment si existe la columna
-      if Payment.column_names.include?("buy_id")
-        payment.update!(buy_id: buy.id)
-      end
+      # Vincular compra al pago
+      payment.update!(buy_id: buy.id) 
+
     end
   rescue => e
-    Rails.logger.error("[Payments] create_buy_from_payment error: #{e.full_message}")
+      Rails.logger.error("[Payments] create_buy_from_payment error: #{e.full_message}")
+
   end
 end

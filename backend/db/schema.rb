@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_10_24_022211) do
+ActiveRecord::Schema[8.0].define(version: 2025_11_04_023518) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -50,6 +50,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_10_24_022211) do
     t.string "tipo"
     t.string "metodo_pago"
     t.bigint "payment_id"
+    t.decimal "total", precision: 12, scale: 2
     t.index ["customer_id"], name: "index_buys_on_customer_id"
     t.index ["payment_id"], name: "index_buys_on_payment_id"
   end

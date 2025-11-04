@@ -5,11 +5,9 @@ class BuysController < ApplicationController
   # GET /buys or /buys.json
   def index
 
+    #Cargar todas las ventas con sus detalles y filtros
+    @buys = Buy.includes(:payment, :customer).order(fecha: :desc)
 
-    @buys = Buy.all.order(created_at: :desc).limit(100)
-
-
-  @buys = Buy.includes(:customer, :payment).order(created_at: :desc)
     @purchasedetails = Purchasedetail.all
     @purchasedetails = Purchasedetail.joins("INNER JOIN buys ON buys.id = purchasedetails.buy_id")
     conditions = []

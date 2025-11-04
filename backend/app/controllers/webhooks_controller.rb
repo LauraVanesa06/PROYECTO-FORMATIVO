@@ -23,18 +23,16 @@ class WebhooksController < ApplicationController
       when "approved", "paid"
         payment.update(status: "paid")
 
-        # ✅ Crear la venta solo si no existe
-        unless Buy.exists?(payment_id: payment.id)
-          customer = Customer.find_by(user_id: payment.user_id)
-
-          Buy.create!(
-            customer: customer,
-            fecha: Time.zone.now,
-            tipo: "Minorista",
-            metodo_pago: "Wompi",
-            payment_id: payment.id
-          )
-        end
+      unless Buy.exists?(payment_id: payment.id)
+        Buy.create!(
+          customer: Customer.find_by(user_id: payment.user_id),
+          fecha: Time.zone.now,
+          tipo: "Minorista",
+          metodo_pago: "Wompi",
+          total: payment.amount,
+          payment: payment
+        )
+      end
 
         if (user = payment.user)
           PaymentMailer.with(user: user, payment: payment).invoice.deliver_now
