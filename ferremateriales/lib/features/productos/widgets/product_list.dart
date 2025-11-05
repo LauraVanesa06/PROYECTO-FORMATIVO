@@ -56,6 +56,8 @@ class _ProductsListState extends State<ProductsList> {
   Widget build(BuildContext context) {
     return GridView.builder(
       padding: const EdgeInsets.symmetric(horizontal: 10),
+      shrinkWrap: true,
+      physics: const NeverScrollableScrollPhysics(),
       itemCount: widget.products.length,
       gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
         crossAxisCount: 2,

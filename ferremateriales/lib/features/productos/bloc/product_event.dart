@@ -8,9 +8,6 @@ abstract class ProductEvent extends Equatable {
 }
 
 class ProductEntrarPressed extends ProductEvent {}
-
-class ProductRefrescar extends ProductEvent {} // 👈 NUEVO EVENTO
-
 class ProductFilterByCategory extends ProductEvent {
   final int categoryId; // ✅ solo ID
 
@@ -38,11 +35,3 @@ class ProductBuscarPorNombre extends ProductEvent {
   List<Object?> get props => [query];
 }
 
-class ProductSearched extends ProductEvent {
-  final String query;
-
-  const ProductSearched(this.query);
-
-  @override
-  List<Object?> get props => [query];
-}

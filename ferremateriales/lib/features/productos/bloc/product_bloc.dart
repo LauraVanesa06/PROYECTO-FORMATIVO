@@ -12,11 +12,9 @@ class ProductBloc extends Bloc<ProductEvent, ProductState> {
 
   ProductBloc() : super(ProductInitial()) {
     on<ProductEntrarPressed>(_onLoadProducts);
-    on<ProductRefrescar>(_onRefreshProducts);
     on<ToggleFavorite>(_onToggleFavorite);
     on<ProductFilterByCategory>(_onFilterByCategory);
     on<ProductBuscarPorNombre>(_onBuscarProductoPorNombre);
-    on<ProductSearched>(_onProductSearched);
   }
 
   // ✅ Cargar productos (solo si no se ha hecho antes)
@@ -55,37 +53,7 @@ class ProductBloc extends Bloc<ProductEvent, ProductState> {
     }
   }
 
-  // 🔄 Refrescar manualmente (ignora el flag)
-  Future<void> _onRefreshProducts(
-      ProductRefrescar event, Emitter<ProductState> emit) async {
-    emit(ProductLoadInProgress());
-    _yaCargados = false;
-
-    try {
-      final response =
-          await http.get(Uri.parse('http://localhost:3000/api/v1/products'));
-
-      if (response.statusCode == 200) {
-        final decoded = jsonDecode(response.body);
-        if (decoded is List) {
-          final products = decoded
-              .whereType<Map<String, dynamic>>()
-              .map((item) => ProductModel.fromJson(item))
-              .toList();
-
-          _productosCache = products;
-          _yaCargados = true;
-          emit(ProductLoadSuccess(products));
-        } else {
-          emit(ProductLoadFailure());
-        }
-      } else {
-        emit(ProductLoadFailure());
-      }
-    } catch (e) {
-      emit(ProductLoadFailure());
-    }
-  }
+  // (refresh handled by re-using _onLoadProducts with cache-control flag)
 
 // 🔍 Filtrar productos por categoría (por ID)
     Future<void> _onFilterByCategory(
@@ -138,23 +106,6 @@ class ProductBloc extends Bloc<ProductEvent, ProductState> {
   // 🔎 Buscar productos por nombre
   void _onBuscarProductoPorNombre(
       ProductBuscarPorNombre event, Emitter<ProductState> emit) {
-    final query = event.query.toLowerCase().trim();
-
-    if (query.isEmpty) {
-      // Si el texto está vacío, mostramos todos
-      emit(ProductLoadSuccess(_productosCache));
-      return;
-    }
-
-    final resultados = _productosCache.where((producto) {
-      return producto.nombre!.toLowerCase().contains(query);
-    }).toList();
-
-    emit(ProductLoadSuccess(resultados));
-  }
-
-  void _onProductSearched(
-      ProductSearched event, Emitter<ProductState> emit) {
     final query = event.query.toLowerCase().trim();
 
     if (query.isEmpty) {

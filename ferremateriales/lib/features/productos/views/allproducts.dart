@@ -46,7 +46,7 @@ class _AllProductsViewState extends State<AllProductsView> {
               onChanged: (value) {
                 // Búsqueda en tiempo real
                 context.read<ProductBloc>().add(
-                  ProductSearched(value),
+                  ProductBuscarPorNombre(value),
                 );
               },
             ),
