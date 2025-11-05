@@ -37,3 +37,12 @@ class ProductBuscarPorNombre extends ProductEvent {
   @override
   List<Object?> get props => [query];
 }
+
+class ProductSearched extends ProductEvent {
+  final String query;
+
+  const ProductSearched(this.query);
+
+  @override
+  List<Object?> get props => [query];
+}

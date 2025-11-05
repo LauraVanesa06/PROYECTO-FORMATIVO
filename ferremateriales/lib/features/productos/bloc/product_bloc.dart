@@ -15,7 +15,8 @@ class ProductBloc extends Bloc<ProductEvent, ProductState> {
     on<ProductRefrescar>(_onRefreshProducts);
     on<ToggleFavorite>(_onToggleFavorite);
     on<ProductFilterByCategory>(_onFilterByCategory);
-    on<ProductBuscarPorNombre>(_onBuscarProductoPorNombre); // 🔍 Nuevo evento
+    on<ProductBuscarPorNombre>(_onBuscarProductoPorNombre);
+    on<ProductSearched>(_onProductSearched);
   }
 
   // ✅ Cargar productos (solo si no se ha hecho antes)
@@ -137,6 +138,23 @@ class ProductBloc extends Bloc<ProductEvent, ProductState> {
   // 🔎 Buscar productos por nombre
   void _onBuscarProductoPorNombre(
       ProductBuscarPorNombre event, Emitter<ProductState> emit) {
+    final query = event.query.toLowerCase().trim();
+
+    if (query.isEmpty) {
+      // Si el texto está vacío, mostramos todos
+      emit(ProductLoadSuccess(_productosCache));
+      return;
+    }
+
+    final resultados = _productosCache.where((producto) {
+      return producto.nombre!.toLowerCase().contains(query);
+    }).toList();
+
+    emit(ProductLoadSuccess(resultados));
+  }
+
+  void _onProductSearched(
+      ProductSearched event, Emitter<ProductState> emit) {
     final query = event.query.toLowerCase().trim();
 
     if (query.isEmpty) {

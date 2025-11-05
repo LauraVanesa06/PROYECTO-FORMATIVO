@@ -11,6 +11,7 @@ import '../bloc/product_bloc.dart';
 import '../widgets/product_list.dart';
 import 'category_products_view.dart';
 import '../widgets/product_shimmer.dart'; // 👈 Importamos el nuevo shimmer
+import 'allproducts.dart';
 
 class HomeView extends StatefulWidget {
   const HomeView({super.key});
@@ -124,9 +125,15 @@ class _HomeViewState extends State<HomeView> {
                                   .read<ProductBloc>()
                                   .add(ProductEntrarPressed());
                             } else {
-                              context
-                                  .read<ProductBloc>()
-                                  .add(ProductBuscarPorNombre(value));
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (_) => BlocProvider.value(
+                                    value: context.read<ProductBloc>(),
+                                    child: AllProductsView(searchQuery: value),
+                                  ),
+                                ),
+                              );
                             }
                           },
                           decoration: InputDecoration(
