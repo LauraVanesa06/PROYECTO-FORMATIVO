@@ -38,8 +38,9 @@ class MyApp extends StatelessWidget {
       providers: [
         BlocProvider(
           create: (_) => AuthBloc(
-            AuthService(baseUrl: 'http://localhost:3000')
-          )..add(AuthStarted()),
+            AuthService(baseUrl: 'http://localhost:3000'),
+          )
+          ..add(ContinueAsGuest()),
         ),
         BlocProvider(create: (_) => CartBloc()),
         BlocProvider(create: (_) => ProductBloc()),
