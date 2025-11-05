@@ -1,27 +1,68 @@
 <div class="login-form-container">
+  <!-- Icono de usuario con plus circular -->
+  <div class="text-center mb-4">
+    <div class="register-user-icon">
+      <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" fill="white" viewBox="0 0 16 16">
+        <path d="M12.5 16a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7Zm.5-5v1h1a.5.5 0 0 1 0 1h-1v1a.5.5 0 0 1-1 0v-1h-1a.5.5 0 0 1 0-1h1v-1a.5.5 0 0 1 1 0Zm-2-6a3 3 0 1 1-6 0 3 3 0 0 1 6 0ZM8 7a2 2 0 1 0 0-4 2 2 0 0 0 0 4Z"/>
+        <path d="M8.256 14a4.474 4.474 0 0 1-.229-1.004H3c.001-.246.154-.986.832-1.664C4.484 10.68 5.711 10 8 10c.26 0 .507.009.74.025.226-.341.496-.65.804-.918C9.077 9.038 8.564 9 8 9c-5 0-6 3-6 4s1 1 1 1h5.256Z"/>
+      </svg>
+    </div>
+  </div>
+
   <h3 class="text-center mb-4">Registrarse</h3>
 
   <%= form_for(resource, as: resource_name, url: registration_path(resource_name)) do |f| %>
-    <div class="form-group">
-      <%= f.email_field :email, autofocus: true, class: "form-control", placeholder: "correo@ejemplo.com" %>
+    <div class="mb-3">
+      <%= f.text_field :name, class: "form-control login-input-box", placeholder: "Nombre completo", required: true %>
     </div>
 
     <div class="mb-3">
-      <%= f.password_field :password, autocomplete: "new-password", class: "form-control", placeholder: "Contraseña" %>
+      <%= f.email_field :email, autofocus: true, class: "form-control login-input-box", placeholder: "Correo electrónico", required: true %>
     </div>
 
-    <div class="mb-3">
-      <%= f.password_field :password_confirmation, autocomplete: "new-password", class: "form-control", placeholder: "Confirma tu contraseña" %>
+    <div class="mb-3 position-relative">
+      <%= f.password_field :password, autocomplete: "new-password", class: "form-control login-input-box", id: "register-password-field", placeholder: "Contraseña", required: true %>
+      <button type="button" class="password-toggle-btn" onclick="toggleRegisterPassword()">
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="eye-icon" viewBox="0 0 16 16">
+          <path d="M16 8s-3-5.5-8-5.5S0 8 0 8s3 5.5 8 5.5S16 8 16 8zM1.173 8a13.133 13.133 0 0 1 1.66-2.043C4.12 4.668 5.88 3.5 8 3.5c2.12 0 3.879 1.168 5.168 2.457A13.133 13.133 0 0 1 14.828 8c-.058.087-.122.183-.195.288-.335.48-.83 1.12-1.465 1.755C11.879 11.332 10.119 12.5 8 12.5c-2.12 0-3.879-1.168-5.168-2.457A13.134 13.134 0 0 1 1.172 8z"/>
+          <path d="M8 5.5a2.5 2.5 0 1 0 0 5 2.5 2.5 0 0 0 0-5zM4.5 8a3.5 3.5 0 1 1 7 0 3.5 3.5 0 0 1-7 0z"/>
+        </svg>
+      </button>
     </div>
 
-    <div class="actions">
-      <%= f.submit "Registrarse", class: "btn btn-primary w-100 login-btn" %>
+    <div class="mb-3 position-relative">
+      <%= f.password_field :password_confirmation, autocomplete: "new-password", class: "form-control login-input-box", id: "register-password-confirmation-field", placeholder: "Confirmar contraseña", required: true %>
+      <button type="button" class="password-toggle-btn" onclick="toggleRegisterPasswordConfirmation()">
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="eye-icon" viewBox="0 0 16 16">
+          <path d="M16 8s-3-5.5-8-5.5S0 8 0 8s3 5.5 8 5.5S16 8 16 8zM1.173 8a13.133 13.133 0 0 1 1.66-2.043C4.12 4.668 5.88 3.5 8 3.5c2.12 0 3.879 1.168 5.168 2.457A13.133 13.133 0 0 1 14.828 8c-.058.087-.122.183-.195.288-.335.48-.83 1.12-1.465 1.755C11.879 11.332 10.119 12.5 8 12.5c-2.12 0-3.879-1.168-5.168-2.457A13.134 13.134 0 0 1 1.172 8z"/>
+          <path d="M8 5.5a2.5 2.5 0 1 0 0 5 2.5 2.5 0 0 0 0-5zM4.5 8a3.5 3.5 0 1 1 7 0 3.5 3.5 0 0 1-7 0z"/>
+        </svg>
+      </button>
+    </div>
+
+    <div class="actions mb-3">
+      <%= f.submit "Registrarse", class: "btn btn-primary w-100 login-btn-submit" %>
     </div>
   <% end %>
 
-  <hr class="my-4">
-  <p class="text-center mb-0">
-    ¿Ya tienes cuenta?
-    <%= link_to "Inicia sesión", new_user_session_path, class: "text-decoration-none login-link", data: { turbo: false } %>
-  </p>
+  <div class="text-center mt-3">
+    <p class="register-text mb-0">
+      ¿Ya tienes cuenta?
+      <%= link_to "Inicia sesión aquí", new_user_session_path, class: "register-link", data: { turbo: false } %>
+    </p>
+  </div>
 </div>
+
+<script>
+  function toggleRegisterPassword() {
+    const passwordField = document.getElementById('register-password-field');
+    const type = passwordField.getAttribute('type') === 'password' ? 'text' : 'password';
+    passwordField.setAttribute('type', type);
+  }
+
+  function toggleRegisterPasswordConfirmation() {
+    const passwordField = document.getElementById('register-password-confirmation-field');
+    const type = passwordField.getAttribute('type') === 'password' ? 'text' : 'password';
+    passwordField.setAttribute('type', type);
+  }
+</script>
