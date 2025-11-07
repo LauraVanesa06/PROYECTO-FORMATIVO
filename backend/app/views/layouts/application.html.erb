@@ -149,10 +149,6 @@
 
     <!-- Fondo borroso -->
 
-    <script>
-      window.isLoggedIn = <%= user_signed_in? ? 'true' : 'false' %>;
-    </script>
-
     <% if flash[:notice] %>
       <div class="alert alert-success"><%= flash[:notice] %></div>
     <% end %>
@@ -165,6 +161,9 @@
 
     <div id="deviseSidebarContainer"></div>
 
-
+    <script>
+      // Indica al frontend si hay sesión activa
+      window.isLoggedIn = <%= user_signed_in? %>;
+    </script>
   </body>
 </html>
