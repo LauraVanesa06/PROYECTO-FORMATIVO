@@ -20,9 +20,8 @@
     </p>
 
     <%= form_for(resource, as: resource_name, url: password_path(resource_name), html: { method: :post }) do |f| %>
-      <div class="mb-3">
-        <%= f.label :email, "Correo electrónico", class: "form-label" %>
-        <%= f.email_field :email, class: "form-control", placeholder: "correo@ejemplo.com", autofocus: true %>
+      <div class="mb-4">
+        <%= f.email_field :email, class: "form-control login-input-box", placeholder: "Correo electrónico", autofocus: true, required: true %>
       </div>
 
       <div class="d-grid mb-3">
