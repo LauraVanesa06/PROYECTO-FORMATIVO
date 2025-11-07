@@ -6,13 +6,21 @@ class CartBloc extends Bloc<CartEvent, CartState> {
   CartBloc() : super(const CartState()) {
     // ➕ Agregar al carrito
     on<AddToCart>((event, emit) {
-      final items = List<Map<String, dynamic>>.from(state.items);
-      final index = items.indexWhere((item) => item["name"] == event.product["name"]);
+      final existingIndex = state.items.indexWhere(
+        (item) => item["name"] == event.product["name"]
+      );
 
-      if (index >= 0) {
-        items[index]["quantity"] += 1;
+      final List<Map<String, dynamic>> items;
+      
+      if (existingIndex >= 0) {
+        items = state.items.map((item) {
+          if (item["name"] == event.product["name"]) {
+            return {...item, "quantity": (item["quantity"] as int) + 1};
+          }
+          return {...item};
+        }).toList();
       } else {
-        items.add({...event.product, "quantity": 1});
+        items = [...state.items.map((item) => {...item}), {...event.product, "quantity": 1}];
       }
 
       emit(CartState(items: items));
@@ -20,32 +28,38 @@ class CartBloc extends Bloc<CartEvent, CartState> {
 
     // ❌ Eliminar del carrito
     on<RemoveFromCart>((event, emit) {
-      final items = state.items.where((item) => item["name"] != event.name).toList();
+      final items = state.items
+          .where((item) => item["name"] != event.name)
+          .map((item) => {...item})
+          .toList();
       emit(CartState(items: items));
     });
 
     // 🔼 Incrementar
     on<IncreaseQuantity>((event, emit) {
-      final items = List<Map<String, dynamic>>.from(state.items);
-      final index = items.indexWhere((item) => item["name"] == event.name);
-
-      if (index >= 0) {
-        items[index]["quantity"] += 1;
-      }
+      final items = state.items.map((item) {
+        if (item["name"] == event.name) {
+          return {...item, "quantity": (item["quantity"] as int) + 1};
+        }
+        return {...item};
+      }).toList();
 
       emit(CartState(items: items));
     });
 
     // 🔽 Disminuir
     on<DecreaseQuantity>((event, emit) {
-      final items = List<Map<String, dynamic>>.from(state.items);
-      final index = items.indexWhere((item) => item["name"] == event.name);
-
-      if (index >= 0) {
-        if (items[index]["quantity"] > 1) {
-          items[index]["quantity"] -= 1;
+      final items = <Map<String, dynamic>>[];
+      
+      for (var item in state.items) {
+        if (item["name"] == event.name) {
+          final newQuantity = (item["quantity"] as int) - 1;
+          if (newQuantity > 0) {
+            items.add({...item, "quantity": newQuantity});
+          }
+          // Si newQuantity es 0, no agregamos el item (lo eliminamos)
         } else {
-          items.removeAt(index);
+          items.add({...item});
         }
       }
 

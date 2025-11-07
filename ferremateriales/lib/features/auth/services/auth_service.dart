@@ -31,8 +31,17 @@ class AuthService {
         final data = jsonDecode(response.body);
         await storage.write(key: 'auth_token', value: data['token']);
         return data;
+      } else if (response.statusCode == 401) {
+        // Credenciales inválidas
+        final errorData = jsonDecode(response.body);
+        throw Exception(errorData['message'] ?? 'Correo o contraseña incorrectos');
+      } else if (response.statusCode == 422) {
+        // Error de validación
+        final errorData = jsonDecode(response.body);
+        throw Exception(errorData['message'] ?? 'Datos de inicio de sesión inválidos');
       } else {
-        throw Exception('Login failed: ${response.body}');
+        final errorData = jsonDecode(response.body);
+        throw Exception(errorData['message'] ?? 'Error al iniciar sesión. Intenta nuevamente');
       }
     } catch (e) {
       print('Error in login: $e');
@@ -66,8 +75,62 @@ class AuthService {
         final data = jsonDecode(response.body);
         await storage.write(key: 'auth_token', value: data['token']);
         return data;
+      } else if (response.statusCode == 422 || response.statusCode == 400) {
+        // Error de validación (email duplicado, contraseña débil, etc.)
+        try {
+          final errorData = jsonDecode(response.body);
+          print('Error 422/400 data: $errorData'); // Debug
+          
+          // Verificar diferentes formatos de respuesta del backend
+          String errorMessage = 'Error de validación en el registro';
+          
+          if (errorData['message'] != null) {
+            errorMessage = errorData['message'];
+            // Verificar si el mensaje indica email duplicado
+            String msgLower = errorMessage.toLowerCase();
+            if (msgLower.contains('email') && (msgLower.contains('taken') || 
+                msgLower.contains('exists') || msgLower.contains('duplicado') ||
+                msgLower.contains('already') || msgLower.contains('registrado'))) {
+              errorMessage = 'Este correo electrónico ya está registrado';
+            }
+          } else if (errorData['error'] != null) {
+            errorMessage = errorData['error'];
+          } else if (errorData['errors'] != null) {
+            // Si hay múltiples errores
+            if (errorData['errors'] is Map) {
+              final errors = errorData['errors'] as Map;
+              if (errors['email'] != null) {
+                String emailError = errors['email'].toString();
+                // Verificar si es error de email duplicado
+                if (emailError.toLowerCase().contains('taken') || 
+                    emailError.toLowerCase().contains('exists') ||
+                    emailError.toLowerCase().contains('already')) {
+                  errorMessage = 'Este correo electrónico ya está registrado';
+                } else {
+                  errorMessage = emailError;
+                }
+              } else {
+                errorMessage = errors.values.first.toString();
+              }
+            }
+          }
+          
+          throw Exception(errorMessage);
+        } catch (e) {
+          if (e is Exception) rethrow;
+          throw Exception('Error de validación en el registro');
+        }
+      } else if (response.statusCode == 409) {
+        // Conflicto (usuario ya existe)
+        throw Exception('Este correo electrónico ya está registrado');
       } else {
-        throw Exception('Registration failed: ${response.body}');
+        try {
+          final errorData = jsonDecode(response.body);
+          throw Exception(errorData['message'] ?? errorData['error'] ?? 'Error al registrar usuario. Intenta nuevamente');
+        } catch (e) {
+          if (e is Exception) rethrow;
+          throw Exception('Error al registrar usuario. Intenta nuevamente');
+        }
       }
     } catch (e) {
       print('Register error: $e'); // Debug

@@ -50,9 +50,14 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         }
       } catch (e) {
         print('Error en login: $e'); // Debug
+        // Extraer el mensaje de error específico
+        String errorMessage = 'Error de autenticación';
+        if (e.toString().contains('Exception:')) {
+          errorMessage = e.toString().replaceAll('Exception:', '').trim();
+        }
         emit(state.copyWith(
           status: AuthStatus.failure,
-          error: 'Error de autenticación',
+          error: errorMessage,
         ));
       }
     });
@@ -72,9 +77,18 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
           email: response['user']['email'],
         ));
       } catch (e) {
+        print('🔴 Register error en bloc: $e'); // Debug
+        // Extraer el mensaje de error específico
+        String errorMessage = 'Error al registrar usuario';
+        if (e.toString().contains('Exception:')) {
+          errorMessage = e.toString().replaceAll('Exception:', '').trim();
+        } else {
+          errorMessage = e.toString();
+        }
+        print('🔴 Error message extraído: $errorMessage'); // Debug
         emit(state.copyWith(
           status: AuthStatus.failure,
-          error: 'Error al registrar usuario',
+          error: errorMessage,
         ));
       }
     });

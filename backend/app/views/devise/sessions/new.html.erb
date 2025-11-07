@@ -1,4 +1,13 @@
 <div class="login-form-container">
+  <!-- Icono de usuario circular -->
+  <div class="text-center mb-4">
+    <div class="login-user-icon">
+      <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" fill="white" viewBox="0 0 16 16">
+        <path d="M8 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm2-3a2 2 0 1 1-4 0 2 2 0 0 1 4 0zm4 8c0 1-1 1-1 1H3s-1 0-1-1 1-4 6-4 6 3 6 4zm-1-.004c-.001-.246-.154-.986-.832-1.664C11.516 10.68 10.289 10 8 10c-2.29 0-3.516.68-4.168 1.332-.678.678-.83 1.418-.832 1.664h10z"/>
+      </svg>
+    </div>
+  </div>
+
   <h3 class="text-center mb-4">Inicia sesión</h3>
 
   <% if flash[:alert] %>
@@ -9,29 +18,49 @@
 
   <%= form_with(model: resource, url: session_path(resource_name), local: true, data: { turbo: false }) do |f| %>
     <div class="mb-3">
-      <%= f.email_field :email, class: "form-control login-input", placeholder: "Correo electrónico", required: true %>
+      <%= f.email_field :email, class: "form-control login-input-box", placeholder: "Correo electrónico", required: true %>
+    </div>
+
+    <div class="mb-3 position-relative">
+      <%= f.password_field :password, class: "form-control login-input-box", id: "password-field", placeholder: "Contraseña", required: true %>
+      <button type="button" class="password-toggle-btn" onclick="togglePassword()">
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="eye-icon" viewBox="0 0 16 16">
+          <path d="M16 8s-3-5.5-8-5.5S0 8 0 8s3 5.5 8 5.5S16 8 16 8zM1.173 8a13.133 13.133 0 0 1 1.66-2.043C4.12 4.668 5.88 3.5 8 3.5c2.12 0 3.879 1.168 5.168 2.457A13.133 13.133 0 0 1 14.828 8c-.058.087-.122.183-.195.288-.335.48-.83 1.12-1.465 1.755C11.879 11.332 10.119 12.5 8 12.5c-2.12 0-3.879-1.168-5.168-2.457A13.134 13.134 0 0 1 1.172 8z"/>
+          <path d="M8 5.5a2.5 2.5 0 1 0 0 5 2.5 2.5 0 0 0 0-5zM4.5 8a3.5 3.5 0 1 1 7 0 3.5 3.5 0 0 1-7 0z"/>
+        </svg>
+      </button>
     </div>
 
     <div class="mb-3">
-      <%= f.password_field :password, class: "form-control login-input", placeholder: "Contraseña", required: true %>
-    </div>
-
-    <div class="d-flex justify-content-between align-items-center mb-3">
       <div class="form-check">
-        <%= f.check_box :remember_me, class: "form-check-input" %>
+        <%= f.check_box :remember_me, class: "form-check-input", id: "remember-me-check" %>
         <%= f.label :remember_me, "Recordarme", class: "form-check-label" %>
       </div>
-      <%= link_to "¿Olvidaste tu contraseña?", new_user_password_path, class: "forgot-link text-decoration-none" %>
-
-
     </div>
 
-    <%= f.submit "Entrar", class: "btn btn-primary w-100 login-btn" %>
+    <%= f.submit "Entrar", class: "btn btn-primary w-100 login-btn-submit" %>
   <% end %>
 
-  <hr class="my-4">
-  <p class="text-center mb-0">
-    ¿No tienes cuenta?
-    <%= link_to "Regístrate aquí", new_user_registration_path, class: "text-decoration-none" %>
-  </p>
+  <div class="text-center mt-3">
+    <p class="help-text mb-2">¿Necesitas ayuda?</p>
+  </div>
+
+  <div class="text-center mt-3">
+    <p class="register-text mb-2">
+      ¿No tienes cuenta?
+      <%= link_to "Regístrate aquí", new_user_registration_path, class: "register-link" %>
+    </p>
+  </div>
+
+  <div class="text-center mt-4">
+    <%= link_to "¿Olvidaste tu contraseña?", new_user_password_path, class: "forgot-password-link" %>
+  </div>
 </div>
+
+<script>
+  function togglePassword() {
+    const passwordField = document.getElementById('password-field');
+    const type = passwordField.getAttribute('type') === 'password' ? 'text' : 'password';
+    passwordField.setAttribute('type', type);
+  }
+</script>

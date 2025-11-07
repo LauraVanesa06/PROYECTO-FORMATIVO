@@ -25,24 +25,27 @@ class _ProductsPageViewState extends State<ProductsPageView> {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    
     return Scaffold(
+      backgroundColor: isDark ? Colors.grey.shade900 : Colors.grey.shade50,
       appBar: AppBar(
-        backgroundColor: const Color(0xFFE2714D),
-        title: const Text(
+        backgroundColor: isDark ? Colors.grey.shade800 : const Color(0xFF2e67a3),
+        elevation: 0,
+        title: Text(
           'Productos',
-          style: TextStyle(color: Colors.white),
+          style: TextStyle(
+            color: Colors.white,
+            fontWeight: FontWeight.bold,
+          ),
         ),
         automaticallyImplyLeading: false,
         actions: [
-          ElevatedButton(
-            style: ElevatedButton.styleFrom(
-              backgroundColor: Colors.white,
-              foregroundColor: const Color(0xFFE2714D),
-            ),
+          IconButton(
+            icon: const Icon(Icons.home, color: Colors.white),
             onPressed: () {
               Navigator.pop(context);
             },
-            child: const Text('Regresar al Inicio'),
           ),
         ],
       ),

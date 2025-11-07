@@ -92,44 +92,57 @@
     <% end %>
 
     <!-- 🧩 Sidebar del perfil (logueado o no) -->
-    <div id="profileSidebar" class="sidebar shadow-lg">
-      <div class="sidebar-header d-flex justify-content-between align-items-center mb-3">
-        <h5 class="mb-0">Mi Perfil</h5>
-        <button id="closeSidebar" class="btn btn-light btn-sm border">✕</button>
+    <div id="profileSidebar" class="profile-sidebar shadow-lg">
+      <div class="profile-sidebar-header d-flex justify-content-between align-items-center mb-4">
+        <h5 class="mb-0 profile-title">Mi Perfil</h5>
+        <button id="closeSidebar" class="btn-close-profile">✕</button>
       </div>
 
       <div class="text-center mb-4">
         <% if user_signed_in? %>
-          <% avatar = current_user.respond_to?(:avatar_url) && current_user.avatar_url.present? ? current_user.avatar_url : "avatar.png" %>
-          <%= image_tag avatar, id: "profile-pic", class: "rounded-circle mb-2", width: 100, height: 100 %>
-          <br>
-          <label for="avatar-upload" class="btn btn-sm btn-outline-primary mt-1">Cambiar foto</label>
+          <!-- Icono de usuario circular como en login -->
+          <div class="profile-user-icon mx-auto mb-3">
+            <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" fill="white" viewBox="0 0 16 16">
+              <path d="M8 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm2-3a2 2 0 1 1-4 0 2 2 0 0 1 4 0zm4 8c0 1-1 1-1 1H3s-1 0-1-1 1-4 6-4 6 3 6 4zm-1-.004c-.001-.246-.154-.986-.832-1.664C11.516 10.68 10.289 10 8 10c-2.29 0-3.516.68-4.168 1.332-.678.678-.83 1.418-.832 1.664h10z"/>
+            </svg>
+          </div>
+          <label for="avatar-upload" class="btn btn-change-photo">Cambiar foto</label>
           <input type="file" id="avatar-upload" style="display:none">
         <% else %>
-          <%= image_tag "avatar.png", id: "profile-pic", class: "rounded-circle mb-2", width: 100, height: 100 %>
+          <div class="profile-user-icon mx-auto mb-3">
+            <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" fill="white" viewBox="0 0 16 16">
+              <path d="M8 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm2-3a2 2 0 1 1-4 0 2 2 0 0 1 4 0zm4 8c0 1-1 1-1 1H3s-1 0-1-1 1-4 6-4 6 3 6 4zm-1-.004c-.001-.246-.154-.986-.832-1.664C11.516 10.68 10.289 10 8 10c-2.29 0-3.516.68-4.168 1.332-.678.678-.83 1.418-.832 1.664h10z"/>
+            </svg>
+          </div>
         <% end %>
       </div>
 
-      <div class="sidebar-body">
+      <div class="profile-sidebar-body">
         <% if user_signed_in? %>
-          <p class="text-center">Bienvenido, <%= current_user.email %> 👋</p>
-          <p class="text-muted text-center">Aquí pronto podrás editar tu perfil.</p>
+          <div class="profile-welcome-text text-center mb-3">
+            <p class="profile-greeting mb-2">
+              Bienvenido, <%= current_user.name.present? ? current_user.name : current_user.email.split('@').first %> 👋
+            </p>
+            <p class="profile-email text-muted mb-0"><%= current_user.email %></p>
+          </div>
+          <p class="profile-info-text text-center">Aquí pronto podrás editar tu perfil.</p>
         <% else %>
           <div class="text-center">
-            <p>Inicia sesión para acceder a tu perfil.</p>
-            <%= link_to "Ir al login", new_user_session_path, class: "btn btn-primary w-100" %>
+            <p class="profile-info-text">Inicia sesión para acceder a tu perfil.</p>
+            <%= link_to "Ir al login", new_user_session_path, class: "btn btn-primary w-100 login-btn-submit" %>
           </div>
         <% end %>
 
       </div>
 
       <% if user_signed_in? %>
-        <hr>
-        <div class="mt-3 text-center">
-          <button id="darkModeToggle" class="btn btn-outline-secondary w-100 mb-2">🌙 Modo oscuro</button>
+        <div class="profile-actions mt-4">
+          <button id="darkModeToggle" class="btn btn-profile-action w-100 mb-2">
+            <span class="me-2">🌙</span> Modo oscuro
+          </button>
           <%= button_to t("user.logout"), destroy_user_session_path,
                         method: :delete,
-                        class: "btn btn-outline-danger w-100" %>
+                        class: "btn btn-profile-logout w-100" %>
         </div>
       <% end %>
     </div>
