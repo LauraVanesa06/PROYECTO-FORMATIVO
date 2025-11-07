@@ -110,6 +110,53 @@ window.addEventListener('DOMContentLoaded', () => {
         loadSidebarView(link.getAttribute("href")).then(renderSidebar);
       });
     });
+
+    // ⬇️ Interceptar submits dentro del sidebar
+    const csrfToken = document.querySelector('meta[name="csrf-token"]')?.content || '';
+    container.querySelectorAll('form').forEach(form => {
+      form.addEventListener('submit', (e) => {
+        e.preventDefault();
+
+        const method = (form.method || 'post').toUpperCase();
+        const action = form.action;
+        const formData = new FormData(form);
+
+        fetch(action, {
+          method,
+          headers: {
+            'X-Requested-Sidebar': 'true',
+            'X-CSRF-Token': csrfToken,
+            'Accept': 'text/html, application/json;q=0.9, */*;q=0.8'
+          },
+          body: formData,
+          credentials: 'same-origin',
+          redirect: 'follow'
+        })
+        .then(async (res) => {
+          const ct = res.headers.get('content-type') || '';
+
+          if (ct.includes('application/json')) {
+            const data = await res.json();
+            if (data.success) {
+              window.isLoggedIn = true;
+              // Cerrar login sidebar y seguir flujo
+              container.remove();
+              if (data.redirect_url) {
+                window.location.href = data.redirect_url;
+              } else {
+                window.location.reload();
+              }
+            }
+            return;
+          }
+
+          // HTML: re-renderizar dentro del mismo sidebar (muestra errores)
+          const newHtml = await res.text();
+          renderSidebar(newHtml);
+        })
+        .catch((err) => console.error('Login sidebar submit error:', err));
+      });
+    });
   };
 
   // --- ABRIR SIDEBAR DE PERFIL O LOGIN ---
