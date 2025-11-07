@@ -1,30 +1,36 @@
 <!-- backend/app/views/devise/passwords/new.html.erb -->
 
 <turbo-frame id="auth_frame">
-  <div class="auth-form">
-    <h2 class="text-center mb-4">Recuperar contraseña</h2>
+  <div class="login-form-container">
+    <!-- Icono de recuperación de contraseña -->
+    <div class="text-center mb-4">
+      <div class="recover-password-icon">
+        <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" fill="white" viewBox="0 0 16 16">
+          <path d="M8 3a5 5 0 1 0 4.546 2.914.5.5 0 0 1 .908-.417A6 6 0 1 1 8 2v1z"/>
+          <path d="M8 4.466V.534a.25.25 0 0 1 .41-.192l2.36 1.966c.12.1.12.284 0 .384L8.41 4.658A.25.25 0 0 1 8 4.466z"/>
+          <path fill-rule="evenodd" d="M10.354 6.146a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708 0l-1.5-1.5a.5.5 0 1 1 .708-.708L7 8.793l2.646-2.647a.5.5 0 0 1 .708 0z"/>
+        </svg>
+      </div>
+    </div>
 
-    <p class="text-center mb-3 text-muted">
-      Ingresa tu correo electrónico y te enviaremos instrucciones para restablecer tu contraseña.
+    <h3 class="text-center mb-3">Recuperar contraseña</h3>
+
+    <p class="text-center mb-4 subtitle-text">
+      Ingresa tu correo para recibir instrucciones
     </p>
 
     <%= form_for(resource, as: resource_name, url: password_path(resource_name), html: { method: :post }) do |f| %>
-      <div class="mb-3">
-        <%= f.label :email, "Correo electrónico", class: "form-label" %>
-        <%= f.email_field :email, class: "form-control", placeholder: "correo@ejemplo.com", autofocus: true %>
+      <div class="mb-4">
+        <%= f.email_field :email, class: "form-control login-input-box", placeholder: "Correo electrónico", autofocus: true, required: true %>
       </div>
 
       <div class="d-grid mb-3">
-        <%= f.submit "Enviar instrucciones", class: "btn btn-primary" %>
+        <%= f.submit "Enviar instrucciones", class: "btn btn-primary w-100 login-btn-submit" %>
       </div>
     <% end %>
 
-    <hr class="my-4">
-
-    <p class="text-center mb-0">
-      ¿Ya tienes cuenta?
-      <%= link_to "Inicia sesión aquí", new_user_session_path, class: "login-link text-decoration-none" %>
-    </p>
-
+    <div class="text-center mt-4">
+      <%= link_to "Volver al inicio de sesión", new_user_session_path, class: "back-to-login-link" %>
+    </div>
   </div>
 </turbo-frame>
