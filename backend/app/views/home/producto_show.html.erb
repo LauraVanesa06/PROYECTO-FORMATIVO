@@ -328,6 +328,12 @@
       const btn = e.target.closest(".add-to-cart-btn");
       const url = btn.dataset.url;
 
+      // NUEVO: si no hay sesión, abrir sidebar y cancelar
+      if (!window.isLoggedIn) {
+        openProfileSidebar();
+        return;
+      }
+
       try {
         const response = await fetch(url, {
           method: "POST",
@@ -374,6 +380,12 @@
       const url = btn.dataset.url;
       const method = btn.dataset.method;
 
+      // NUEVO: si no hay sesión, abrir sidebar y cancelar
+      if (!window.isLoggedIn) {
+        openProfileSidebar();
+        return;
+      }
+
       const response = await fetch(url, {
         method: method.toUpperCase(),
         headers: {
@@ -417,6 +429,18 @@
 
 </script>
 
+
+<!-- NUEVO: helper para abrir el sidebar de login -->
+<script>
+  function openProfileSidebar() {
+    const btn = document.getElementById("userButton");
+    if (btn) btn.click();
+    else {
+      const sidebar = document.getElementById("profileSidebar");
+      if (sidebar) sidebar.classList.add("open");
+    }
+  }
+</script>
 
 </body>
 </html>
