@@ -150,58 +150,51 @@
 <div id="toast-container" class="toast-container position-fixed bottom-0 end-0 p-3" style="z-index: 1055;"></div>
 
 <script>
-  document.addEventListener("click", async (e) => {
-  // CARRITO
-  if (e.target.closest(".add-to-cart-btn")) {
-    e.preventDefault();
-    e.stopPropagation();
-
-    const btn = e.target.closest(".add-to-cart-btn");
-    const url = btn.dataset.url;
-
-    // 🚨 Verificación de sesión antes de agregar al carrito
-    if (!window.isLoggedIn) {
-      const sidebarContainer = document.getElementById("deviseSidebarContainer");
-
-      fetch("/users/sign_in")
-        .then((response) => response.text())
-        .then((html) => {
-          sidebarContainer.innerHTML = html;
-          sidebarContainer.classList.add("active");
-        });
-
-      return; // 👈 detiene la acción
+  // Abre el sidebar de perfil como si el usuario presionara el botón del header
+  function openProfileSidebar() {
+    const btn = document.getElementById("userButton");
+    if (btn) btn.click();
+    else {
+      const sidebar = document.getElementById("profileSidebar");
+      if (sidebar) sidebar.classList.add("open");
     }
-
-    // 👇 Aquí sigue tu lógica normal si está logueado
-    const response = await fetch(url, {
-      method: "POST",
-      headers: {
-        "X-CSRF-Token": document.querySelector("meta[name='csrf-token']").content,
-        "Accept": "application/json"
-      }
-    });
-
-    if (response.ok) {
-      const data = await response.json();
-
-      if (data.cart_html) {
-        const cartBody = document.querySelector("#cart-offcanvas-body");
-        if (cartBody) cartBody.innerHTML = data.cart_html;
-      }
-
-      const cartCount = document.querySelector("#cart-count");
-      if (cartCount && data.count !== undefined) {
-        cartCount.textContent = data.count;
-      }
-
-      showToast("Producto agregado al carrito", "success");
-    } else {
-      showToast("Error al agregar al carrito", "danger");
-    }
-    return;
   }
 
+  document.addEventListener("click", async (e) => {
+    // CARRITO
+    if (e.target.closest(".add-to-cart-btn")) {
+      e.preventDefault();
+      e.stopPropagation();
+      const btn = e.target.closest(".add-to-cart-btn");
+      const url = btn.dataset.url;
+
+      if (!window.isLoggedIn) {
+        openProfileSidebar();
+        return;
+      }
+
+      const response = await fetch(url, {
+        method: "POST",
+        headers: {
+          "X-CSRF-Token": document.querySelector("meta[name='csrf-token']").content,
+          "Accept": "application/json"
+        }
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        if (data.cart_html) {
+          const cartBody = document.querySelector("#cart-offcanvas-body");
+          if (cartBody) cartBody.innerHTML = data.cart_html;
+        }
+        const cartCount = document.querySelector("#cart-count");
+        if (cartCount && data.count !== undefined) cartCount.textContent = data.count;
+        showToast("Producto agregado al carrito", "success");
+      } else {
+        showToast("Error al agregar al carrito", "danger");
+      }
+      return;
+    }
 
     // FAVORITOS
     if (e.target.closest(".favorite-btn")) {
@@ -210,10 +203,16 @@
 
       const btn = e.target.closest(".favorite-btn");
       const url = btn.dataset.url;
-      const method = btn.dataset.method;
+      const method = (btn.dataset.method || "post").toUpperCase();
+      const productId = btn.dataset.productId;
+
+      if (!window.isLoggedIn) {
+        openProfileSidebar();
+        return;
+      }
 
       const response = await fetch(url, {
-        method: method.toUpperCase(),
+        method: method,
         headers: {
           "X-CSRF-Token": document.querySelector("meta[name='csrf-token']").content,
           "Accept": "application/json"
@@ -221,61 +220,84 @@
       });
 
       if (response.ok) {
-        if (method === "post") {
-          const data = await response.json();
+        const data = await response.json();
+        const icon = btn.querySelector("i");
+
+        if (method === "POST") {
+          // creado -> pasar a delete con /favorites/:id
+          if (data.id) btn.dataset.url = `/favorites/${data.id}`;
           btn.dataset.method = "delete";
-          btn.dataset.url = `/favorites/${data.id}`;
           btn.classList.remove("btn-outline-warning");
           btn.classList.add("btn-warning");
-          btn.innerHTML = '<i class="fa-solid fa-star"></i>';
-          showToast("Producto agregado a favoritos", "warning");
+          if (icon) { icon.classList.remove("fa-regular"); icon.classList.add("fa-solid"); }
+          showToast("Producto agregado a favoritos", "success");
         } else {
+          // eliminado -> volver a post con /favorites?product_id=...
+          btn.dataset.url = `/favorites?product_id=${productId}`;
           btn.dataset.method = "post";
-          btn.classList.remove("btn-warning");
           btn.classList.add("btn-outline-warning");
-          btn.innerHTML = '<i class="fa-regular fa-star"></i>';
-          showToast("Producto eliminado de favoritos", "danger");
+          btn.classList.remove("btn-warning");
+          if (icon) { icon.classList.add("fa-regular"); icon.classList.remove("fa-solid"); }
+          showToast("Producto eliminado de favoritos", "success");
         }
       } else {
-        showToast("Error al gestionar favoritos", "danger");
+        showToast("Error al actualizar favorito", "danger");
       }
       return;
     }
+
+    // NAVEGACIÓN A DETALLE (evitar cuando el click proviene de botones/iconos)
+    const card = e.target.closest(".product-card");
+    if (card) {
+      if (e.target.closest("button") || e.target.closest(".favorite-btn") || e.target.closest("i")) return;
+      const productId = card.dataset.productoId;
+      window.location.href = `/home/producto_show?id=${productId}`;
+    }
   });
 
-  // Función toast reutilizable
   function showToast(message, type) {
+    const toastContainer = document.getElementById("toast-container");
     const toast = document.createElement("div");
-    let bg = "text-bg-primary";
-    if (type === "success") bg = "text-bg-success";
-    if (type === "warning") bg = "text-bg-warning";
-    if (type === "danger") bg = "text-bg-danger";
+    const toastId = "toast-" + Date.now();
+    toast.id = toastId;
 
-    toast.className = `toast align-items-center ${bg} border-0 show mb-2 shadow`;
-    toast.setAttribute("role", "alert");
-    toast.style.minWidth = "250px";
+    const bg = type === "success" ? "bg-success" : (type === "danger" ? "bg-danger" : `bg-${type}`);
+
+    toast.className = `toast fade show ${bg} text-white`;
+    toast.role = "alert";
+    toast.ariaLive = "assertive";
+    toast.ariaAtomic = "true";
+    toast.style = "z-index: 1055;";
     toast.innerHTML = `
-      <div class="d-flex">
-        <div class="toast-body text-center w-100">${message}</div>
-        <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
-      </div>`;
-
-    document.querySelector("#toast-container").appendChild(toast);
+      <div class="toast-header ${bg} text-white">
+        <strong class="me-auto">${type === "success" ? "Éxito" : "Aviso"}</strong>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="toast" aria-label="Close"></button>
+      </div>
+      <div class="toast-body">
+        ${message}
+      </div>
+    `;
+    toastContainer.appendChild(toast);
 
     setTimeout(() => {
-      toast.classList.remove("show");
-      toast.classList.add("fade");
-      setTimeout(() => toast.remove(), 500);
+      const toastElement = document.getElementById(toastId);
+      if (toastElement && window.bootstrap?.Toast) {
+        const bsToast = new bootstrap.Toast(toastElement);
+        bsToast.hide();
+        toastElement.addEventListener("hidden.bs.toast", () => toastElement.remove());
+      } else if (toastElement) {
+        toastElement.classList.remove("show");
+        setTimeout(() => toastElement.remove(), 500);
+      }
     }, 3000);
   }
 
-  // Click en la tarjeta → ir a producto_show.html.erb (excepto botones internos)
-  document.addEventListener("click", (e) => {
-    const card = e.target.closest(".product-card");
-    if (!card) return;
-    if (e.target.closest("button") || e.target.closest("i")) return;
-    // Redirigir a la ruta personalizada de producto_show
-    const productoId = card.dataset.productoId;
-    window.location = `/home/producto_show?id=${productoId}`;
+  // Click en tarjeta de producto → ir al detalle (evitar si el click fue en botones/iconos)
+  document.querySelectorAll(".product-card").forEach(card => {
+    card.addEventListener("click", (e) => {
+      if (e.target.closest("button") || e.target.closest("i")) return;
+      const productId = card.dataset.productoId;
+      window.location.href = `/home/producto_show?id=${productId}`;
+    });
   });
 </script>
