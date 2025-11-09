@@ -1,3 +1,5 @@
+require 'json'
+
 class PaymentsController < ApplicationController
   skip_before_action :verify_authenticity_token, only: [:webhook]
   protect_from_forgery except: :webhook
@@ -5,6 +7,79 @@ class PaymentsController < ApplicationController
   require 'faraday'
   # GET /payments/widget_token.json
   # Devuelve: { public_key, amount_in_cents, reference, signature }
+
+
+ def webhook
+  Rails.logger.info "[WOMPI] 🔔 Webhook recibido: #{request.raw_post}"
+  body = JSON.parse(request.raw_post) rescue {}
+
+  wompi_id = body.dig("data", "id")
+  status = body.dig("data", "status") || body.dig("data", "transaction", "status")
+  reference = body.dig("data", "reference")
+  normalized_status = status.to_s.upcase
+
+  Rails.logger.info "[WOMPI] Datos del webhook → ID: #{wompi_id}, Estado: #{normalized_status}, Referencia: #{reference}"
+
+  payment = Payment.find_by(wompi_id: wompi_id)
+  if payment.nil?
+    Rails.logger.warn "[WOMPI] ⚠️ No se encontró Payment con wompi_id=#{wompi_id}"
+    head :not_found and return
+  end
+
+  Rails.logger.info "[WOMPI] ✅ Pago encontrado (ID: #{payment.id}) con estado: #{normalized_status}"
+
+  if ["APPROVED", "PAID", "PAYMENT_SUCCESSFUL"].include?(normalized_status)
+    payment.update(status: "APPROVED")
+    Rails.logger.info "[WOMPI] 💰 Estado actualizado a APPROVED"
+
+    # 🔹 Intentamos enlazar con el carrito (o la compra) original
+    if reference.present? && reference.start_with?("cart_")
+      cart_id = reference.split("_")[1].to_i
+      cart = Cart.find_by(id: cart_id)
+
+      if cart
+        Rails.logger.info "[WOMPI] 🛒 Carrito encontrado (ID: #{cart.id}), creando registro de compra..."
+
+        # 🔹 Crear la compra si no existe aún
+        buy = Buy.find_or_initialize_by(payment_id: payment.id)
+        buy.customer_id = cart.customer_id
+        buy.fecha = Time.current
+
+        # Calculamos el total
+        total = cart.cart_items.sum { |item| item.product.precio * item.quantity }
+        buy.total = total
+
+        if buy.save
+          Rails.logger.info "[WOMPI] 🧾 Compra registrada correctamente (ID: #{buy.id}) con total: #{total}"
+
+          # 🔹 Actualizamos el stock de los productos comprados
+          cart.cart_items.each do |item|
+            producto = item.product
+            producto.update(stock: producto.stock - item.quantity)
+          end
+          Rails.logger.info "[WOMPI] 📦 Stock actualizado para los productos del carrito"
+
+          # 🔹 Marcamos el carrito como completado (opcional)
+          cart.update(status: "completed")
+        else
+          Rails.logger.error "[WOMPI] 🚫 Error al guardar la compra: #{buy.errors.full_messages.join(', ')}"
+        end
+      else
+        Rails.logger.warn "[WOMPI] ⚠️ No se encontró carrito con ID #{cart_id} para la referencia #{reference}"
+      end
+    else
+      Rails.logger.warn "[WOMPI] ⚠️ No se encontró referencia válida en el webhook"
+    end
+  else
+    Rails.logger.info "[WOMPI] ❌ Estado no aprobado: #{normalized_status}"
+  end
+
+  head :ok
+rescue => e
+  Rails.logger.error "[WOMPI] 💥 Error procesando webhook: #{e.full_message}"
+  head :internal_server_error
+end
+
   def widget_token
     # Busca el carrito actual.
     cart = current_user&.cart || Cart.find_by(id: session[:cart_id]) || Cart.find_by(id: params[:cart_id])
@@ -49,35 +124,7 @@ class PaymentsController < ApplicationController
   def status; end
   def checkout; end
 
-  def webhook
-  payload = request.raw_post
-  data = JSON.parse(payload) rescue {}
-  transaction = data.dig("data", "transaction") || data.dig("data") || {}
-
-  wompi_id = transaction["id"] || transaction.dig("transaction", "id")
-  status = transaction["status"] || transaction.dig("transaction", "status") || data.dig("event", "name")
-
-  payment = Payment.find_by(wompi_id: wompi_id) ||
-            Payment.find_by("raw_response ->> 'reference' = ?", transaction["reference"]) rescue nil
-
-  if payment
-    payment.update(raw_response: payment.raw_response.to_h.merge(webhook: data))
-    normalized_status = status.to_s.downcase
-
-    if ["approved", "paid", "payment_successful"].include?(normalized_status)
-      payment.update(status: "paid")
-      create_buy_from_payment(payment)
-    else
-      payment.update(status: normalized_status) rescue nil
-    end
-  else
-    Rails.logger.info("[WOMPI] webhook: payment not found for wompi_id=#{wompi_id} payload=#{payload}")
-  end
-
-  head :ok
-end
-
-
+  
   def create
     cart = current_cart || Cart.find_by(id: params[:cart_id])
     unless cart
@@ -92,6 +139,22 @@ end
     local_reference = params[:reference].presence || "local_payment_#{SecureRandom.hex(8)}_#{Time.now.to_i}"
 
     service = WompiService.new
+    response = service.create_card_transaction(
+      reference: @reference,
+      amount_in_cents: amount_cents,
+      currency: currency,
+      customer_email: current_user.email,
+      token: params[:token],
+    )
+    transaction_data = response["data"]
+    @payment = Payment.create!(
+      user_id: current_user.id,
+      amount: transaction_data["amount_in_cents"].to_f / 100,
+      wompi_id: transaction_data["id"],
+      status: transaction_data["status"],
+      raw_response: transaction_data
+    )
+      redirect_to payment_path(@payment)
     tokens = {}
     begin
       tokens = service.acceptance_tokens || {}
@@ -100,7 +163,8 @@ end
     end
 
     payment = Payment.create!(
-      cart: cart,
+      #  asocia el carrito actual
+        cart: current_cart,  
       amount: amount_decimal,
       currency: currency,
       status: 0,
@@ -186,57 +250,52 @@ end
 
   private
 
-  def payment_params
-    params.permit(:pay_method, :cart_id, :amount, :account_info, :token, :reference)
+def create_buy_from_payment(payment)
+  return unless payment && payment.cart
+  cart = payment.cart
+
+  # Evitar duplicados
+  if defined?(Buy) && Buy.column_names.include?("payment_id")
+    return if Buy.exists?(payment_id: payment.id)
   end
 
-  def wompi_checkout_url(payment)
-    pub_key = Rails.application.credentials.dig(:wompi, :public_key) || ENV['WOMPI_PUBLIC_KEY']
-    "https://checkout.wompi.co/p/?public-key=#{pub_key}&amount-in-cents=#{(payment.amount.to_f * 100).to_i}&currency=COP&reference=#{payment.id}"
-  end
+  ActiveRecord::Base.transaction do
+    total_compra = cart.cart_items.sum { |i| (i.product&.precio || 0) * (i.try(:cantidad) || 1) }
+    metodo = payment.pay_method.presence || "Wompi"
 
-  # Crea Buy y Purchasedetail desde el carrito asociado al payment (si aplica).
-  def create_buy_from_payment(payment)
-    return unless payment && payment.cart
-    cart = payment.cart
+    buy = Buy.create!(
+      customer_id: payment.user.id,
+      fecha: Time.current,
+      tipo: "Online",
+      metodo_pago: metodo,
+      total: total_compra,
+      payment_id: payment.id
+    )
 
-    # evitar duplicados: comprobar si ya existe un Buy ligado a este payment (o por referencia)
-    if defined?(Buy) && Buy.column_names.include?("payment_id")
-      return if Buy.exists?(payment_id: payment.id)
-    end
-
-    ActiveRecord::Base.transaction do
-     total_compra = cart.cart_items.sum { |i| (i.product&.precio || 0) * (i.try(:cantidad) || 1) }
-
-      buy = Buy.create!(
-        customer_id: payment.user.id,
-        fecha: Time.current,
-        tipo: "Online",
-        metodo_pago: payment.pay_method || "Wompi",
-        total: total_compra,
-        payment_id: payment.id
-      )
-
-
-      cart.cart_items.each do |item|
-        Purchasedetail.create!(
-          buy_id: buy.id,
-          product_id: item.product_id,
-          cantidad: item.cantidad || 1,
-          precio: item.product&.precio || 0,
+    cart.cart_items.each do |item|
+      Purchasedetail.create!(
+        buy_id: buy.id,
+        product_id: item.product_id,
+        cantidad: item.cantidad || 1,
+        precio: item.product&.precio || 0,
         total: (item.product&.precio || 0) * (item.try(:cantidad) || 1)
-        )
-      end
-
-      # marcar carrito como completado si el modelo tiene campo o método
-     cart.update!(status: "completed") if cart.respond_to?(:status=)
-
-      # Vincular compra al pago
-      payment.update!(buy_id: buy.id) 
-
+      )
     end
-  rescue => e
-      Rails.logger.error("[Payments] create_buy_from_payment error: #{e.full_message}")
 
+    cart.update!(status: "completed") if cart.respond_to?(:status=)
+    cart.cart_items.destroy_all
+
+    payment.update!(buy_id: buy.id)
+  end
+
+rescue => e
+  Rails.logger.error("[Payments] create_buy_from_payment error: #{e.message}")
+  Rails.logger.error(e.backtrace.join("\n"))
+end
+
+  def extract_cart_id_from_reference(reference)
+    reference.split('_')[1].to_i
+  rescue
+    nil
   end
 end

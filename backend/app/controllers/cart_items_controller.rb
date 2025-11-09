@@ -55,40 +55,38 @@ class CartItemsController < ApplicationController
 
   def update
     @cart_item = @cart.cart_items.find(params[:id])
+    qty = (params.dig(:cart_item, :quantity) || params.dig(:cart_item, :cantidad)).to_i
+    qty = 1 if qty < 1
 
-    if @cart_item.update(cart_item_params)
-      @cart_items = @cart.cart_items.includes(:product)
+    if @cart_item.update(quantity: qty)
+      # subtotal del item (usar el precio real del producto)
+      product_price = (@cart_item.product&.precio || 0).to_f
+      item_subtotal = product_price * (@cart_item.quantity || 1)
 
-      respond_to do |format|
-        format.turbo_stream do
-          render turbo_stream: turbo_stream.replace(
-            "cart_items",
-            partial: "carts/cart_items",
-            locals: { cart_items: @cart_items }
-          )
-        end
-        format.json { render json: { success: true, item_id: @cart_item.id, cantidad: @cart_item.cantidad }, status: :ok }
-        format.html { redirect_to cart_path, notice: "Cantidad actualizada." }
+      # total del carrito recalculado en servidor (consistente)
+      cart_total = @cart.cart_items.to_a.sum do |i|
+        p = (i.product&.precio || 0).to_f
+        q = (i.respond_to?(:quantity) ? i.quantity : (i.respond_to?(:cantidad) ? i.cantidad : 1)).to_i
+        p * q
       end
+
+      render json: {
+        ok: true,
+        item_id: @cart_item.id,
+        item_subtotal: item_subtotal,
+        cart_total: cart_total,
+        count: @cart.cart_items.count
+      }
     else
-      respond_to do |format|
-        format.json { render json: { success: false }, status: :unprocessable_entity }
-        format.html { redirect_to cart_path, alert: "Error al actualizar cantidad." }
-      end
+      render json: { ok: false, errors: @cart_item.errors.full_messages }, status: :unprocessable_entity
     end
   end
 
   def destroy
     @cart_item = @cart.cart_items.find(params[:id])
     @cart_item.destroy
-
-    @cart_items = @cart.cart_items.includes(:product)
-
-    respond_to do |format|
-      format.turbo_stream
-      format.json { render json: { success: true, count: @cart_items.sum(&:cantidad) }, status: :ok }
-      format.html { redirect_to cart_path, notice: "Producto eliminado del carrito" }
-    end
+    cart_total = @cart.cart_items.to_a.sum { |i| (i.product&.precio || 0).to_f * (i.quantity || 1) }
+    render json: { ok: true, cart_total: cart_total, count: @cart.cart_items.count }
   end
 
   private
@@ -113,10 +111,10 @@ class CartItemsController < ApplicationController
   end
 
   def set_cart
-    @cart = current_user&.cart || current_user&.create_cart || Cart.new
+    @cart = current_user&.cart || Cart.find_by(id: session[:cart_id])
   end
 
   def cart_item_params
-    params.require(:cart_item).permit(:cantidad)
+    params.require(:cart_item).permit(:quantity, :cantidad)
   end
 end

@@ -3,31 +3,19 @@ class CartsController < ApplicationController
 
   def show
     @cart_items = @cart.cart_items.includes(:product)
-    
-    # Calcular monto total en centavos
-    total_amount = @cart_items.sum { |item| (item.product&.precio || 0) * (item.cantidad || 0) }
+    total_amount = @cart_items.sum { |i| (i.product&.precio || 0) * (i.respond_to?(:cantidad) ? i.cantidad.to_i : i.quantity.to_i) }
     @amount_cents = (total_amount * 100).to_i
-    
-    # Generar referencia única
-    @payment_reference = "orden_#{Time.current.to_i}"
-    
-    if @amount_cents > 0
-      begin
-        wompi_service = WompiService.new
-        @signature = wompi_service.signature_for(
-          reference: @payment_reference,
-          amount_in_cents: @amount_cents
-        )
-      rescue => e
-        Rails.logger.error("[Wompi] Error: #{e.message}")
-        @signature = nil
-      end
-    end
+    @payment_reference = "cart_#{@cart.id}_#{Time.now.to_i}"
+    @signature = WompiService.new.signature_for(reference: @payment_reference, amount_in_cents: @amount_cents) rescue nil
   end
+def payment_status
+  @status = params[:status]
+  render :payment_status
+end
 
   private
 
   def set_cart
-    @cart = current_user&.cart || Cart.find_by(id: session[:cart_id]) || Cart.create.tap { |c| session[:cart_id] = c.id }
+    @cart = current_user&.cart || Cart.find(session[:cart_id]) rescue nil
   end
 end

@@ -99,7 +99,7 @@ Rails.application.routes.draw do
 
   resources :payments, only: [:new, :create, :show]
   post "/payments/webhook", to: "payments#webhook"
-  post "/webhooks/wompi", to: "webhooks#wompi"
+  get  '/payments/widget_token', to: 'payments#widget_token' # opcional: para generar signature desde JS
 
   # API
   namespace :api do
