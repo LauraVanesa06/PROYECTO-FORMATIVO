@@ -18,6 +18,19 @@ class Api::V1::ProductsController < ApplicationController
     end
 
     render json: products.map { |product|
+          {
+        id: product.id,
+        nombre: product.nombre,
+        descripcion: product.descripcion,
+        precio: product.precio,
+        stock: product.stock,
+        category_id: product.category_id,
+        categoria: product.category&.nombre,
+        total_comprados: (product.try(:total_comprados) || 0).to_i,
+        imagen_url: product.images.attached? ? url_for(product.images.first) : "NO_IMAGE",
+        has_images: product.images.attached?,
+        images_count: product.images.count
+      }
       product_json(product)
     }
   end
