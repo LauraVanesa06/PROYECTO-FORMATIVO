@@ -18,9 +18,8 @@ class _AllProductsViewState extends State<AllProductsView> {
     super.initState();
     _searchController = TextEditingController();
 
-    // 🚀 Al abrir la vista, solicita todos los productos desde el backend.
-    // Usamos ProductBuscarPorNombre('') porque en el bloc esa acción carga /all_products
-    context.read<ProductBloc>().add(const ProductBuscarPorNombre(''));
+    /// ✅ CARGAR TODOS LOS PRODUCTOS AL ENTRAR
+    context.read<ProductBloc>().add(CargarTodosLosProductos());
   }
 
   @override
@@ -37,8 +36,17 @@ class _AllProductsViewState extends State<AllProductsView> {
             child: TextField(
               controller: _searchController,
               onChanged: (value) {
-                // Filtrar en tiempo real usando el bloc (ya tiene la lista completa)
-                context.read<ProductBloc>().add(ProductBuscarPorNombre(value));
+                debugPrint('AllProductsView - onChanged search: "$value"');
+
+                final bloc = context.read<ProductBloc>();
+                if (bloc.state is! ProductLoadSuccess) {
+                  debugPrint('AllProductsView - cache vacío o carga en progreso, dispatch CargarTodosLosProductos');
+                  bloc.add(CargarTodosLosProductos());
+                  return;
+                }
+
+                /// 🔎 Buscar en tiempo real sobre el CACHE
+                bloc.add(ProductBuscarPorNombre(value));
               },
               decoration: InputDecoration(
                 hintText: 'Buscar productos...',
@@ -53,28 +61,52 @@ class _AllProductsViewState extends State<AllProductsView> {
           ),
         ),
       ),
+
+      /// 🔥 CONTENIDO
       body: BlocBuilder<ProductBloc, ProductState>(
+        buildWhen: (previous, current) {
+          // Solo reconstruye si es ProductLoadSuccess o ProductLoadInProgress o ProductLoadFailure
+          // Ignora ProductDestacadosSuccess (de Home)
+          debugPrint('BlocBuilder buildWhen - current state: ${current.runtimeType}');
+          return current is ProductLoadSuccess || 
+                 current is ProductLoadInProgress || 
+                 current is ProductLoadFailure;
+        },
         builder: (context, state) {
+          debugPrint('BlocBuilder builder - state: ${state.runtimeType}');
+          
           if (state is ProductLoadInProgress) {
+            debugPrint('AllProductsView - showing loading');
             return const Center(child: CircularProgressIndicator());
-          } else if (state is ProductLoadSuccess) {
+          }
+
+          if (state is ProductLoadSuccess) {
+            debugPrint('AllProductsView - ProductLoadSuccess with ${state.productos.length} products');
             if (state.productos.isEmpty) {
               return const Center(child: Text('No se encontraron productos.'));
             }
+
             return RefreshIndicator(
               onRefresh: () async {
-                // Forzar recarga completa (vuelve a llamar a la API)
-                context.read<ProductBloc>().add(const ProductBuscarPorNombre(''));
+                /// 🔄 VOLVER A CARGAR TODO DESDE API
+                context.read<ProductBloc>().add(CargarTodosLosProductos());
               },
-              child: ProductsList(products: state.productos),
+              child: ProductsList(
+                products: state.productos,
+                enableScroll: true, // 👈 HABILITAR SCROLL
+              ),
             );
-          } else if (state is ProductLoadFailure) {
+          }
+
+          if (state is ProductLoadFailure) {
+            debugPrint('AllProductsView - error: ${state.message}');
             return Center(
               child: Text(state.message ?? 'Error al cargar productos.'),
             );
-          } else {
-            return const Center(child: Text('No hay productos disponibles.'));
           }
+
+          debugPrint('AllProductsView - other state: ${state.runtimeType}');
+          return const Center(child: Text('No hay productos disponibles.'));
         },
       ),
     );
