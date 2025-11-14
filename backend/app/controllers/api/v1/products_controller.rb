@@ -6,9 +6,10 @@ class Api::V1::ProductsController < ApplicationController
     category_param = params[:category_id] || params[:categoryId]
 
     if category_param.present?
+      # 🔎 Filtrar por categoría
       products = Product.where(category_id: category_param)
     else
-      # Si no hay categoría, devolvemos los 8 productos más comprados
+      # 🏆 Top 8 productos más comprados
       products = Product
         .left_joins(:purchasedetails)
         .group('products.id')
@@ -17,36 +18,25 @@ class Api::V1::ProductsController < ApplicationController
         .limit(8)
     end
 
-    render json: products.map { |product|
-          {
-        id: product.id,
-        nombre: product.nombre,
-        descripcion: product.descripcion,
-        precio: product.precio,
-        stock: product.stock,
-        category_id: product.category_id,
-        categoria: product.category&.nombre,
-        total_comprados: (product.try(:total_comprados) || 0).to_i,
-        imagen_url: product.images.attached? ? url_for(product.images.first) : "NO_IMAGE",
-        has_images: product.images.attached?,
-        images_count: product.images.count
-      }
-      product_json(product)
-    }
+    render json: products.map { |product| product_json(product) }
   end
 
-  # Nueva acción: obtener todos los productos sin límite
+  # 📌 Obtiene TODOS los productos (para el buscador)
   def all_products
     products = Product.all.includes(:category, images_attachments: :blob)
 
-    render json: products.map { |product|
-      product_json(product)
-    }
+    render json: products.map { |product| product_json(product) }
+  end
+
+  # 📌 Mostrar detalle de producto
+  def show
+    product = Product.find(params[:id])
+    render json: product_json(product)
   end
 
   private
 
-  # Método auxiliar para evitar repetir el mismo formato JSON
+  # 🔧 Método auxiliar para devolver un único formato JSON
   def product_json(product)
     {
       id: product.id,
