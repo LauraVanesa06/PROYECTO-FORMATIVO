@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import '../bloc/auth_bloc.dart';
+import '../bloc/auth_event.dart';
 import '../bloc/auth_state.dart';
 import '../widgets/login_form.dart';
 import 'register_view.dart';
@@ -68,7 +69,7 @@ class LoginView extends StatelessWidget {
                       mainAxisAlignment: MainAxisAlignment.center,
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
-                        // Logo circular simple
+                        // Logo circular
                         Container(
                           width: 80,
                           height: 80,
@@ -91,18 +92,18 @@ class LoginView extends StatelessWidget {
                         ),
                         const SizedBox(height: 24),
 
-                        // Título simple
+                        // Título
                         Text(
                           'Inicia sesión',
                           style: GoogleFonts.inter(
                             fontSize: 28,
                             fontWeight: FontWeight.w600,
-                            color: Color(0xFF222222),
+                            color: const Color(0xFF222222),
                           ),
                         ),
                         const SizedBox(height: 40),
 
-                        // Contenedor del formulario con diseño limpio
+                        // Contenedor del formulario
                         Container(
                           constraints: const BoxConstraints(maxWidth: 400),
                           padding: const EdgeInsets.all(32),
@@ -120,7 +121,7 @@ class LoginView extends StatelessWidget {
                           ),
                           child: Column(
                             children: [
-                              // ✅ Formulario
+                              // Formulario
                               LoginForm(),
                               const SizedBox(height: 24),
 
@@ -143,7 +144,7 @@ class LoginView extends StatelessWidget {
                               ),
                               const SizedBox(height: 20),
 
-                              // Enlaces de navegación
+                              // Enlaces
                               Row(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
@@ -172,12 +173,45 @@ class LoginView extends StatelessWidget {
                                   ),
                                 ],
                               ),
+
+                              const SizedBox(height: 16),
+
+                              // 🔹 Botón de Continuar como invitado (dentro del contenedor)
+                              SizedBox(
+                                width: double.infinity,
+                                height: 48,
+                                child: ElevatedButton.icon(
+                                  onPressed: () {
+                                    context.read<AuthBloc>().add(ContinueAsGuest());
+                                    Navigator.of(context).pushReplacement(
+                                      MaterialPageRoute(builder: (_) => const MainView()),
+                                    );
+                                  },
+                                  icon: const Icon(Icons.person_outline, color: Colors.white),
+                                  label: const Text(
+                                    'Continuar como invitado',
+                                    style: TextStyle(
+                                      color: Colors.white,
+                                      fontWeight: FontWeight.w600,
+                                      fontSize: 16,
+                                    ),
+                                  ),
+                                  style: ElevatedButton.styleFrom(
+                                    backgroundColor: const Color(0xFF2e67a3),
+                                    elevation: 4,
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(14),
+                                    ),
+                                    shadowColor: Colors.black.withOpacity(0.15),
+                                  ),
+                                ),
+                              ),
                             ],
                           ),
                         ),
                         const SizedBox(height: 16),
 
-                        // Link de olvidaste contraseña fuera del contenedor
+                        // Link de "Olvidaste contraseña"
                         TextButton(
                           onPressed: () {
                             Navigator.push(
@@ -200,7 +234,7 @@ class LoginView extends StatelessWidget {
                 ),
               ),
 
-              // 🔹 Loader cuando está cargando
+              // Loader
               if (state.status == AuthStatus.loading)
                 Container(
                   color: Colors.black.withOpacity(0.5),

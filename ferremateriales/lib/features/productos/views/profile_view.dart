@@ -194,7 +194,7 @@ class ProfileView extends StatelessWidget {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text(
-                                  'Versión 1.0.0',
+                                  'Versión 3.1.4',
                                   style: TextStyle(
                                     color: isDark ? Colors.grey.shade400 : Colors.grey.shade600,
                                   ),

@@ -1,39 +1,32 @@
 part of 'product_bloc.dart';
 
-abstract class ProductEvent extends Equatable {
+sealed class ProductEvent extends Equatable {
   const ProductEvent();
 
   @override
   List<Object?> get props => [];
 }
 
-class ProductEntrarPressed extends ProductEvent {}
+// SOLO HOME
+final class CargarDestacados extends ProductEvent {}
 
-class ProductRefrescar extends ProductEvent {} // 👈 NUEVO EVENTO
+// SOLO BÚSQUEDA
+final class CargarTodosLosProductos extends ProductEvent {}
 
-class ProductFilterByCategory extends ProductEvent {
-  final int categoryId; // ✅ solo ID
+// BUSCAR
+final class ProductBuscarPorNombre extends ProductEvent {
+  final String nombre;
+  const ProductBuscarPorNombre(this.nombre);
+}
 
+// FILTRAR
+final class ProductFilterByCategory extends ProductEvent {
+  final int categoryId;
   const ProductFilterByCategory(this.categoryId);
-
-  @override
-  List<Object?> get props => [categoryId];
 }
 
-class ToggleFavorite extends ProductEvent {
+// FAVORITO
+final class ToggleFavorite extends ProductEvent {
   final int productId;
-
   const ToggleFavorite(this.productId);
-
-  @override
-  List<Object?> get props => [productId];
-}
-
-class ProductBuscarPorNombre extends ProductEvent {
-  final String query;
-
-  const ProductBuscarPorNombre(this.query);
-
-  @override
-  List<Object?> get props => [query];
 }

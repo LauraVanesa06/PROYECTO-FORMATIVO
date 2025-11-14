@@ -197,7 +197,7 @@ class ConfigView extends StatelessWidget {
                         context: context,
                         icon: Icons.info_outline,
                         title: 'Versión',
-                        subtitle: '1.0.0',
+                        subtitle: '3.1.4',
                         isDark: isDark,
                       ),
                       Divider(
