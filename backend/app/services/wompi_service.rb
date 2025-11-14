@@ -4,7 +4,7 @@ require "json"
 require "digest"
 
 class WompiService
-  BASE_URL = "https://sandbox.wompi.co/v1".freeze
+  BASE_URL = "https://sandbox.wompi.co".freeze
 
   def initialize
     @public_key       = Rails.application.credentials.dig(:wompi, :public_key) || ENV['WOMPI_PUBLIC_KEY']

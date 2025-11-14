@@ -5,6 +5,7 @@ services:
     build: .
     volumes:
       - .:/app
+      - ./config/master.key:/app/config/master.key
     ports:
       - "3000:3000"
     depends_on:
