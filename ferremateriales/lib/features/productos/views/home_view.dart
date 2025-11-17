@@ -1,16 +1,17 @@
 import 'package:ferremateriales/features/productos/services/favorites_service.dart';
+import 'package:flutter/foundation.dart'; 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:ferremateriales/l10n/app_localizations.dart';
-
 import '../../auth/views/login_view.dart';
 import '../../auth/bloc/auth_bloc.dart';
 import '../../auth/bloc/auth_state.dart';
 import '../bloc/product_bloc.dart';
 import '../widgets/product_list.dart';
+import '../widgets/product_shimmer.dart';
+import 'allproducts_view.dart';
 import 'category_products_view.dart';
-import '../widgets/product_shimmer.dart'; // 👈 Importamos el nuevo shimmer
 
 class HomeView extends StatefulWidget {
   const HomeView({super.key});
@@ -20,16 +21,23 @@ class HomeView extends StatefulWidget {
 }
 
 class _HomeViewState extends State<HomeView> {
-  final TextEditingController _searchController = TextEditingController();
 
   @override
   void initState() {
     super.initState();
-    context.read<ProductBloc>().add(ProductEntrarPressed());
-    
-    // ⚡ Cargar los favoritos en caché al entrar al Home
-    final favoritesService = FavoritesService();
-    favoritesService.loadFavoritesCache();
+
+    // 🔥 ERROR corregido → antes llamabas ProductEntrarPressed (no existe)
+    context.read<ProductBloc>().add(CargarDestacados());
+
+    // Cargar favoritos locales
+    FavoritesService().loadFavoritesCache();
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    // 🔄 Recargar destacados cuando vuelves a HomeView desde AllProductsView
+    context.read<ProductBloc>().add(CargarDestacados());
   }
 
   @override
@@ -44,7 +52,6 @@ class _HomeViewState extends State<HomeView> {
       'assets/images/oferta3.jpg',
     ];
 
-    // 🔧 Lista de categorías con IDs únicos
     final categories = [
       {'icon': Icons.construction, 'label': 'Herramientas', 'display': l10n.tools, 'id': 1},
       {'icon': Icons.handyman, 'label': 'Tornillería y Fijaciones', 'display': l10n.hardware, 'id': 2},
@@ -58,7 +65,6 @@ class _HomeViewState extends State<HomeView> {
       {'icon': Icons.grass, 'label': 'Jardinería', 'display': l10n.gardening, 'id': 10},
     ];
 
-    // 🔁 Construcción dinámica de botones de categoría
     final categoryItems = categories.map((category) {
       return _HoverCategoryButton(
         icon: category['icon'] as IconData,
@@ -77,7 +83,7 @@ class _HomeViewState extends State<HomeView> {
               ),
             ),
           ).then((_) {
-            context.read<ProductBloc>().add(ProductEntrarPressed());
+            context.read<ProductBloc>().add(CargarDestacados());
           });
         },
       );
@@ -91,7 +97,8 @@ class _HomeViewState extends State<HomeView> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // 🔸 Barra superior con buscador moderna
+
+              // 🔹 Barra de búsqueda
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
                 decoration: BoxDecoration(
@@ -109,74 +116,60 @@ class _HomeViewState extends State<HomeView> {
                 child: Row(
                   children: [
                     Expanded(
-                      child: Container(
-                        height: 48,
-                        decoration: BoxDecoration(
-                          color: Colors.grey.shade100,
-                          borderRadius: BorderRadius.circular(24),
-                          border: Border.all(color: Colors.grey.shade300, width: 1),
-                        ),
-                        child: TextField(
-                          controller: _searchController,
-                          onChanged: (value) {
-                            if (value.isEmpty) {
-                              context
-                                  .read<ProductBloc>()
-                                  .add(ProductEntrarPressed());
-                            } else {
-                              context
-                                  .read<ProductBloc>()
-                                  .add(ProductBuscarPorNombre(value));
-                            }
-                          },
-                          decoration: InputDecoration(
-                            hintText: "Buscar productos...",
-                            hintStyle: TextStyle(color: Colors.grey.shade500),
-                            prefixIcon: const Icon(Icons.search, color: Color(0xFF2e67a3)),
-                            suffixIcon: _searchController.text.isNotEmpty
-                                ? IconButton(
-                                    icon: Icon(Icons.close, color: Colors.grey.shade600),
-                                    onPressed: () {
-                                      _searchController.clear();
-                                      context
-                                          .read<ProductBloc>()
-                                          .add(ProductEntrarPressed());
-                                      setState(() {});
-                                    },
-                                  )
-                                : null,
-                            border: InputBorder.none,
-                            contentPadding:
-                                const EdgeInsets.symmetric(vertical: 10),
+                      child: GestureDetector(
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (_) => BlocProvider.value(
+                                value: context.read<ProductBloc>(),
+                                child: const AllProductsView(),
+                              ),
+                            ),
+                          ).then((_) {
+                            // Al volver a Home, recargamos los destacados
+                            context.read<ProductBloc>().add(CargarDestacados());
+                          });
+                        },
+                        child: Container(
+                          height: 48,
+                          alignment: Alignment.centerLeft,
+                          padding: const EdgeInsets.symmetric(horizontal: 16),
+                          decoration: BoxDecoration(
+                            color: Colors.grey.shade100,
+                            borderRadius: BorderRadius.circular(24),
+                            border: Border.all(color: Colors.grey.shade300),
+                          ),
+                          child: Row(
+                            children: [
+                              const Icon(Icons.search, color: Color(0xFF2e67a3)),
+                              const SizedBox(width: 8),
+                              Text("Buscar productos...",
+                                  style: TextStyle(color: Colors.grey.shade500)),
+                            ],
                           ),
                         ),
                       ),
                     ),
                     const SizedBox(width: 12),
-                    // 👇 Solo se muestra el botón si es invitado
+
+                    // Botón de login
                     if (authState.status == AuthStatus.guest)
                       ElevatedButton.icon(
                         onPressed: () {
                           Navigator.pushReplacement(
                             context,
-                            MaterialPageRoute(
-                                builder: (context) => const LoginView()),
+                            MaterialPageRoute(builder: (_) => const LoginView()),
                           );
                         },
-                        style: ElevatedButton.styleFrom(
-                          foregroundColor: Colors.white,
-                          backgroundColor: const Color(0xFF2e67a3),
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 16, vertical: 12),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(24),
-                          ),
-                          elevation: 0,
-                        ),
                         icon: const Icon(Icons.login, size: 18),
-                        label: const Text(
-                          "Iniciar sesión",
-                          style: TextStyle(fontWeight: FontWeight.w600),
+                        label: const Text("Iniciar sesión"),
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: const Color(0xFF2e67a3),
+                          foregroundColor: Colors.white,
+                          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(24)),
                         ),
                       ),
                   ],
@@ -185,39 +178,25 @@ class _HomeViewState extends State<HomeView> {
 
               const SizedBox(height: 24),
 
-              // 🖼️ Carrusel de imágenes
+              // Carrusel banners
               CarouselSlider(
-                options: CarouselOptions(
-                  height: 140,
-                  autoPlay: true,
-                  enlargeCenterPage: true,
-                ),
+                options: CarouselOptions(height: 140, autoPlay: true, enlargeCenterPage: true),
                 items: bannerImages.map((path) {
-                  return Builder(
-                    builder: (BuildContext context) {
-                      return ClipRRect(
-                        borderRadius: BorderRadius.circular(12),
-                        child: Image.asset(
-                          path,
-                          fit: BoxFit.cover,
-                          width: double.infinity,
-                        ),
-                      );
-                    },
+                  return ClipRRect(
+                    borderRadius: BorderRadius.circular(12),
+                    child: Image.asset(path, fit: BoxFit.cover, width: double.infinity),
                   );
                 }).toList(),
               ),
 
               const SizedBox(height: 28),
 
-              // 🧩 Carrusel de categorías
+              // Carrusel categorías
               CarouselSlider(
                 options: CarouselOptions(
                   height: 110,
                   viewportFraction: 0.33,
-                  enableInfiniteScroll: true,
                   autoPlay: true,
-                  autoPlayInterval: const Duration(seconds: 3),
                   enlargeCenterPage: true,
                 ),
                 items: categoryItems,
@@ -226,7 +205,7 @@ class _HomeViewState extends State<HomeView> {
               const SizedBox(height: 32),
 
               Padding(
-                padding: const EdgeInsets.only(left: 16.0),
+                padding: const EdgeInsets.only(left: 16),
                 child: Text(
                   l10n.featuredProducts,
                   style: TextStyle(
@@ -236,45 +215,32 @@ class _HomeViewState extends State<HomeView> {
                   ),
                 ),
               ),
-              const SizedBox(height: 4),
-              Padding(
-                padding: const EdgeInsets.only(left: 16.0, right: 16.0),
-                child: Container(
-                  height: 3,
-                  width: 50,
-                  decoration: BoxDecoration(
-                    color: const Color(0xFF2e67a3),
-                    borderRadius: BorderRadius.circular(2),
-                  ),
-                ),
-              ),
 
-              // 🛒 Productos destacados
+              const SizedBox(height: 6),
               BlocBuilder<ProductBloc, ProductState>(
                 builder: (context, state) {
                   if (state is ProductLoadInProgress) {
-                    return const Padding(
-                      padding: EdgeInsets.all(8.0),
-                      child: ProductShimmer(),  // 👈 Nuevo widget de carga
-                    );
+                    return const ProductShimmer();
                   }
+
+                  // 🔹 MOSTRAR SOLO DESTACADOS EN HOME
+                  if (state is ProductDestacadosSuccess) {
+                    final destacados = state.destacados.take(8).toList();
+                    return ProductsList(products: destacados);
+                  }
+
+                  // 🔹 MOSTRAR TODOS LOS PRODUCTOS (solo en búsqueda)
                   if (state is ProductLoadSuccess) {
-                    return Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: ProductsList(products: state.productos),
-                    );
-                  } else if (state is ProductLoadFailure) {
-                    return Center(
-                      child: Text(l10n.errorLoadingProducts),
-                    );
-                  } else {
-                    return const Center(
-                      child: ProductShimmer(),  // 👈 También lo usamos aquí
-                    );
+                    return ProductsList(products: state.productos);
                   }
+
+                  if (state is ProductLoadFailure) {
+                    return Center(child: Text(l10n.errorLoadingProducts));
+                  }
+
+                  return const ProductShimmer();
                 },
               ),
-
               const SizedBox(height: 20),
             ],
           ),
@@ -284,7 +250,7 @@ class _HomeViewState extends State<HomeView> {
   }
 }
 
-// 🎨 Widget personalizado con efecto hover
+/// BOTÓN DE CATEGORÍA
 class _HoverCategoryButton extends StatefulWidget {
   final IconData icon;
   final String label;
@@ -306,10 +272,10 @@ class _HoverCategoryButtonState extends State<_HoverCategoryButton> {
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
-    
+
     return MouseRegion(
-      onEnter: (_) => setState(() => _isHovered = true),
-      onExit: (_) => setState(() => _isHovered = false),
+      onEnter: kIsWeb ? (_) => setState(() => _isHovered = true) : null,
+      onExit: kIsWeb ? (_) => setState(() => _isHovered = false) : null,
       child: GestureDetector(
         onTap: widget.onTap,
         child: Column(
@@ -317,7 +283,7 @@ class _HoverCategoryButtonState extends State<_HoverCategoryButton> {
           children: [
             CircleAvatar(
               radius: 28,
-              backgroundColor: _isHovered 
+              backgroundColor: _isHovered
                   ? const Color(0xFF2e67a3).withOpacity(0.2)
                   : (isDark ? Colors.grey.shade800 : Colors.grey.shade200),
               child: Icon(
@@ -334,7 +300,7 @@ class _HoverCategoryButtonState extends State<_HoverCategoryButton> {
               textAlign: TextAlign.center,
               style: TextStyle(
                 fontSize: 12,
-                color: _isHovered 
+                color: _isHovered
                     ? const Color(0xFF2e67a3)
                     : (isDark ? Colors.grey.shade300 : Colors.black87),
               ),

@@ -95,6 +95,8 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
 
     // Continuar como invitado
     on<ContinueAsGuest>((event, emit) async {
+      await _authService.logout();
+      emit(const AuthState(status: AuthStatus.loggedOut));
       print('👤 Continuar como invitado');
       emit(state.copyWith(
         status: AuthStatus.guest,

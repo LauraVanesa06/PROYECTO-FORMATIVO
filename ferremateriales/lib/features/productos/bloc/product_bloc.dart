@@ -1,154 +1,176 @@
 import 'dart:convert';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
+import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
 import '../model/product_model.dart';
+
 part 'product_event.dart';
 part 'product_state.dart';
 
 class ProductBloc extends Bloc<ProductEvent, ProductState> {
-  bool _yaCargados = false; // 🔒 Control interno para evitar recargar
-  List<ProductModel> _productosCache = []; // 🧠 Guardamos la lista localmente
+  List<ProductModel> _productosCache = [];
+  List<ProductModel> _destacados = [];
 
   ProductBloc() : super(ProductInitial()) {
-    on<ProductEntrarPressed>(_onLoadProducts);
-    on<ProductRefrescar>(_onRefreshProducts);
-    on<ToggleFavorite>(_onToggleFavorite);
+    on<CargarDestacados>(_onCargarDestacados);
+    on<CargarTodosLosProductos>(_onCargarTodosLosProductos);
+    on<ProductBuscarPorNombre>(_onBuscarProductoPorNombre);
     on<ProductFilterByCategory>(_onFilterByCategory);
-    on<ProductBuscarPorNombre>(_onBuscarProductoPorNombre); // 🔍 Nuevo evento
+    on<ToggleFavorite>(_onToggleFavorite);
   }
 
-  // ✅ Cargar productos (solo si no se ha hecho antes)
-  Future<void> _onLoadProducts(
-      ProductEntrarPressed event, Emitter<ProductState> emit) async {
-    if (_yaCargados && _productosCache.isNotEmpty) {
-      emit(ProductLoadSuccess(_productosCache));
-      return;
-    }
+  // ============================================================
+  // 1) SOLO CARGAR LOS 8 DESTACADOS PARA HOME
+  // ============================================================
+  Future<void> _onCargarDestacados(
+      CargarDestacados event, Emitter<ProductState> emit) async {
 
     emit(ProductLoadInProgress());
 
     try {
-      final response =
-          await http.get(Uri.parse('http://localhost:3000/api/v1/products'));
+      final response = await http.get(
+        Uri.parse('http://localhost:3000/api/v1/products'),
+      );
 
       if (response.statusCode == 200) {
         final decoded = jsonDecode(response.body);
+
         if (decoded is List) {
-          final products = decoded
+          _destacados = decoded
               .whereType<Map<String, dynamic>>()
               .map((item) => ProductModel.fromJson(item))
               .toList();
 
-          _productosCache = products;
-          _yaCargados = true;
-          emit(ProductLoadSuccess(products));
-        } else {
-          emit(ProductLoadFailure());
+          emit(ProductDestacadosSuccess(_destacados));
+          return;
         }
-      } else {
-        emit(ProductLoadFailure());
       }
+
+      emit(const ProductLoadFailure("Error cargando destacados"));
     } catch (e) {
-      emit(ProductLoadFailure());
+      emit(const ProductLoadFailure("Error de conexión"));
     }
   }
 
-  // 🔄 Refrescar manualmente (ignora el flag)
-  Future<void> _onRefreshProducts(
-      ProductRefrescar event, Emitter<ProductState> emit) async {
+  // ============================================================
+  // 2) Cargar todos los productos (solo búsqueda)
+  // ============================================================
+  Future<void> _onCargarTodosLosProductos(
+      CargarTodosLosProductos event, Emitter<ProductState> emit) async {
+
     emit(ProductLoadInProgress());
-    _yaCargados = false;
 
     try {
-      final response =
-          await http.get(Uri.parse('http://localhost:3000/api/v1/products'));
+      final response = await http.get(
+        Uri.parse('http://localhost:3000/api/v1/products/all_products'),
+      );
 
       if (response.statusCode == 200) {
         final decoded = jsonDecode(response.body);
+
         if (decoded is List) {
-          final products = decoded
+          _productosCache = decoded
               .whereType<Map<String, dynamic>>()
               .map((item) => ProductModel.fromJson(item))
               .toList();
 
-          _productosCache = products;
-          _yaCargados = true;
-          emit(ProductLoadSuccess(products));
-        } else {
-          emit(ProductLoadFailure());
+          debugPrint('ProductBloc - CargarTodos: cache filled with ${_productosCache.length} products');
+          emit(ProductLoadSuccess(_productosCache));
+          return;
         }
-      } else {
-        emit(ProductLoadFailure());
       }
+
+      emit(const ProductLoadFailure("Error cargando productos"));
     } catch (e) {
-      emit(ProductLoadFailure());
+      emit(const ProductLoadFailure("Error de conexión"));
     }
   }
 
-// 🔍 Filtrar productos por categoría (por ID)
-    Future<void> _onFilterByCategory(
-        ProductFilterByCategory event, Emitter<ProductState> emit) async {
-      emit(ProductLoadInProgress());
-
-      try {
-        // ✅ Llamamos al backend con category_id en lugar de category
-        final response = await http.get(Uri.parse(
-            'http://localhost:3000/api/v1/products?category_id=${event.categoryId}'));
-
-        if (response.statusCode == 200) {
-          final decoded = jsonDecode(response.body);
-          if (decoded is List) {
-            final products = decoded
-                .whereType<Map<String, dynamic>>()
-                .map((item) => ProductModel.fromJson(item))
-                .toList();
-            emit(ProductLoadSuccess(products));
-          } else {
-            emit(ProductLoadFailure());
-          }
-        } else {
-          emit(ProductLoadFailure());
-        }
-      } catch (e) {
-        print('❌ Error filtrando productos por categoría: $e');
-        emit(ProductLoadFailure());
-      }
-    }
-
-
-  // ❤️ Marcar/desmarcar favoritos
-  void _onToggleFavorite(ToggleFavorite event, Emitter<ProductState> emit) {
-    if (state is ProductLoadSuccess) {
-      final currentState = state as ProductLoadSuccess;
-
-      final updatedProducts = currentState.productos.map((product) {
-        if (product.id == event.productId) {
-          return product.copyWith(isFavorite: !product.isFavorite);
-        }
-        return product;
-      }).toList();
-
-      _productosCache = updatedProducts;
-      emit(ProductLoadSuccess(updatedProducts));
-    }
-  }
-
-  // 🔎 Buscar productos por nombre
+  // ============================================================
+  // 3) Buscar por nombre (solo sobre productosCache)
+  // ============================================================
   void _onBuscarProductoPorNombre(
       ProductBuscarPorNombre event, Emitter<ProductState> emit) {
-    final query = event.query.toLowerCase().trim();
+
+    final query = event.nombre.toLowerCase().trim();
+    debugPrint('ProductBloc - buscar query="$query", cacheSize=${_productosCache.length}');
 
     if (query.isEmpty) {
-      // Si el texto está vacío, mostramos todos
       emit(ProductLoadSuccess(_productosCache));
       return;
     }
 
-    final resultados = _productosCache.where((producto) {
-      return producto.nombre!.toLowerCase().contains(query);
+    final resultados = _productosCache.where((product) {
+      return product.nombre?.toLowerCase().contains(query) ?? false;
     }).toList();
 
+    debugPrint('ProductBloc - search results: ${resultados.length}');
     emit(ProductLoadSuccess(resultados));
+  }
+
+  // ============================================================
+  // 4) Filtrar por categoría
+  // ============================================================
+  Future<void> _onFilterByCategory(
+      ProductFilterByCategory event, Emitter<ProductState> emit) async {
+
+    emit(ProductLoadInProgress());
+
+    try {
+      final response = await http.get(Uri.parse(
+        'http://localhost:3000/api/v1/products?category_id=${event.categoryId}',
+      ));
+
+      if (response.statusCode == 200) {
+        final decoded = jsonDecode(response.body);
+
+        if (decoded is List) {
+          final filtered = decoded
+              .whereType<Map<String, dynamic>>()
+              .map((item) => ProductModel.fromJson(item))
+              .toList();
+
+          emit(ProductLoadSuccess(filtered));
+          return;
+        }
+      }
+
+      emit(const ProductLoadFailure("Error cargando categoría"));
+    } catch (e) {
+      emit(const ProductLoadFailure("Error de conexión"));
+    }
+  }
+
+  // ============================================================
+  // 5) Toggle favorito
+  // ============================================================
+  void _onToggleFavorite(
+      ToggleFavorite event, Emitter<ProductState> emit) {
+
+    if (state is! ProductLoadSuccess &&
+        state is! ProductDestacadosSuccess) return;
+
+    // Actualiza todos y destacados
+    _productosCache = _productosCache.map((p) {
+      if (p.id == event.productId) {
+        return p.copyWith(isFavorite: !p.isFavorite);
+      }
+      return p;
+    }).toList();
+
+    _destacados = _destacados.map((p) {
+      if (p.id == event.productId) {
+        return p.copyWith(isFavorite: !p.isFavorite);
+      }
+      return p;
+    }).toList();
+
+    // Reemitir según estado actual
+    if (state is ProductDestacadosSuccess) {
+      emit(ProductDestacadosSuccess(_destacados));
+    } else {
+      emit(ProductLoadSuccess(_productosCache));
+    }
   }
 }

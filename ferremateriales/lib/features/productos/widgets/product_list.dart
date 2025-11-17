@@ -5,8 +5,13 @@ import 'producto_card.dart';
 
 class ProductsList extends StatefulWidget {
   final List<ProductModel> products;
+  final bool enableScroll; // 👈 NUEVO parámetro
 
-  const ProductsList({Key? key, required this.products}) : super(key: key);
+  const ProductsList({
+    Key? key,
+    required this.products,
+    this.enableScroll = false, // Por defecto sin scroll
+  }) : super(key: key);
 
   @override
   State<ProductsList> createState() => _ProductsListState();
@@ -56,8 +61,11 @@ class _ProductsListState extends State<ProductsList> {
   Widget build(BuildContext context) {
     return GridView.builder(
       padding: const EdgeInsets.symmetric(horizontal: 10),
-      shrinkWrap: true,
-      physics: const NeverScrollableScrollPhysics(),
+      // Si enableScroll es true, permitimos scroll; si no, usamos shrinkWrap
+      shrinkWrap: !widget.enableScroll,
+      physics: widget.enableScroll
+          ? const AlwaysScrollableScrollPhysics()
+          : const NeverScrollableScrollPhysics(),
       itemCount: widget.products.length,
       gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
         crossAxisCount: 2,
