@@ -3,7 +3,7 @@
 
   <!-- FILTRO -->
   <div class="filtro-productos">
-    <%= form_with url: productos_path, method: :get, local: true do %>
+    <%= form_with url: productos_path, method: :get, local: true, html: { id: 'productos-filter-form', data: { autosubmit: true } } do %>
       <div class="row align-items-center g-3">  
         <div class="col-md-3">
           <%= label_tag :category_id, t('productos.filtro.categoria') %>
@@ -28,9 +28,7 @@
           <%= number_field_tag :max_price, params[:max_price], min: 0, step: 0.01, class: "form-control" %>
         </div>
 
-        <div class="col-md-2 d-flex align-items-end" style="margin-top: 48px;">
-          <%= submit_tag t('productos.filtro.boton_filtrar'), class: "btn btn-primary w-100" %>
-        </div>
+        <!-- Eliminado botón de filtrar: ahora el formulario se envía automáticamente al cambiar campos -->
       </div>
     <% end %>
   </div>
@@ -250,4 +248,33 @@
     const productoId = card.dataset.productoId;
     window.location = `/home/producto_show?id=${productoId}`;
   });
+
+  // --- Auto-submit del formulario de filtros ---
+  function debounce(fn, wait) {
+    let t;
+    return function (...args) {
+      clearTimeout(t);
+      t = setTimeout(() => fn.apply(this, args), wait);
+    };
+  }
+
+  function initAutoFilter() {
+    const form = document.getElementById('productos-filter-form');
+    if (!form) return;
+
+    const inputs = Array.from(form.querySelectorAll('select, input[type="text"], input[type="number"], input[type="search"]'));
+
+    // submit inmediato en selects y number
+    inputs.forEach((el) => {
+      if (el.tagName.toLowerCase() === 'select' || el.type === 'number') {
+        el.addEventListener('change', () => form.submit());
+      } else {
+        // debounce para campos de texto
+        el.addEventListener('input', debounce(() => form.submit(), 450));
+      }
+    });
+  }
+
+  // Inicializar cuando el DOM esté listo (incluye Turbo si está presente)
+  ['DOMContentLoaded', 'turbo:load'].forEach(evt => document.addEventListener(evt, initAutoFilter));
 </script>

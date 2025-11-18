@@ -247,15 +247,6 @@ html, body {
   margin-bottom: 40px;
 }
 
-/*
-aside {
-  background-color: #ffe4b5;
-  border: 1px solid black;
-  height: 100%;
-  width: 300px;
-  text-align: center;
-*/
-
 #main {
   display: flex;
   flex: 1;
