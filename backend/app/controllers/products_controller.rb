@@ -1,7 +1,7 @@
 class ProductsController < ApplicationController
   layout false
   before_action :set_product, only: %i[ show edit update destroy ]
-
+  before_action :require_admin, except: [:show]
 
   # GET /products or /products.json
   def index
@@ -14,7 +14,7 @@ class ProductsController < ApplicationController
     @suppliers = Supplier.all
 
       @products = @products.where("LOWER(codigo_producto) = ?", params[:cod].downcase) if params[:cod].present?
-      @products = @products.where("nombre LIKE ? ", "%#{params[:name]}%") if params[:name].present?
+      @products = @products.where("LOWER(nombre) LIKE ?", "%#{params[:name].downcase}%") if params[:name].present?
       @products = @products.where("precio >= ?", min) if min.present? && min > 0
       @products = @products.where("precio <= ?", max) if max.present? && max > 0
       @products = @products.where(supplier_id: params[:suppliers]) if params[:suppliers].present?
