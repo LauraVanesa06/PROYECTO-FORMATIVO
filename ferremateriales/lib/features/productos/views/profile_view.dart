@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../auth/bloc/auth_bloc.dart';
 import '../../auth/views/login_view.dart';
+import '../../auth/views/register_view.dart';
 import 'acount_view.dart';
 import 'config_view.dart';
 
@@ -18,7 +19,14 @@ class ProfileView extends StatelessWidget {
   Widget build(BuildContext context) {
     final I10n = AppLocalizations.of(context)!;
     final isDark = Theme.of(context).brightness == Brightness.dark;
+    final authState = context.watch<AuthBloc>().state;
 
+    // Si el usuario es invitado, mostrar pantalla de bienvenida
+    if (authState.status == AuthStatus.guest) {
+      return _buildGuestView(context, isDark);
+    }
+
+    // Si el usuario está autenticado, mostrar perfil normal
     return BlocListener<AuthBloc, AuthState>(
       listenWhen: (previous, current) =>
           previous.status != current.status && current.status == AuthStatus.loggedOut,
@@ -381,6 +389,219 @@ class ProfileView extends StatelessWidget {
           ),
         ),
       ),
+    );
+  }
+
+  // Vista para usuarios invitados (no autenticados)
+  Widget _buildGuestView(BuildContext context, bool isDark) {
+    return Scaffold(
+      backgroundColor: isDark ? Colors.grey.shade900 : Colors.grey.shade50,
+      appBar: AppBar(
+        backgroundColor: isDark ? Colors.grey.shade800 : Colors.white,
+        elevation: 0,
+        title: Text(
+          'Perfil',
+          style: TextStyle(
+            color: isDark ? Colors.white : const Color(0xFF222222),
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        centerTitle: true,
+      ),
+      body: Center(
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              const SizedBox(height: 20),
+              // Ícono grande
+              Container(
+                width: 140,
+                height: 140,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  color: const Color(0xFF2e67a3).withOpacity(0.1),
+                  border: Border.all(
+                    color: const Color(0xFF2e67a3).withOpacity(0.3),
+                    width: 3,
+                  ),
+                ),
+                child: const Icon(
+                  Icons.person_outline,
+                  size: 70,
+                  color: Color(0xFF2e67a3),
+                ),
+              ),
+              const SizedBox(height: 24),
+
+              // Título
+              Text(
+                '¡Bienvenido!',
+                style: TextStyle(
+                  fontSize: 28,
+                  fontWeight: FontWeight.bold,
+                  color: isDark ? Colors.white : const Color(0xFF222222),
+                ),
+              ),
+              const SizedBox(height: 12),
+
+              // Descripción
+              Text(
+                'Inicia sesión o regístrate para acceder a todas las funcionalidades',
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  fontSize: 16,
+                  height: 1.5,
+                  color: isDark ? Colors.grey.shade400 : Colors.grey.shade600,
+                ),
+              ),
+              const SizedBox(height: 48),
+
+              // Botón de Iniciar sesión
+              SizedBox(
+                width: double.infinity,
+                child: ElevatedButton.icon(
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => const LoginView()),
+                    );
+                  },
+                  icon: const Icon(Icons.login, color: Colors.white),
+                  label: const Text(
+                    'Iniciar sesión',
+                    style: TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white,
+                    ),
+                  ),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: const Color(0xFF2e67a3),
+                    padding: const EdgeInsets.symmetric(vertical: 16),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(16),
+                    ),
+                    elevation: 2,
+                  ),
+                ),
+              ),
+              const SizedBox(height: 16),
+
+              // Botón de Registrarse
+              SizedBox(
+                width: double.infinity,
+                child: OutlinedButton.icon(
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => RegisterView()),
+                    );
+                  },
+                  icon: Icon(
+                    Icons.person_add,
+                    color: isDark ? Colors.white : const Color(0xFF2e67a3),
+                  ),
+                  label: Text(
+                    'Registrarse',
+                    style: TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                      color: isDark ? Colors.white : const Color(0xFF2e67a3),
+                    ),
+                  ),
+                  style: OutlinedButton.styleFrom(
+                    padding: const EdgeInsets.symmetric(vertical: 16),
+                    side: BorderSide(
+                      color: isDark ? Colors.white : const Color(0xFF2e67a3),
+                      width: 2,
+                    ),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(16),
+                    ),
+                  ),
+                ),
+              ),
+              const SizedBox(height: 48),
+
+              // Características
+              Container(
+                padding: const EdgeInsets.all(20),
+                decoration: BoxDecoration(
+                  color: isDark ? Colors.grey.shade800 : Colors.white,
+                  borderRadius: BorderRadius.circular(16),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withOpacity(0.05),
+                      blurRadius: 10,
+                      offset: const Offset(0, 5),
+                    ),
+                  ],
+                ),
+                child: Column(
+                  children: [
+                    _buildFeatureItem(
+                      icon: Icons.shopping_cart,
+                      title: 'Realizar compras',
+                      isDark: isDark,
+                    ),
+                    const SizedBox(height: 16),
+                    _buildFeatureItem(
+                      icon: Icons.star,
+                      title: 'Guardar favoritos',
+                      isDark: isDark,
+                    ),
+                    const SizedBox(height: 16),
+                    _buildFeatureItem(
+                      icon: Icons.history,
+                      title: 'Ver historial de pedidos',
+                      isDark: isDark,
+                    ),
+                    const SizedBox(height: 16),
+                    _buildFeatureItem(
+                      icon: Icons.local_shipping,
+                      title: 'Seguimiento de envíos',
+                      isDark: isDark,
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildFeatureItem({
+    required IconData icon,
+    required String title,
+    required bool isDark,
+  }) {
+    return Row(
+      children: [
+        Container(
+          padding: const EdgeInsets.all(8),
+          decoration: BoxDecoration(
+            color: const Color(0xFF2e67a3).withOpacity(0.1),
+            borderRadius: BorderRadius.circular(8),
+          ),
+          child: Icon(
+            icon,
+            color: const Color(0xFF2e67a3),
+            size: 20,
+          ),
+        ),
+        const SizedBox(width: 12),
+        Text(
+          title,
+          style: TextStyle(
+            fontSize: 15,
+            color: isDark ? Colors.grey.shade300 : Colors.grey.shade700,
+          ),
+        ),
+      ],
     );
   }
 }

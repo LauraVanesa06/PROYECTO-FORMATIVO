@@ -426,55 +426,65 @@ class _ProductPreviewViewState extends State<ProductPreviewView> {
             // Botón agregar al carrito
             Expanded(
               flex: 3,
-              child: ElevatedButton.icon(
-                onPressed: (widget.product.stock ?? 0) > 0
-                    ? () {
-                        // Crear el mapa para el carrito
-                        final productMap = {
-                          'id': widget.product.id,
-                          'name': widget.product.nombre ?? 'Sin nombre',
-                          'price': widget.product.precio ?? 0.0,
-                          'imageUrl': widget.product.imagenUrl ?? '',
-                          'quantity': quantity,
-                          'stock': widget.product.stock ?? 0,
-                        };
-                        
-                        context.read<CartBloc>().add(AddToCart(productMap));
-                        
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(
-                            content: Text('$quantity x ${widget.product.nombre} agregado al carrito'),
-                            duration: const Duration(seconds: 2),
-                            backgroundColor: Colors.green,
-                            action: SnackBarAction(
-                              label: 'Ver carrito',
-                              textColor: Colors.white,
-                              onPressed: () {
-                                Navigator.pop(context);
-                              },
-                            ),
-                          ),
-                        );
-                      }
-                    : null,
-                icon: const Icon(Icons.shopping_cart, color: Colors.white),
-                label: const Text(
-                  'Agregar al carrito',
-                  style: TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.white,
-                  ),
-                ),
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color(0xFF2e67a3),
-                  padding: const EdgeInsets.symmetric(vertical: 16),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                  elevation: 2,
-                  disabledBackgroundColor: Colors.grey,
-                ),
+              child: BlocBuilder<AuthBloc, AuthState>(
+                builder: (context, authState) {
+                  return ElevatedButton.icon(
+                    onPressed: (widget.product.stock ?? 0) > 0
+                        ? () {
+                            // Verificar si el usuario es invitado
+                            if (authState.status == AuthStatus.guest) {
+                              _showAuthDialog(context, action: 'agregar productos al carrito');
+                              return;
+                            }
+                            
+                            // Crear el mapa para el carrito
+                            final productMap = {
+                              'id': widget.product.id,
+                              'name': widget.product.nombre ?? 'Sin nombre',
+                              'price': widget.product.precio ?? 0.0,
+                              'imageUrl': widget.product.imagenUrl ?? '',
+                              'quantity': quantity,
+                              'stock': widget.product.stock ?? 0,
+                            };
+                            
+                            context.read<CartBloc>().add(AddToCart(productMap));
+                            
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                content: Text('$quantity x ${widget.product.nombre} agregado al carrito'),
+                                duration: const Duration(seconds: 2),
+                                backgroundColor: Colors.green,
+                                action: SnackBarAction(
+                                  label: 'Ver carrito',
+                                  textColor: Colors.white,
+                                  onPressed: () {
+                                    Navigator.pop(context);
+                                  },
+                                ),
+                              ),
+                            );
+                          }
+                        : null,
+                    icon: const Icon(Icons.shopping_cart, color: Colors.white),
+                    label: const Text(
+                      'Agregar al carrito',
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white,
+                      ),
+                    ),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: const Color(0xFF2e67a3),
+                      padding: const EdgeInsets.symmetric(vertical: 16),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      elevation: 2,
+                      disabledBackgroundColor: Colors.grey,
+                    ),
+                  );
+                },
               ),
             ),
           ],
