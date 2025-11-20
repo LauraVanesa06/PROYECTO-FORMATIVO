@@ -1,71 +1,37 @@
 class CartsController < ApplicationController
   before_action :set_cart
-  before_action :authenticate_user!
 
   def show
-    @cart = current_cart
-    
-    # Usa quantity en lugar de cantidad
-    total_amount = if @cart.respond_to?(:total) && @cart.total.present?
-                    @cart.total.to_f
-                   else
-                    (@cart&.cart_items || []).sum { |i| (i.product&.precio || 0).to_f * (i.quantity || 0).to_i }
-                   end
-
-    amount_cents = (total_amount * 100).to_i
-    @payment_reference = "cart_#{@cart&.id || 'anon'}_#{Time.now.to_i}"
-
-    begin
-      @signature = WompiService.new.signature_for(
-        reference: @payment_reference,
-        amount_in_cents: amount_cents,
-        currency: "COP"
-      )
-    rescue => e
-      Rails.logger.error("[Wompi] signature error: #{e.message}")
-      @signature = ""
-    end
-
     @cart_items = @cart.cart_items.includes(:product)
-  end
 
-  def add_item
-    @cart = current_user.cart || current_user.create_cart
-    product = Product.find(params[:product_id])
-    item = @cart.cart_items.find_by(product_id: product.id)
-
-    if item
-      item.update(cantidad: item.cantidad + 1)
-    else
-      @cart.cart_items.create(product: product, cantidad: 1)
+    total_amount = @cart_items.sum do |i|
+      (i.product&.precio || 0) * i.cantidad.to_i
     end
 
-    session[:cart_id] = @cart.id
-    redirect_to cart_path, notice: "Producto agregado al carrito."
+    @amount_cents = (total_amount * 100).to_i
+    @payment_reference = "cart_#{@cart.id}_#{Time.now.to_i}"
+
+    @signature = WompiService.new.signature_for(
+      reference: @payment_reference,
+      amount_in_cents: @amount_cents
+    )
   end
 
-  def update_item
-    item = @cart.cart_items.find(params[:id])
-    nueva_cantidad = params[:cantidad].to_i
-
-    if nueva_cantidad > 0
-      item.update(cantidad: nueva_cantidad)
-    else
-      item.destroy
-    end
-    #tengo que revisar aquí para redireccionar correctamente, sospecho que es por aquí
-    redirect_to cart_path
-  end
-
-  def remove_item
-    item = @cart.cart_items.find(params[:id])
-    item.destroy
-    redirect_to cart_path, notice: "Producto eliminado del carrito"
+  def payment_status
+    @status = params[:status]
+    render :payment_status
   end
 
   private
 
   def set_cart
-    @cart = Cart.find_by(id: session[:cart_id]) || Cart.create
+    @cart =
+      if current_user&.cart.present?
+        current_user.cart
+      elsif session[:cart_id]
+        Cart.find_by(id: session[:cart_id])
+      else
+        nil
+      end
   end
 end

@@ -1957,3 +1957,34 @@ body.dark-mode a {
   background: rgba(0, 0, 0, 0.3);
   z-index: 1500;
 }
+
+/* Estilos para el botón de Wompi */
+#wompi-button-container {
+  margin-top: 1rem;
+}
+
+.form-wompi {
+  width: 100%;
+}
+
+/* Estilo para el botón de Wompi */
+.wompi-button {
+  width: 100% !important;
+  height: 50px !important;
+  font-size: 1.1rem !important;
+}
+
+/* Estilos para el resumen del carrito */
+.cart-summary {
+  background: linear-gradient(to bottom right, #ffffff, #f8f9fa);
+  border: 1px solid rgba(0,0,0,0.1) !important;
+}
+
+/* Animaciones para el total */
+.cart-summary .text-success {
+  transition: all 0.3s ease;
+}
+
+.cart-summary .text-success:hover {
+  transform: scale(1.05);
+}

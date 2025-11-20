@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_10_24_022211) do
+ActiveRecord::Schema[8.0].define(version: 2025_11_20_000000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -43,13 +43,16 @@ ActiveRecord::Schema[8.0].define(version: 2025_10_24_022211) do
   end
 
   create_table "buys", force: :cascade do |t|
-    t.bigint "customer_id", null: false
     t.datetime "fecha"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string "tipo"
     t.string "metodo_pago"
-    t.index ["customer_id"], name: "index_buys_on_customer_id"
+    t.bigint "payment_id"
+    t.decimal "total", precision: 12, scale: 2
+    t.bigint "user_id", null: false
+    t.index ["payment_id"], name: "index_buys_on_payment_id"
+    t.index ["user_id"], name: "index_buys_on_user_id"
   end
 
   create_table "cart_items", force: :cascade do |t|
@@ -102,16 +105,18 @@ ActiveRecord::Schema[8.0].define(version: 2025_10_24_022211) do
     t.decimal "amount", precision: 12, scale: 2, null: false
     t.string "currency", default: "COP", null: false
     t.integer "status", default: 0, null: false
-    t.string "wompi_id", null: false
-    t.string "pay_method", null: false
+    t.string "wompi_id"
+    t.string "pay_method"
     t.bigint "user_id", null: false
     t.bigint "cart_id", null: false
     t.jsonb "raw_response", default: {}, null: false
-    t.string "token", null: false
-    t.string "account_info", null: false
+    t.string "token"
+    t.string "account_info"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "reference"
     t.index ["cart_id"], name: "index_payments_on_cart_id"
+    t.index ["reference"], name: "index_payments_on_reference"
     t.index ["user_id"], name: "index_payments_on_user_id"
     t.index ["wompi_id"], name: "index_payments_on_wompi_id", unique: true
   end
@@ -214,7 +219,8 @@ ActiveRecord::Schema[8.0].define(version: 2025_10_24_022211) do
 
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
-  add_foreign_key "buys", "customers"
+  add_foreign_key "buys", "payments"
+  add_foreign_key "buys", "users"
   add_foreign_key "cart_items", "carts"
   add_foreign_key "cart_items", "products"
   add_foreign_key "carts", "users"

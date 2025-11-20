@@ -4,14 +4,14 @@ class CustomersController < ApplicationController
 
   # GET /customers or /customers.json
   def index
-  # base
-  @customers = Customer.left_outer_joins(:buys).distinct.includes(:buys)
+  # base - cambiar a trabajar con User en lugar de Customer
+  @users = User.left_outer_joins(:buys).distinct.includes(:buys)
   @customer = nil
   @purchasedetails = []
   @buys = Buy.all
 
-  # filtro por documento (solo afecta la lista de clientes)
-  @customers = @customers.where("customers.documento LIKE ?", "%#{params[:documento]}%") if params[:documento].present?
+  # filtro por email (ya que User no tiene documento)
+  @users = @users.where("users.email LIKE ?", "%#{params[:documento]}%") if params[:documento].present?
 
   # arma condiciones de fecha (día/mes/año) sobre buys.fecha
   conditions, values = [], []
@@ -21,35 +21,35 @@ class CustomersController < ApplicationController
     conditions << "strftime('#{f}', buys.fecha) = ?"
   end
 
-  # si hay condiciones, filtra both: buys y customers
+  # si hay condiciones, filtra both: buys y users
   if conditions.any?
     where_sql = conditions.join(' AND ')
     @buys = Buy.where(where_sql, *values)
-    @customers = @customers.where(where_sql, *values)
+    @users = @users.where(where_sql, *values)
   end
 
   buy_ids = @buys.pluck(:id)
 
   # --- lógica para purchasedetails en el ASIDE ---
-  if @customers.empty? # si el filtro no trajo clientes
-    flash.now[:alert] = "¡No se encontraron clientes con esos filtros!"
-    @customers = Customer.all
-    @purchasedetails = Purchasedetail.includes(:product, buy: :customer) # todas las compras
+  if @users.empty? # si el filtro no trajo usuarios
+    flash.now[:alert] = "¡No se encontraron usuarios con esos filtros!"
+    @users = User.all
+    @purchasedetails = Purchasedetail.includes(:product, buy: :user) # todas las compras
   else
     # purchasedetails normal, según selección o resultados
     if params[:documento].present?
-      @customer = Customer.find_by(documento: params[:documento])
-      @purchasedetails = @customer ? @customer.purchasedetails.includes(:product, buy: :customer).where(buy_id: buy_ids) : []
-    elsif @customers.size == 1
-      @customer = @customers.first
-      @purchasedetails = @customer.purchasedetails.includes(:product, buy: :customer).where(buy_id: buy_ids)
+      @user = User.find_by(email: params[:documento])
+      @purchasedetails = @user ? @user.buys.includes(purchasedetails: [:product]).map(&:purchasedetails).flatten.uniq : []
+    elsif @users.size == 1
+      @user = @users.first
+      @purchasedetails = @user.buys.includes(purchasedetails: [:product]).map(&:purchasedetails).flatten.uniq
     else
-      @purchasedetails = Purchasedetail.includes(:product, buy: :customer)
+      @purchasedetails = Purchasedetail.includes(:product, buy: :user)
       @purchasedetails = @purchasedetails.where(buy_id: buy_ids) if buy_ids.present?
     end
   end
 
-  @filter_result_empty = @customers.blank?
+  @filter_result_empty = @users.blank?
 end
 
 
@@ -106,13 +106,13 @@ end
   end
 
   def buys
-    @customer = Customer.find(params[:id])
-    @buys = @customer.buys
+    @user = User.find(params[:id])
+    @buys = @user.buys
   end
 
   def purchasedetails
-  @customer = Customer.find(params[:id])
-  @purchasedetails = @customer.purchasedetails
+  @user = User.find(params[:id])
+  @purchasedetails = @user.buys.includes(purchasedetails: [:product]).map(&:purchasedetails).flatten.uniq
   end
 
   private
