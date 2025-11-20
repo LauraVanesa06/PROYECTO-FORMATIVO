@@ -182,7 +182,7 @@ class PaymentsController < ApplicationController
       total_compra = cart.cart_items.sum { |i| (i.product&.precio || 0) * (i.cantidad || 1) }
 
       buy = Buy.create!(
-        customer_id: payment.user.id,
+        user_id: payment.user.id,
         fecha: Time.current,
         tipo: "Online",
         metodo_pago: "Wompi",
@@ -191,18 +191,15 @@ class PaymentsController < ApplicationController
       )
 
       cart.cart_items.each do |item|
-        Purchasedetail.create!(
+        Purchasedetail.create(
           buy_id: buy.id,
           product_id: item.product_id,
           cantidad: item.cantidad || 1,
-          precio: item.product&.precio || 0,
-          total: (item.product&.precio || 0) * (item.cantidad || 1)
+          preciounidad: item.product&.precio&.to_d || 0
         )
       end
 
       cart.cart_items.destroy_all
-
-      payment.update!(buy_id: buy.id)
     end
   rescue => e
     Rails.logger.error("[Payments] Error creando compra: #{e.message}")

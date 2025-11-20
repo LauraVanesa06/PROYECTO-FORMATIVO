@@ -87,10 +87,10 @@
           <% if @purchasedetails.present? && @purchasedetails.any? %>
             <% @purchasedetails.each do |p| %>
               <div class="compra-info open-detail-btn" 
-                data-cliente-id="<%= p.buy.customer.id %>"
-                data-cliente-nombre="<%= p.buy.customer.nombre %>"
-                data-cliente-documento="<%= p.buy.customer.documento %>"
-                data-cliente-telefono="<%= p.buy.customer.telefono %>"
+                data-cliente-id="<%= p.buy.user.id %>"
+                data-cliente-nombre="<%= p.buy.user.name %>"
+                data-cliente-documento="<%= p.buy.user.email %>"
+                data-cliente-telefono="<%= p.buy.user.email %>"
                 data-producto-id="<%= p.product.id %>"
                 data-producto-nombre="<%= p.product.nombre %>"
                 data-producto-descripcion="<%= p.product.descripcion %>"

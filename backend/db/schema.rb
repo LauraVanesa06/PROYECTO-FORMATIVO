@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_11_19_170544) do
+ActiveRecord::Schema[8.0].define(version: 2025_11_20_000000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -43,7 +43,6 @@ ActiveRecord::Schema[8.0].define(version: 2025_11_19_170544) do
   end
 
   create_table "buys", force: :cascade do |t|
-    t.bigint "customer_id", null: false
     t.datetime "fecha"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
@@ -51,8 +50,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_11_19_170544) do
     t.string "metodo_pago"
     t.bigint "payment_id"
     t.decimal "total", precision: 12, scale: 2
-    t.bigint "user_id"
-    t.index ["customer_id"], name: "index_buys_on_customer_id"
+    t.bigint "user_id", null: false
     t.index ["payment_id"], name: "index_buys_on_payment_id"
     t.index ["user_id"], name: "index_buys_on_user_id"
   end
@@ -86,8 +84,6 @@ ActiveRecord::Schema[8.0].define(version: 2025_11_19_170544) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.integer "documento"
-    t.bigint "user_id"
-    t.index ["user_id"], name: "index_customers_on_user_id"
   end
 
   create_table "favorites", force: :cascade do |t|
@@ -174,7 +170,6 @@ ActiveRecord::Schema[8.0].define(version: 2025_11_19_170544) do
     t.datetime "updated_at", null: false
     t.integer "cantidad"
     t.decimal "preciounidad"
-    t.decimal "total", precision: 12, scale: 2, default: "0.0"
     t.index ["buy_id"], name: "index_purchasedetails_on_buy_id"
     t.index ["product_id"], name: "index_purchasedetails_on_product_id"
   end
@@ -224,12 +219,11 @@ ActiveRecord::Schema[8.0].define(version: 2025_11_19_170544) do
 
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
-  add_foreign_key "buys", "customers"
   add_foreign_key "buys", "payments"
+  add_foreign_key "buys", "users"
   add_foreign_key "cart_items", "carts"
   add_foreign_key "cart_items", "products"
   add_foreign_key "carts", "users"
-  add_foreign_key "customers", "users"
   add_foreign_key "favorites", "products"
   add_foreign_key "favorites", "users"
   add_foreign_key "payments", "carts"

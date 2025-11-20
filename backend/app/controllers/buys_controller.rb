@@ -6,15 +6,15 @@ class BuysController < ApplicationController
   def index
 
     #Cargar todas las ventas con sus detalles y filtros
-    @buys = Buy.includes(:payment, :customer).order(fecha: :desc)
+    @buys = Buy.includes(:payment, :user).order(fecha: :desc)
 
     @purchasedetails = Purchasedetail.all
     @purchasedetails = Purchasedetail.joins("INNER JOIN buys ON buys.id = purchasedetails.buy_id")
     conditions = []
     values = []
 
-    @customer = Customer.joins(:buys).distinct.where("nombre LIKE ?", "%#{params[:customer]}%") if params[:customer].present?
-    @buys = @buys.where(customer_id: @customer.ids) if params[:customer].present?
+    @user = User.joins(:buys).distinct.where("name LIKE ?", "%#{params[:customer]}%") if params[:customer].present?
+    @buys = @buys.where(user_id: @user.ids) if params[:customer].present?
 
     { year: '%Y', month: '%m', day: '%d' }.each do |param, format|
       next unless params[param].present?
@@ -22,7 +22,7 @@ class BuysController < ApplicationController
       values << params[param].rjust(2, '0')
     end
 
-    query = Buy.joins(:customer)
+    query = Buy.joins(:user)
     query = query.where(conditions.join(" AND "), *values) unless conditions.empty?
 
     @buys = query
@@ -85,6 +85,6 @@ class BuysController < ApplicationController
 
     # Only allow a list of trusted parameters through.
     def buy_params
-      params.require(:buy).permit(:customer_id, :fecha, :total, :payment_id)
+      params.require(:buy).permit(:user_id, :fecha, :total, :payment_id)
     end
 end

@@ -1,6 +1,6 @@
 <div id="<%= dom_id(buy) %>" class="buy-card p-3 mb-3 rounded-4 shadow-sm bg-dark text-white">
   <p><strong>Id de venta:</strong> <%= buy.id %></p>
-  <p><strong>Nombre del cliente:</strong> <%= buy.customer.nombre %></p>
+  <p><strong>Nombre del cliente:</strong> <%= buy.user.name %></p>
   <p><strong>Fecha de la compra:</strong> <%= buy.fecha.strftime("%d/%m/%Y") %></p>
 
   <p><strong>Tipo de venta:</strong>
@@ -9,7 +9,7 @@
 
   <% if buy.payment_id.present? && buy.payment&.pay_method.present? %>
     <p><strong>Método de pago:</strong> <%= buy.payment.pay_method.capitalize %></p>
-    <p><strong>Transacción:</strong> <%= buy.payment.payment_id %></p>
+    <p><strong>Transacción:</strong> <%= buy.payment.wompi_id %></p>
     <p><strong>Monto:</strong> $<%= number_with_precision(buy.payment.amount, precision: 2) %> <%= buy.payment.currency %></p>
   <% end %>
 
@@ -24,8 +24,8 @@
         data-categoria-producto="<%= p.product.category.nombre %>"
         data-proveedor-producto="<%= p.product.supplier.nombre %>"
         data-precio-producto="<%= p.product.precio_cop %>"
-        data-nombre-cliente="<%= buy.customer.nombre %>"
-        data-documento-cliente="<%= buy.customer.documento %>"
+        data-nombre-cliente="<%= buy.user.name %>"
+        data-documento-cliente="<%= buy.user.email %>"
         data-fecha-compra="<%= buy.fecha.strftime("%d/%m/%Y") %>"
         data-tipo-compra="<%= buy.payment_id.present? ? 'En línea (Wompi)' : 'Física' %>"
         data-metodo-compra="<%= buy.payment&.pay_method || 'Efectivo' %>"
