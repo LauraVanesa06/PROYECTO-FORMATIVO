@@ -456,7 +456,7 @@ class ProfileView extends StatelessWidget {
                   color: isDark ? Colors.grey.shade400 : Colors.grey.shade600,
                 ),
               ),
-              const SizedBox(height: 48),
+              const SizedBox(height: 32),
 
               // Botón de Iniciar sesión
               SizedBox(
@@ -487,7 +487,7 @@ class ProfileView extends StatelessWidget {
                   ),
                 ),
               ),
-              const SizedBox(height: 16),
+              const SizedBox(height: 12),
 
               // Botón de Registrarse
               SizedBox(
@@ -523,7 +523,7 @@ class ProfileView extends StatelessWidget {
                   ),
                 ),
               ),
-              const SizedBox(height: 48),
+              const SizedBox(height: 32),
 
               // Características
               Container(
@@ -552,21 +552,10 @@ class ProfileView extends StatelessWidget {
                       title: 'Guardar favoritos',
                       isDark: isDark,
                     ),
-                    const SizedBox(height: 16),
-                    _buildFeatureItem(
-                      icon: Icons.history,
-                      title: 'Ver historial de pedidos',
-                      isDark: isDark,
-                    ),
-                    const SizedBox(height: 16),
-                    _buildFeatureItem(
-                      icon: Icons.local_shipping,
-                      title: 'Seguimiento de envíos',
-                      isDark: isDark,
-                    ),
                   ],
                 ),
               ),
+              const SizedBox(height: 120), // Espacio extra para el bottom nav
             ],
           ),
         ),
