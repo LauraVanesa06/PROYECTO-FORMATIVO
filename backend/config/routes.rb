@@ -101,6 +101,14 @@ Rails.application.routes.draw do
   post "/payments/webhook", to: "payments#webhook"
   post "/webhooks/wompi", to: "webhooks#wompi"
 
+  namespace :api do
+  namespace :payments do
+    post "create_checkout"
+    post "webhook"
+  end
+end
+
+
   # API
   namespace :api do
     namespace :v1 do

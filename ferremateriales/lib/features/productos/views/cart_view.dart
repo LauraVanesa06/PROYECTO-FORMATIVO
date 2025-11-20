@@ -4,9 +4,11 @@ import 'package:ferremateriales/features/productos/widgets/loading_shimmer.dart'
 import 'package:ferremateriales/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+
 import '../bloc/cart_bloc.dart';
 import '../bloc/cart_state.dart';
-import 'payment_view.dart';
+import 'checkout_screen.dart';
+import '../services/service_wompi.dart'; 
 
 class CartView extends StatefulWidget {
   const CartView({super.key});
@@ -44,10 +46,10 @@ class _CartViewState extends State<CartView> {
     final l10n = AppLocalizations.of(context)!;
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
-  final total = _cartItems.fold<double>(
-    0,
-    (sum, item) => sum + ((item.product.precio ?? 0) * item.quantity),
-  );
+    final total = _cartItems.fold<double>(
+      0,
+      (sum, item) => sum + ((item.product.precio ?? 0) * item.quantity),
+    );
 
     return BlocBuilder<CartBloc, CartState>(
       builder: (context, state) {
@@ -72,10 +74,10 @@ class _CartViewState extends State<CartView> {
               onPressed: () => Navigator.pop(context),
             ),
           ),
-          body: _isLoading
-              ? const LoadingShimmer(isGrid: false) // 👈 Use the new shimmer
-              : _cartItems.isEmpty
 
+          body: _isLoading
+              ? const LoadingShimmer(isGrid: false)
+              : _cartItems.isEmpty
                   ? Center(
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
@@ -114,22 +116,12 @@ class _CartViewState extends State<CartView> {
                                   border: Border.all(
                                     color: isDark ? Colors.grey.shade700 : Colors.grey.shade200,
                                   ),
-                                  boxShadow: isDark
-                                      ? []
-                                      : [
-                                          BoxShadow(
-                                            color: Colors.black.withOpacity(0.03),
-                                            blurRadius: 8,
-                                            offset: const Offset(0, 2),
-                                          ),
-                                        ],
                                 ),
                                 child: Padding(
                                   padding: const EdgeInsets.all(12),
                                   child: Row(
                                     crossAxisAlignment: CrossAxisAlignment.start,
                                     children: [
-                                      // 🖼 Imagen del producto
                                       Container(
                                         width: 80,
                                         height: 80,
@@ -143,11 +135,6 @@ class _CartViewState extends State<CartView> {
                                               ? Image.network(
                                                   product.imagenUrl!,
                                                   fit: BoxFit.cover,
-                                                  errorBuilder: (_, __, ___) => Icon(
-                                                    Icons.image_not_supported,
-                                                    color: Colors.grey.shade400,
-                                                    size: 40,
-                                                  ),
                                                 )
                                               : Icon(
                                                   Icons.shopping_bag_outlined,
@@ -156,9 +143,9 @@ class _CartViewState extends State<CartView> {
                                                 ),
                                         ),
                                       ),
+
                                       const SizedBox(width: 12),
 
-                                      // 📝 Información del producto
                                       Expanded(
                                         child: Column(
                                           crossAxisAlignment: CrossAxisAlignment.start,
@@ -170,8 +157,6 @@ class _CartViewState extends State<CartView> {
                                                 fontWeight: FontWeight.bold,
                                                 color: isDark ? Colors.blue.shade300 : const Color(0xFF2e67a3),
                                               ),
-                                              maxLines: 2,
-                                              overflow: TextOverflow.ellipsis,
                                             ),
                                             const SizedBox(height: 8),
                                             Text(
@@ -184,71 +169,23 @@ class _CartViewState extends State<CartView> {
                                             ),
                                             const SizedBox(height: 12),
 
-                                            // ➕➖ Controles de cantidad
                                             Row(
                                               children: [
-                                                Container(
-                                                  decoration: BoxDecoration(
-                                                    border: Border.all(
-                                                      color: isDark ? Colors.grey.shade700 : Colors.grey.shade300,
-                                                    ),
-                                                    borderRadius: BorderRadius.circular(8),
-                                                  ),
-                                                  child: Row(
-                                                    children: [
-                                                      IconButton(
-                                                        icon: Icon(
-                                                          Icons.remove,
-                                                          color: Colors.grey.shade700,
-                                                          size: 18,
-                                                        ),
-                                                        padding: const EdgeInsets.all(4),
-                                                        constraints: const BoxConstraints(
-                                                          minWidth: 32,
-                                                          minHeight: 32,
-                                                        ),
-                                                        onPressed: () async {
-                                                          await _cartService.decreaseQuantity(item.id);
-                                                          _loadCartItems(); // recarga la lista desde Rails
-                                                        },
-                                                      ),
-                                                      Container(
-                                                        padding: const EdgeInsets.symmetric(horizontal: 12),
-                                                        child: Text(
-                                                          "${item.quantity}",
-                                                          style: const TextStyle(
-                                                            fontSize: 16,
-                                                            fontWeight: FontWeight.bold,
-                                                          ),
-                                                        ),
-                                                      ),
-                                                      IconButton(
-                                                        icon: const Icon(
-                                                          Icons.add,
-                                                          color: Color(0xFF2e67a3),
-                                                          size: 18,
-                                                        ),
-                                                        padding: const EdgeInsets.all(4),
-                                                        constraints: const BoxConstraints(
-                                                          minWidth: 32,
-                                                          minHeight: 32,
-                                                        ),
-                                                        onPressed: () async {
-                                                          await _cartService.increaseQuantity(item.id);
-                                                          _loadCartItems();
-                                                        },
-                                                      ),
-                                                    ],
-                                                  ),
+                                                IconButton(
+                                                  icon: const Icon(Icons.remove, size: 18),
+                                                  onPressed: () async {
+                                                    await _cartService.decreaseQuantity(item.id);
+                                                    _loadCartItems();
+                                                  },
                                                 ),
-                                                const Spacer(),
-                                                Text(
-                                                  "COP ${(product.precio ?? 0) * item.quantity}",
-                                                  style: TextStyle(
-                                                    fontSize: 16,
-                                                    fontWeight: FontWeight.bold,
-                                                    color: isDark ? Colors.blue.shade300 : const Color(0xFF2e67a3),
-                                                  ),
+                                                Text("${item.quantity}",
+                                                    style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+                                                IconButton(
+                                                  icon: const Icon(Icons.add, size: 18),
+                                                  onPressed: () async {
+                                                    await _cartService.increaseQuantity(item.id);
+                                                    _loadCartItems();
+                                                  },
                                                 ),
                                               ],
                                             ),
@@ -256,20 +193,8 @@ class _CartViewState extends State<CartView> {
                                         ),
                                       ),
 
-                                      // 🗑 Botón eliminar
                                       IconButton(
-                                        icon: Container(
-                                          padding: const EdgeInsets.all(6),
-                                          decoration: BoxDecoration(
-                                            color: Colors.red.shade50,
-                                            shape: BoxShape.circle,
-                                          ),
-                                          child: const Icon(
-                                            Icons.delete_outline,
-                                            color: Colors.red,
-                                            size: 20,
-                                          ),
-                                        ),
+                                        icon: const Icon(Icons.delete_outline, color: Colors.red),
                                         onPressed: () async {
                                           await _cartService.removeItem(item.id);
                                           _loadCartItems();
@@ -282,8 +207,7 @@ class _CartViewState extends State<CartView> {
                             },
                           ),
                         ),
-                        
-                        // Footer con el total
+
                         Container(
                           padding: const EdgeInsets.all(20),
                           decoration: BoxDecoration(
@@ -292,15 +216,6 @@ class _CartViewState extends State<CartView> {
                               topLeft: Radius.circular(24),
                               topRight: Radius.circular(24),
                             ),
-                            boxShadow: isDark
-                                ? []
-                                : [
-                                    BoxShadow(
-                                      color: Colors.black.withOpacity(0.1),
-                                      blurRadius: 20,
-                              offset: const Offset(0, -5),
-                            ),
-                          ],
                           ),
                           child: SafeArea(
                             child: Column(
@@ -316,48 +231,43 @@ class _CartViewState extends State<CartView> {
                                       ),
                                     ),
                                     Text(
-                                      "COP ${total.toStringAsFixed(2)}",
+                                      "COP ${total.toStringAsFixed(0)}",
                                       style: TextStyle(
-                                        fontSize: 24,
+                                        fontSize: 22,
                                         fontWeight: FontWeight.bold,
                                         color: isDark ? Colors.blue.shade300 : const Color(0xFF2e67a3),
                                       ),
                                     ),
                                   ],
                                 ),
+
                                 const SizedBox(height: 16),
+
                                 SizedBox(
                                   width: double.infinity,
                                   height: 56,
                                   child: ElevatedButton(
-                                    onPressed: () => Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                        builder: (_) => PaymentView(total: total),
-                                      ),
-                                    ),
-                                    style: ElevatedButton.styleFrom(
-                                      backgroundColor: const Color(0xFF2e67a3),
-                                      foregroundColor: Colors.white,
-                                      shape: RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.circular(16),
-                                      ),
-                                      elevation: 0,
-                                    ),
-                                    child: Row(
-                                      mainAxisAlignment: MainAxisAlignment.center,
-                                      children: [
-                                        const Icon(Icons.shopping_bag_outlined),
-                                        const SizedBox(width: 12),
-                                        Text(
-                                          l10n.finishPurchase,
-                                          style: const TextStyle(
-                                            fontSize: 16,
-                                            fontWeight: FontWeight.bold,
+                                    onPressed: () async {
+                                      try {
+                                        final data = await PaymentService().createPayment(
+                                          cartId: 10,
+                                          amount: total.toInt(),
+                                          userId: 12,
+                                        );
+
+                                        final checkoutUrl = data["checkout_url"];
+
+                                        Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                            builder: (_) => CheckoutScreen(checkoutUrl: checkoutUrl),
                                           ),
-                                        ),
-                                      ],
-                                    ),
+                                        );
+                                      } catch (e) {
+                                        print("Error al procesar pago: $e");
+                                      }
+                                    },
+                                    child: const Text("Finalizar compra"),
                                   ),
                                 ),
                               ],

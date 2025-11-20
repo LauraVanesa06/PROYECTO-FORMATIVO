@@ -52,6 +52,7 @@ dependencies:
   shared_preferences: ^2.2.2
   shimmer: ^3.0.0
   cached_network_image: ^3.4.0
+  webview_flutter: ^4.10.0
 
 dev_dependencies:
   flutter_launcher_icons: ^0.13.1
