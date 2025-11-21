@@ -114,4 +114,11 @@ class Product < ApplicationRecord
     # Por ahora retorna false para que siempre incremente
     false
   end
+
+  # Scope para productos disponibles
+  scope :disponibles, -> { where(disponible: true) }
+  scope :no_disponibles, -> { where(disponible: false) }
+  
+  # Scope para productos con stock
+  scope :con_stock, -> { where("stock > ?", 0) }
 end
