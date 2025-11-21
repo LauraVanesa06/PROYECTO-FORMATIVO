@@ -5,7 +5,6 @@ import '../../auth/bloc/auth_state.dart';
 import 'home_view.dart';
 import 'favorites_view.dart';
 import 'cart_view.dart';
-import 'notifications_view.dart';
 import 'profile_view.dart';
 
 class MainView extends StatefulWidget {
@@ -30,7 +29,6 @@ class _MainViewState extends State<MainView> {
       const HomeView(),
       const FavoritesView(),
       const CartView(),
-      const NotificationsView(),
       ProfileView(userName: nombre),
     ];
 
@@ -62,8 +60,7 @@ return Scaffold(
             _buildNavItem(Icons.home, 0, authState),
             _buildNavItem(Icons.star, 1, authState),
             _buildCartFAB(authState),
-            _buildNavItem(Icons.notifications, 3, authState),
-            _buildNavItem(Icons.person, 4, authState),
+            _buildNavItem(Icons.person, 3, authState),
           ],
         ),
       ),

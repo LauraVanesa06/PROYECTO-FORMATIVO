@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../bloc/auth_bloc.dart';
 import '../bloc/auth_event.dart';
 import '../utils/email_validator.dart';
+import '../views/reset_password_view.dart';
 
 class LoginForm extends StatefulWidget {
   @override
@@ -18,6 +20,40 @@ class _LoginFormState extends State<LoginForm> {
   bool _rememberMe = false;
 
   @override
+  void initState() {
+    super.initState();
+    _loadSavedCredentials();
+  }
+
+  Future<void> _loadSavedCredentials() async {
+    final prefs = await SharedPreferences.getInstance();
+    final savedEmail = prefs.getString('saved_email');
+    final savedPassword = prefs.getString('saved_password');
+    final rememberMe = prefs.getBool('remember_me') ?? false;
+
+    if (rememberMe && savedEmail != null && savedPassword != null) {
+      setState(() {
+        _username = savedEmail;
+        _password = savedPassword;
+        _rememberMe = true;
+      });
+    }
+  }
+
+  Future<void> _saveCredentials() async {
+    final prefs = await SharedPreferences.getInstance();
+    if (_rememberMe) {
+      await prefs.setString('saved_email', _username);
+      await prefs.setString('saved_password', _password);
+      await prefs.setBool('remember_me', true);
+    } else {
+      await prefs.remove('saved_email');
+      await prefs.remove('saved_password');
+      await prefs.setBool('remember_me', false);
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Form(
       key: _formKey,
@@ -26,6 +62,7 @@ class _LoginFormState extends State<LoginForm> {
         children: [
           // Campo de correo electrónico minimalista
           TextFormField(
+            initialValue: _username,
             style: GoogleFonts.inter(
               color: const Color(0xFF222222),
               fontSize: 15,
@@ -57,6 +94,7 @@ class _LoginFormState extends State<LoginForm> {
 
           // Campo de contraseña minimalista
           TextFormField(
+            initialValue: _password,
             obscureText: _obscurePassword,
             style: GoogleFonts.inter(
               color: const Color(0xFF222222),
@@ -99,29 +137,55 @@ class _LoginFormState extends State<LoginForm> {
           ),
           const SizedBox(height: 16),
 
-          // Recordarme
+          // Recordarme y Olvidaste tu contraseña
           Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              SizedBox(
-                height: 20,
-                width: 20,
-                child: Checkbox(
-                  value: _rememberMe,
-                  onChanged: (value) {
-                    setState(() {
-                      _rememberMe = value ?? false;
-                    });
-                  },
-                  activeColor: const Color(0xFF2e67a3),
-                  side: BorderSide(color: Colors.grey.shade400),
-                ),
+              Row(
+                children: [
+                  SizedBox(
+                    height: 20,
+                    width: 20,
+                    child: Checkbox(
+                      value: _rememberMe,
+                      onChanged: (value) {
+                        setState(() {
+                          _rememberMe = value ?? false;
+                        });
+                      },
+                      activeColor: const Color(0xFF2e67a3),
+                      side: BorderSide(color: Colors.grey.shade400),
+                    ),
+                  ),
+                  const SizedBox(width: 8),
+                  Text(
+                    'Recordarme',
+                    style: GoogleFonts.inter(
+                      color: Colors.grey.shade700,
+                      fontSize: 14,
+                    ),
+                  ),
+                ],
               ),
-              const SizedBox(width: 8),
-              Text(
-                'Recordarme',
-                style: GoogleFonts.inter(
-                  color: Colors.grey.shade700,
-                  fontSize: 14,
+              TextButton(
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (_) => ResetPasswordView()),
+                  );
+                },
+                style: TextButton.styleFrom(
+                  padding: EdgeInsets.zero,
+                  minimumSize: const Size(0, 0),
+                  tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                ),
+                child: Text(
+                  '¿Olvidaste tu contraseña?',
+                  style: GoogleFonts.inter(
+                    color: const Color(0xFF2e67a3),
+                    fontSize: 13,
+                    fontWeight: FontWeight.w500,
+                  ),
                 ),
               ),
             ],
@@ -133,8 +197,9 @@ class _LoginFormState extends State<LoginForm> {
             width: double.infinity,
             height: 50,
             child: ElevatedButton(
-              onPressed: () {
+              onPressed: () async {
                 if (_formKey.currentState!.validate()) {
+                  await _saveCredentials();
                   context.read<AuthBloc>().add(
                         LoginSubmitted(
                           email: _username,
