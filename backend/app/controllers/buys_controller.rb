@@ -1,18 +1,20 @@
 class BuysController < ApplicationController
   before_action :set_buy, only: %i[ show edit update destroy ]
-  layout false  
-
+  layout false
 
   # GET /buys or /buys.json
   def index
-    @buys = Buy.all
+
+    #Cargar todas las ventas con sus detalles y filtros
+    @buys = Buy.includes(:payment, :user).order(fecha: :desc)
+
     @purchasedetails = Purchasedetail.all
     @purchasedetails = Purchasedetail.joins("INNER JOIN buys ON buys.id = purchasedetails.buy_id")
     conditions = []
     values = []
 
-    @customer = Customer.joins(:buys).distinct.where("nombre LIKE ?", "%#{params[:customer]}%") if params[:customer].present?
-    @buys = @buys.where(customer_id: @customer.ids) if params[:customer].present?
+    @user = User.joins(:buys).distinct.where("name LIKE ?", "%#{params[:customer]}%") if params[:customer].present?
+    @buys = @buys.where(user_id: @user.ids) if params[:customer].present?
 
     { year: '%Y', month: '%m', day: '%d' }.each do |param, format|
       next unless params[param].present?
@@ -20,7 +22,7 @@ class BuysController < ApplicationController
       values << params[param].rjust(2, '0')
     end
 
-    query = Buy.joins(:customer)
+    query = Buy.joins(:user)
     query = query.where(conditions.join(" AND "), *values) unless conditions.empty?
 
     @buys = query
@@ -48,56 +50,41 @@ class BuysController < ApplicationController
   # POST /buys or /buys.json
   def create
     @buy = Buy.new(buy_params)
-
-    respond_to do |format|
-      if @buy.save
-        format.html { redirect_to @buy, notice: "Buy was successfully created." }
-        format.json { render :show, status: :created, location: @buy }
-        format.js
-      else
-        format.html { render :new, status: :unprocessable_entity }
-        format.json { render json: @buy.errors, status: :unprocessable_entity }
-        format.js
-      end
+    if @buy.save
+      redirect_to @buy, notice: "Compra creada."
+    else
+      render :new
     end
   end
 
   # PATCH/PUT /buys/1 or /buys/1.json
   def update
-    respond_to do |format|
-      if @buy.update(buy_params)
-        format.html { redirect_to @buy, notice: "Buy was successfully updated." }
-        format.json { render :show, status: :ok, location: @buy }
-      else
-        format.html { render :edit, status: :unprocessable_entity }
-        format.json { render json: @buy.errors, status: :unprocessable_entity }
-      end
+    if @buy.update(buy_params)
+      redirect_to @buy, notice: "Compra actualizada."
+    else
+      render :edit
     end
   end
 
   # DELETE /buys/1 or /buys/1.json
   def destroy
-    @buy.destroy!
-
-    respond_to do |format|
-      format.html { redirect_to buys_path, status: :see_other, notice: "Buy was successfully destroyed." }
-      format.json { head :no_content }
-    end
+    @buy.destroy
+    redirect_to buys_url, notice: "Compra eliminada."
   end
 
   def purchasedetails
-    @buy = Buy.find(params[:id])
-    @purchasedetails = @buy.purchasedetails
+    @purchasedetails = Purchasedetail.where(buy_id: params[:buy_id])
   end
 
   private
+
     # Use callbacks to share common setup or constraints between actions.
     def set_buy
-      @buy = Buy.find(params.expect(:id))
+      @buy = Buy.find(params[:id])
     end
 
     # Only allow a list of trusted parameters through.
     def buy_params
-      params.expect(buy: [ :customer_id, :fecha ])
+      params.require(:buy).permit(:user_id, :fecha, :total, :payment_id)
     end
 end

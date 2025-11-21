@@ -1,4 +1,4 @@
 class Customer < ApplicationRecord
-  has_many :buys
-  has_many :purchasedetails, through: :buys 
+  # Las compras (buys) ahora están asociadas a User, no a Customer
+  # Si necesitas acceder a purchasedetails, hazlo a través de User
 end
