@@ -111,5 +111,22 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       await _authService.logout();
       emit(const AuthState(status: AuthStatus.loggedOut));
     });
+
+    // Solicitar restablecimiento de contraseña
+    on<ResetPasswordRequested>((event, emit) async {
+      emit(state.copyWith(status: AuthStatus.loading));
+      try {
+        final response = await _authService.requestPasswordReset(event.email);
+        emit(state.copyWith(
+          status: AuthStatus.resetPasswordSent,
+          resetMessage: response['message'],
+        ));
+      } catch (e) {
+        emit(state.copyWith(
+          status: AuthStatus.resetPasswordError,
+          error: e.toString().replaceAll('Exception: ', ''),
+        ));
+      }
+    });
   }
 }

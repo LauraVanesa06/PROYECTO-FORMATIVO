@@ -7,7 +7,10 @@ enum AuthStatus {
   success,    // Login exitoso
   failure,    // Fallo en autenticación
   loggedOut,  // Cuando el usuario cierra sesión
-  guest, authenticated,      // Usuario invitado
+  guest,      // Usuario invitado
+  authenticated,
+  resetPasswordSent,  // Código de verificación enviado
+  resetPasswordError, // Error al enviar código
 }
 
 class AuthState extends Equatable {
@@ -15,12 +18,14 @@ class AuthState extends Equatable {
   final String? error;
   final String? nombre;
   final String? email;
+  final String? resetMessage;
 
   const AuthState({
     this.status = AuthStatus.initial,
     this.error,
     this.nombre,
     this.email,
+    this.resetMessage,
   });
 
   AuthState copyWith({
@@ -28,20 +33,23 @@ class AuthState extends Equatable {
     String? error,
     String? nombre,
     String? email,
+    String? resetMessage,
   }) {
     return AuthState(
       status: status ?? this.status,
       // Reiniciar error si el estado es exitoso, logout o invitado
       error: (status == AuthStatus.success ||
               status == AuthStatus.loggedOut ||
-              status == AuthStatus.guest)
+              status == AuthStatus.guest ||
+              status == AuthStatus.resetPasswordSent)
           ? null
           : error ?? this.error,
       nombre: nombre ?? this.nombre,
       email: email ?? this.email,
+      resetMessage: resetMessage ?? this.resetMessage,
     );
   }
 
   @override
-  List<Object?> get props => [status, error, nombre, email];
+  List<Object?> get props => [status, error, nombre, email, resetMessage];
 }

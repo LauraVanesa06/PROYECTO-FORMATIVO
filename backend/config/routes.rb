@@ -115,6 +115,9 @@ Rails.application.routes.draw do
       post 'auth/login', to: 'auth#login'
       post 'auth/register', to: 'auth#register'
       get 'auth/me', to: 'auth#me'
+      post 'auth/forgot-password', to: 'passwords#forgot_password'
+      post 'auth/verify-reset-code', to: 'passwords#verify_reset_code'
+      post 'auth/reset-password', to: 'passwords#reset_password'
       resources :cart_items, only: [:index, :update, :destroy, :create]
       resources :favorites, only: [:index, :destroy, :create] do
         member do
