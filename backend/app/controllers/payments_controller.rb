@@ -91,6 +91,7 @@ class PaymentsController < ApplicationController
     render json: { payment_id: payment.id, wompi_id: actual_wompi_id, checkout_url: checkout_url, data: body }
   end
 
+  #  generar la página del checkout
   def show
     @payment = Payment.find(params[:id])
     # si necesitas URL para checkout rápido:

@@ -2,15 +2,15 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 
 class PaymentService {
-  final String baseUrl = "https://interisland-uninferrably-leonie.ngrok-free.dev"; 
-
+final String baseUrl = "https://interisland-uninferrably-leonie.ngrok-free.dev";
 
   Future<Map<String, dynamic>> createPayment({
     required int cartId,
     required int amount,
     required int userId,
   }) async {
-    final url = Uri.parse("$baseUrl/api/payments/create_Checkout");
+
+final url = Uri.parse("$baseUrl/api/v1/payments/create_checkout");
 
     final response = await http.post(
       url,

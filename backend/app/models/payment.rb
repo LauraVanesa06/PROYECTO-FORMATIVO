@@ -9,6 +9,7 @@ class Payment < ApplicationRecord
   validates :pay_method, presence: true
   validates :token, presence: true
   validates :account_info, presence: true
+  serialize :raw_response, JSON
 
 
   def amount_display
