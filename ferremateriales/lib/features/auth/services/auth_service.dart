@@ -174,4 +174,62 @@ class AuthService {
   Future<void> logout() async {
     await storage.delete(key: 'auth_token');
   }
+
+  // Verificar si el correo existe y enviar código de recuperación usando Devise
+  Future<Map<String, dynamic>> requestPasswordReset(String email) async {
+    try {
+      print('Requesting password reset for email: $email');
+      
+      final response = await http.post(
+        Uri.parse('$baseUrl/users/password'),
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+        },
+        body: jsonEncode({
+          'user': {
+            'email': email,
+          }
+        }),
+      );
+
+      print('Password reset response status: ${response.statusCode}');
+      print('Password reset response body: ${response.body}');
+
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        // Devise devuelve 200 y puede o no devolver JSON
+        return {
+          'success': true,
+          'message': 'Instrucciones de recuperación enviadas a tu correo',
+        };
+      } else if (response.statusCode == 404) {
+        // Correo no encontrado
+        throw Exception('Este correo no está registrado');
+      } else if (response.statusCode == 422) {
+        // Error de validación
+        try {
+          final errorData = jsonDecode(response.body);
+          String errorMsg = 'Correo electrónico inválido';
+          if (errorData['errors'] != null) {
+            if (errorData['errors'] is List) {
+              errorMsg = errorData['errors'].join(', ');
+            } else if (errorData['errors'] is Map) {
+              errorMsg = errorData['errors'].values.first.toString();
+            }
+          } else if (errorData['error'] != null) {
+            errorMsg = errorData['error'];
+          }
+          throw Exception(errorMsg);
+        } catch (e) {
+          if (e is Exception) rethrow;
+          throw Exception('Correo electrónico inválido');
+        }
+      } else {
+        throw Exception('Error al procesar la solicitud');
+      }
+    } catch (e) {
+      print('Error in requestPasswordReset: $e');
+      rethrow;
+    }
+  }
 }
