@@ -4,34 +4,32 @@ class BuysController < ApplicationController
 
   # GET /buys or /buys.json
   def index
-
-    #Cargar todas las ventas con sus detalles y filtros
+    # Base: todas las ventas con relaciones
     @buys = Buy.includes(:payment, :user).order(fecha: :desc)
 
-    @purchasedetails = Purchasedetail.all
-    @purchasedetails = Purchasedetail.joins("INNER JOIN buys ON buys.id = purchasedetails.buy_id")
-    conditions = []
-    values = []
-
-    @user = User.joins(:buys).distinct.where("name LIKE ?", "%#{params[:customer]}%") if params[:customer].present?
-    @buys = @buys.where(user_id: @user.ids) if params[:customer].present?
-
-    { year: '%Y', month: '%m', day: '%d' }.each do |param, format|
-      next unless params[param].present?
-      conditions << "strftime('#{format}', buys.fecha) = ?"
-      values << params[param].rjust(2, '0')
+    # Filtro por nombre de cliente (case-insensitive)
+    if params[:customer].present?
+      @buys = @buys.joins(:user).where("LOWER(users.name) LIKE ?", "%#{params[:customer].downcase}%")
     end
 
-    query = Buy.joins(:user)
-    query = query.where(conditions.join(" AND "), *values) unless conditions.empty?
+    # Filtro por fecha (año, mes, día) - Compatible con PostgreSQL y SQLite
+    if params[:year].present?
+      @buys = @buys.where("EXTRACT(YEAR FROM fecha) = ?", params[:year].to_i)
+    end
 
-    @buys = query
+    if params[:month].present?
+      @buys = @buys.where("EXTRACT(MONTH FROM fecha) = ?", params[:month].to_i)
+    end
 
-      if @buys.empty?
-        flash.now[:alert] = "No se encontraron compras con esos filtros."
-        @buys = Buy.all
-      end
+    if params[:day].present?
+      @buys = @buys.where("EXTRACT(DAY FROM fecha) = ?", params[:day].to_i)
+    end
 
+    # Si no hay resultados, mostrar mensaje y cargar todas
+    if @buys.empty?
+      flash.now[:alert] = "No se encontraron compras con esos filtros."
+      @buys = Buy.includes(:payment, :user).order(fecha: :desc)
+    end
   end
 
   # GET /buys/1 or /buys/1.json
