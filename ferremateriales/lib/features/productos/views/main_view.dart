@@ -59,7 +59,7 @@ return Scaffold(
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: [
             _buildNavItem(Icons.home, 0, authState),
-            _buildNavItem(Icons.star, 1, authState),
+            _buildNavItem(Icons.favorite, 1, authState),
             _buildCartFAB(authState),
             _buildNavItem(Icons.person, 3, authState),
           ],
@@ -82,10 +82,7 @@ return Scaffold(
     return GestureDetector(
       onTap: () {
         if (authState.status == AuthStatus.guest && (index == 1 || index == 2)) {
-          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-            content: Text('Inicia sesión para acceder a esta sección 🔒'),
-            backgroundColor: Colors.orange,
-          ));
+          _showAuthDialogForSection(index);
           return;
         }
         setState(() => _selectedIndex = index);
@@ -182,6 +179,122 @@ return Scaffold(
                 const SizedBox(height: 12),
                 Text(
                   'Para acceder a tu carrito de compras necesitas iniciar sesión',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    fontSize: 15,
+                    color: Colors.grey.shade600,
+                    height: 1.4,
+                  ),
+                ),
+                const SizedBox(height: 24),
+                Row(
+                  children: [
+                    Expanded(
+                      child: OutlinedButton(
+                        onPressed: () {
+                          Navigator.of(context).pop();
+                        },
+                        style: OutlinedButton.styleFrom(
+                          padding: const EdgeInsets.symmetric(vertical: 14),
+                          side: const BorderSide(color: Color(0xFF2e67a3)),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                        ),
+                        child: const Text(
+                          'Continuar como invitado',
+                          style: TextStyle(
+                            color: Color(0xFF2e67a3),
+                            fontSize: 14,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: ElevatedButton(
+                        onPressed: () {
+                          Navigator.of(context).pop();
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => const LoginView(),
+                            ),
+                          );
+                        },
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: const Color(0xFF2e67a3),
+                          padding: const EdgeInsets.symmetric(vertical: 14),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          elevation: 0,
+                        ),
+                        child: const Text(
+                          'Iniciar sesión',
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 14,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  // Diálogo de autenticación para secciones protegidas
+  void _showAuthDialogForSection(int sectionIndex) {
+    final sectionName = sectionIndex == 1 ? 'favoritos' : 'el carrito';
+    
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return Dialog(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(20),
+          ),
+          child: Container(
+            padding: const EdgeInsets.all(24),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(20),
+            ),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Container(
+                  padding: const EdgeInsets.all(16),
+                  decoration: BoxDecoration(
+                    color: const Color(0xFF2e67a3).withOpacity(0.1),
+                    shape: BoxShape.circle,
+                  ),
+                  child: Icon(
+                    sectionIndex == 1 ? Icons.favorite_outline : Icons.shopping_cart_outlined,
+                    size: 48,
+                    color: const Color(0xFF2e67a3),
+                  ),
+                ),
+                const SizedBox(height: 20),
+                Text(
+                  sectionIndex == 1 ? 'Acceso a favoritos' : 'Acceso al carrito',
+                  style: const TextStyle(
+                    fontSize: 22,
+                    fontWeight: FontWeight.bold,
+                    color: Color(0xFF1a1a1a),
+                  ),
+                ),
+                const SizedBox(height: 12),
+                Text(
+                  'Para acceder a $sectionName necesitas iniciar sesión',
                   textAlign: TextAlign.center,
                   style: TextStyle(
                     fontSize: 15,

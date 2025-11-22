@@ -299,7 +299,7 @@ class _ProductCardState extends State<ProductCard> {
                     ),
                     child: IconButton(
                       icon: Icon(
-                        isFavorite ? Icons.star : Icons.star_border,
+                        isFavorite ? Icons.favorite : Icons.favorite_border,
                         color: Colors.orange,
                         size: 20,
                       ),

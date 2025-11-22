@@ -6,6 +6,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../auth/bloc/auth_bloc.dart';
 import '../../auth/views/login_view.dart';
 import '../../auth/views/register_view.dart';
+import '../cubit/theme_cubit.dart';
 import 'acount_view.dart';
 import 'config_view.dart';
 
@@ -301,6 +302,7 @@ class ProfileView extends StatelessWidget {
                                 ElevatedButton(
                                   onPressed: () {
                                     Navigator.pop(context);
+                                    context.read<ThemeCubit>().resetTheme();
                                     context.read<AuthBloc>().add(LogoutRequested());
                                   },
                                   style: ElevatedButton.styleFrom(
@@ -588,7 +590,7 @@ class ProfileView extends StatelessWidget {
                     ),
                     const SizedBox(height: 16),
                     _buildFeatureItem(
-                      icon: Icons.star,
+                      icon: Icons.favorite,
                       title: 'Guardar favoritos',
                       isDark: isDark,
                     ),

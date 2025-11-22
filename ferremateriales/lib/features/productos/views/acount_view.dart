@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../auth/bloc/auth_bloc.dart';
 import '../../auth/bloc/auth_event.dart';
+import '../cubit/theme_cubit.dart';
 
 class AcountView extends StatefulWidget {
   final String nombre;
@@ -253,6 +254,7 @@ class _AcountViewState extends State<AcountView> {
                               ),
                               ElevatedButton(
                                 onPressed: () {
+                                  context.read<ThemeCubit>().resetTheme();
                                   context.read<AuthBloc>().add(LogoutRequested());
                                   Navigator.pop(context);
                                 },

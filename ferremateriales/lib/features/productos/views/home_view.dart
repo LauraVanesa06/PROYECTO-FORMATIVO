@@ -4,9 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:ferremateriales/l10n/app_localizations.dart';
-import '../../auth/views/login_view.dart';
-import '../../auth/bloc/auth_bloc.dart';
-import '../../auth/bloc/auth_state.dart';
 import '../bloc/product_bloc.dart';
 import '../widgets/product_list.dart';
 import '../widgets/product_shimmer.dart';
@@ -44,7 +41,6 @@ class _HomeViewState extends State<HomeView> {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
     final isDark = Theme.of(context).brightness == Brightness.dark;
-    final authState = context.watch<AuthBloc>().state;
 
     final bannerImages = [
       'assets/images/oferta.jpg',
@@ -151,27 +147,6 @@ class _HomeViewState extends State<HomeView> {
                         ),
                       ),
                     ),
-                    const SizedBox(width: 12),
-
-                    // Botón de login
-                    if (authState.status == AuthStatus.guest)
-                      ElevatedButton.icon(
-                        onPressed: () {
-                          Navigator.pushReplacement(
-                            context,
-                            MaterialPageRoute(builder: (_) => const LoginView()),
-                          );
-                        },
-                        icon: const Icon(Icons.login, size: 18),
-                        label: const Text("Iniciar sesión"),
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: const Color(0xFF2e67a3),
-                          foregroundColor: Colors.white,
-                          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-                          shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(24)),
-                        ),
-                      ),
                   ],
                 ),
               ),

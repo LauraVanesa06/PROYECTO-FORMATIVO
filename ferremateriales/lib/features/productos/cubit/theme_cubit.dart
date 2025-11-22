@@ -25,4 +25,10 @@ class ThemeCubit extends Cubit<ThemeState> {
     await _prefs.setString('language', locale.languageCode);
     emit(state.copyWith(locale: locale));
   }
+
+  // Restablecer tema al modo claro (para cuando se cierra sesión)
+  Future<void> resetTheme() async {
+    await _prefs.setBool('isDarkMode', false);
+    emit(state.copyWith(isDarkMode: false));
+  }
 }
