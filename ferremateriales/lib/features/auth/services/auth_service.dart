@@ -198,9 +198,11 @@ class AuthService {
 
       if (response.statusCode == 200 || response.statusCode == 201) {
         // Devise devuelve 200 y puede o no devolver JSON
+        final data = jsonDecode(response.body);
         return {
           'success': true,
-          'message': 'Instrucciones de recuperación enviadas a tu correo',
+          'message': data['message'] ?? 'Instrucciones de recuperación enviadas a tu correo',
+          'reset_token': data['reset_token'], // Token para validar
         };
       } else if (response.statusCode == 404) {
         // Correo no encontrado

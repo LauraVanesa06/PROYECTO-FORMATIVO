@@ -15,6 +15,23 @@ class Usuarios::PasswordsController < Devise::PasswordsController
           error: 'Este correo no está registrado' 
         }, status: :not_found
       end
+      
+      # Generar código de 6 dígitos
+      codigo = rand(100000..999999).to_s
+      
+      # Guardar el código en el usuario
+      user.update(
+        recovery_code: codigo,
+        recovery_code_sent_at: Time.current
+      )
+      
+      # Enviar el correo con el código personalizado
+      PasswordResetMailer.reset_code_email(user, codigo).deliver_now
+      
+      return render json: { 
+        message: 'Código de verificación enviado a tu correo',
+        reset_token: codigo
+      }, status: :ok
     end
 
     self.resource = resource_class.send_reset_password_instructions(resource_params)
@@ -22,7 +39,7 @@ class Usuarios::PasswordsController < Devise::PasswordsController
     if successfully_sent?(resource)
       if request.format.json?
         render json: { 
-          message: 'Instrucciones de recuperación enviadas a tu correo' 
+          message: 'Instrucciones de recuperación enviadas a tu correo',
         }, status: :ok
       else
         respond_with({}, location: after_sending_reset_password_instructions_path_for(resource_name))

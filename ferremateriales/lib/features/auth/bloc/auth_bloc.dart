@@ -120,6 +120,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         emit(state.copyWith(
           status: AuthStatus.resetPasswordSent,
           resetMessage: response['message'],
+          resetToken: response['reset_token'], // Guardar el token
         ));
       } catch (e) {
         emit(state.copyWith(

@@ -19,6 +19,7 @@ class AuthState extends Equatable {
   final String? nombre;
   final String? email;
   final String? resetMessage;
+  final String? resetToken; // Token de verificación
 
   const AuthState({
     this.status = AuthStatus.initial,
@@ -26,6 +27,7 @@ class AuthState extends Equatable {
     this.nombre,
     this.email,
     this.resetMessage,
+    this.resetToken,
   });
 
   AuthState copyWith({
@@ -34,6 +36,7 @@ class AuthState extends Equatable {
     String? nombre,
     String? email,
     String? resetMessage,
+    String? resetToken,
   }) {
     return AuthState(
       status: status ?? this.status,
@@ -47,9 +50,10 @@ class AuthState extends Equatable {
       nombre: nombre ?? this.nombre,
       email: email ?? this.email,
       resetMessage: resetMessage ?? this.resetMessage,
+      resetToken: resetToken ?? this.resetToken,
     );
   }
 
   @override
-  List<Object?> get props => [status, error, nombre, email, resetMessage];
+  List<Object?> get props => [status, error, nombre, email, resetMessage, resetToken];
 }

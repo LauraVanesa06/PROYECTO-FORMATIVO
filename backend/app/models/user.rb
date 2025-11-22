@@ -41,4 +41,18 @@ class User < ApplicationRecord
   validates :email, presence: true, uniqueness: true
   validates :password, presence: true, on: :create
   validates :name, presence: true
+
+  # Método para verificar si el código de recuperación es válido
+  def recovery_code_valid?(code)
+    return false if recovery_code.nil? || recovery_code_sent_at.nil?
+    return false if code != recovery_code
+    
+    # Verificar que no hayan pasado más de 15 minutos
+    Time.current - recovery_code_sent_at < 15.minutes
+  end
+
+  # Método para limpiar el código después de usarlo
+  def clear_recovery_code
+    update(recovery_code: nil, recovery_code_sent_at: nil)
+  end
 end

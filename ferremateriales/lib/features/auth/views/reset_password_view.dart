@@ -210,33 +210,39 @@ class _ResetPasswordViewState extends State<ResetPasswordView> {
                             TextFormField(
                               style: GoogleFonts.inter(
                                 color: const Color(0xFF222222),
-                                fontSize: 15,
-                                letterSpacing: 2,
+                                fontSize: 20,
+                                letterSpacing: 8,
+                                fontWeight: FontWeight.bold,
                               ),
                               decoration: InputDecoration(
-                                hintText: 'Ingresa el código de 6 dígitos',
+                                hintText: '000000',
                                 hintStyle: GoogleFonts.inter(
-                                  color: Colors.grey.shade500,
-                                  fontSize: 15,
-                                  letterSpacing: 0,
+                                  color: Colors.grey.shade300,
+                                  fontSize: 20,
+                                  letterSpacing: 8,
+                                  fontWeight: FontWeight.bold,
                                 ),
                                 filled: true,
-                                fillColor: Colors.transparent,
-                                border: const UnderlineInputBorder(
-                                  borderSide: BorderSide(color: Color(0xFFDDDDDD), width: 2),
+                                fillColor: Colors.grey.shade50,
+                                border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(12),
+                                  borderSide: BorderSide(color: Colors.grey.shade300, width: 2),
                                 ),
-                                enabledBorder: const UnderlineInputBorder(
-                                  borderSide: BorderSide(color: Color(0xFFDDDDDD), width: 2),
+                                enabledBorder: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(12),
+                                  borderSide: BorderSide(color: Colors.grey.shade300, width: 2),
                                 ),
-                                focusedBorder: const UnderlineInputBorder(
-                                  borderSide: BorderSide(color: Color(0xFF2e67a3), width: 2),
+                                focusedBorder: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(12),
+                                  borderSide: const BorderSide(color: Color(0xFF2e67a3), width: 2),
                                 ),
-                                contentPadding: const EdgeInsets.symmetric(vertical: 12, horizontal: 0),
+                                contentPadding: const EdgeInsets.symmetric(vertical: 16, horizontal: 20),
                                 suffixIcon: Icon(
-                                  Icons.verified_user,
+                                  Icons.pin,
                                   color: Colors.grey.shade400,
                                 ),
                               ),
+                              textAlign: TextAlign.center,
                               keyboardType: TextInputType.number,
                               maxLength: 6,
                               onChanged: (value) => _verificationCode = value,
@@ -246,6 +252,9 @@ class _ResetPasswordViewState extends State<ResetPasswordView> {
                                 }
                                 if (value.length != 6) {
                                   return 'El código debe tener 6 dígitos';
+                                }
+                                if (!RegExp(r'^\d+$').hasMatch(value)) {
+                                  return 'Solo se permiten números';
                                 }
                                 return null;
                               },
@@ -267,13 +276,101 @@ class _ResetPasswordViewState extends State<ResetPasswordView> {
                                     );
                                   } else {
                                     // Segunda vez: verificar código
-                                    // TODO: Implementar verificación del código
-                                    ScaffoldMessenger.of(context).showSnackBar(
-                                      SnackBar(
-                                        content: Text('Verificando código: $_verificationCode'),
-                                        backgroundColor: Colors.blue,
-                                      ),
-                                    );
+                                    final authState = context.read<AuthBloc>().state;
+                                    final storedToken = authState.resetToken;
+                                    
+                                    if (storedToken == null) {
+                                      ScaffoldMessenger.of(context).showSnackBar(
+                                        SnackBar(
+                                          content: Row(
+                                            children: [
+                                              const Icon(Icons.error_outline, color: Colors.white),
+                                              const SizedBox(width: 12),
+                                              Expanded(
+                                                child: Text(
+                                                  'Error: No se encontró el token de verificación',
+                                                  style: GoogleFonts.inter(
+                                                    fontSize: 14,
+                                                    fontWeight: FontWeight.w500,
+                                                  ),
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                          backgroundColor: Colors.red.shade700,
+                                          behavior: SnackBarBehavior.floating,
+                                          shape: RoundedRectangleBorder(
+                                            borderRadius: BorderRadius.circular(12),
+                                          ),
+                                          duration: const Duration(seconds: 4),
+                                          margin: const EdgeInsets.all(16),
+                                        ),
+                                      );
+                                      return;
+                                    }
+                                    
+                                    // Verificar si el código ingresado coincide con el token
+                                    if (_verificationCode == storedToken) {
+                                      // Código correcto
+                                      ScaffoldMessenger.of(context).showSnackBar(
+                                        SnackBar(
+                                          content: Row(
+                                            children: [
+                                              const Icon(Icons.check_circle, color: Colors.white),
+                                              const SizedBox(width: 12),
+                                              Expanded(
+                                                child: Text(
+                                                  '¡Código verificado correctamente!',
+                                                  style: GoogleFonts.inter(
+                                                    fontSize: 14,
+                                                    fontWeight: FontWeight.w500,
+                                                  ),
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                          backgroundColor: Colors.green.shade600,
+                                          behavior: SnackBarBehavior.floating,
+                                          shape: RoundedRectangleBorder(
+                                            borderRadius: BorderRadius.circular(12),
+                                          ),
+                                          duration: const Duration(seconds: 3),
+                                          margin: const EdgeInsets.all(16),
+                                        ),
+                                      );
+                                      
+                                      // Aquí podrías navegar a una nueva pantalla para cambiar la contraseña
+                                      // Navigator.push(...);
+                                      
+                                    } else {
+                                      // Código incorrecto
+                                      ScaffoldMessenger.of(context).showSnackBar(
+                                        SnackBar(
+                                          content: Row(
+                                            children: [
+                                              const Icon(Icons.error_outline, color: Colors.white),
+                                              const SizedBox(width: 12),
+                                              Expanded(
+                                                child: Text(
+                                                  'Código incorrecto. Por favor, verifica el código enviado a tu correo.',
+                                                  style: GoogleFonts.inter(
+                                                    fontSize: 14,
+                                                    fontWeight: FontWeight.w500,
+                                                  ),
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                          backgroundColor: Colors.red.shade700,
+                                          behavior: SnackBarBehavior.floating,
+                                          shape: RoundedRectangleBorder(
+                                            borderRadius: BorderRadius.circular(12),
+                                          ),
+                                          duration: const Duration(seconds: 4),
+                                          margin: const EdgeInsets.all(16),
+                                        ),
+                                      );
+                                    }
                                   }
                                 }
                               },
