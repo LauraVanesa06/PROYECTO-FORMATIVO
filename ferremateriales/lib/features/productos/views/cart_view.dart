@@ -9,6 +9,8 @@ import '../bloc/cart_bloc.dart';
 import '../bloc/cart_state.dart';
 import 'checkout_screen.dart';
 import '../services/service_wompi.dart'; 
+import 'package:universal_html/html.dart' as html;
+import 'package:flutter/foundation.dart';
 
 class CartView extends StatefulWidget {
   const CartView({super.key});
@@ -257,12 +259,18 @@ class _CartViewState extends State<CartView> {
 
                                         final checkoutUrl = data["checkout_url"];
 
-                                        Navigator.push(
-                                          context,
-                                          MaterialPageRoute(
-                                            builder: (_) => CheckoutScreen(checkoutUrl: checkoutUrl),
-                                          ),
-                                        );
+                                        if (kIsWeb) {
+                                          // ⭐ Web → abrir en nueva pestaña
+                                          html.window.open(checkoutUrl, "_blank");
+                                        } else {
+                                          // 📱 Móvil → usar WebView
+                                          Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                              builder: (_) => CheckoutScreen(checkoutUrl: checkoutUrl),
+                                            ),
+                                          );
+                                        }
                                       } catch (e) {
                                         print("Error al procesar pago: $e");
                                       }
