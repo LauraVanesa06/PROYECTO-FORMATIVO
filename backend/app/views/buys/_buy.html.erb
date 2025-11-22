@@ -1,37 +1,247 @@
-<div id="<%= dom_id(buy) %>" class="buy-card p-3 mb-3 rounded-4 shadow-sm bg-dark text-white">
-  <p><strong>Id de venta:</strong> <%= buy.id %></p>
-  <p><strong>Nombre del cliente:</strong> <%= buy.user.name %></p>
-  <p><strong>Fecha de la compra:</strong> <%= buy.fecha.strftime("%d/%m/%Y") %></p>
+<div id="<%= dom_id(buy) %>" class="buy-card-formal">
+  <div class="buy-main-info">
+    <div class="buy-id-section">
+      <span class="id-label">Venta</span>
+      <span class="id-number"><%= buy.id %></span>
+    </div>
+    
+    <div class="buy-details-grid">
+      <div class="detail-row">
+        <span class="detail-label">Cliente:</span>
+        <span class="detail-value"><%= buy.user.name %></span>
+      </div>
+      <div class="detail-row">
+        <span class="detail-label">Fecha:</span>
+        <span class="detail-value"><%= buy.fecha.strftime("%d/%m/%Y") %></span>
+      </div>
+      <div class="detail-row">
+        <span class="detail-label">Tipo:</span>
+        <span class="detail-value <%= buy.payment_id.present? ? 'online-badge' : 'physical-badge' %>">
+          <%= buy.payment_id.present? ? "En línea" : "Física" %>
+        </span>
+      </div>
+    </div>
+  </div>
 
-  <p><strong>Tipo de venta:</strong>
-    <%= buy.payment_id.present? ? "En línea (Wompi)" : "Física" %>
-  </p>
-
-  <% if buy.payment_id.present? && buy.payment&.pay_method.present? %>
-    <p><strong>Método de pago:</strong> <%= buy.payment.pay_method.capitalize %></p>
-    <p><strong>Transacción:</strong> <%= buy.payment.wompi_id %></p>
-    <p><strong>Monto:</strong> $<%= number_with_precision(buy.payment.amount, precision: 2) %> <%= buy.payment.currency %></p>
-  <% end %>
-
-  <% if buy.total.present? %>
-    <p><strong>Total:</strong> $<%= number_with_precision(buy.total, precision: 2) %></p>
-  <% end %>
-
-  <div class="boton-ver mt-3">
-    <% buy.purchasedetails.each do |p| %>
-      <button class="show-buy btn btn-primary"
-        data-nombre-producto="<%= p.product.nombre %>"
-        data-categoria-producto="<%= p.product.category.nombre %>"
-        data-proveedor-producto="<%= p.product.supplier.nombre %>"
-        data-precio-producto="<%= p.product.precio_cop %>"
+  <div class="buy-actions-section">
+    <div class="total-section">
+      <span class="total-label">Total</span>
+      <span class="total-value">
+        <% if buy.total.present? %>
+          $<%= number_with_precision(buy.total, precision: 2) %>
+        <% elsif buy.payment&.amount.present? %>
+          $<%= number_with_precision(buy.payment.amount, precision: 2) %>
+        <% end %>
+      </span>
+    </div>
+    <% first_product = buy.purchasedetails.first %>
+    <% if first_product %>
+      <button class="show-buy btn-view-formal"
+        data-nombre-producto="<%= first_product.product.nombre %>"
+        data-categoria-producto="<%= first_product.product.category.nombre %>"
+        data-proveedor-producto="<%= first_product.product.supplier.nombre %>"
+        data-precio-producto="<%= first_product.product.precio_cop %>"
         data-nombre-cliente="<%= buy.user.name %>"
         data-documento-cliente="<%= buy.user.email %>"
         data-fecha-compra="<%= buy.fecha.strftime("%d/%m/%Y") %>"
         data-tipo-compra="<%= buy.payment_id.present? ? 'En línea (Wompi)' : 'Física' %>"
         data-metodo-compra="<%= buy.payment&.pay_method || 'Efectivo' %>"
-        data-img-url="<%= p.product.images.attached? ? url_for(p.product.images.first) : '' %>">
-        Ver compra
+        data-img-url="<%= first_product.product.images.attached? ? url_for(first_product.product.images.first) : '' %>">
+        Ver detalles
       </button>
     <% end %>
   </div>
 </div>
+
+<style>
+.buy-card-formal {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: #ffffff;
+  border: 1px solid #d5d5d5;
+  border-radius: 6px;
+  padding: 18px 24px;
+  margin-bottom: 10px;
+  transition: all 0.2s ease;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
+}
+
+.buy-card-formal:hover {
+  border-color: #3498db;
+  box-shadow: 0 2px 8px rgba(52, 152, 219, 0.15);
+}
+
+.buy-main-info {
+  display: flex;
+  align-items: center;
+  gap: 28px;
+  flex: 1;
+}
+
+.buy-id-section {
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 80px;
+  padding-right: 20px;
+  border-right: 2px solid #ecf0f1;
+}
+
+.id-label {
+  font-size: 11px;
+  color: #7f8c8d;
+  text-transform: uppercase;
+  font-weight: 600;
+  letter-spacing: 0.8px;
+}
+
+.id-number {
+  font-size: 18px;
+  font-weight: 700;
+  color: #2c3e50;
+  font-family: 'Courier New', monospace;
+}
+
+.buy-details-grid {
+  display: flex;
+  gap: 24px;
+  flex-wrap: wrap;
+}
+
+.detail-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.detail-label {
+  font-size: 13px;
+  color: #7f8c8d;
+  font-weight: 600;
+}
+
+.detail-value {
+  font-size: 14px;
+  color: #2c3e50;
+  font-weight: 600;
+}
+
+.online-badge {
+  background: #e8f5e9;
+  color: #27ae60;
+  padding: 3px 10px;
+  border-radius: 4px;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.physical-badge {
+  background: #e3f2fd;
+  color: #2196f3;
+  padding: 3px 10px;
+  border-radius: 4px;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.buy-actions-section {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.total-section {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 2px;
+  padding-right: 20px;
+  border-right: 2px solid #ecf0f1;
+}
+
+.total-label {
+  font-size: 11px;
+  color: #7f8c8d;
+  text-transform: uppercase;
+  font-weight: 600;
+  letter-spacing: 0.8px;
+}
+
+.total-value {
+  font-size: 20px;
+  font-weight: 800;
+  color: #27ae60;
+  font-family: 'Courier New', monospace;
+}
+
+.btn-view-formal {
+  background: #3498db;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  padding: 10px 24px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  box-shadow: 0 2px 4px rgba(52, 152, 219, 0.2);
+}
+
+.btn-view-formal:hover {
+  background: #2980b9;
+  box-shadow: 0 4px 8px rgba(52, 152, 219, 0.3);
+  transform: translateY(-1px);
+}
+
+.btn-view-formal:active {
+  transform: translateY(0);
+}
+
+/* Responsive */
+@media (max-width: 968px) {
+  .buy-card-formal {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 16px;
+  }
+
+  .buy-main-info {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 12px;
+  }
+
+  .buy-id-section {
+    border-right: none;
+    border-bottom: 2px solid #ecf0f1;
+    padding-right: 0;
+    padding-bottom: 12px;
+  }
+
+  .buy-details-grid {
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .buy-actions-section {
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .total-section {
+    border-right: none;
+    border-bottom: 2px solid #ecf0f1;
+    padding-right: 0;
+    padding-bottom: 12px;
+    align-items: flex-start;
+  }
+
+  .btn-view-formal {
+    width: 100%;
+  }
+}
+</style>
