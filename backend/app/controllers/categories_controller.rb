@@ -36,6 +36,11 @@ class CategoriesController < ApplicationController
 
   # PATCH/PUT /categories/1 or /categories/1.json
   def update
+    # Eliminar imagen si se solicita
+    if params[:category][:remove_imagen] == 'true'
+      @category.imagen.purge
+    end
+
     respond_to do |format|
       if @category.update(category_params)
         format.html { redirect_to inventario_path, notice: "La Categoria fue Editada Exitosamente!" }
@@ -52,7 +57,7 @@ class CategoriesController < ApplicationController
     @category.destroy!
 
     respond_to do |format|
-      format.html { redirect_to categories_path, status: :see_other, notice: "Category was successfully destroyed." }
+      format.html { redirect_to products_path, status: :see_other, notice: "La categoría fue eliminada exitosamente." }
       format.json { head :no_content }
     end
   end
@@ -70,7 +75,7 @@ class CategoriesController < ApplicationController
 
     # Only allow a list of trusted parameters through.
     def category_params
-      params.require(:category).permit(:nombre, :imagen)
+      params.require(:category).permit(:nombre, :imagen, :remove_imagen)
     end
     
 end
