@@ -48,6 +48,39 @@ class Api::V1::AuthController < ApplicationController
     end
   end
 
+  def me
+    render json: {
+      status: 'success',
+      user: {
+        id: @current_user.id,
+        name: @current_user.name,
+        email: @current_user.email,
+        role: @current_user.role
+      }
+    }
+  end
+
+  def update
+    if @current_user.update(update_params)
+      render json: {
+        status: 'success',
+        message: 'Información actualizada correctamente',
+        user: {
+          id: @current_user.id,
+          name: @current_user.name,
+          email: @current_user.email,
+          role: @current_user.role
+        }
+      }
+    else
+      render json: {
+        status: 'error',
+        message: 'Error al actualizar información',
+        errors: @current_user.errors.full_messages
+      }, status: :unprocessable_entity
+    end
+  end
+
   private
 
 
@@ -57,5 +90,9 @@ class Api::V1::AuthController < ApplicationController
 
   def register_params
     params.permit(:name, :email, :password)
+  end
+
+  def update_params
+    params.permit(:name, :email)
   end
 end

@@ -200,17 +200,55 @@ class _AcountViewState extends State<AcountView> {
                         showDialog(
                           context: context,
                           builder: (context) => AlertDialog(
+                            backgroundColor: Colors.white,
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(20),
                             ),
-                            title: const Text('Cerrar sesión'),
-                            content: const Text('¿Estás seguro de que deseas cerrar sesión?'),
+                            title: Row(
+                              children: [
+                                Container(
+                                  padding: const EdgeInsets.all(8),
+                                  decoration: BoxDecoration(
+                                    color: const Color(0xFF2e67a3).withOpacity(0.1),
+                                    borderRadius: BorderRadius.circular(8),
+                                  ),
+                                  child: const Icon(
+                                    Icons.logout,
+                                    color: Color(0xFF2e67a3),
+                                    size: 24,
+                                  ),
+                                ),
+                                const SizedBox(width: 12),
+                                const Expanded(
+                                  child: Text(
+                                    'Cerrar sesión',
+                                    style: TextStyle(
+                                      color: Color(0xFF222222),
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                            content: Text(
+                              '¿Estás seguro de que deseas cerrar sesión?',
+                              style: TextStyle(
+                                color: Colors.grey.shade700,
+                                fontSize: 15,
+                              ),
+                            ),
                             actions: [
                               TextButton(
                                 onPressed: () => Navigator.pop(context),
+                                style: TextButton.styleFrom(
+                                  foregroundColor: Colors.grey.shade600,
+                                ),
                                 child: Text(
                                   I10n.cancel,
-                                  style: TextStyle(color: Colors.grey.shade600),
+                                  style: const TextStyle(
+                                    fontSize: 15,
+                                    fontWeight: FontWeight.w600,
+                                  ),
                                 ),
                               ),
                               ElevatedButton(
@@ -219,13 +257,19 @@ class _AcountViewState extends State<AcountView> {
                                   Navigator.pop(context);
                                 },
                                 style: ElevatedButton.styleFrom(
-                                  backgroundColor: Colors.red,
+                                  backgroundColor: const Color(0xFF2e67a3),
                                   foregroundColor: Colors.white,
                                   shape: RoundedRectangleBorder(
                                     borderRadius: BorderRadius.circular(12),
                                   ),
+                                  padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
                                 ),
-                                child: const Text('Cerrar sesión'),
+                                child: const Text(
+                                  'Cerrar sesión',
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.w600,
+                                  ),
+                                ),
                               ),
                             ],
                           ),
@@ -415,17 +459,41 @@ class _AcountViewState extends State<AcountView> {
                   Expanded(
                     child: ElevatedButton(
                       onPressed: () {
+                        final newNombre = nombreController.text;
+                        final newEmail = emailController.text;
+                        
                         context.read<AuthBloc>().add(
                           UpdateUserRequested(
-                            nombre: nombreController.text,
-                            email: emailController.text,
+                            nombre: newNombre,
+                            email: newEmail,
                           ),
                         );
+                        
                         Navigator.pop(context);
+                        
+                        // Actualizar la vista y volver atrás
+                        Future.delayed(const Duration(milliseconds: 500), () {
+                          Navigator.pushReplacement(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => AcountView(
+                                nombre: newNombre,
+                                email: newEmail,
+                              ),
+                            ),
+                          );
+                        });
+                        
                         ScaffoldMessenger.of(context).showSnackBar(
                           SnackBar(
-                            content: Text(I10n.save),
-                            backgroundColor: const Color(0xFF2e67a3),
+                            content: const Row(
+                              children: [
+                                Icon(Icons.check_circle, color: Colors.white),
+                                SizedBox(width: 12),
+                                Text('Información actualizada correctamente'),
+                              ],
+                            ),
+                            backgroundColor: Colors.green.shade600,
                             behavior: SnackBarBehavior.floating,
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(10),

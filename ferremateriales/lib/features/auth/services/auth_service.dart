@@ -232,4 +232,50 @@ class AuthService {
       rethrow;
     }
   }
+
+  // Actualizar información del usuario
+  Future<Map<String, dynamic>> updateUser({
+    required String nombre,
+    required String email,
+  }) async {
+    try {
+      final token = await storage.read(key: 'auth_token');
+      
+      if (token == null) {
+        throw Exception('No estás autenticado');
+      }
+
+      print('Updating user with name: $nombre, email: $email');
+      
+      final response = await http.put(
+        Uri.parse('$baseUrl/api/v1/auth/update'),
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+          'Authorization': 'Bearer $token',
+        },
+        body: jsonEncode({
+          'name': nombre,
+          'email': email,
+        }),
+      );
+
+      print('Update user response status: ${response.statusCode}');
+      print('Update user response body: ${response.body}');
+
+      if (response.statusCode == 200) {
+        final data = jsonDecode(response.body);
+        return data;
+      } else if (response.statusCode == 422) {
+        final errorData = jsonDecode(response.body);
+        throw Exception(errorData['message'] ?? 'Error de validación');
+      } else {
+        final errorData = jsonDecode(response.body);
+        throw Exception(errorData['message'] ?? 'Error al actualizar información');
+      }
+    } catch (e) {
+      print('Error in updateUser: $e');
+      rethrow;
+    }
+  }
 }

@@ -1,4 +1,3 @@
-import 'package:ferremateriales/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -14,14 +13,19 @@ class ResetPasswordView extends StatefulWidget {
 class _ResetPasswordViewState extends State<ResetPasswordView> {
   final _formKey = GlobalKey<FormState>();
   String _email = "";
+  String _verificationCode = "";
+  bool _codeSent = false;
 
   @override
   Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context)!;
-
     return BlocListener<AuthBloc, AuthState>(
       listener: (context, state) {
         if (state.status == AuthStatus.resetPasswordSent) {
+          // Marcar que el código fue enviado
+          setState(() {
+            _codeSent = true;
+          });
+          
           // Mostrar mensaje de éxito
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
@@ -190,6 +194,64 @@ class _ResetPasswordViewState extends State<ResetPasswordView> {
                               return null;
                             },
                           ),
+                          
+                          // Campo de código de verificación (solo visible después de enviar)
+                          if (_codeSent) ...[
+                            const SizedBox(height: 24),
+                            Text(
+                              'Código de verificación',
+                              style: GoogleFonts.inter(
+                                fontSize: 13,
+                                fontWeight: FontWeight.w500,
+                                color: Color(0xFF2e67a3),
+                              ),
+                            ),
+                            const SizedBox(height: 8),
+                            TextFormField(
+                              style: GoogleFonts.inter(
+                                color: const Color(0xFF222222),
+                                fontSize: 15,
+                                letterSpacing: 2,
+                              ),
+                              decoration: InputDecoration(
+                                hintText: 'Ingresa el código de 6 dígitos',
+                                hintStyle: GoogleFonts.inter(
+                                  color: Colors.grey.shade500,
+                                  fontSize: 15,
+                                  letterSpacing: 0,
+                                ),
+                                filled: true,
+                                fillColor: Colors.transparent,
+                                border: const UnderlineInputBorder(
+                                  borderSide: BorderSide(color: Color(0xFFDDDDDD), width: 2),
+                                ),
+                                enabledBorder: const UnderlineInputBorder(
+                                  borderSide: BorderSide(color: Color(0xFFDDDDDD), width: 2),
+                                ),
+                                focusedBorder: const UnderlineInputBorder(
+                                  borderSide: BorderSide(color: Color(0xFF2e67a3), width: 2),
+                                ),
+                                contentPadding: const EdgeInsets.symmetric(vertical: 12, horizontal: 0),
+                                suffixIcon: Icon(
+                                  Icons.verified_user,
+                                  color: Colors.grey.shade400,
+                                ),
+                              ),
+                              keyboardType: TextInputType.number,
+                              maxLength: 6,
+                              onChanged: (value) => _verificationCode = value,
+                              validator: (value) {
+                                if (value == null || value.isEmpty) {
+                                  return 'Ingresa el código de verificación';
+                                }
+                                if (value.length != 6) {
+                                  return 'El código debe tener 6 dígitos';
+                                }
+                                return null;
+                              },
+                            ),
+                          ],
+                          
                           const SizedBox(height: 32),
                           // Botón de enviar
                           SizedBox(
@@ -198,12 +260,21 @@ class _ResetPasswordViewState extends State<ResetPasswordView> {
                             child: ElevatedButton(
                               onPressed: () {
                                 if (_formKey.currentState!.validate()) {
-                                  context.read<AuthBloc>().add(
-                                    ResetPasswordRequested(email: _email),
-                                  );
-                                  ScaffoldMessenger.of(context).showSnackBar(
-                                    SnackBar(content: Text(l10n.requestSent)),
-                                  );
+                                  if (!_codeSent) {
+                                    // Primera vez: enviar código
+                                    context.read<AuthBloc>().add(
+                                      ResetPasswordRequested(email: _email),
+                                    );
+                                  } else {
+                                    // Segunda vez: verificar código
+                                    // TODO: Implementar verificación del código
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      SnackBar(
+                                        content: Text('Verificando código: $_verificationCode'),
+                                        backgroundColor: Colors.blue,
+                                      ),
+                                    );
+                                  }
                                 }
                               },
                               style: ElevatedButton.styleFrom(
@@ -216,7 +287,7 @@ class _ResetPasswordViewState extends State<ResetPasswordView> {
                                 shadowColor: const Color(0xFF2e67a3).withOpacity(0.3),
                               ),
                               child: Text(
-                                'Enviar instrucciones',
+                                _codeSent ? 'Verificar código' : 'Enviar instrucciones',
                                 style: GoogleFonts.inter(
                                   fontSize: 16,
                                   fontWeight: FontWeight.w600,

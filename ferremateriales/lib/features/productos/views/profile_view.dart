@@ -247,20 +247,54 @@ class ProfileView extends StatelessWidget {
                           showDialog(
                             context: context,
                             builder: (context) => AlertDialog(
+                              backgroundColor: isDark ? Colors.grey.shade800 : Colors.white,
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(20),
                               ),
-                              title: const Text('Cerrar sesión'),
-                              content: const Text(
+                              title: Row(
+                                children: [
+                                  Container(
+                                    padding: const EdgeInsets.all(8),
+                                    decoration: BoxDecoration(
+                                      color: const Color(0xFF2e67a3).withOpacity(0.1),
+                                      borderRadius: BorderRadius.circular(8),
+                                    ),
+                                    child: const Icon(
+                                      Icons.logout,
+                                      color: Color(0xFF2e67a3),
+                                      size: 24,
+                                    ),
+                                  ),
+                                  const SizedBox(width: 12),
+                                  Expanded(
+                                    child: Text(
+                                      'Cerrar sesión',
+                                      style: TextStyle(
+                                        color: isDark ? Colors.white : const Color(0xFF222222),
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              content: Text(
                                 '¿Estás seguro de que deseas cerrar sesión?',
+                                style: TextStyle(
+                                  color: isDark ? Colors.grey.shade300 : Colors.grey.shade700,
+                                  fontSize: 15,
+                                ),
                               ),
                               actions: [
                                 TextButton(
                                   onPressed: () => Navigator.pop(context),
-                                  child: Text(
+                                  style: TextButton.styleFrom(
+                                    foregroundColor: isDark ? Colors.grey.shade400 : Colors.grey.shade600,
+                                  ),
+                                  child: const Text(
                                     'Cancelar',
                                     style: TextStyle(
-                                      color: isDark ? Colors.grey.shade400 : Colors.grey.shade600,
+                                      fontSize: 15,
+                                      fontWeight: FontWeight.w600,
                                     ),
                                   ),
                                 ),
@@ -270,13 +304,19 @@ class ProfileView extends StatelessWidget {
                                     context.read<AuthBloc>().add(LogoutRequested());
                                   },
                                   style: ElevatedButton.styleFrom(
-                                    backgroundColor: Colors.red,
+                                    backgroundColor: const Color(0xFF2e67a3),
                                     foregroundColor: Colors.white,
                                     shape: RoundedRectangleBorder(
                                       borderRadius: BorderRadius.circular(12),
                                     ),
+                                    padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
                                   ),
-                                  child: const Text('Cerrar sesión'),
+                                  child: const Text(
+                                    'Cerrar sesión',
+                                    style: TextStyle(
+                                      fontWeight: FontWeight.w600,
+                                    ),
+                                  ),
                                 ),
                               ],
                             ),

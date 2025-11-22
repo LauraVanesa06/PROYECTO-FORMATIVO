@@ -128,5 +128,26 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         ));
       }
     });
+
+    // Actualizar información del usuario
+    on<UpdateUserRequested>((event, emit) async {
+      emit(state.copyWith(status: AuthStatus.loading));
+      try {
+        final response = await _authService.updateUser(
+          nombre: event.nombre,
+          email: event.email,
+        );
+        emit(state.copyWith(
+          status: AuthStatus.success,
+          nombre: response['user']['name'],
+          email: response['user']['email'],
+        ));
+      } catch (e) {
+        emit(state.copyWith(
+          status: AuthStatus.failure,
+          error: e.toString().replaceAll('Exception: ', ''),
+        ));
+      }
+    });
   }
 }
