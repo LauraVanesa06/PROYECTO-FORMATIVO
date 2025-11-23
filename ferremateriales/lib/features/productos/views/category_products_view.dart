@@ -25,10 +25,10 @@ class _CategoryProductsViewState extends State<CategoryProductsView> {
   @override
   void initState() {
     super.initState();
-  context
-      .read<ProductBloc>()
-      .add(ProductFilterByCategory(widget.categoryId));
-
+    // El ProductBloc ahora filtra desde caché si está disponible
+    context
+        .read<ProductBloc>()
+        .add(ProductFilterByCategory(widget.categoryId));
   }
 
   @override

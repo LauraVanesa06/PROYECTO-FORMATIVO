@@ -1,4 +1,5 @@
 import 'package:ferremateriales/features/productos/services/favorites_service.dart';
+import 'package:ferremateriales/features/productos/services/cart_service.dart';
 import 'package:flutter/foundation.dart'; 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -26,11 +27,30 @@ class _HomeViewState extends State<HomeView> {
     super.initState();
     _searchController = TextEditingController();
 
-    // 🔥 ERROR corregido → antes llamabas ProductEntrarPressed (no existe)
-    context.read<ProductBloc>().add(CargarDestacados());
+    final productBloc = context.read<ProductBloc>();
+    
+    // Cargar destacados para mostrar
+    productBloc.add(CargarDestacados());
+    
+    // Cargar cachés locales y luego recargar productos para actualizar estado de favoritos
+    _loadCaches(productBloc);
+    
+    // Pre-cargar todos los productos en background para tenerlos en caché
+    Future.delayed(const Duration(milliseconds: 500), () {
+      if (mounted) {
+        productBloc.add(CargarTodosLosProductos());
+      }
+    });
+  }
 
-    // Cargar favoritos locales
-    FavoritesService().loadFavoritesCache();
+  Future<void> _loadCaches(ProductBloc productBloc) async {
+    await FavoritesService().loadFavoritesCache();
+    await CartService().loadCartCache();
+    
+    // Forzar actualización de la UI después de cargar cachés
+    if (mounted) {
+      setState(() {});
+    }
   }
 
   @override
@@ -272,7 +292,7 @@ class _HomeViewState extends State<HomeView> {
                     return Column(
                       children: [
                         ProductsList(products: destacados),
-                        const SizedBox(height: 16),
+                        const SizedBox(height: 8),
                         Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 16),
                           child: SizedBox(

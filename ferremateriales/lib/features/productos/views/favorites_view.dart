@@ -21,6 +21,14 @@ class _FavoritesViewState extends State<FavoritesView> {
   @override
   void initState() {
     super.initState();
+    // Cargar desde caché inmediatamente si está disponible
+    if (_favoritesService.isCacheLoaded) {
+      setState(() {
+        _favorites = _favoritesService.favoritesCache;
+        _isLoading = false;
+      });
+    }
+    // Recargar desde API en background
     _loadFavorites();
   }
 

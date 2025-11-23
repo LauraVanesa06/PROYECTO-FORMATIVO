@@ -3,6 +3,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../auth/bloc/auth_bloc.dart';
 import '../../auth/bloc/auth_state.dart';
 import '../../auth/views/login_view.dart';
+import '../services/favorites_service.dart';
+import '../services/cart_service.dart';
 import 'home_view.dart';
 import 'favorites_view.dart';
 import 'cart_view.dart';
@@ -19,6 +21,23 @@ class MainView extends StatefulWidget {
 
 class _MainViewState extends State<MainView> {
   int _selectedIndex = 0;
+
+  @override
+  void initState() {
+    super.initState();
+    // Cargar cachés al iniciar (una sola petición HTTP para cada uno)
+    _loadCaches();
+  }
+
+  Future<void> _loadCaches() async {
+    await FavoritesService().loadFavoritesCache();
+    await CartService().loadCartCache();
+    
+    // Forzar actualización de la UI después de cargar cachés
+    if (mounted) {
+      setState(() {});
+    }
+  }
 
   @override
   Widget build(BuildContext context) {

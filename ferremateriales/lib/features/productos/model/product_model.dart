@@ -7,6 +7,7 @@ class ProductModel extends Equatable {
   final double? precio;
   final int? stock;
   final String? imagenUrl;
+  final int? categoryId;
   final bool isFavorite; // ✅ Nuevo campo
 
   const ProductModel({
@@ -16,6 +17,7 @@ class ProductModel extends Equatable {
     this.precio,
     this.stock,
     this.imagenUrl,
+    this.categoryId,
     this.isFavorite = false,
   });
 
@@ -26,6 +28,7 @@ class ProductModel extends Equatable {
         precio: double.tryParse(json['precio'].toString()) ?? 0.0,
         stock: int.tryParse(json['stock'].toString()) ?? 0,
         imagenUrl: json['imagen_url'] ?? "",
+        categoryId: json['category_id'],
         isFavorite: json['favorito'] ?? false,
       );
 
@@ -36,6 +39,7 @@ class ProductModel extends Equatable {
     double? precio,
     int? stock,
     String? imagenUrl,
+    int? categoryId,
     bool? isFavorite,
   }) {
     return ProductModel(
@@ -45,6 +49,7 @@ class ProductModel extends Equatable {
       precio: precio ?? this.precio,
       stock: stock ?? this.stock,
       imagenUrl: imagenUrl ?? this.imagenUrl,
+      categoryId: categoryId ?? this.categoryId,
       isFavorite: isFavorite ?? this.isFavorite,
     );
   }
@@ -57,6 +62,7 @@ class ProductModel extends Equatable {
         precio,
         stock,
         imagenUrl,
+        categoryId,
         isFavorite,
       ];
 

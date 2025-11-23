@@ -27,24 +27,33 @@ class _ProductCardState extends State<ProductCard> {
   @override
   void initState() {
     super.initState();
-    _checkIfFavorite();
+    _checkFavoriteStatus();
   }
 
-  Future<void> _checkIfFavorite() async {
-    try {
-      final result = await favoritesService.isFavorite(widget.product.id!);
-      if (mounted) {
-        setState(() => isFavorite = result);
-      }
-    } catch (e) {
-      print('Error checking favorite: $e');
+  @override
+  void didUpdateWidget(ProductCard oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.product.id != widget.product.id) {
+      _checkFavoriteStatus();
+    }
+  }
+
+  void _checkFavoriteStatus() {
+    // Verificar estado de favorito desde caché
+    final newStatus = favoritesService.isFavoriteCached(widget.product.id!);
+    if (mounted && newStatus != isFavorite) {
+      setState(() => isFavorite = newStatus);
     }
   }
 
   Future<void> _toggleFavorite(BuildContext context) async {
     try {
-      await favoritesService.toggleFavorite(widget.product.id!);
+      // Actualizar UI inmediatamente (optimistic update)
       setState(() => isFavorite = !isFavorite);
+      favoritesService.toggleFavoriteCache(widget.product.id!);
+      
+      // Hacer petición HTTP en background
+      await favoritesService.toggleFavorite(widget.product.id!);
       ScaffoldMessenger.of(context)
         ..hideCurrentSnackBar()
         ..showSnackBar(
@@ -310,7 +319,7 @@ class _ProductCardState extends State<ProductCard> {
 
     return Card(
       elevation: isDark ? 0 : 2,
-      margin: const EdgeInsets.all(8),
+      margin: const EdgeInsets.all(4),
       color: isDark ? Colors.grey.shade800 : Colors.white,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(12),
@@ -422,7 +431,7 @@ class _ProductCardState extends State<ProductCard> {
 
           // Contenido de la tarjeta
           Padding(
-            padding: const EdgeInsets.all(16),
+            padding: const EdgeInsets.all(12),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -431,7 +440,7 @@ class _ProductCardState extends State<ProductCard> {
                   product.nombre ?? '',
                   style: TextStyle(
                     fontWeight: FontWeight.bold,
-                    fontSize: 16,
+                    fontSize: 15,
                     color: isDark
                         ? Colors.blue.shade300
                         : const Color(0xFF2e67a3),
@@ -439,7 +448,7 @@ class _ProductCardState extends State<ProductCard> {
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                 ),
-                const SizedBox(height: 8),
+                const SizedBox(height: 6),
 
                 // Descripción
                 Text(
@@ -450,11 +459,11 @@ class _ProductCardState extends State<ProductCard> {
                     color: isDark
                         ? Colors.grey.shade400
                         : Colors.grey.shade600,
-                    fontSize: 12,
-                    height: 1.3,
+                    fontSize: 11,
+                    height: 1.2,
                   ),
                 ),
-                const SizedBox(height: 12),
+                const SizedBox(height: 8),
 
                 // Fila con precio y botón de carrito
                 Row(
@@ -466,7 +475,7 @@ class _ProductCardState extends State<ProductCard> {
                       'COP ${double.tryParse(product.precio.toString())?.toStringAsFixed(2) ?? '0.00'}',
                       style: TextStyle(
                         fontWeight: FontWeight.bold,
-                        fontSize: 18,
+                        fontSize: 16,
                         color: isDark
                             ? Colors.blue.shade300
                             : const Color(0xFF2e67a3),

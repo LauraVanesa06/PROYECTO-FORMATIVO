@@ -1,16 +1,19 @@
 import 'dart:convert';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
+import 'package:ferremateriales/features/productos/model/product_model.dart';
 import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
-import '../model/product_model.dart';
 
+import '../model/product_model.dart';
 part 'product_event.dart';
 part 'product_state.dart';
 
 class ProductBloc extends Bloc<ProductEvent, ProductState> {
   List<ProductModel> _productosCache = [];
   List<ProductModel> _destacados = [];
+  Map<int, List<ProductModel>> _productosPorCategoria = {};
+  bool _todosLosProductosCargados = false;
 
   ProductBloc() : super(ProductInitial()) {
     on<CargarDestacados>(_onCargarDestacados);
@@ -75,6 +78,7 @@ class ProductBloc extends Bloc<ProductEvent, ProductState> {
               .map((item) => ProductModel.fromJson(item))
               .toList();
 
+          _todosLosProductosCargados = true;
           debugPrint('ProductBloc - CargarTodos: cache filled with ${_productosCache.length} products');
           emit(ProductLoadSuccess(_productosCache));
           return;
@@ -115,6 +119,26 @@ class ProductBloc extends Bloc<ProductEvent, ProductState> {
   Future<void> _onFilterByCategory(
       ProductFilterByCategory event, Emitter<ProductState> emit) async {
 
+    // Si ya tenemos los productos cargados, filtrar localmente
+    if (_todosLosProductosCargados && _productosCache.isNotEmpty) {
+      debugPrint('ProductBloc - Filtrando categoría ${event.categoryId} desde caché');
+      
+      final filtered = _productosCache.where((product) {
+        return product.categoryId == event.categoryId;
+      }).toList();
+      
+      _productosPorCategoria[event.categoryId] = filtered;
+      emit(ProductLoadSuccess(filtered));
+      return;
+    }
+
+    // Si ya está en caché de categoría, usar ese
+    if (_productosPorCategoria.containsKey(event.categoryId)) {
+      debugPrint('ProductBloc - Usando caché de categoría ${event.categoryId}');
+      emit(ProductLoadSuccess(_productosPorCategoria[event.categoryId]!));
+      return;
+    }
+
     emit(ProductLoadInProgress());
 
     try {
@@ -131,6 +155,8 @@ class ProductBloc extends Bloc<ProductEvent, ProductState> {
               .map((item) => ProductModel.fromJson(item))
               .toList();
 
+          _productosPorCategoria[event.categoryId] = filtered;
+          debugPrint('ProductBloc - Categoría ${event.categoryId} cargada con ${filtered.length} productos');
           emit(ProductLoadSuccess(filtered));
           return;
         }
