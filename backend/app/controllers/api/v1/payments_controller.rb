@@ -10,20 +10,19 @@ module Api
       def create_checkout
         amount_in_cents = params[:amount].to_i * 100
         reference = "PAYMENT-#{SecureRandom.hex(5)}"
-        customer_email = params[:email] || "cliente@test.com"
+        customer_email = params[:email]
 
           wompi = Rails.application.credentials.wompi
 
             public_key = wompi[:public_key]
-            private_key = wompi[:private_key]
-
          
             redirect_url = params[:redirect_url] || wompi[:redirect_url]
 
             encoded_redirect = URI.encode_www_form_component(redirect_url)
 
-            raw = "#{reference}#{amount_in_cents}COP#{public_key}#{redirect_url}#{private_key}"
+            raw = "#{reference}#{amount_in_cents}COP#{public_key}"
             integrity_signature = Digest::SHA256.hexdigest(raw)
+
           
               checkout_url = "https://checkout.wompi.co/p/?" \
                           "public-key=#{public_key}" \
