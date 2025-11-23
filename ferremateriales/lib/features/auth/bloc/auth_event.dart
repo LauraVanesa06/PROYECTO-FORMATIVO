@@ -59,5 +59,21 @@ class ResetPasswordRequested extends AuthEvent {
   List<Object?> get props => [email];
 }
 
+// Cambiar contraseña con código de verificación
+class ChangePasswordRequested extends AuthEvent {
+  final String email;
+  final String recoveryCode;
+  final String newPassword;
+
+  ChangePasswordRequested({
+    required this.email,
+    required this.recoveryCode,
+    required this.newPassword,
+  });
+
+  @override
+  List<Object?> get props => [email, recoveryCode, newPassword];
+}
+
 // Continuar como invitado
 class ContinueAsGuest extends AuthEvent {}

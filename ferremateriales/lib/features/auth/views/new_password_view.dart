@@ -220,11 +220,68 @@ class _NewPasswordViewState extends State<NewPasswordView> {
                                 return 'Este campo es requerido';
                               }
                               if (value.length < 6) {
-                                return 'La contraseña debe tener al menos 6 caracteres';
+                                return 'Mínimo 6 caracteres';
+                              }
+                              if (!value.contains(RegExp(r'[A-Z]'))) {
+                                return 'Debe contener al menos una mayúscula';
+                              }
+                              if (!value.contains(RegExp(r'[a-z]'))) {
+                                return 'Debe contener al menos una minúscula';
+                              }
+                              if (!value.contains(RegExp(r'[0-9]'))) {
+                                return 'Debe contener al menos un número';
                               }
                               return null;
                             },
+                            onChanged: (value) {
+                              setState(() {}); // Actualizar la UI para mostrar los requisitos
+                            },
                           ),
+                          const SizedBox(height: 16),
+                          
+                          // Requisitos de la contraseña
+                          Container(
+                            padding: const EdgeInsets.all(16),
+                            decoration: BoxDecoration(
+                              color: Colors.grey.shade50,
+                              borderRadius: BorderRadius.circular(12),
+                              border: Border.all(color: Colors.grey.shade200),
+                            ),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  'Requisitos de la contraseña:',
+                                  style: GoogleFonts.inter(
+                                    fontSize: 13,
+                                    fontWeight: FontWeight.w600,
+                                    color: const Color(0xFF2e67a3),
+                                  ),
+                                ),
+                                const SizedBox(height: 12),
+                                _buildPasswordRequirement(
+                                  'Mínimo 6 caracteres',
+                                  _passwordController.text.length >= 6,
+                                ),
+                                const SizedBox(height: 6),
+                                _buildPasswordRequirement(
+                                  'Al menos una letra mayúscula',
+                                  _passwordController.text.contains(RegExp(r'[A-Z]')),
+                                ),
+                                const SizedBox(height: 6),
+                                _buildPasswordRequirement(
+                                  'Al menos una letra minúscula',
+                                  _passwordController.text.contains(RegExp(r'[a-z]')),
+                                ),
+                                const SizedBox(height: 6),
+                                _buildPasswordRequirement(
+                                  'Al menos un número',
+                                  _passwordController.text.contains(RegExp(r'[0-9]')),
+                                ),
+                              ],
+                            ),
+                          ),
+                          
                           const SizedBox(height: 24),
                           // Campo de confirmar contraseña
                           TextFormField(
@@ -337,6 +394,30 @@ class _NewPasswordViewState extends State<NewPasswordView> {
           ),
         ),
       ),
+    );
+  }
+
+  // Widget helper para mostrar cada requisito
+  Widget _buildPasswordRequirement(String text, bool isMet) {
+    return Row(
+      children: [
+        Icon(
+          isMet ? Icons.check_circle : Icons.circle_outlined,
+          size: 18,
+          color: isMet ? Colors.green.shade600 : Colors.grey.shade400,
+        ),
+        const SizedBox(width: 8),
+        Expanded(
+          child: Text(
+            text,
+            style: GoogleFonts.inter(
+              fontSize: 13,
+              color: isMet ? Colors.green.shade700 : Colors.grey.shade600,
+              fontWeight: isMet ? FontWeight.w500 : FontWeight.w400,
+            ),
+          ),
+        ),
+      ],
     );
   }
 }

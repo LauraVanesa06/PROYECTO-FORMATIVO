@@ -150,5 +150,25 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         ));
       }
     });
+
+    // Cambiar contraseña con código de recuperación
+    on<ChangePasswordRequested>((event, emit) async {
+      emit(state.copyWith(status: AuthStatus.loading));
+      try {
+        await _authService.changePasswordWithCode(
+          email: event.email,
+          recoveryCode: event.recoveryCode,
+          newPassword: event.newPassword,
+        );
+        emit(state.copyWith(
+          status: AuthStatus.success,
+        ));
+      } catch (e) {
+        emit(state.copyWith(
+          status: AuthStatus.failure,
+          error: e.toString().replaceAll('Exception: ', ''),
+        ));
+      }
+    });
   }
 }

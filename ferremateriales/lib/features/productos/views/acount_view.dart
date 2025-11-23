@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../auth/bloc/auth_bloc.dart';
 import '../../auth/bloc/auth_event.dart';
+import '../../auth/bloc/auth_state.dart';
 import '../cubit/theme_cubit.dart';
 
 class AcountView extends StatefulWidget {
@@ -40,24 +41,37 @@ class _AcountViewState extends State<AcountView> {
   @override
   Widget build(BuildContext context) {
     final I10n = AppLocalizations.of(context)!;
-    return Scaffold(
-      backgroundColor: Colors.grey.shade50,
-      appBar: AppBar(
-        backgroundColor: Colors.white,
-        elevation: 0,
-        title: Text(
-          I10n.account,
-          style: const TextStyle(
-            color: Color(0xFF222222),
-            fontWeight: FontWeight.bold,
+    
+    return BlocListener<AuthBloc, AuthState>(
+      listener: (context, state) {
+        if (state.status == AuthStatus.success) {
+          // Actualizar los controladores con los nuevos valores del estado
+          if (state.nombre != null && state.nombre != nombreController.text) {
+            nombreController.text = state.nombre!;
+          }
+          if (state.email != null && state.email != emailController.text) {
+            emailController.text = state.email!;
+          }
+        }
+      },
+      child: Scaffold(
+        backgroundColor: Colors.grey.shade50,
+        appBar: AppBar(
+          backgroundColor: Colors.white,
+          elevation: 0,
+          title: Text(
+            I10n.account,
+            style: const TextStyle(
+              color: Color(0xFF222222),
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          centerTitle: true,
+          leading: IconButton(
+            icon: const Icon(Icons.arrow_back, color: Color(0xFF222222)),
+            onPressed: () => Navigator.pop(context),
           ),
         ),
-        centerTitle: true,
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: Color(0xFF222222)),
-          onPressed: () => Navigator.pop(context),
-        ),
-      ),
       body: SingleChildScrollView(
         child: Column(
           children: [
@@ -92,21 +106,29 @@ class _AcountViewState extends State<AcountView> {
                     ),
                   ),
                   const SizedBox(height: 16),
-                  Text(
-                    widget.nombre,
-                    style: const TextStyle(
-                      fontSize: 24,
-                      fontWeight: FontWeight.bold,
-                      color: Color(0xFF222222),
-                    ),
-                  ),
-                  const SizedBox(height: 4),
-                  Text(
-                    widget.email,
-                    style: TextStyle(
-                      fontSize: 14,
-                      color: Colors.grey.shade600,
-                    ),
+                  BlocBuilder<AuthBloc, AuthState>(
+                    builder: (context, state) {
+                      return Column(
+                        children: [
+                          Text(
+                            state.nombre ?? widget.nombre,
+                            style: const TextStyle(
+                              fontSize: 24,
+                              fontWeight: FontWeight.bold,
+                              color: Color(0xFF222222),
+                            ),
+                          ),
+                          const SizedBox(height: 4),
+                          Text(
+                            state.email ?? widget.email,
+                            style: TextStyle(
+                              fontSize: 14,
+                              color: Colors.grey.shade600,
+                            ),
+                          ),
+                        ],
+                      );
+                    },
                   ),
                 ],
               ),
@@ -146,20 +168,24 @@ class _AcountViewState extends State<AcountView> {
                         ),
                       ],
                     ),
-                    child: Column(
-                      children: [
-                        _buildInfoTile(
-                          icon: Icons.person_outline,
-                          label: I10n.name,
-                          value: widget.nombre,
-                        ),
-                        Divider(height: 1, color: Colors.grey.shade200),
-                        _buildInfoTile(
-                          icon: Icons.email_outlined,
-                          label: I10n.email,
-                          value: widget.email,
-                        ),
-                      ],
+                    child: BlocBuilder<AuthBloc, AuthState>(
+                      builder: (context, state) {
+                        return Column(
+                          children: [
+                            _buildInfoTile(
+                              icon: Icons.person_outline,
+                              label: I10n.name,
+                              value: state.nombre ?? widget.nombre,
+                            ),
+                            Divider(height: 1, color: Colors.grey.shade200),
+                            _buildInfoTile(
+                              icon: Icons.email_outlined,
+                              label: I10n.email,
+                              value: state.email ?? widget.email,
+                            ),
+                          ],
+                        );
+                      },
                     ),
                   ),
 
@@ -472,19 +498,6 @@ class _AcountViewState extends State<AcountView> {
                         );
                         
                         Navigator.pop(context);
-                        
-                        // Actualizar la vista y volver atrás
-                        Future.delayed(const Duration(milliseconds: 500), () {
-                          Navigator.pushReplacement(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => AcountView(
-                                nombre: newNombre,
-                                email: newEmail,
-                              ),
-                            ),
-                          );
-                        });
                         
                         ScaffoldMessenger.of(context).showSnackBar(
                           SnackBar(

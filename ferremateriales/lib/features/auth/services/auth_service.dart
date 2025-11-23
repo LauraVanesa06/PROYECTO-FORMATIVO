@@ -280,4 +280,52 @@ class AuthService {
       rethrow;
     }
   }
+
+  // Cambiar contraseña con código de recuperación
+  Future<Map<String, dynamic>> changePasswordWithCode({
+    required String email,
+    required String recoveryCode,
+    required String newPassword,
+  }) async {
+    try {
+      print('Changing password for email: $email with code: $recoveryCode');
+      
+      final response = await http.put(
+        Uri.parse('$baseUrl/users/password'),
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+        },
+        body: jsonEncode({
+          'user': {
+            'email': email,
+            'recovery_code': recoveryCode,
+            'password': newPassword,
+            'password_confirmation': newPassword,
+          }
+        }),
+      );
+
+      print('Change password response status: ${response.statusCode}');
+      print('Change password response body: ${response.body}');
+
+      if (response.statusCode == 200) {
+        final data = jsonDecode(response.body);
+        return {
+          'success': true,
+          'message': data['message'] ?? 'Contraseña cambiada exitosamente',
+        };
+      } else if (response.statusCode == 400 || response.statusCode == 422) {
+        final errorData = jsonDecode(response.body);
+        throw Exception(errorData['error'] ?? errorData['message'] ?? 'Código inválido o expirado');
+      } else if (response.statusCode == 404) {
+        throw Exception('Usuario no encontrado');
+      } else {
+        throw Exception('Error al cambiar la contraseña');
+      }
+    } catch (e) {
+      print('Error in changePasswordWithCode: $e');
+      rethrow;
+    }
+  }
 }

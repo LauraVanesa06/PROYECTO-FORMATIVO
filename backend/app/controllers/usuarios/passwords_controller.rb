@@ -1,6 +1,6 @@
 class Usuarios::PasswordsController < Devise::PasswordsController
   layout 'custom_login'
-  skip_before_action :verify_authenticity_token, only: [:create]
+  skip_before_action :verify_authenticity_token, only: [:create, :update]
   respond_to :html, :json
 
   # POST /users/password
@@ -53,6 +53,48 @@ class Usuarios::PasswordsController < Devise::PasswordsController
         respond_with(resource)
       end
     end
+  end
+
+  # PUT /users/password
+  def update
+    if request.format.json?
+      email = params.dig(:user, :email)
+      recovery_code = params.dig(:user, :recovery_code)
+      password = params.dig(:user, :password)
+      password_confirmation = params.dig(:user, :password_confirmation)
+      
+      user = User.find_by(email: email)
+      
+      if user.nil?
+        return render json: { 
+          error: 'Usuario no encontrado' 
+        }, status: :not_found
+      end
+      
+      # Verificar el código de recuperación
+      unless user.recovery_code_valid?(recovery_code)
+        return render json: { 
+          error: 'Código inválido o expirado' 
+        }, status: :unprocessable_entity
+      end
+      
+      # Cambiar la contraseña
+      if user.update(password: password, password_confirmation: password_confirmation)
+        # Limpiar el código de recuperación
+        user.clear_recovery_code
+        
+        return render json: { 
+          message: 'Contraseña cambiada exitosamente' 
+        }, status: :ok
+      else
+        return render json: { 
+          error: user.errors.full_messages.join(', ') 
+        }, status: :unprocessable_entity
+      end
+    end
+    
+    # Comportamiento original para HTML
+    super
   end
 
   # 👇 Este método se ejecuta antes de renderizar la vista

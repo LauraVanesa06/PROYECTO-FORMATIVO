@@ -4,6 +4,7 @@ import 'package:google_fonts/google_fonts.dart';
 import '../bloc/auth_bloc.dart';
 import '../bloc/auth_event.dart';
 import '../bloc/auth_state.dart';
+import 'new_password_view.dart';
 
 class ResetPasswordView extends StatefulWidget {
   @override
@@ -15,6 +16,7 @@ class _ResetPasswordViewState extends State<ResetPasswordView> {
   String _email = "";
   String _verificationCode = "";
   bool _codeSent = false;
+  bool _isVerifying = false;
 
   @override
   Widget build(BuildContext context) {
@@ -83,20 +85,24 @@ class _ResetPasswordViewState extends State<ResetPasswordView> {
           );
         }
       },
-      child: Scaffold(
-        backgroundColor: Colors.white,
-        body: SafeArea(
-          child: Center(
-            child: SingleChildScrollView(
-              padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 32.0),
-              child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                  // Logo circular simple
-                  Container(
-                    width: 80,
-                    height: 80,
-                    decoration: BoxDecoration(
+      child: BlocBuilder<AuthBloc, AuthState>(
+        builder: (context, state) {
+          final isLoading = state.status == AuthStatus.loading || _isVerifying;
+          
+          return Scaffold(
+            backgroundColor: Colors.white,
+            body: SafeArea(
+              child: Center(
+                child: SingleChildScrollView(
+                  padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 32.0),
+                  child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                      // Logo circular simple
+                      Container(
+                        width: 80,
+                        height: 80,
+                        decoration: BoxDecoration(
                       shape: BoxShape.circle,
                       color: const Color(0xFF2e67a3),
                       boxShadow: [
@@ -267,7 +273,7 @@ class _ResetPasswordViewState extends State<ResetPasswordView> {
                             width: double.infinity,
                             height: 50,
                             child: ElevatedButton(
-                              onPressed: () {
+                              onPressed: isLoading ? null : () async {
                                 if (_formKey.currentState!.validate()) {
                                   if (!_codeSent) {
                                     // Primera vez: enviar código
@@ -276,10 +282,20 @@ class _ResetPasswordViewState extends State<ResetPasswordView> {
                                     );
                                   } else {
                                     // Segunda vez: verificar código
+                                    setState(() {
+                                      _isVerifying = true;
+                                    });
+                                    
+                                    // Simular un pequeño delay para mostrar el loading
+                                    await Future.delayed(const Duration(milliseconds: 500));
+                                    
                                     final authState = context.read<AuthBloc>().state;
                                     final storedToken = authState.resetToken;
                                     
                                     if (storedToken == null) {
+                                      setState(() {
+                                        _isVerifying = false;
+                                      });
                                       ScaffoldMessenger.of(context).showSnackBar(
                                         SnackBar(
                                           content: Row(
@@ -311,7 +327,7 @@ class _ResetPasswordViewState extends State<ResetPasswordView> {
                                     
                                     // Verificar si el código ingresado coincide con el token
                                     if (_verificationCode == storedToken) {
-                                      // Código correcto
+                                      // Código correcto - Mostrar mensaje de éxito
                                       ScaffoldMessenger.of(context).showSnackBar(
                                         SnackBar(
                                           content: Row(
@@ -334,16 +350,34 @@ class _ResetPasswordViewState extends State<ResetPasswordView> {
                                           shape: RoundedRectangleBorder(
                                             borderRadius: BorderRadius.circular(12),
                                           ),
-                                          duration: const Duration(seconds: 3),
+                                          duration: const Duration(seconds: 2),
                                           margin: const EdgeInsets.all(16),
                                         ),
                                       );
                                       
-                                      // Aquí podrías navegar a una nueva pantalla para cambiar la contraseña
-                                      // Navigator.push(...);
+                                      // Esperar a que se muestre el mensaje antes de navegar
+                                      await Future.delayed(const Duration(milliseconds: 1500));
                                       
+                                      setState(() {
+                                        _isVerifying = false;
+                                      });
+                                      
+                                      // Navegar a la pantalla de nueva contraseña
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (context) => NewPasswordView(
+                                            email: _email,
+                                            recoveryCode: _verificationCode,
+                                          ),
+                                        ),
+                                      );
                                     } else {
                                       // Código incorrecto
+                                      setState(() {
+                                        _isVerifying = false;
+                                      });
+                                      
                                       ScaffoldMessenger.of(context).showSnackBar(
                                         SnackBar(
                                           content: Row(
@@ -375,7 +409,7 @@ class _ResetPasswordViewState extends State<ResetPasswordView> {
                                 }
                               },
                               style: ElevatedButton.styleFrom(
-                                backgroundColor: const Color(0xFF2e67a3),
+                                backgroundColor: isLoading ? Colors.grey.shade400 : const Color(0xFF2e67a3),
                                 foregroundColor: Colors.white,
                                 shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(30),
@@ -383,14 +417,37 @@ class _ResetPasswordViewState extends State<ResetPasswordView> {
                                 elevation: 2,
                                 shadowColor: const Color(0xFF2e67a3).withOpacity(0.3),
                               ),
-                              child: Text(
-                                _codeSent ? 'Verificar código' : 'Enviar instrucciones',
-                                style: GoogleFonts.inter(
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.w600,
-                                  letterSpacing: 0.5,
-                                ),
-                              ),
+                              child: isLoading
+                                  ? Row(
+                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      children: [
+                                        const SizedBox(
+                                          width: 20,
+                                          height: 20,
+                                          child: CircularProgressIndicator(
+                                            strokeWidth: 2,
+                                            valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                                          ),
+                                        ),
+                                        const SizedBox(width: 12),
+                                        Text(
+                                          _codeSent ? 'Verificando...' : 'Enviando...',
+                                          style: GoogleFonts.inter(
+                                            fontSize: 16,
+                                            fontWeight: FontWeight.w600,
+                                            letterSpacing: 0.5,
+                                          ),
+                                        ),
+                                      ],
+                                    )
+                                  : Text(
+                                      _codeSent ? 'Verificar código' : 'Enviar instrucciones',
+                                      style: GoogleFonts.inter(
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.w600,
+                                        letterSpacing: 0.5,
+                                      ),
+                                    ),
                             ),
                           ),
                           const SizedBox(height: 20),
@@ -418,7 +475,8 @@ class _ResetPasswordViewState extends State<ResetPasswordView> {
               ),
             ),
           ),
-        ),
+        );
+        },
       ),
     );
   }
