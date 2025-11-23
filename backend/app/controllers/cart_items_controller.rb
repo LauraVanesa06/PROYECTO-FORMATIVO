@@ -6,49 +6,57 @@ class CartItemsController < ApplicationController
 
   def create
     product = Product.find(params[:product_id])
+
+    # Verificar disponibilidad antes de agregar al carrito
+    unless product.disponible
+      respond_to do |format|
+        format.json { render json: { error: "Este producto no está disponible" }, status: :unprocessable_entity }
+        format.html { redirect_to root_path, alert: "Este producto no está disponible actualmente" }
+      end
+      return
+    end
+
+    # Verificar stock
+    unless product.stock.to_i > 0
+      respond_to do |format|
+        format.json { render json: { error: "Este producto no tiene stock disponible" }, status: :unprocessable_entity }
+        format.html { redirect_to root_path, alert: "Este producto no tiene stock disponible" }
+      end
+      return
+    end
+
+    @cart = current_cart
     @cart_item = @cart.cart_items.find_or_initialize_by(product: product)
-    @cart_item.cantidad ||= 0
-    @cart_item.cantidad += 1
+
+    if @cart_item.new_record?
+      @cart_item.cantidad = 1
+    else
+      @cart_item.cantidad += 1
+    end
+
+    # Verificar que no exceda el stock
+    if @cart_item.cantidad > product.stock
+      respond_to do |format|
+        format.json { render json: { error: "No hay suficiente stock disponible" }, status: :unprocessable_entity }
+        format.html { redirect_to root_path, alert: "No hay suficiente stock disponible" }
+      end
+      return
+    end
 
     if @cart_item.save
-      @cart_items = @cart.cart_items.includes(:product)
-
       respond_to do |format|
-        format.turbo_stream do
-          render turbo_stream: [
-            turbo_stream.replace(
-              "cart_items",
-              partial: "carts/cart_items",
-              locals: { cart_items: @cart_items }
-            ),
-            turbo_stream.replace(
-              "cart_count",
-              partial: "carts/cart_count",
-              locals: { count: @cart_items.sum(&:cantidad) }
-            )
-          ]
-        end
-
         format.json do
-          rendered_cart = render_to_string(
-            partial: "carts/cart_items",
-            locals: { cart_items: @cart_items },
-            formats: [:html]
-          )
-
           render json: {
-            success: true,
-            cart_html: rendered_cart,
-            count: @cart_items.sum(&:cantidad)
-          }, status: :created
+            count: @cart.cart_items.sum(:cantidad),
+            cart_html: render_to_string(partial: 'carts/cart_items', locals: { cart_items: @cart.cart_items })
+          }
         end
-
-        format.html { redirect_to cart_path, notice: "Producto agregado al carrito" }
+        format.html { redirect_to cart_path(@cart), notice: "Producto agregado al carrito" }
       end
     else
       respond_to do |format|
-        format.json { render json: { success: false, error: "No se pudo agregar el producto" }, status: :unprocessable_entity }
-        format.html { redirect_to root_path, alert: "No se pudo agregar el producto" }
+        format.json { render json: { error: "Error al agregar producto" }, status: :unprocessable_entity }
+        format.html { redirect_to root_path, alert: "Error al agregar producto" }
       end
     end
   end

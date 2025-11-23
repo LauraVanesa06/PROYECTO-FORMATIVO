@@ -442,5 +442,16 @@
   }
 </script>
 
+<% if @product.disponible || current_user&.admin? %>
+  <!-- Contenido del producto -->
+<% else %>
+  <div class="container mt-5">
+    <div class="alert alert-warning text-center">
+      <h4><i class="fa-solid fa-exclamation-triangle me-2"></i>Producto No Disponible</h4>
+      <p>Este producto no está disponible en este momento.</p>
+      <%= link_to "Volver al inicio", root_path, class: "btn btn-primary" %>
+    </div>
+  </div>
+<% end %>
 </body>
 </html>

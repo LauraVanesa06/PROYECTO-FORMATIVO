@@ -1,7 +1,7 @@
 class ProductsController < ApplicationController
   layout false
   before_action :set_product, only: %i[ show edit update destroy ]
-
+  before_action :require_admin, except: [:show] # Proteger acciones de admin
 
   # GET /products or /products.json
   def index
@@ -10,30 +10,42 @@ class ProductsController < ApplicationController
     min = params[:min].to_s.gsub(".", "").to_i if params[:min].present?
     max = params[:max].to_s.gsub(".", "").to_i if params[:max].present?
 
-    @products = Product.all
+    # Para admin: mostrar todos los productos
+    # Para clientes: solo productos disponibles
+    if current_user&.admin?
+      @products = Product.all
+    else
+      @products = Product.disponibles
+    end
+    
     @suppliers = Supplier.all
 
-      @products = @products.where("LOWER(codigo_producto) = ?", params[:cod].downcase) if params[:cod].present?
-      @products = @products.where("nombre LIKE ? ", "%#{params[:name]}%") if params[:name].present?
-      @products = @products.where("precio >= ?", min) if min.present? && min > 0
-      @products = @products.where("precio <= ?", max) if max.present? && max > 0
-      @products = @products.where(supplier_id: params[:suppliers]) if params[:suppliers].present?
+    @products = @products.where("LOWER(codigo_producto) = ?", params[:cod].downcase) if params[:cod].present?
+    @products = @products.where("LOWER(nombre) LIKE ?", "%#{params[:name].downcase}%") if params[:name].present?
+    @products = @products.where("precio >= ?", min) if min.present? && min > 0
+    @products = @products.where("precio <= ?", max) if max.present? && max > 0
+    @products = @products.where(supplier_id: params[:suppliers]) if params[:suppliers].present?
     
-      if @products.empty?
-        flash.now[:alert] = "¡No se encontraron productos con esos filtros!"
-        @products = Product.all
-      end
+    if @products.empty?
+      flash.now[:alert] = "¡No se encontraron productos con esos filtros!"
+      @products = current_user&.admin? ? Product.all : Product.disponibles
+    end
 
     @categories = Category.all
     
     if params[:category_id].present?
       @category = Category.find(params[:category_id])
       @products = @category.products
+      @products = @products.disponibles unless current_user&.admin?
     end
   end
 
   # GET /products/1 or /products/1.json
   def show
+    # Solo mostrar si está disponible o el usuario es admin
+    unless @product.disponible || current_user&.admin?
+      redirect_to root_path, alert: "Este producto no está disponible"
+    end
   end
 
   # GET /products/new
@@ -91,24 +103,21 @@ class ProductsController < ApplicationController
   end
 
   def update_disponibilidad
-    # Obtiene el ID del producto desde el campo oculto
-    product_to_update_id = params[:product_id]
+    # Solo admin puede cambiar disponibilidad
+    unless current_user&.admin?
+      redirect_to root_path, alert: "No tienes permisos para esta acción"
+      return
+    end
 
-    # Si el product_to_update_id no existe, algo está mal, sal de la acción
+    product_to_update_id = params[:product_id]
     return unless product_to_update_id.present?
 
-    # Busca el producto
     product = Product.find(product_to_update_id)
-
-    # El estado de `disponible` será verdadero si el checkbox estaba marcado (su ID está en el array).
-    # `params[:disponibles_ids]` contiene los valores del checkbox y del hidden_field.
-    # Si el checkbox está marcado, el array será ["0", "id_del_producto"].
-    # Si está desmarcado, el array será ["0"].
     is_checked = params[:disponibles_ids].include?(product.id.to_s)
     
     product.update(disponible: is_checked)
 
-    redirect_to inventario_path
+    redirect_to inventario_path, notice: "Disponibilidad actualizada"
   end
 
   def generate_code
@@ -163,5 +172,11 @@ class ProductsController < ApplicationController
         images: [], 
         remove_image_ids: []
       )
+  end
+
+  def require_admin
+    unless current_user&.admin?
+      redirect_to root_path, alert: "No tienes permisos para acceder a esta página"
+    end
   end
 end
