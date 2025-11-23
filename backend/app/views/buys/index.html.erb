@@ -114,9 +114,6 @@
             <% @buys.each do |buy| %>
               <%= render buy %>
             <% end %>
-            <div id="modal-reutilizable" class="modal" style="display:none;">
-              <%= render 'buys/modal' %>
-            </div>
           <% else %>
           
           <% end %>
@@ -125,6 +122,11 @@
       </div>
     </section>
   </section>
+
+  <!-- Modal fuera del loop -->
+  <div id="modal-reutilizable" class="modal" style="display:none;">
+    <%= render 'buys/modal' %>
+  </div>
 
 <script>
   let grafica = null;
@@ -189,44 +191,198 @@
   // btn vver comprar (para abrir el modal)
   document.addEventListener("DOMContentLoaded", () => {
     const modal = document.getElementById("modal-reutilizable");
-    const closeBtn = modal.querySelector("#modal-close");
+    const closeBtn = modal?.querySelector("#modal-close");
+
+    console.log('Modal encontrado:', modal);
+    console.log('Botones encontrados:', document.querySelectorAll(".show-buy").length);
+
+    if (!modal) {
+      console.error('No se encontró el modal con id "modal-reutilizable"');
+      return;
+    }
+
+    if (!closeBtn) {
+      console.error('No se encontró el botón de cerrar modal');
+      return;
+    }
 
     // Abrir modal al hacer click en botones
     document.querySelectorAll(".show-buy").forEach(button => {
-      button.addEventListener("click", () => {
+      button.addEventListener("click", async () => {
+        console.log('Click en botón Ver detalles');
+        const buyId = button.dataset.buyId;
+        console.log('Buy ID:', buyId);
+        
         const data = {
-          nombreProducto: button.dataset.nombreProducto,
-          categoria: button.dataset.categoriaProducto,
-          proveedor: button.dataset.proveedorProducto,
-          precio: button.dataset.precioProducto,
           cliente: button.dataset.nombreCliente,
           documento: button.dataset.documentoCliente,
           fecha: button.dataset.fechaCompra,
           tipoCompra: button.dataset.tipoCompra,
           metodo: button.dataset.metodoCompra,
-          imagen: button.dataset.imgUrl
+          total: button.dataset.total
         };
 
-        // Llenar datos en modal
-        modal.querySelector(".modal-nombre-producto").textContent = data.nombreProducto;
-        modal.querySelector(".modal-categoria-producto").textContent = data.categoria;
-        modal.querySelector(".modal-proveedor-producto").textContent = data.proveedor;
-        modal.querySelector(".modal-precio-producto").textContent = data.precio;
+        // Llenar datos del cliente en modal
         modal.querySelector(".modal-nombre-cliente").textContent = data.cliente;
         modal.querySelector(".modal-documento-cliente").textContent = data.documento;
         modal.querySelector(".modal-fecha-compra").textContent = data.fecha;
-        modal.querySelector(".modal-tipo-compra").textContent = data.tipoCompra;
+        // modal.querySelector(".modal-tipo-compra").textContent = data.tipoCompra;
         modal.querySelector(".modal-metodo-compra").textContent = data.metodo;
 
-        // Imagen
-        const fotoModel = modal.querySelector(".foto-model");
-        if (data.imagen) {
-          fotoModel.innerHTML = `<img src="${data.imagen}" alt="Imagen producto" style="max-width: 150px; border-radius:8px;">`;
-        } else {
-          fotoModel.innerHTML = `<span>Sin imagen</span>`;
+        // Cargar productos mediante AJAX
+        const productosLista = modal.querySelector("#modal-productos-lista");
+        productosLista.innerHTML = '<p style="text-align: center; padding: 20px;">Cargando productos...</p>';
+
+        try {
+          const response = await fetch(`/buys/${buyId}/productos`);
+          const productos = await response.json();
+          
+          console.log('Productos recibidos:', productos);
+          
+          if (productos.length === 0) {
+            productosLista.innerHTML = '<p style="text-align: center; padding: 20px; color: #7f8c8d;">No hay productos en esta venta</p>';
+            modal.querySelector(".modal-precio-producto").textContent = 'COP 0,00';
+          } else {
+            // Calcular el total real sumando los subtotales de los productos
+            const totalReal = productos.reduce((sum, producto) => {
+              // Extraer solo el número del subtotal formateado (remover COP, puntos y comas)
+              const subtotalNumero = parseFloat(producto.subtotal.replace(/[COP.,\s]/g, '').replace(',', '.'));
+              return sum + subtotalNumero;
+            }, 0);
+            
+            // Formatear el total en pesos colombianos con el formato COP 32.000,00
+            const totalFormateado = 'COP ' + totalReal.toLocaleString('es-CO', {
+              minimumFractionDigits: 2,
+              maximumFractionDigits: 2
+            });
+            
+            // Actualizar el total en el modal
+            modal.querySelector(".modal-precio-producto").textContent = totalFormateado;
+            
+            productosLista.innerHTML = productos.map(producto => `
+              <div class="product-compact">
+                <div class="product-img-compact">
+                  ${producto.imagen ? 
+                    `<img src="${producto.imagen}" alt="${producto.nombre}">` : 
+                    '<i class="fas fa-box"></i>'}
+                </div>
+                <div class="product-info-compact">
+                  <div class="product-name-compact">${producto.nombre}</div>
+                  <div class="product-meta-compact">
+                    ${producto.cantidad} × ${producto.precio_unitario}
+                  </div>
+                </div>
+                <div class="product-total-compact">
+                  ${producto.subtotal}
+                </div>
+              </div>
+            `).join('');
+            
+            // Agregar estilos compactos para las tarjetas de productos
+            if (!document.getElementById('product-card-styles')) {
+              const styles = document.createElement('style');
+              styles.id = 'product-card-styles';
+              styles.textContent = `
+                .product-compact {
+                  display: flex;
+                  align-items: center;
+                  gap: 12px;
+                  padding: 10px 12px;
+                  background: #f8f9fa;
+                  border-bottom: 1px solid #e5e7eb;
+                  transition: all 0.2s ease;
+                }
+                
+                .product-compact:last-child {
+                  border-bottom: none;
+                }
+                
+                .product-compact:hover {
+                  background: #eff6ff;
+                }
+                
+                .product-img-compact {
+                  flex-shrink: 0;
+                  width: 50px;
+                  height: 50px;
+                  border-radius: 6px;
+                  overflow: hidden;
+                  background: white;
+                  display: flex;
+                  align-items: center;
+                  justify-content: center;
+                  border: 1px solid #3b82f6;
+                }
+                
+                .product-img-compact img {
+                  width: 100%;
+                  height: 100%;
+                  object-fit: cover;
+                }
+                
+                .product-img-compact i {
+                  color: #2563eb;
+                  font-size: 20px;
+                }
+                
+                .product-info-compact {
+                  flex: 1;
+                  min-width: 0;
+                }
+                
+                .product-name-compact {
+                  font-size: 14px;
+                  font-weight: 600;
+                  color: #1f2937;
+                  margin-bottom: 4px;
+                  white-space: nowrap;
+                  overflow: hidden;
+                  text-overflow: ellipsis;
+                }
+                
+                .product-meta-compact {
+                  font-size: 12px;
+                  color: #6b7280;
+                  opacity: 0.9;
+                }
+                
+                .product-total-compact {
+                  font-size: 16px;
+                  font-weight: 700;
+                  color: #1e3a8a;
+                  font-family: 'Courier New', monospace;
+                  flex-shrink: 0;
+                }
+                
+                @media (max-width: 768px) {
+                  .product-compact {
+                    padding: 8px 10px;
+                  }
+                  
+                  .product-img-compact {
+                    width: 45px;
+                    height: 45px;
+                  }
+                  
+                  .product-name-compact {
+                    font-size: 13px;
+                  }
+                  
+                  .product-total-compact {
+                    font-size: 14px;
+                  }
+                }
+              `;
+              document.head.appendChild(styles);
+            }
+          }
+        } catch (error) {
+          console.error('Error al cargar productos:', error);
+          productosLista.innerHTML = '<p style="text-align: center; padding: 20px; color: red;">Error al cargar los productos</p>';
         }
 
         // Mostrar modal
+        console.log('Mostrando modal...');
         modal.style.display = "flex";
       });
     });
@@ -244,6 +400,36 @@
       }
     });
   });
+
+  // Limpiar filtros
+  document.addEventListener("DOMContentLoaded", function () {
+      const botonLimpiar = document.getElementById("limpiar-filtros");
+
+      if (botonLimpiar) {
+        botonLimpiar.addEventListener("click", function () {
+          // Encuentra el formulario que contiene los filtros
+          const form = botonLimpiar.closest("form");
+
+          if (form) {
+            // Limpia todos los campos del formulario
+            const inputs = form.querySelectorAll("input, select, textarea");
+            inputs.forEach((input) => {
+              if (input.type === "checkbox" || input.type === "radio") {
+                input.checked = false;
+              } else {
+                input.value = "";
+              }
+            });
+
+            // Espera un momento antes de recargar sin filtros
+            setTimeout(() => {
+              const urlSinParametros = window.location.origin + window.location.pathname;
+              window.location.href = urlSinParametros;
+            }, 100);
+          }
+        });
+      }
+    });
 </script>
 
  

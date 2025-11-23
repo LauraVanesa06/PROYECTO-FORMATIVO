@@ -34,6 +34,7 @@ puts "✅ Datos eliminados, guardando datos de la semilla..."
 
 reset_postgres_sequences(
   'purchasedetails',
+  'buy_products',
   'buys',
   'products',
   'marcas',
@@ -1183,39 +1184,56 @@ buys = Buy.create!([
   { user_id: users[0].id, fecha: 5.months.ago.change(hour: 13),  tipo: "Contratista/Empresa",  metodo_pago: "Efectivo" }
 ])
 
-Purchasedetail.create!([
-  {
-    buy_id: buys[0].id,
-    product_id: products[0].id,
-    cantidad: 20,
-    preciounidad: 26_000
-  },
-  {
-    buy_id: buys[1].id,
-    product_id: products[1].id,
-    cantidad: 50,
-    preciounidad: 9_500
-  },
-  {
-    buy_id: buys[2].id,
-    product_id: products[2].id,
-    cantidad: 10,
-    preciounidad: 30_500
-  },
-  {
-    buy_id: buys[3].id,
-    product_id: products[3].id,
-    cantidad: 40,
-    preciounidad: 12_500
-  },
-  {
-    buy_id: buys[4].id,
-    product_id: products[4].id,
-    cantidad: 10,
-    preciounidad: 17_500
-  }
-])
+# Purchasedetail.create!([
+#   {
+#     buy_id: buys[0].id,
+#     product_id: products[0].id,
+#     cantidad: 20,
+#     preciounidad: 26_000
+#   },
+#   {
+#     buy_id: buys[1].id,
+#     product_id: products[1].id,
+#     cantidad: 50,
+#     preciounidad: 9_500
+#   },
+#   {
+#     buy_id: buys[2].id,
+#     product_id: products[2].id,
+#     cantidad: 10,
+#     preciounidad: 30_500
+#   },
+#   {
+#     buy_id: buys[3].id,
+#     product_id: products[3].id,
+#     cantidad: 40,
+#     preciounidad: 12_500
+#   },
+#   {
+#     buy_id: buys[4].id,
+#     product_id: products[4].id,
+#     cantidad: 10,
+#     preciounidad: 17_500
+#   }
+# ])
 
+# Crear asociaciones de productos para cada venta usando buy_products
+buys.each_with_index do |buy, idx|
+  # Seleccionar entre 2 y 4 productos aleatorios para cada venta
+  num_productos = rand(2..4)
+  productos_seleccionados = products.sample(num_productos)
+  
+  productos_seleccionados.each do |producto|
+    BuyProduct.create!(
+      buy: buy,
+      product: producto,
+      cantidad: rand(1..10),
+      precio_unitario: producto.precio * rand(0.9..1.1) # Precio con pequeña variación
+    )
+  end
+end
+
+puts "✅ #{BuyProduct.count} productos asociados a las ventas"
 
 # Crear pedidos sin el campo 'productos' y asociar productos reales
 pedidos = [

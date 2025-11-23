@@ -82,6 +82,7 @@ Rails.application.routes.draw do
   resources :buys do
     member do
       get :purchasedetails
+      get :productos
     end
   end
 

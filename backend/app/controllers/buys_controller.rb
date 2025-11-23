@@ -74,6 +74,21 @@ class BuysController < ApplicationController
     @purchasedetails = Purchasedetail.where(buy_id: params[:buy_id])
   end
 
+  def productos
+    @buy = Buy.find(params[:id])
+    productos = @buy.buy_products.includes(:product).map do |bp|
+      {
+        nombre: bp.product.nombre,
+        cantidad: bp.cantidad,
+        precio_unitario: ActionController::Base.helpers.number_to_currency(bp.product.precio, unit: "COP ", separator: ",", delimiter: ".", precision: 2),
+        subtotal: ActionController::Base.helpers.number_to_currency(bp.cantidad * bp.product.precio, unit: "COP ", separator: ",", delimiter: ".", precision: 2),
+        imagen: bp.product.images.attached? ? url_for(bp.product.images.first) : nil
+      }
+    end
+    
+    render json: productos
+  end
+
   private
 
     # Use callbacks to share common setup or constraints between actions.

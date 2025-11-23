@@ -34,22 +34,16 @@
         <% end %>
       </span>
     </div>
-    <% first_product = buy.purchasedetails.first %>
-    <% if first_product %>
-      <button class="show-buy btn-view-formal"
-        data-nombre-producto="<%= first_product.product.nombre %>"
-        data-categoria-producto="<%= first_product.product.category.nombre %>"
-        data-proveedor-producto="<%= first_product.product.supplier.nombre %>"
-        data-precio-producto="<%= first_product.product.precio_cop %>"
-        data-nombre-cliente="<%= buy.user.name %>"
-        data-documento-cliente="<%= buy.user.email %>"
-        data-fecha-compra="<%= buy.fecha.strftime("%d/%m/%Y") %>"
-        data-tipo-compra="<%= buy.payment_id.present? ? 'En línea (Wompi)' : 'Física' %>"
-        data-metodo-compra="<%= buy.payment&.pay_method || 'Efectivo' %>"
-        data-img-url="<%= first_product.product.images.attached? ? url_for(first_product.product.images.first) : '' %>">
-        Ver detalles
-      </button>
-    <% end %>
+    <button class="show-buy btn-view-formal"
+      data-buy-id="<%= buy.id %>"
+      data-nombre-cliente="<%= buy.user.name %>"
+      data-documento-cliente="<%= buy.user.email %>"
+      data-fecha-compra="<%= buy.fecha.strftime("%d/%m/%Y") %>"
+      data-tipo-compra="<%= buy.payment_id.present? ? 'En línea (Wompi)' : 'Física' %>"
+      data-metodo-compra="<%= buy.payment&.pay_method || 'Efectivo' %>"
+      data-total="<%= buy.total.present? ? number_with_precision(buy.total, precision: 2) : (buy.payment&.amount.present? ? number_with_precision(buy.payment.amount, precision: 2) : '0.00') %>">
+      Ver detalles
+    </button>
   </div>
 </div>
 
