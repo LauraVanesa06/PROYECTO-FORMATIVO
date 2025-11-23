@@ -170,5 +170,25 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         ));
       }
     });
+
+    // Cambiar contraseña desde la cuenta
+    on<ChangePasswordFromAccountRequested>((event, emit) async {
+      emit(state.copyWith(status: AuthStatus.loading));
+      try {
+        await _authService.changePassword(
+          currentPassword: event.currentPassword,
+          newPassword: event.newPassword,
+        );
+        emit(state.copyWith(
+          status: AuthStatus.success,
+        ));
+      } catch (e) {
+        emit(state.copyWith(
+          status: AuthStatus.failure,
+          error: e.toString().replaceAll('Exception: ', ''),
+        ));
+      }
+    });
   }
 }
+

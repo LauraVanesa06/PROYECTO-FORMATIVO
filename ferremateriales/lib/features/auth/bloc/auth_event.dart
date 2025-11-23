@@ -75,5 +75,20 @@ class ChangePasswordRequested extends AuthEvent {
   List<Object?> get props => [email, recoveryCode, newPassword];
 }
 
+// Cambiar contraseña desde la cuenta (con contraseña actual)
+class ChangePasswordFromAccountRequested extends AuthEvent {
+  final String currentPassword;
+  final String newPassword;
+
+  ChangePasswordFromAccountRequested({
+    required this.currentPassword,
+    required this.newPassword,
+  });
+
+  @override
+  List<Object?> get props => [currentPassword, newPassword];
+}
+
 // Continuar como invitado
 class ContinueAsGuest extends AuthEvent {}
+

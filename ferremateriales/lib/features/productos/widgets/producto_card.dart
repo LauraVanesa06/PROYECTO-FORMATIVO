@@ -49,19 +49,67 @@ class _ProductCardState extends State<ProductCard> {
         ..hideCurrentSnackBar()
         ..showSnackBar(
           SnackBar(
-            content: Text(
-              isFavorite
-                  ? 'Agregado a favoritos ⭐'
-                  : 'Eliminado de favoritos ❌',
+            content: Row(
+              children: [
+                Container(
+                  padding: const EdgeInsets.all(8),
+                  decoration: BoxDecoration(
+                    color: Colors.white.withOpacity(0.2),
+                    shape: BoxShape.circle,
+                  ),
+                  child: Icon(
+                    isFavorite ? Icons.favorite : Icons.heart_broken,
+                    color: Colors.white,
+                    size: 20,
+                  ),
+                ),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: Text(
+                    isFavorite
+                        ? 'Agregado a favoritos'
+                        : 'Eliminado de favoritos',
+                    style: const TextStyle(
+                      fontSize: 15,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                ),
+              ],
             ),
-            duration: const Duration(seconds: 1),
+            backgroundColor: isFavorite ? Colors.green.shade600 : Colors.orange.shade700,
+            behavior: SnackBarBehavior.floating,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(12),
+            ),
+            margin: const EdgeInsets.all(16),
+            duration: const Duration(seconds: 2),
           ),
         );
     } catch (_) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Error al actualizar favorito'),
-          backgroundColor: Colors.red,
+        SnackBar(
+          content: Row(
+            children: [
+              const Icon(Icons.error_outline, color: Colors.white),
+              const SizedBox(width: 12),
+              const Expanded(
+                child: Text(
+                  'Error al actualizar favorito',
+                  style: TextStyle(
+                    fontSize: 15,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+              ),
+            ],
+          ),
+          backgroundColor: Colors.red.shade700,
+          behavior: SnackBarBehavior.floating,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12),
+          ),
+          margin: const EdgeInsets.all(16),
         ),
       );
     }
@@ -74,15 +122,65 @@ class _ProductCardState extends State<ProductCard> {
         ..hideCurrentSnackBar()
         ..showSnackBar(
           SnackBar(
-            content: Text('Agregado al carrito 🛒'),
+            content: Row(
+              children: [
+                Container(
+                  padding: const EdgeInsets.all(8),
+                  decoration: BoxDecoration(
+                    color: Colors.white.withOpacity(0.2),
+                    shape: BoxShape.circle,
+                  ),
+                  child: const Icon(
+                    Icons.shopping_cart,
+                    color: Colors.white,
+                    size: 20,
+                  ),
+                ),
+                const SizedBox(width: 12),
+                const Expanded(
+                  child: Text(
+                    'Producto agregado al carrito',
+                    style: TextStyle(
+                      fontSize: 15,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+            backgroundColor: const Color(0xFF2e67a3),
+            behavior: SnackBarBehavior.floating,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(12),
+            ),
+            margin: const EdgeInsets.all(16),
             duration: const Duration(seconds: 2),
           ),
         );
     } catch (_) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Error al agregar al carrito'),
-          backgroundColor: Colors.red,
+        SnackBar(
+          content: Row(
+            children: [
+              const Icon(Icons.error_outline, color: Colors.white),
+              const SizedBox(width: 12),
+              const Expanded(
+                child: Text(
+                  'Error al agregar al carrito',
+                  style: TextStyle(
+                    fontSize: 15,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+              ),
+            ],
+          ),
+          backgroundColor: Colors.red.shade700,
+          behavior: SnackBarBehavior.floating,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12),
+          ),
+          margin: const EdgeInsets.all(16),
         ),
       );
     }
@@ -281,10 +379,10 @@ class _ProductCardState extends State<ProductCard> {
                   left: 8,
                   child: Container(
                     decoration: BoxDecoration(
-                      color: isDark ? Colors.grey.shade800 : Colors.white,
+                      color: isDark ? Colors.grey.shade800.withOpacity(0.9) : Colors.white.withOpacity(0.95),
                       shape: BoxShape.circle,
                       border: Border.all(
-                        color: Colors.orange.shade200,
+                        color: isFavorite ? Colors.red.withOpacity(0.3) : Colors.grey.shade300,
                         width: 2,
                       ),
                       boxShadow: isDark
@@ -300,8 +398,8 @@ class _ProductCardState extends State<ProductCard> {
                     child: IconButton(
                       icon: Icon(
                         isFavorite ? Icons.favorite : Icons.favorite_border,
-                        color: Colors.orange,
-                        size: 20,
+                        color: isFavorite ? Colors.red : Colors.grey.shade400,
+                        size: 22,
                       ),
                       padding: EdgeInsets.zero,
                       constraints: const BoxConstraints(

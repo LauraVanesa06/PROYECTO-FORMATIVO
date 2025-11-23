@@ -341,8 +341,8 @@ class _RegisterViewState extends State<RegisterView> {
                                   const SizedBox(height: 12),
                                   // Lista de requisitos
                                   _buildPasswordRequirement(
-                                    'Al menos 8 caracteres',
-                                    _password.length >= 8,
+                                    'Al menos 6 caracteres',
+                                    _password.length >= 6,
                                   ),
                                   _buildPasswordRequirement(
                                     'Una letra mayúscula',
@@ -355,10 +355,6 @@ class _RegisterViewState extends State<RegisterView> {
                                   _buildPasswordRequirement(
                                     'Un número',
                                     _password.contains(RegExp(r'[0-9]')),
-                                  ),
-                                  _buildPasswordRequirement(
-                                    'Un carácter especial (!@#\$%^&*)',
-                                    _password.contains(RegExp(r'[!@#$%^&*(),.?":{}|<>]')),
                                   ),
                                 ],
                               ),

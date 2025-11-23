@@ -328,4 +328,57 @@ class AuthService {
       rethrow;
     }
   }
+
+  // Cambiar contraseña desde la cuenta (con contraseña actual)
+  Future<Map<String, dynamic>> changePassword({
+    required String currentPassword,
+    required String newPassword,
+  }) async {
+    try {
+      final token = await storage.read(key: 'auth_token');
+      
+      if (token == null) {
+        throw Exception('No estás autenticado');
+      }
+
+      print('Changing password from account');
+      
+      final response = await http.put(
+        Uri.parse('$baseUrl/api/v1/auth/change-password'),
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+          'Authorization': 'Bearer $token',
+        },
+        body: jsonEncode({
+          'current_password': currentPassword,
+          'new_password': newPassword,
+        }),
+      );
+
+      print('Change password response status: ${response.statusCode}');
+      print('Change password response body: ${response.body}');
+
+      if (response.statusCode == 200) {
+        final data = jsonDecode(response.body);
+        return {
+          'success': true,
+          'message': data['message'] ?? 'Contraseña actualizada correctamente',
+        };
+      } else if (response.statusCode == 400 || response.statusCode == 401) {
+        final errorData = jsonDecode(response.body);
+        throw Exception(errorData['message'] ?? 'Contraseña actual incorrecta');
+      } else if (response.statusCode == 422) {
+        final errorData = jsonDecode(response.body);
+        throw Exception(errorData['message'] ?? 'La nueva contraseña no cumple los requisitos');
+      } else {
+        final errorData = jsonDecode(response.body);
+        throw Exception(errorData['message'] ?? 'Error al cambiar la contraseña');
+      }
+    } catch (e) {
+      print('Error in changePassword: $e');
+      rethrow;
+    }
+  }
 }
+
