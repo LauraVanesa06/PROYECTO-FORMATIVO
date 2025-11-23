@@ -11,6 +11,8 @@ class FavoritesService {
   final storage = const FlutterSecureStorage();
 
   List<int> _favoriteProductIds = [];
+  List<Map<String, dynamic>> _favoritesCache = [];
+  bool _cacheLoaded = false;
 
   Future<void> loadFavoritesCache() async {
     final token = await storage.read(key: 'auth_token');
@@ -26,11 +28,13 @@ class FavoritesService {
 
     if (response.statusCode == 200) {
       final List<dynamic> data = json.decode(response.body);
+      _favoritesCache = List<Map<String, dynamic>>.from(data);
       _favoriteProductIds = data
           .map((f) => f['product_id'])
           .where((id) => id != null)
           .map<int>((id) => id as int)
           .toList();
+      _cacheLoaded = true;
     }
   }
 
@@ -45,6 +49,8 @@ class FavoritesService {
   }
 
   List<int> get favoriteIds => _favoriteProductIds;
+  bool get isCacheLoaded => _cacheLoaded;
+  List<Map<String, dynamic>> get favoritesCache => _favoritesCache;
 
   Future<List<Map<String, dynamic>>> getFavorites() async {
     try {
@@ -81,23 +87,8 @@ class FavoritesService {
   }
 
   Future<bool> isFavorite(int productId) async {
-    final token = await storage.read(key: 'auth_token');
-    if (token == null) return false;
-
-    final response = await http.get(
-      Uri.parse('$baseUrl/api/v1/favorites/$productId/check'),
-      headers: {
-        'Authorization': 'Bearer $token',
-        'Accept': 'application/json',
-      },
-    );
-
-    if (response.statusCode == 200) {
-      final data = json.decode(response.body);
-      return data['favorite'] == true;
-    } else {
-      return false;
-    }
+    // Usar caché local en lugar de petición HTTP
+    return isFavoriteCached(productId);
   }
 
 
@@ -116,8 +107,11 @@ class FavoritesService {
       },
     );
 
-    // Si el DELETE fue exitoso, simplemente retorna
-    if (deleteResponse.statusCode == 200) return;
+    // Si el DELETE fue exitoso, recargar caché y retornar
+    if (deleteResponse.statusCode == 200) {
+      await loadFavoritesCache();
+      return;
+    }
 
     // Si no existía, intenta agregar
     final postResponse = await http.post(
@@ -132,6 +126,9 @@ class FavoritesService {
     if (postResponse.statusCode != 201) {
       throw Exception("Error al agregar/eliminar favorito");
     }
+    
+    // Recargar caché después de agregar
+    await loadFavoritesCache();
   }
 
 

@@ -1,12 +1,10 @@
 import 'package:ferremateriales/features/productos/services/favorites_service.dart';
+import 'package:ferremateriales/features/productos/services/cart_service.dart';
 import 'package:flutter/foundation.dart'; 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:ferremateriales/l10n/app_localizations.dart';
-import '../../auth/views/login_view.dart';
-import '../../auth/bloc/auth_bloc.dart';
-import '../../auth/bloc/auth_state.dart';
 import '../bloc/product_bloc.dart';
 import '../widgets/product_list.dart';
 import '../widgets/product_shimmer.dart';
@@ -21,16 +19,44 @@ class HomeView extends StatefulWidget {
 }
 
 class _HomeViewState extends State<HomeView> {
+  bool _isSearching = false;
+  late TextEditingController _searchController;
 
   @override
   void initState() {
     super.initState();
+    _searchController = TextEditingController();
 
-    // 🔥 ERROR corregido → antes llamabas ProductEntrarPressed (no existe)
-    context.read<ProductBloc>().add(CargarDestacados());
+    final productBloc = context.read<ProductBloc>();
+    
+    // Cargar destacados para mostrar
+    productBloc.add(CargarDestacados());
+    
+    // Cargar cachés locales y luego recargar productos para actualizar estado de favoritos
+    _loadCaches(productBloc);
+    
+    // Pre-cargar todos los productos en background para tenerlos en caché
+    Future.delayed(const Duration(milliseconds: 500), () {
+      if (mounted) {
+        productBloc.add(CargarTodosLosProductos());
+      }
+    });
+  }
 
-    // Cargar favoritos locales
-    FavoritesService().loadFavoritesCache();
+  Future<void> _loadCaches(ProductBloc productBloc) async {
+    await FavoritesService().loadFavoritesCache();
+    await CartService().loadCartCache();
+    
+    // Forzar actualización de la UI después de cargar cachés
+    if (mounted) {
+      setState(() {});
+    }
+  }
+
+  @override
+  void dispose() {
+    _searchController.dispose();
+    super.dispose();
   }
 
   @override
@@ -44,7 +70,6 @@ class _HomeViewState extends State<HomeView> {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
     final isDark = Theme.of(context).brightness == Brightness.dark;
-    final authState = context.watch<AuthBloc>().state;
 
     final bannerImages = [
       'assets/images/oferta.jpg',
@@ -116,69 +141,83 @@ class _HomeViewState extends State<HomeView> {
                 child: Row(
                   children: [
                     Expanded(
-                      child: GestureDetector(
+                      child: TextField(
+                        controller: _searchController,
+                        style: TextStyle(
+                          color: isDark ? Colors.white : const Color(0xFF222222),
+                        ),
                         onTap: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (_) => BlocProvider.value(
-                                value: context.read<ProductBloc>(),
-                                child: const AllProductsView(),
-                              ),
-                            ),
-                          ).then((_) {
-                            // Al volver a Home, recargamos los destacados
-                            context.read<ProductBloc>().add(CargarDestacados());
-                          });
+                          if (!_isSearching) {
+                            setState(() {
+                              _isSearching = true;
+                            });
+                            context.read<ProductBloc>().add(CargarTodosLosProductos());
+                          }
                         },
-                        child: Container(
-                          height: 48,
-                          alignment: Alignment.centerLeft,
-                          padding: const EdgeInsets.symmetric(horizontal: 16),
-                          decoration: BoxDecoration(
-                            color: Colors.grey.shade100,
+                        onChanged: (value) {
+                          if (_isSearching) {
+                            final bloc = context.read<ProductBloc>();
+                            if (value.isEmpty) {
+                              bloc.add(CargarTodosLosProductos());
+                            } else {
+                              bloc.add(ProductBuscarPorNombre(value));
+                            }
+                          }
+                        },
+                        decoration: InputDecoration(
+                          hintText: 'Buscar productos...',
+                          hintStyle: TextStyle(
+                            color: isDark ? Colors.grey.shade400 : Colors.grey.shade500,
+                          ),
+                          prefixIcon: Icon(
+                            Icons.search,
+                            color: isDark ? Colors.grey.shade400 : const Color(0xFF2e67a3),
+                          ),
+                          suffixIcon: _isSearching
+                              ? IconButton(
+                                  icon: Icon(
+                                    Icons.close,
+                                    color: isDark ? Colors.grey.shade400 : const Color(0xFF2e67a3),
+                                  ),
+                                  onPressed: () {
+                                    setState(() {
+                                      _isSearching = false;
+                                      _searchController.clear();
+                                    });
+                                    context.read<ProductBloc>().add(CargarDestacados());
+                                  },
+                                )
+                              : null,
+                          filled: true,
+                          fillColor: isDark ? Colors.grey.shade800 : Colors.grey.shade100,
+                          border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(24),
-                            border: Border.all(color: Colors.grey.shade300),
+                            borderSide: BorderSide(
+                              color: isDark ? Colors.grey.shade700 : Colors.grey.shade300,
+                            ),
                           ),
-                          child: Row(
-                            children: [
-                              const Icon(Icons.search, color: Color(0xFF2e67a3)),
-                              const SizedBox(width: 8),
-                              Text("Buscar productos...",
-                                  style: TextStyle(color: Colors.grey.shade500)),
-                            ],
+                          enabledBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(24),
+                            borderSide: BorderSide(
+                              color: isDark ? Colors.grey.shade700 : Colors.grey.shade300,
+                            ),
                           ),
+                          focusedBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(24),
+                            borderSide: const BorderSide(color: Color(0xFF2e67a3), width: 2),
+                          ),
+                          contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
                         ),
                       ),
                     ),
-                    const SizedBox(width: 12),
-
-                    // Botón de login
-                    if (authState.status == AuthStatus.guest)
-                      ElevatedButton.icon(
-                        onPressed: () {
-                          Navigator.pushReplacement(
-                            context,
-                            MaterialPageRoute(builder: (_) => const LoginView()),
-                          );
-                        },
-                        icon: const Icon(Icons.login, size: 18),
-                        label: const Text("Iniciar sesión"),
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: const Color(0xFF2e67a3),
-                          foregroundColor: Colors.white,
-                          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-                          shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(24)),
-                        ),
-                      ),
                   ],
                 ),
               ),
 
               const SizedBox(height: 24),
 
-              // Carrusel banners
+              // Carrusel banners (solo cuando no está buscando)
+              if (!_isSearching) ...[
               CarouselSlider(
                 options: CarouselOptions(height: 140, autoPlay: true, enlargeCenterPage: true),
                 items: bannerImages.map((path) {
@@ -203,11 +242,16 @@ class _HomeViewState extends State<HomeView> {
               ),
 
               const SizedBox(height: 32),
+              ],
+
+              // Título dinámico
+
+              // Título dinámico
 
               Padding(
                 padding: const EdgeInsets.only(left: 16),
                 child: Text(
-                  l10n.featuredProducts,
+                  _isSearching ? 'Resultados de búsqueda' : l10n.featuredProducts,
                   style: TextStyle(
                     fontSize: 22,
                     fontWeight: FontWeight.bold,
@@ -223,15 +267,85 @@ class _HomeViewState extends State<HomeView> {
                     return const ProductShimmer();
                   }
 
-                  // 🔹 MOSTRAR SOLO DESTACADOS EN HOME
-                  if (state is ProductDestacadosSuccess) {
-                    final destacados = state.destacados.take(8).toList();
-                    return ProductsList(products: destacados);
+                  // 🔹 Modo búsqueda: mostrar todos los productos o filtrados
+                  if (_isSearching && state is ProductLoadSuccess) {
+                    if (state.productos.isEmpty) {
+                      return Center(
+                        child: Padding(
+                          padding: const EdgeInsets.all(32),
+                          child: Text(
+                            'No se encontraron productos',
+                            style: TextStyle(
+                              color: isDark ? Colors.grey.shade400 : Colors.grey.shade600,
+                              fontSize: 16,
+                            ),
+                          ),
+                        ),
+                      );
+                    }
+                    return ProductsList(products: state.productos);
                   }
 
-                  // 🔹 MOSTRAR TODOS LOS PRODUCTOS (solo en búsqueda)
-                  if (state is ProductLoadSuccess) {
-                    return ProductsList(products: state.productos);
+                  // 🔹 Modo normal: mostrar solo destacados
+                  if (!_isSearching && state is ProductDestacadosSuccess) {
+                    final destacados = state.destacados.take(8).toList();
+                    return Column(
+                      children: [
+                        ProductsList(products: destacados),
+                        const SizedBox(height: 8),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 16),
+                          child: SizedBox(
+                            width: double.infinity,
+                            height: 50,
+                            child: OutlinedButton(
+                              onPressed: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (_) => BlocProvider.value(
+                                      value: context.read<ProductBloc>(),
+                                      child: const AllProductsView(),
+                                    ),
+                                  ),
+                                ).then((_) {
+                                  // Al volver a Home, recargamos los destacados
+                                  context.read<ProductBloc>().add(CargarDestacados());
+                                });
+                              },
+                              style: OutlinedButton.styleFrom(
+                                foregroundColor: isDark ? Colors.white : const Color(0xFF2e67a3),
+                                side: BorderSide(
+                                  color: isDark ? Colors.grey.shade600 : const Color(0xFF2e67a3),
+                                  width: 2,
+                                ),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(12),
+                                ),
+                              ),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Text(
+                                    'Ver todos los productos',
+                                    style: TextStyle(
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.w600,
+                                      color: isDark ? Colors.white : const Color(0xFF2e67a3),
+                                    ),
+                                  ),
+                                  const SizedBox(width: 8),
+                                  Icon(
+                                    Icons.arrow_forward,
+                                    color: isDark ? Colors.white : const Color(0xFF2e67a3),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    );
                   }
 
                   if (state is ProductLoadFailure) {
@@ -241,7 +355,6 @@ class _HomeViewState extends State<HomeView> {
                   return const ProductShimmer();
                 },
               ),
-              const SizedBox(height: 20),
             ],
           ),
         ),
