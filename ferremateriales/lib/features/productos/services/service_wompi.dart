@@ -20,7 +20,9 @@ final url = Uri.parse("$baseUrl/api/v1/payments/create_checkout");
         "amount": amount,
         "currency": "COP",
         "pay_method": "card",
-        "user_id": userId
+        "user_id": userId,
+        "redirect_url": "https://interisland-uninferrably-leonie.ngrok-free.dev/mobile_redirect"
+
       }),
     );
 

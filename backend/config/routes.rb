@@ -141,6 +141,8 @@ Rails.application.routes.draw do
  namespace :api do
   namespace :v1 do
     post "payments/create_checkout", to: "payments#create_checkout"
+    get "/wompi/return", to: "payments#return"
+
   end
 end
 
