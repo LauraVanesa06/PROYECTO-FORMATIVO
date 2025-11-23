@@ -7,6 +7,9 @@ class User < ApplicationRecord
   # relacion con de carrito con usuario
   has_one :cart, dependent: :destroy
 
+  # relacion con compras
+  has_many :buys, dependent: :destroy
+  has_many :payments, dependent: :destroy
 
   after_create :crear_carrito
 

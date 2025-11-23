@@ -4,11 +4,12 @@ require "json"
 require "digest"
 
 class WompiService
-  BASE_URL = "https://sandbox.wompi.co/v1".freeze
+  BASE_URL = "https://sandbox.wompi.co".freeze
 
   def initialize
-    @public_key       = Rails.application.credentials.dig(:wompi, :public_key)
-    @integrity_secret = Rails.application.credentials.dig(:wompi, :integrity_secret)
+    @public_key       = Rails.application.credentials.dig(:wompi, :public_key) || ENV['WOMPI_PUBLIC_KEY']
+    @private_key      = Rails.application.credentials.dig(:wompi, :private_key) || ENV['WOMPI_PRIVATE_KEY']
+    @integrity_secret = Rails.application.credentials.dig(:wompi, :integrity_secret) || ENV['WOMPI_INTEGRITY_SECRET']
   end
 
   # 1) Obtener tokens de aceptación (política y datos personales)
@@ -24,8 +25,12 @@ class WompiService
 
   # 2) Generar firma: SHA256( reference + amount_in_cents + currency + integrity_secret )
   def signature_for(reference:, amount_in_cents:, currency: "COP")
-    raise "integrity_secret missing" if @integrity_secret.blank?
+    raise "Wompi integrity_secret missing" if @integrity_secret.blank?
+    
+    # Concatenar en orden correcto
     payload = "#{reference}#{amount_in_cents}#{currency}#{@integrity_secret}"
+    
+    # Generar hash SHA256
     OpenSSL::Digest::SHA256.hexdigest(payload)
   end
 

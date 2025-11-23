@@ -1,13 +1,14 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:ferremateriales/core/utils/custom_cache_manager.dart';
 import 'package:ferremateriales/features/productos/model/product_model.dart';
-import 'package:ferremateriales/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../auth/bloc/auth_bloc.dart';
 import '../../auth/bloc/auth_state.dart';
+import '../../auth/views/login_view.dart';
 import '../services/favorites_service.dart';
 import '../services/cart_service.dart';
+import '../views/product_preview_view.dart';
 
 class ProductCard extends StatefulWidget {
   final ProductModel product;
@@ -87,9 +88,124 @@ class _ProductCardState extends State<ProductCard> {
     }
   }
 
+  Future<void> _showAuthDialog(BuildContext context, {required String action}) async {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    
+    return showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          backgroundColor: isDark ? Colors.grey.shade800 : Colors.white,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(20),
+          ),
+          title: Row(
+            children: [
+              Icon(
+                Icons.lock_outline,
+                color: const Color(0xFF2e67a3),
+                size: 28,
+              ),
+              const SizedBox(width: 12),
+              Expanded(
+                child: Text(
+                  'Autenticación requerida',
+                  style: TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                    color: isDark ? Colors.white : Colors.black87,
+                  ),
+                ),
+              ),
+            ],
+          ),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                'Para $action necesitas iniciar sesión o puedes continuar como invitado con funcionalidades limitadas.',
+                style: TextStyle(
+                  fontSize: 15,
+                  height: 1.4,
+                  color: isDark ? Colors.grey.shade300 : Colors.grey.shade700,
+                ),
+              ),
+              const SizedBox(height: 16),
+              Container(
+                padding: const EdgeInsets.all(12),
+                decoration: BoxDecoration(
+                  color: Colors.orange.withOpacity(0.1),
+                  borderRadius: BorderRadius.circular(12),
+                  border: Border.all(
+                    color: Colors.orange.withOpacity(0.3),
+                  ),
+                ),
+                child: Row(
+                  children: [
+                    Icon(Icons.info_outline, color: Colors.orange, size: 20),
+                    const SizedBox(width: 8),
+                    Expanded(
+                      child: Text(
+                        'Como invitado no podrás guardar favoritos ni realizar compras',
+                        style: TextStyle(
+                          fontSize: 13,
+                          color: isDark ? Colors.orange.shade200 : Colors.orange.shade800,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+                // Continuar como invitado - no hace nada especial
+              },
+              child: Text(
+                'Continuar como invitado',
+                style: TextStyle(
+                  color: isDark ? Colors.grey.shade400 : Colors.grey.shade600,
+                  fontSize: 14,
+                ),
+              ),
+            ),
+            ElevatedButton.icon(
+              onPressed: () {
+                Navigator.of(context).pop();
+                // Navegar a la vista de login
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const LoginView()),
+                );
+              },
+              icon: const Icon(Icons.login, size: 18, color: Colors.white),
+              label: const Text(
+                'Iniciar sesión',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: const Color(0xFF2e67a3),
+                padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
+              ),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context)!;
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final product = widget.product;
     final authState = context.watch<AuthBloc>().state;
@@ -105,9 +221,19 @@ class _ProductCardState extends State<ProductCard> {
           width: 1,
         ),
       ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
+      child: InkWell(
+        onTap: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => ProductPreviewView(product: product),
+            ),
+          );
+        },
+        borderRadius: BorderRadius.circular(12),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
           // Imagen con botón de favorito superpuesto
           Expanded(
             child: Stack(
@@ -184,13 +310,7 @@ class _ProductCardState extends State<ProductCard> {
                       ),
                       onPressed: () {
                         if (authState.status == AuthStatus.guest) {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(
-                              content: Text(
-                                  'Inicia sesión para agregar favoritos ⭐'),
-                              backgroundColor: Colors.orange,
-                            ),
-                          );
+                          _showAuthDialog(context, action: 'agregar favoritos');
                           return;
                         }
                         _toggleFavorite(context);
@@ -282,13 +402,7 @@ class _ProductCardState extends State<ProductCard> {
                         ),
                         onPressed: () {
                           if (authState.status == AuthStatus.guest) {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(
-                                content: Text(
-                                    'Inicia sesión para añadir productos al carrito 🛒'),
-                                backgroundColor: Colors.orange,
-                              ),
-                            );
+                            _showAuthDialog(context, action: 'agregar productos al carrito');
                             return;
                           }
                           _addToCart(context);
@@ -301,6 +415,7 @@ class _ProductCardState extends State<ProductCard> {
             ),
           ),
         ],
+      ),
       ),
     );
   }
