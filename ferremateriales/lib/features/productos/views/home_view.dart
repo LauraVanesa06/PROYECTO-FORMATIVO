@@ -7,6 +7,7 @@ import 'package:ferremateriales/l10n/app_localizations.dart';
 import '../bloc/product_bloc.dart';
 import '../widgets/product_list.dart';
 import '../widgets/product_shimmer.dart';
+import 'allproducts_view.dart';
 import 'category_products_view.dart';
 
 class HomeView extends StatefulWidget {
@@ -145,11 +146,19 @@ class _HomeViewState extends State<HomeView> {
                         },
                         decoration: InputDecoration(
                           hintText: 'Buscar productos...',
-                          hintStyle: TextStyle(color: Colors.grey.shade500),
-                          prefixIcon: const Icon(Icons.search, color: Color(0xFF2e67a3)),
+                          hintStyle: TextStyle(
+                            color: isDark ? Colors.grey.shade400 : Colors.grey.shade500,
+                          ),
+                          prefixIcon: Icon(
+                            Icons.search,
+                            color: isDark ? Colors.grey.shade400 : const Color(0xFF2e67a3),
+                          ),
                           suffixIcon: _isSearching
                               ? IconButton(
-                                  icon: const Icon(Icons.close, color: Color(0xFF2e67a3)),
+                                  icon: Icon(
+                                    Icons.close,
+                                    color: isDark ? Colors.grey.shade400 : const Color(0xFF2e67a3),
+                                  ),
                                   onPressed: () {
                                     setState(() {
                                       _isSearching = false;
@@ -160,14 +169,18 @@ class _HomeViewState extends State<HomeView> {
                                 )
                               : null,
                           filled: true,
-                          fillColor: Colors.grey.shade100,
+                          fillColor: isDark ? Colors.grey.shade800 : Colors.grey.shade100,
                           border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(24),
-                            borderSide: BorderSide(color: Colors.grey.shade300),
+                            borderSide: BorderSide(
+                              color: isDark ? Colors.grey.shade700 : Colors.grey.shade300,
+                            ),
                           ),
                           enabledBorder: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(24),
-                            borderSide: BorderSide(color: Colors.grey.shade300),
+                            borderSide: BorderSide(
+                              color: isDark ? Colors.grey.shade700 : Colors.grey.shade300,
+                            ),
                           ),
                           focusedBorder: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(24),
@@ -256,7 +269,63 @@ class _HomeViewState extends State<HomeView> {
                   // 🔹 Modo normal: mostrar solo destacados
                   if (!_isSearching && state is ProductDestacadosSuccess) {
                     final destacados = state.destacados.take(8).toList();
-                    return ProductsList(products: destacados);
+                    return Column(
+                      children: [
+                        ProductsList(products: destacados),
+                        const SizedBox(height: 16),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 16),
+                          child: SizedBox(
+                            width: double.infinity,
+                            height: 50,
+                            child: OutlinedButton(
+                              onPressed: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (_) => BlocProvider.value(
+                                      value: context.read<ProductBloc>(),
+                                      child: const AllProductsView(),
+                                    ),
+                                  ),
+                                ).then((_) {
+                                  // Al volver a Home, recargamos los destacados
+                                  context.read<ProductBloc>().add(CargarDestacados());
+                                });
+                              },
+                              style: OutlinedButton.styleFrom(
+                                foregroundColor: isDark ? Colors.white : const Color(0xFF2e67a3),
+                                side: BorderSide(
+                                  color: isDark ? Colors.grey.shade600 : const Color(0xFF2e67a3),
+                                  width: 2,
+                                ),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(12),
+                                ),
+                              ),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Text(
+                                    'Ver todos los productos',
+                                    style: TextStyle(
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.w600,
+                                      color: isDark ? Colors.white : const Color(0xFF2e67a3),
+                                    ),
+                                  ),
+                                  const SizedBox(width: 8),
+                                  Icon(
+                                    Icons.arrow_forward,
+                                    color: isDark ? Colors.white : const Color(0xFF2e67a3),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    );
                   }
 
                   if (state is ProductLoadFailure) {
@@ -266,7 +335,6 @@ class _HomeViewState extends State<HomeView> {
                   return const ProductShimmer();
                 },
               ),
-              const SizedBox(height: 20),
             ],
           ),
         ),

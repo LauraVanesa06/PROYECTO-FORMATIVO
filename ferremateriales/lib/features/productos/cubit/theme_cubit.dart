@@ -10,10 +10,13 @@ class ThemeCubit extends Cubit<ThemeState> {
   ThemeCubit(this._prefs)
       : super(
           ThemeState(
-            isDarkMode: _prefs.getBool('isDarkMode') ?? false,
+            isDarkMode: false, // Siempre iniciar en modo claro
             locale: Locale(_prefs.getString('language') ?? 'es'),
           ),
-        );
+        ) {
+    // Limpiar cualquier valor guardado de modo oscuro
+    _prefs.setBool('isDarkMode', false);
+  }
 
   Future<void> toggleTheme() async {
     final newValue = !state.isDarkMode;
