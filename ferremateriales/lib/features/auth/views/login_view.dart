@@ -8,7 +8,6 @@ import '../bloc/auth_event.dart';
 import '../bloc/auth_state.dart';
 import '../widgets/login_form.dart';
 import 'register_view.dart';
-import 'reset_password_view.dart';
 import '../../productos/views/main_view.dart';
 
 class LoginView extends StatelessWidget {
@@ -208,26 +207,7 @@ class LoginView extends StatelessWidget {
                               ),
                             ],
                           ),
-                        ),
-                        const SizedBox(height: 16),
-
-                        // Link de "Olvidaste contraseña"
-                        TextButton(
-                          onPressed: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(builder: (_) => ResetPasswordView()),
-                            );
-                          },
-                          child: Text(
-                            l10n.forgotPassword,
-                            style: const TextStyle(
-                              color: Color(0xFF2e67a3),
-                              fontSize: 14,
-                              decoration: TextDecoration.underline,
-                            ),
-                          ),
-                        ),
+                        ),                        const SizedBox(height: 16),
                       ],
                     ),
                   ),

@@ -23,6 +23,14 @@ class _CartViewState extends State<CartView> {
   @override
   void initState() {
     super.initState();
+    // Cargar desde caché inmediatamente si está disponible
+    if (_cartService.isCacheLoaded) {
+      setState(() {
+        _cartItems = _cartService.cartCache;
+        _isLoading = false;
+      });
+    }
+    // Recargar desde API en background
     _loadCartItems();
   }
 

@@ -13,11 +13,31 @@ es:
     messages:
       taken: "ya está en uso"
       blank: "no puede estar vacío"
+      not_found: "no encontrado"
+    attributes:
+      email:
+        not_found: "no encontrado"
+    models:
+      user:
+        not_found: "no encontrado"
+        attributes:
+          email:
+            not_found: "no encontrado"
 
   # Traducciones para ActiveRecord
   activerecord:
+    errors:
+      messages:
+        not_found: "no encontrado"
+      models:
+        user:
+          not_found: "no encontrado"
+          attributes:
+            email:
+              not_found: "no encontrado"
     models:
       product: "Producto"
+      user: "Usuario"
     attributes:
       product:
         marca: "Marca"
@@ -25,6 +45,8 @@ es:
         precio: "Precio"
         stock: "Stock"
         codigo_producto: "Código de Producto"
+      user:
+        email: "Correo electrónico"
 
   # Navegación
   nav:

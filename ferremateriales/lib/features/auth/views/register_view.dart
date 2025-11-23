@@ -338,6 +338,24 @@ class _RegisterViewState extends State<RegisterView> {
                                       ),
                                     ],
                                   ),
+                                  const SizedBox(height: 12),
+                                  // Lista de requisitos
+                                  _buildPasswordRequirement(
+                                    'Al menos 6 caracteres',
+                                    _password.length >= 6,
+                                  ),
+                                  _buildPasswordRequirement(
+                                    'Una letra mayúscula',
+                                    _password.contains(RegExp(r'[A-Z]')),
+                                  ),
+                                  _buildPasswordRequirement(
+                                    'Una letra minúscula',
+                                    _password.contains(RegExp(r'[a-z]')),
+                                  ),
+                                  _buildPasswordRequirement(
+                                    'Un número',
+                                    _password.contains(RegExp(r'[0-9]')),
+                                  ),
                                 ],
                               ),
                             const SizedBox(height: 12),
@@ -463,5 +481,30 @@ class _RegisterViewState extends State<RegisterView> {
           ),
         ),
       );
+  }
+
+  // Widget para mostrar cada requisito de contraseña
+  Widget _buildPasswordRequirement(String text, bool isValid) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 6),
+      child: Row(
+        children: [
+          Icon(
+            isValid ? Icons.check_circle : Icons.radio_button_unchecked,
+            size: 16,
+            color: isValid ? Colors.green : Colors.grey.shade400,
+          ),
+          const SizedBox(width: 8),
+          Text(
+            text,
+            style: GoogleFonts.inter(
+              fontSize: 12,
+              color: isValid ? Colors.green : Colors.grey.shade600,
+              fontWeight: isValid ? FontWeight.w500 : FontWeight.w400,
+            ),
+          ),
+        ],
+      ),
+    );
   }
 }

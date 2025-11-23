@@ -21,6 +21,14 @@ class _FavoritesViewState extends State<FavoritesView> {
   @override
   void initState() {
     super.initState();
+    // Cargar desde caché inmediatamente si está disponible
+    if (_favoritesService.isCacheLoaded) {
+      setState(() {
+        _favorites = _favoritesService.favoritesCache;
+        _isLoading = false;
+      });
+    }
+    // Recargar desde API en background
     _loadFavorites();
   }
 
@@ -205,18 +213,67 @@ body: _isLoading
                                           await _favoritesService.addToCart(fav["id"]);
                                           ScaffoldMessenger.of(context).showSnackBar(
                                             SnackBar(
-                                              content: Text('${fav["nombre"]} agregado al carrito'),
+                                              content: Row(
+                                                children: [
+                                                  Container(
+                                                    padding: const EdgeInsets.all(8),
+                                                    decoration: BoxDecoration(
+                                                      color: Colors.white.withOpacity(0.2),
+                                                      shape: BoxShape.circle,
+                                                    ),
+                                                    child: const Icon(
+                                                      Icons.shopping_cart,
+                                                      color: Colors.white,
+                                                      size: 20,
+                                                    ),
+                                                  ),
+                                                  const SizedBox(width: 12),
+                                                  Expanded(
+                                                    child: Text(
+                                                      '${fav["nombre"]} agregado al carrito',
+                                                      style: const TextStyle(
+                                                        fontSize: 15,
+                                                        fontWeight: FontWeight.w500,
+                                                      ),
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
                                               backgroundColor: const Color(0xFF2e67a3),
+                                              behavior: SnackBarBehavior.floating,
+                                              shape: RoundedRectangleBorder(
+                                                borderRadius: BorderRadius.circular(12),
+                                              ),
+                                              margin: const EdgeInsets.all(16),
                                               duration: const Duration(seconds: 2),
                                             ),
                                           );
                                         } catch (e) {
                                           print('Error al agregar al carrito: $e');
                                           ScaffoldMessenger.of(context).showSnackBar(
-                                            const SnackBar(
-                                              content: Text('Error al agregar al carrito'),
-                                              backgroundColor: Colors.red,
-                                              duration: Duration(seconds: 2),
+                                            SnackBar(
+                                              content: Row(
+                                                children: [
+                                                  const Icon(Icons.error_outline, color: Colors.white),
+                                                  const SizedBox(width: 12),
+                                                  const Expanded(
+                                                    child: Text(
+                                                      'Error al agregar al carrito',
+                                                      style: TextStyle(
+                                                        fontSize: 15,
+                                                        fontWeight: FontWeight.w500,
+                                                      ),
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                              backgroundColor: Colors.red.shade700,
+                                              behavior: SnackBarBehavior.floating,
+                                              shape: RoundedRectangleBorder(
+                                                borderRadius: BorderRadius.circular(12),
+                                              ),
+                                              margin: const EdgeInsets.all(16),
+                                              duration: const Duration(seconds: 2),
                                             ),
                                           );
                                         }
