@@ -4,18 +4,31 @@ class HomeController < ApplicationController
 
   def index
     @categories = Category.all
-    @productos = Product
-      .joins(:purchasedetails)
-      .select("products.*, SUM(purchasedetails.cantidad) AS total_vendidos")
-      .group("products.id")
-      .order("total_vendidos DESC")
-      .limit(8) # cantidad que quieras mostrar
+    
+    # Solo mostrar productos disponibles en la vista pública
+    if params[:category_id].present?
+      @category = Category.find(params[:category_id])
+      @productos = @category.products.where(disponible: true)
+    else
+      @productos = Product.where(disponible: true)
+    end
+    
+    # Aplicar filtros adicionales si existen
+    if params[:search].present?
+      @productos = @productos.where("LOWER(nombre) LIKE ? OR LOWER(descripcion) LIKE ?", 
+                                  "%#{params[:search].downcase}%", 
+                                  "%#{params[:search].downcase}%")
+    end
+    
+    # Ordenar productos
+    @productos = @productos.order(created_at: :desc)
   end
 
   def producto
-    @productos = Product.all
+    # Solo productos disponibles para clientes
+    @productos = Product.where(disponible: true)
     @categories = Category.all
-    @suppliers  = Supplier.all
+    @suppliers = Supplier.all
 
     if params[:category_id].present?
       @productos = @productos.where(category_id: params[:category_id])
@@ -33,11 +46,26 @@ class HomeController < ApplicationController
     if params[:max_price].present?
       @productos = @productos.where("precio <= ?", params[:max_price])
     end
+
+    # Si no hay productos después de los filtros, mostrar mensaje
+    if @productos.empty?
+      flash.now[:alert] = "No se encontraron productos disponibles con esos filtros."
+    end
   end
 
   def producto_show
     @product = Product.find(params[:id])
-    @relacionados = Product.where(category: @product.category).where.not(id: @product.id).limit(5)
+    
+    # Solo mostrar si está disponible (o si es admin)
+    unless @product.disponible || current_user&.admin?
+      redirect_to root_path, alert: "Este producto no está disponible actualmente"
+      return
+    end
+    
+    # Productos relacionados solo disponibles
+    @relacionados = Product.where(category: @product.category, disponible: true)
+                          .where.not(id: @product.id)
+                          .limit(5)
     
     # Variables para Wompi en producto individual
     @payment_reference = "product_#{@product.id}_#{Time.current.to_i}"

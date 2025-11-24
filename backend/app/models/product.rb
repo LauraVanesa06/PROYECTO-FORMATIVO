@@ -3,6 +3,10 @@ class Product < ApplicationRecord
   has_many :pedido_products
   has_many :pedidos, through: :pedido_products
 
+  # Relacion con buy_products
+  has_many :buy_products, dependent: :destroy
+  has_many :buys, through: :buy_products
+
   # Relacion favoritos
   has_many :favorites, dependent: :destroy
   has_many :favorited_by, through: :favorites, source: :user, dependent: :destroy
@@ -114,4 +118,11 @@ class Product < ApplicationRecord
     # Por ahora retorna false para que siempre incremente
     false
   end
+
+  # Scope para productos disponibles
+  scope :disponibles, -> { where(disponible: true) }
+  scope :no_disponibles, -> { where(disponible: false) }
+  
+  # Scope para productos con stock
+  scope :con_stock, -> { where("stock > ?", 0) }
 end

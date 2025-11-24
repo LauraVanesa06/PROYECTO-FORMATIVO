@@ -111,5 +111,84 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       await _authService.logout();
       emit(const AuthState(status: AuthStatus.loggedOut));
     });
+
+    // Solicitar restablecimiento de contraseña
+    on<ResetPasswordRequested>((event, emit) async {
+      emit(state.copyWith(status: AuthStatus.loading));
+      try {
+        final response = await _authService.requestPasswordReset(event.email);
+        emit(state.copyWith(
+          status: AuthStatus.resetPasswordSent,
+          resetMessage: response['message'],
+          resetToken: response['reset_token'], // Guardar el token
+        ));
+      } catch (e) {
+        emit(state.copyWith(
+          status: AuthStatus.resetPasswordError,
+          error: e.toString().replaceAll('Exception: ', ''),
+        ));
+      }
+    });
+
+    // Actualizar información del usuario
+    on<UpdateUserRequested>((event, emit) async {
+      emit(state.copyWith(status: AuthStatus.loading));
+      try {
+        final response = await _authService.updateUser(
+          nombre: event.nombre,
+          email: event.email,
+        );
+        emit(state.copyWith(
+          status: AuthStatus.success,
+          nombre: response['user']['name'],
+          email: response['user']['email'],
+        ));
+      } catch (e) {
+        emit(state.copyWith(
+          status: AuthStatus.failure,
+          error: e.toString().replaceAll('Exception: ', ''),
+        ));
+      }
+    });
+
+    // Cambiar contraseña con código de recuperación
+    on<ChangePasswordRequested>((event, emit) async {
+      emit(state.copyWith(status: AuthStatus.loading));
+      try {
+        await _authService.changePasswordWithCode(
+          email: event.email,
+          recoveryCode: event.recoveryCode,
+          newPassword: event.newPassword,
+        );
+        emit(state.copyWith(
+          status: AuthStatus.success,
+        ));
+      } catch (e) {
+        emit(state.copyWith(
+          status: AuthStatus.failure,
+          error: e.toString().replaceAll('Exception: ', ''),
+        ));
+      }
+    });
+
+    // Cambiar contraseña desde la cuenta
+    on<ChangePasswordFromAccountRequested>((event, emit) async {
+      emit(state.copyWith(status: AuthStatus.loading));
+      try {
+        await _authService.changePassword(
+          currentPassword: event.currentPassword,
+          newPassword: event.newPassword,
+        );
+        emit(state.copyWith(
+          status: AuthStatus.success,
+        ));
+      } catch (e) {
+        emit(state.copyWith(
+          status: AuthStatus.failure,
+          error: e.toString().replaceAll('Exception: ', ''),
+        ));
+      }
+    });
   }
 }
+

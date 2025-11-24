@@ -6,11 +6,22 @@ class FavoritesController < ApplicationController
   end
 
   def create
-    favorite = current_user.favorites.create(product_id: params[:product_id])
+    product = Product.find(params[:product_id])
+    
+    # Permitir agregar a favoritos aunque no esté disponible
+    # (el usuario puede querer ser notificado cuando vuelva a estar disponible)
+    favorite = current_user.favorites.find_or_initialize_by(product: product)
 
-    respond_to do |format|
-      format.json { render json: { id: favorite.id }, status: :created }
-      format.html { redirect_back fallback_location: root_path, notice: 'Agregado a favoritos' }
+    if favorite.save
+      respond_to do |format|
+        format.json { render json: { id: favorite.id, message: "Producto agregado a favoritos" } }
+        format.html { redirect_back fallback_location: root_path, notice: "Producto agregado a favoritos" }
+      end
+    else
+      respond_to do |format|
+        format.json { render json: { error: "Error al agregar a favoritos" }, status: :unprocessable_entity }
+        format.html { redirect_back fallback_location: root_path, alert: "Error al agregar a favoritos" }
+      end
     end
   end
 

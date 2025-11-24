@@ -1,9 +1,10 @@
-import 'package:ferremateriales/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../bloc/auth_bloc.dart';
 import '../bloc/auth_event.dart';
+import '../bloc/auth_state.dart';
+import 'new_password_view.dart';
 
 class ResetPasswordView extends StatefulWidget {
   @override
@@ -13,25 +14,95 @@ class ResetPasswordView extends StatefulWidget {
 class _ResetPasswordViewState extends State<ResetPasswordView> {
   final _formKey = GlobalKey<FormState>();
   String _email = "";
+  String _verificationCode = "";
+  bool _codeSent = false;
+  bool _isVerifying = false;
 
   @override
   Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context)!;
-
-    return Scaffold(
-      backgroundColor: Colors.white,
-      body: SafeArea(
-        child: Center(
-          child: SingleChildScrollView(
-            padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 32.0),
-            child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
+    return BlocListener<AuthBloc, AuthState>(
+      listener: (context, state) {
+        if (state.status == AuthStatus.resetPasswordSent) {
+          // Marcar que el código fue enviado
+          setState(() {
+            _codeSent = true;
+          });
+          
+          // Mostrar mensaje de éxito
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Row(
                 children: [
-                  // Logo circular simple
-                  Container(
-                    width: 80,
-                    height: 80,
-                    decoration: BoxDecoration(
+                  const Icon(Icons.check_circle, color: Colors.white),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: Text(
+                      state.resetMessage ?? 'Código de verificación enviado a tu correo',
+                      style: GoogleFonts.inter(
+                        fontSize: 14,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+              backgroundColor: Colors.green.shade600,
+              behavior: SnackBarBehavior.floating,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(12),
+              ),
+              duration: const Duration(seconds: 4),
+              margin: const EdgeInsets.all(16),
+            ),
+          );
+        } else if (state.status == AuthStatus.resetPasswordError) {
+          // Mostrar mensaje de error
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Row(
+                children: [
+                  const Icon(Icons.error_outline, color: Colors.white),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: Text(
+                      state.error ?? 'Error al procesar la solicitud',
+                      style: GoogleFonts.inter(
+                        fontSize: 14,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+              backgroundColor: Colors.red.shade700,
+              behavior: SnackBarBehavior.floating,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(12),
+              ),
+              duration: const Duration(seconds: 4),
+              margin: const EdgeInsets.all(16),
+            ),
+          );
+        }
+      },
+      child: BlocBuilder<AuthBloc, AuthState>(
+        builder: (context, state) {
+          final isLoading = state.status == AuthStatus.loading || _isVerifying;
+          
+          return Scaffold(
+            backgroundColor: Colors.white,
+            body: SafeArea(
+              child: Center(
+                child: SingleChildScrollView(
+                  padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 32.0),
+                  child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                      // Logo circular simple
+                      Container(
+                        width: 80,
+                        height: 80,
+                        decoration: BoxDecoration(
                       shape: BoxShape.circle,
                       color: const Color(0xFF2e67a3),
                       boxShadow: [
@@ -129,24 +200,216 @@ class _ResetPasswordViewState extends State<ResetPasswordView> {
                               return null;
                             },
                           ),
+                          
+                          // Campo de código de verificación (solo visible después de enviar)
+                          if (_codeSent) ...[
+                            const SizedBox(height: 24),
+                            Text(
+                              'Código de verificación',
+                              style: GoogleFonts.inter(
+                                fontSize: 13,
+                                fontWeight: FontWeight.w500,
+                                color: Color(0xFF2e67a3),
+                              ),
+                            ),
+                            const SizedBox(height: 8),
+                            TextFormField(
+                              style: GoogleFonts.inter(
+                                color: const Color(0xFF222222),
+                                fontSize: 20,
+                                letterSpacing: 8,
+                                fontWeight: FontWeight.bold,
+                              ),
+                              decoration: InputDecoration(
+                                hintText: '000000',
+                                hintStyle: GoogleFonts.inter(
+                                  color: Colors.grey.shade300,
+                                  fontSize: 20,
+                                  letterSpacing: 8,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                                filled: true,
+                                fillColor: Colors.grey.shade50,
+                                border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(12),
+                                  borderSide: BorderSide(color: Colors.grey.shade300, width: 2),
+                                ),
+                                enabledBorder: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(12),
+                                  borderSide: BorderSide(color: Colors.grey.shade300, width: 2),
+                                ),
+                                focusedBorder: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(12),
+                                  borderSide: const BorderSide(color: Color(0xFF2e67a3), width: 2),
+                                ),
+                                contentPadding: const EdgeInsets.symmetric(vertical: 16, horizontal: 20),
+                                suffixIcon: Icon(
+                                  Icons.pin,
+                                  color: Colors.grey.shade400,
+                                ),
+                              ),
+                              textAlign: TextAlign.center,
+                              keyboardType: TextInputType.number,
+                              maxLength: 6,
+                              onChanged: (value) => _verificationCode = value,
+                              validator: (value) {
+                                if (value == null || value.isEmpty) {
+                                  return 'Ingresa el código de verificación';
+                                }
+                                if (value.length != 6) {
+                                  return 'El código debe tener 6 dígitos';
+                                }
+                                if (!RegExp(r'^\d+$').hasMatch(value)) {
+                                  return 'Solo se permiten números';
+                                }
+                                return null;
+                              },
+                            ),
+                          ],
+                          
                           const SizedBox(height: 32),
                           // Botón de enviar
                           SizedBox(
                             width: double.infinity,
                             height: 50,
                             child: ElevatedButton(
-                              onPressed: () {
+                              onPressed: isLoading ? null : () async {
                                 if (_formKey.currentState!.validate()) {
-                                  context.read<AuthBloc>().add(
-                                    ResetPasswordRequested(email: _email),
-                                  );
-                                  ScaffoldMessenger.of(context).showSnackBar(
-                                    SnackBar(content: Text(l10n.requestSent)),
-                                  );
+                                  if (!_codeSent) {
+                                    // Primera vez: enviar código
+                                    context.read<AuthBloc>().add(
+                                      ResetPasswordRequested(email: _email),
+                                    );
+                                  } else {
+                                    // Segunda vez: verificar código
+                                    setState(() {
+                                      _isVerifying = true;
+                                    });
+                                    
+                                    // Simular un pequeño delay para mostrar el loading
+                                    await Future.delayed(const Duration(milliseconds: 500));
+                                    
+                                    final authState = context.read<AuthBloc>().state;
+                                    final storedToken = authState.resetToken;
+                                    
+                                    if (storedToken == null) {
+                                      setState(() {
+                                        _isVerifying = false;
+                                      });
+                                      ScaffoldMessenger.of(context).showSnackBar(
+                                        SnackBar(
+                                          content: Row(
+                                            children: [
+                                              const Icon(Icons.error_outline, color: Colors.white),
+                                              const SizedBox(width: 12),
+                                              Expanded(
+                                                child: Text(
+                                                  'Error: No se encontró el token de verificación',
+                                                  style: GoogleFonts.inter(
+                                                    fontSize: 14,
+                                                    fontWeight: FontWeight.w500,
+                                                  ),
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                          backgroundColor: Colors.red.shade700,
+                                          behavior: SnackBarBehavior.floating,
+                                          shape: RoundedRectangleBorder(
+                                            borderRadius: BorderRadius.circular(12),
+                                          ),
+                                          duration: const Duration(seconds: 4),
+                                          margin: const EdgeInsets.all(16),
+                                        ),
+                                      );
+                                      return;
+                                    }
+                                    
+                                    // Verificar si el código ingresado coincide con el token
+                                    if (_verificationCode == storedToken) {
+                                      // Código correcto - Mostrar mensaje de éxito
+                                      ScaffoldMessenger.of(context).showSnackBar(
+                                        SnackBar(
+                                          content: Row(
+                                            children: [
+                                              const Icon(Icons.check_circle, color: Colors.white),
+                                              const SizedBox(width: 12),
+                                              Expanded(
+                                                child: Text(
+                                                  '¡Código verificado correctamente!',
+                                                  style: GoogleFonts.inter(
+                                                    fontSize: 14,
+                                                    fontWeight: FontWeight.w500,
+                                                  ),
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                          backgroundColor: Colors.green.shade600,
+                                          behavior: SnackBarBehavior.floating,
+                                          shape: RoundedRectangleBorder(
+                                            borderRadius: BorderRadius.circular(12),
+                                          ),
+                                          duration: const Duration(seconds: 2),
+                                          margin: const EdgeInsets.all(16),
+                                        ),
+                                      );
+                                      
+                                      // Esperar a que se muestre el mensaje antes de navegar
+                                      await Future.delayed(const Duration(milliseconds: 1500));
+                                      
+                                      setState(() {
+                                        _isVerifying = false;
+                                      });
+                                      
+                                      // Navegar a la pantalla de nueva contraseña
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (context) => NewPasswordView(
+                                            email: _email,
+                                            recoveryCode: _verificationCode,
+                                          ),
+                                        ),
+                                      );
+                                    } else {
+                                      // Código incorrecto
+                                      setState(() {
+                                        _isVerifying = false;
+                                      });
+                                      
+                                      ScaffoldMessenger.of(context).showSnackBar(
+                                        SnackBar(
+                                          content: Row(
+                                            children: [
+                                              const Icon(Icons.error_outline, color: Colors.white),
+                                              const SizedBox(width: 12),
+                                              Expanded(
+                                                child: Text(
+                                                  'Código incorrecto. Por favor, verifica el código enviado a tu correo.',
+                                                  style: GoogleFonts.inter(
+                                                    fontSize: 14,
+                                                    fontWeight: FontWeight.w500,
+                                                  ),
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                          backgroundColor: Colors.red.shade700,
+                                          behavior: SnackBarBehavior.floating,
+                                          shape: RoundedRectangleBorder(
+                                            borderRadius: BorderRadius.circular(12),
+                                          ),
+                                          duration: const Duration(seconds: 4),
+                                          margin: const EdgeInsets.all(16),
+                                        ),
+                                      );
+                                    }
+                                  }
                                 }
                               },
                               style: ElevatedButton.styleFrom(
-                                backgroundColor: const Color(0xFF2e67a3),
+                                backgroundColor: isLoading ? Colors.grey.shade400 : const Color(0xFF2e67a3),
                                 foregroundColor: Colors.white,
                                 shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(30),
@@ -154,14 +417,37 @@ class _ResetPasswordViewState extends State<ResetPasswordView> {
                                 elevation: 2,
                                 shadowColor: const Color(0xFF2e67a3).withOpacity(0.3),
                               ),
-                              child: Text(
-                                'Enviar instrucciones',
-                                style: GoogleFonts.inter(
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.w600,
-                                  letterSpacing: 0.5,
-                                ),
-                              ),
+                              child: isLoading
+                                  ? Row(
+                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      children: [
+                                        const SizedBox(
+                                          width: 20,
+                                          height: 20,
+                                          child: CircularProgressIndicator(
+                                            strokeWidth: 2,
+                                            valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                                          ),
+                                        ),
+                                        const SizedBox(width: 12),
+                                        Text(
+                                          _codeSent ? 'Verificando...' : 'Enviando...',
+                                          style: GoogleFonts.inter(
+                                            fontSize: 16,
+                                            fontWeight: FontWeight.w600,
+                                            letterSpacing: 0.5,
+                                          ),
+                                        ),
+                                      ],
+                                    )
+                                  : Text(
+                                      _codeSent ? 'Verificar código' : 'Enviar instrucciones',
+                                      style: GoogleFonts.inter(
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.w600,
+                                        letterSpacing: 0.5,
+                                      ),
+                                    ),
                             ),
                           ),
                           const SizedBox(height: 20),
@@ -190,7 +476,10 @@ class _ResetPasswordViewState extends State<ResetPasswordView> {
             ),
           ),
         ),
-      );
-    }
+          );
+        },
+      ),
+    );
   }
+}
 

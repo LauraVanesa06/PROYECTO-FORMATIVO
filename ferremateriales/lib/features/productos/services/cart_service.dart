@@ -4,8 +4,42 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:ferremateriales/features/productos/models/cart_item_model.dart';
 
 class CartService {
+  static final CartService _instance = CartService._internal();
+  factory CartService() => _instance;
+  CartService._internal();
+
   final String baseUrl = 'http://localhost:3000';
   final storage = const FlutterSecureStorage();
+  
+  List<CartItemModel> _cartCache = [];
+  bool _cacheLoaded = false;
+
+  bool get isCacheLoaded => _cacheLoaded;
+  List<CartItemModel> get cartCache => _cartCache;
+
+  Future<void> loadCartCache() async {
+    try {
+      final token = await storage.read(key: 'auth_token');
+      if (token == null) return;
+
+      final response = await http.get(
+        Uri.parse('$baseUrl/api/v1/cart_items'),
+        headers: {
+          'Authorization': 'Bearer $token',
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+        },
+      );
+
+      if (response.statusCode == 200) {
+        final List<dynamic> data = json.decode(response.body);
+        _cartCache = data.map((item) => CartItemModel.fromJson(item)).toList();
+        _cacheLoaded = true;
+      }
+    } catch (e) {
+      print('Error loading cart cache: $e');
+    }
+  }
 
   Future<List<CartItemModel>> getCartItems() async {
     try {
@@ -23,7 +57,9 @@ class CartService {
 
       if (response.statusCode == 200) {
         final List<dynamic> data = json.decode(response.body);
-        return data.map((item) => CartItemModel.fromJson(item)).toList();
+        _cartCache = data.map((item) => CartItemModel.fromJson(item)).toList();
+        _cacheLoaded = true;
+        return _cartCache;
       } else if (response.statusCode == 401) {
         final error = json.decode(response.body);
         throw Exception(error['error'] ?? 'No autorizado: Inicie sesión nuevamente');
@@ -45,6 +81,8 @@ class CartService {
     if (response.statusCode != 200) {
       throw Exception('Error al aumentar cantidad');
     }
+    // Recargar caché después de actualizar
+    await loadCartCache();
   }
 
 
@@ -57,6 +95,8 @@ class CartService {
     if (response.statusCode != 200) {
       throw Exception('Error al disminuir cantidad');
     }
+    // Recargar caché después de actualizar
+    await loadCartCache();
   }
 
   Future<void> removeItem(int id) async {
@@ -64,6 +104,8 @@ class CartService {
     if (response.statusCode != 204) {
       throw Exception('Error al eliminar producto del carrito');
     }
+    // Recargar caché después de eliminar
+    await loadCartCache();
   }
 
   Future<void> addToCart(int productId) async {
@@ -90,6 +132,9 @@ class CartService {
     if (response.statusCode != 201) {
       throw Exception("Error al agregar al carrito");
     }
+    
+    // Recargar caché después de agregar
+    await loadCartCache();
   }
 }
  

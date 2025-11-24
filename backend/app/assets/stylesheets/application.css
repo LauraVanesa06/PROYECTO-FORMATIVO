@@ -236,6 +236,8 @@
 }
 .filtro-productos .row.g-3 {
   row-gap: 12px;
+    display: flex;
+    justify-content: space-evenly;
 }
 html, body {
   min-height: 100vh;

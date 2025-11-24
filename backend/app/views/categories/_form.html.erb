@@ -1,6 +1,6 @@
-<%= form_with(model: category, local: true) do |form| %>
+<%= form_with(model: category, local: true, html: { multipart: true, class: 'form-category-modal' }) do |form| %>
   <% if category.errors.any? %>
-    <div id="error_explanation">
+    <div id="error_explanation" style="display: none;">
       <h2><%= pluralize(category.errors.count, "error") %> prohibited this category from being saved:</h2>
       <ul>
         <% category.errors.full_messages.each do |message| %>
@@ -10,23 +10,322 @@
     </div>
   <% end %>
 
-  <div class="mb-3">
-    <%= form.label :nombre %>
-    <%= form.text_field :nombre, class: "form-control" %>
-  </div>
+  <div class="category-form-container">
+    <div class="category-image-section">
+      <label for="category-file-input" class="drop-container-category" id="category-drop-container">
+        <span class="form-title">Imagen</span>
+        <span class="drop-title">Arrastra aquí<br>o haz clic</span>
+        <%= form.file_field :imagen, id: "category-file-input", accept: "image/*", direct_upload: true, style: "display: none;" %>
+      </label>
 
-  <div class="mb-3">
-    <%= form.label :imagen, "Imagen de la categoría" %>
-    <%= form.file_field :imagen, class: "form-control" %>
-    <% if category.imagen.attached? %>
-      <div class="mt-2">
-        <%= image_tag category.imagen.variant(resize_to_limit: [150, 150]) %>
+      <div id="category-preview-container" class="preview-container">
+        <% if category.imagen.attached? %>
+          <div class="image-preview-wrapper">
+            <%= image_tag category.imagen.variant(resize_to_limit: [120, 120]), id: "category-current-image", style: "display:block; margin:0 auto; border-radius: 8px;" %>
+            <button type="button" class="btn-remove-image" id="remove-category-image" title="Eliminar imagen">
+              &times;
+            </button>
+            <%= form.hidden_field :remove_imagen, id: "remove-imagen-flag", value: "false" %>
+          </div>
+        <% end %>
       </div>
-    <% end %>
+    </div>
+
+    <div class="category-input-section">
+      <div class="input-box-category">
+        <label>Nombre de la categoría</label>
+        <%= form.text_field :nombre, id: 'category-nombre', placeholder: "Ej: Herramientas" %>
+      </div>
+
+      <div class="button-container-category">
+        <%= form.submit category.new_record? ? "Crear" : "Actualizar", class: 'btn-submit-category' %>
+      </div>
+    </div>
   </div>
 
-  <div>
-    <%= form.submit class: "btn btn-primary" %>
-  </div>
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      const categoryFileInput = document.getElementById('category-file-input');
+      const categoryPreviewContainer = document.getElementById('category-preview-container');
+      const categoryDropContainer = document.getElementById('category-drop-container');
+      const removeImageBtn = document.getElementById('remove-category-image');
+      const removeImageFlag = document.getElementById('remove-imagen-flag');
+
+      if (!categoryFileInput || !categoryPreviewContainer || !categoryDropContainer) return;
+
+      function handleCategoryFiles(files) {
+        categoryPreviewContainer.innerHTML = '';
+        
+        [...files].forEach(file => {
+          if (!file.type.startsWith("image/")) return;
+
+          const reader = new FileReader();
+          reader.onload = function(e) {
+            const wrapper = document.createElement("div");
+            wrapper.classList.add("image-preview-wrapper");
+
+            const img = document.createElement("img");
+            img.src = e.target.result;
+            img.style.display = "block";
+            img.style.margin = "0 auto";
+            img.style.maxWidth = "120px";
+            img.style.height = "auto";
+            img.style.borderRadius = "8px";
+
+            const removeBtn = document.createElement("button");
+            removeBtn.type = "button";
+            removeBtn.classList.add("btn-remove-image");
+            removeBtn.innerHTML = '&times;';
+            removeBtn.title = "Eliminar imagen";
+            removeBtn.addEventListener('click', function() {
+              categoryPreviewContainer.innerHTML = '';
+              categoryFileInput.value = '';
+              if (removeImageFlag) {
+                removeImageFlag.value = 'false';
+              }
+            });
+
+            wrapper.appendChild(img);
+            wrapper.appendChild(removeBtn);
+            categoryPreviewContainer.appendChild(wrapper);
+          }
+          reader.readAsDataURL(file);
+        });
+      }
+
+      // Eliminar imagen existente
+      if (removeImageBtn) {
+        removeImageBtn.addEventListener('click', function() {
+          if (confirm('¿Eliminar la imagen actual?')) {
+            categoryPreviewContainer.innerHTML = '';
+            if (removeImageFlag) {
+              removeImageFlag.value = 'true';
+            }
+          }
+        });
+      }
+
+      // Click en el área de drop
+      categoryDropContainer.addEventListener('click', function(e) {
+        if (e.target !== categoryFileInput) {
+          categoryFileInput.click();
+        }
+      });
+
+      // Input por click
+      categoryFileInput.addEventListener('change', function(event) {
+        if (event.target.files.length > 0) {
+          handleCategoryFiles(event.target.files);
+          if (removeImageFlag) {
+            removeImageFlag.value = 'false';
+          }
+        }
+      });
+
+      // Arrastrar y soltar
+      categoryDropContainer.addEventListener('dragover', function(event) {
+        event.preventDefault();
+        categoryDropContainer.style.borderColor = "#4CAF50";
+        categoryDropContainer.style.background = "rgba(76, 175, 80, 0.1)";
+      });
+
+      categoryDropContainer.addEventListener('dragleave', function(event) {
+        categoryDropContainer.style.borderColor = "#ddd";
+        categoryDropContainer.style.background = "#f9f9f9";
+      });
+
+      categoryDropContainer.addEventListener('drop', function(event) {
+        event.preventDefault();
+        categoryDropContainer.style.borderColor = "#ddd";
+        categoryDropContainer.style.background = "#f9f9f9";
+        if (event.dataTransfer.files.length > 0) {
+          categoryFileInput.files = event.dataTransfer.files;
+          handleCategoryFiles(event.dataTransfer.files);
+          if (removeImageFlag) {
+            removeImageFlag.value = 'false';
+          }
+        }
+      });
+    });
+  </script>
+
+  <style>
+    .form-category-modal {
+      width: 100%;
+      padding: 0;
+      margin: 0;
+    }
+
+    .category-form-container {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      max-height: 400px;
+      overflow-y: auto;
+    }
+
+    .category-image-section {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      align-items: center;
+    }
+
+    .drop-container-category {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      width: 100%;
+      max-width: 250px;
+      height: 150px;
+      border: 2px dashed #ddd;
+      border-radius: 10px;
+      background: #f9f9f9;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      text-align: center;
+    }
+
+    .drop-container-category:hover {
+      border-color: #4CAF50;
+      background: rgba(76, 175, 80, 0.05);
+    }
+
+    .drop-container-category .form-title {
+      font-size: 16px;
+      font-weight: 600;
+      color: #333;
+      margin-bottom: 8px;
+    }
+
+    .drop-container-category .drop-title {
+      font-size: 13px;
+      color: #666;
+      line-height: 1.4;
+    }
+
+    .preview-container {
+      width: 100%;
+      max-width: 250px;
+      display: flex;
+      justify-content: center;
+      margin-top: 10px;
+    }
+
+    .image-preview-wrapper {
+      position: relative;
+      padding: 8px;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      background: white;
+      display: inline-block;
+    }
+
+    .image-preview-wrapper img {
+      display: block;
+    }
+
+    .btn-remove-image {
+      position: absolute;
+    top: -8px;
+    right: -8px;
+    background: #dc3545;
+    border: 1px solid #e87f7f;
+    border-radius: 50%;
+    width: 20px;
+    height: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    color: white;
+    font-size: 15px;
+    transition: all 0.3s ease;
+    /* box-shadow: 0 2px 8px rgba(220, 53, 69, 0.4);*/
+    }
+
+    .btn-remove-image:hover {
+      background: #c82333;
+      transform: scale(1.1);
+    }
+
+    .btn-remove-image i {
+      pointer-events: none;
+    }
+
+    .category-input-section {
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+    }
+
+    .input-box-category {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .input-box-category label {
+      font-size: 14px;
+      font-weight: 600;
+      color: #333;
+    }
+
+    .input-box-category input[type="text"] {
+      padding: 10px 12px;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      font-size: 14px;
+      transition: all 0.3s ease;
+      background: white;
+    }
+
+    .input-box-category input[type="text"]:focus {
+      outline: none;
+      border-color: #4CAF50;
+      box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.1);
+    }
+
+    .button-container-category {
+      display: flex;
+      justify-content: center;
+      margin-top: 10px;
+    }
+
+    .btn-submit-category {
+      padding: 12px 40px;
+      background: linear-gradient(135deg, #4CAF50, #45a049);
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-size: 15px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 12px rgba(76, 175, 80, 0.3);
+    }
+
+    .btn-submit-category:hover {
+      background: linear-gradient(135deg, #45a049, #3d8b40);
+      transform: translateY(-2px);
+      box-shadow: 0 6px 16px rgba(76, 175, 80, 0.4);
+    }
+
+    .btn-submit-category:active {
+      transform: translateY(0);
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .category-form-container {
+        max-height: 500px;
+      }
+
+      .drop-container-category {
+        max-width: 100%;
+      }
+    }
+  </style>
 <% end %>
 

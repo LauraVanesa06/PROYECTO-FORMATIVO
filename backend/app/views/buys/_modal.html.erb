@@ -1,41 +1,282 @@
-<div class="master-container">
-    <a href="#" class="close modal-close" id="modal-close">&times;</a>
-  <div class="card cart">
-    <label class="title">Producto</label>
-    <div class="products">
-      <div class="product">
-        <div class="div-foto-model">
-            <div class="foto-model"><!-- Imagen se inyectará con JS --></div>
+<div class="master-container-formal">
+  <!-- Header compacto -->
+  <div class="modal-header-formal">
+    <div class="header-content">
+      <i class="fas fa-file-invoice"></i>
+      <div>
+        <h2 class="modal-title-formal">Detalles de Venta</h2>
+        <span class="modal-subtitle modal-fecha-compra"></span>
+      </div>
+    </div>
+    <button class="close-modal-formal" id="modal-close">
+      <i class="fas fa-times"></i>
+    </button>
+  </div>
+
+  <div class="modal-body-formal">
+    <!-- Info del cliente compacta -->
+    <div class="client-compact-section">
+      <div class="client-row">
+        <div class="client-field">
+          <i class="fas fa-user"></i>
+          <span class="modal-nombre-cliente"></span>
         </div>
-        <div class="texto-div">
-          <span>Nombre:</span>
-          <p><span class="modal-nombre-producto"></span></p>
-          <span>Categoria:</span>
-          <p><span class="modal-categoria-producto"></span></p>
-          <span>Proveedor:</span>
-          <p><span class="modal-proveedor-producto"></span></p>
+        <div class="client-field">
+          <i class="fas fa-envelope"></i>
+          <span class="modal-documento-cliente"></span>
+        </div>
+        <div class="client-field">
+          <i class="fas fa-credit-card"></i>
+          <span class="modal-metodo-compra"></span>
         </div>
       </div>
     </div>
 
-  <div class="card checkout">
-    <label class="title">Detalles</label>
-    <div class="details">
-      <span>Nombre del cliente:</span>
-      <span class="modal-nombre-cliente"></span>
-      <span>Documento del cliente:</span>
-      <span class="modal-documento-cliente"></span>
-      <span>Fecha de la compra:</span>
-      <span class="modal-fecha-compra"></span>
-      <span>Tipo de compra:</span>
-      <span class="modal-tipo-compra"></span>
-      <span>Metodo de pago:</span>
-      <span class="modal-metodo-compra"></span>
-      
-    </div>
-    <div class="checkout--footer">
-      <span>Total pagado:</span>
-      <span class="modal-precio-producto">$</span>
+    <!-- Lista de productos compacta -->
+    <div class="products-section-formal">
+      <div class="section-header-compact">
+        <i class="fas fa-box"></i>
+        <span>Productos</span>
+      </div>
+      <div class="products-list-formal" id="modal-productos-lista">
+        <!-- Los productos se cargarán dinámicamente aquí -->
+      </div>
     </div>
   </div>
+
+  <!-- Footer compacto con total -->
+  <div class="modal-footer-formal">
+    <span class="total-label-formal">TOTAL</span>
+    <span class="total-value-formal modal-precio-producto">$0.00</span>
+  </div>
 </div>
+
+<style>
+.master-container-formal {
+    background: #ffffff;
+    border-radius: 8px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
+    max-width: 700px;
+    width: 90%;
+    max-height: 85vh;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    margin-left: -81px;
+    margin-top: -71px;
+}
+
+/* Header compacto y formal */
+.modal-header-formal {
+  background: #6581c0;
+  padding: 16px 24px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 3px solid #1e40af;
+}
+
+.header-content {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  color: white;
+}
+
+.header-content > i {
+  font-size: 28px;
+  opacity: 0.95;
+  color: #31313c;
+}
+
+.modal-title-formal {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 700;
+  letter-spacing: 0.3px;
+  color: white;
+}
+
+.modal-subtitle {
+  font-size: 12px;
+  opacity: 0.9;
+  font-weight: 500;
+}
+
+.close-modal-formal {
+  background: transparent;
+  border: none;
+  color: white;
+  font-size: 24px;
+  cursor: pointer;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 4px;
+  transition: all 0.2s ease;
+  opacity: 0.9;
+}
+
+.close-modal-formal:hover {
+  background: rgba(255, 255, 255, 0.2);
+  opacity: 1;
+}
+
+/* Body compacto */
+.modal-body-formal {
+  padding: 20px 24px;
+  overflow-y: auto;
+  flex: 1;
+  background: #f8f9fa;
+}
+
+/* Sección cliente compacta */
+.client-compact-section {
+  background: white;
+  border: 1px solid #3b82f6;
+  border-radius: 6px;
+  padding: 12px 16px;
+  margin-bottom: 16px;
+}
+
+.client-row {
+  display: flex;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+
+.client-field {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  color: #1f2937;
+  font-weight: 500;
+  flex: 1;
+  min-width: 180px;
+}
+
+.client-field i {
+  color: #2563eb;
+  font-size: 14px;
+  width: 16px;
+  text-align: center;
+}
+
+/* Sección productos compacta */
+.products-section-formal {
+  background: white;
+  border: 1px solid #3b82f6;
+  border-radius: 6px;
+  overflow: hidden;
+}
+
+.section-header-compact {
+  background: #ffffff99;
+    padding: 10px 16px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-weight: 700;
+    color: #323232;
+    font-size: 14px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    border-bottom: 2px solid #3b82f6;
+}
+
+.section-header-compact i {
+  color: #2563eb;
+  font-size: 16px;
+}
+
+.products-list-formal {
+  max-height: 320px;
+  overflow-y: auto;
+  padding: 12px;
+}
+
+.products-list-formal::-webkit-scrollbar {
+  width: 6px;
+}
+
+.products-list-formal::-webkit-scrollbar-track {
+  background: #f1f5f9;
+}
+
+.products-list-formal::-webkit-scrollbar-thumb {
+  background: #3b82f6;
+  border-radius: 3px;
+}
+
+.products-list-formal::-webkit-scrollbar-thumb:hover {
+  background: #2563eb;
+}
+
+/* Footer compacto */
+.modal-footer-formal {
+  background: #6581c0;
+  padding: 14px 24px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-top: 3px solid #1e40af;
+}
+
+.total-label-formal {
+  font-size: 14px;
+  font-weight: 700;
+  color: white;
+  letter-spacing: 1px;
+}
+
+.total-value-formal {
+  font-size: 24px;
+  font-weight: 800;
+  color: white;
+  font-family: 'Courier New', monospace;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+}
+
+@media (max-width: 768px) {
+  .master-container-formal {
+    width: 95%;
+    max-height: 90vh;
+  }
+
+  .modal-header-formal {
+    padding: 14px 16px;
+  }
+
+  .modal-title-formal {
+    font-size: 16px;
+  }
+
+  .header-content > i {
+    font-size: 24px;
+  }
+
+  .modal-body-formal {
+    padding: 16px;
+  }
+
+  .client-row {
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .client-field {
+    min-width: 100%;
+  }
+
+  .total-label-formal {
+    font-size: 12px;
+  }
+
+  .total-value-formal {
+    font-size: 20px;
+  }
+}
+</style>

@@ -8,7 +8,9 @@
   background-color: white;
   border-radius: 5px;
   width: auto;
-  height: 300px;
+  max-height: 90vh;
+  height: auto;
+  overflow-y: auto;
 }
 
 .title {
@@ -28,6 +30,8 @@
   display: flex;
   flex-direction: column;
   padding: 10px;
+  max-height: 50vh;
+  overflow-y: auto;
 }
 
 .cart .products .product {

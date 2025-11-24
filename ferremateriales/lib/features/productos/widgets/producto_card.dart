@@ -27,41 +27,98 @@ class _ProductCardState extends State<ProductCard> {
   @override
   void initState() {
     super.initState();
-    _checkIfFavorite();
+    _checkFavoriteStatus();
   }
 
-  Future<void> _checkIfFavorite() async {
-    try {
-      final result = await favoritesService.isFavorite(widget.product.id!);
-      if (mounted) {
-        setState(() => isFavorite = result);
-      }
-    } catch (e) {
-      print('Error checking favorite: $e');
+  @override
+  void didUpdateWidget(ProductCard oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.product.id != widget.product.id) {
+      _checkFavoriteStatus();
+    }
+  }
+
+  void _checkFavoriteStatus() {
+    // Verificar estado de favorito desde caché
+    final newStatus = favoritesService.isFavoriteCached(widget.product.id!);
+    if (mounted && newStatus != isFavorite) {
+      setState(() => isFavorite = newStatus);
     }
   }
 
   Future<void> _toggleFavorite(BuildContext context) async {
     try {
-      await favoritesService.toggleFavorite(widget.product.id!);
+      // Actualizar UI inmediatamente (optimistic update)
       setState(() => isFavorite = !isFavorite);
+      favoritesService.toggleFavoriteCache(widget.product.id!);
+      
+      // Hacer petición HTTP en background
+      await favoritesService.toggleFavorite(widget.product.id!);
       ScaffoldMessenger.of(context)
         ..hideCurrentSnackBar()
         ..showSnackBar(
           SnackBar(
-            content: Text(
-              isFavorite
-                  ? 'Agregado a favoritos ⭐'
-                  : 'Eliminado de favoritos ❌',
+            content: Row(
+              children: [
+                Container(
+                  padding: const EdgeInsets.all(8),
+                  decoration: BoxDecoration(
+                    color: Colors.white.withOpacity(0.2),
+                    shape: BoxShape.circle,
+                  ),
+                  child: Icon(
+                    isFavorite ? Icons.favorite : Icons.heart_broken,
+                    color: Colors.white,
+                    size: 20,
+                  ),
+                ),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: Text(
+                    isFavorite
+                        ? 'Agregado a favoritos'
+                        : 'Eliminado de favoritos',
+                    style: const TextStyle(
+                      fontSize: 15,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                ),
+              ],
             ),
-            duration: const Duration(seconds: 1),
+            backgroundColor: isFavorite ? Colors.green.shade600 : Colors.orange.shade700,
+            behavior: SnackBarBehavior.floating,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(12),
+            ),
+            margin: const EdgeInsets.all(16),
+            duration: const Duration(seconds: 2),
           ),
         );
     } catch (_) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Error al actualizar favorito'),
-          backgroundColor: Colors.red,
+        SnackBar(
+          content: Row(
+            children: [
+              const Icon(Icons.error_outline, color: Colors.white),
+              const SizedBox(width: 12),
+              const Expanded(
+                child: Text(
+                  'Error al actualizar favorito',
+                  style: TextStyle(
+                    fontSize: 15,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+              ),
+            ],
+          ),
+          backgroundColor: Colors.red.shade700,
+          behavior: SnackBarBehavior.floating,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12),
+          ),
+          margin: const EdgeInsets.all(16),
         ),
       );
     }
@@ -74,15 +131,65 @@ class _ProductCardState extends State<ProductCard> {
         ..hideCurrentSnackBar()
         ..showSnackBar(
           SnackBar(
-            content: Text('Agregado al carrito 🛒'),
+            content: Row(
+              children: [
+                Container(
+                  padding: const EdgeInsets.all(8),
+                  decoration: BoxDecoration(
+                    color: Colors.white.withOpacity(0.2),
+                    shape: BoxShape.circle,
+                  ),
+                  child: const Icon(
+                    Icons.shopping_cart,
+                    color: Colors.white,
+                    size: 20,
+                  ),
+                ),
+                const SizedBox(width: 12),
+                const Expanded(
+                  child: Text(
+                    'Producto agregado al carrito',
+                    style: TextStyle(
+                      fontSize: 15,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+            backgroundColor: const Color(0xFF2e67a3),
+            behavior: SnackBarBehavior.floating,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(12),
+            ),
+            margin: const EdgeInsets.all(16),
             duration: const Duration(seconds: 2),
           ),
         );
     } catch (_) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Error al agregar al carrito'),
-          backgroundColor: Colors.red,
+        SnackBar(
+          content: Row(
+            children: [
+              const Icon(Icons.error_outline, color: Colors.white),
+              const SizedBox(width: 12),
+              const Expanded(
+                child: Text(
+                  'Error al agregar al carrito',
+                  style: TextStyle(
+                    fontSize: 15,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+              ),
+            ],
+          ),
+          backgroundColor: Colors.red.shade700,
+          behavior: SnackBarBehavior.floating,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12),
+          ),
+          margin: const EdgeInsets.all(16),
         ),
       );
     }
@@ -212,7 +319,7 @@ class _ProductCardState extends State<ProductCard> {
 
     return Card(
       elevation: isDark ? 0 : 2,
-      margin: const EdgeInsets.all(8),
+      margin: const EdgeInsets.all(4),
       color: isDark ? Colors.grey.shade800 : Colors.white,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(12),
@@ -281,10 +388,10 @@ class _ProductCardState extends State<ProductCard> {
                   left: 8,
                   child: Container(
                     decoration: BoxDecoration(
-                      color: isDark ? Colors.grey.shade800 : Colors.white,
+                      color: isDark ? Colors.grey.shade800.withOpacity(0.9) : Colors.white.withOpacity(0.95),
                       shape: BoxShape.circle,
                       border: Border.all(
-                        color: Colors.orange.shade200,
+                        color: isFavorite ? Colors.red.withOpacity(0.3) : Colors.grey.shade300,
                         width: 2,
                       ),
                       boxShadow: isDark
@@ -299,9 +406,9 @@ class _ProductCardState extends State<ProductCard> {
                     ),
                     child: IconButton(
                       icon: Icon(
-                        isFavorite ? Icons.star : Icons.star_border,
-                        color: Colors.orange,
-                        size: 20,
+                        isFavorite ? Icons.favorite : Icons.favorite_border,
+                        color: isFavorite ? Colors.red : Colors.grey.shade400,
+                        size: 22,
                       ),
                       padding: EdgeInsets.zero,
                       constraints: const BoxConstraints(
@@ -324,7 +431,7 @@ class _ProductCardState extends State<ProductCard> {
 
           // Contenido de la tarjeta
           Padding(
-            padding: const EdgeInsets.all(16),
+            padding: const EdgeInsets.all(12),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -333,7 +440,7 @@ class _ProductCardState extends State<ProductCard> {
                   product.nombre ?? '',
                   style: TextStyle(
                     fontWeight: FontWeight.bold,
-                    fontSize: 16,
+                    fontSize: 15,
                     color: isDark
                         ? Colors.blue.shade300
                         : const Color(0xFF2e67a3),
@@ -341,7 +448,7 @@ class _ProductCardState extends State<ProductCard> {
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                 ),
-                const SizedBox(height: 8),
+                const SizedBox(height: 6),
 
                 // Descripción
                 Text(
@@ -352,11 +459,11 @@ class _ProductCardState extends State<ProductCard> {
                     color: isDark
                         ? Colors.grey.shade400
                         : Colors.grey.shade600,
-                    fontSize: 12,
-                    height: 1.3,
+                    fontSize: 11,
+                    height: 1.2,
                   ),
                 ),
-                const SizedBox(height: 12),
+                const SizedBox(height: 8),
 
                 // Fila con precio y botón de carrito
                 Row(
@@ -368,7 +475,7 @@ class _ProductCardState extends State<ProductCard> {
                       'COP ${double.tryParse(product.precio.toString())?.toStringAsFixed(2) ?? '0.00'}',
                       style: TextStyle(
                         fontWeight: FontWeight.bold,
-                        fontSize: 18,
+                        fontSize: 16,
                         color: isDark
                             ? Colors.blue.shade300
                             : const Color(0xFF2e67a3),

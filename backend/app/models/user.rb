@@ -41,4 +41,30 @@ class User < ApplicationRecord
   validates :email, presence: true, uniqueness: true
   validates :password, presence: true, on: :create
   validates :name, presence: true
+  
+  # Validación de complejidad de contraseña
+  validate :password_complexity, if: -> { password.present? }
+
+  def password_complexity
+    return if password.blank?
+    
+    errors.add :password, 'debe tener al menos 6 caracteres' if password.length < 6
+    errors.add :password, 'debe contener al menos una letra mayúscula' unless password.match(/[A-Z]/)
+    errors.add :password, 'debe contener al menos una letra minúscula' unless password.match(/[a-z]/)
+    errors.add :password, 'debe contener al menos un número' unless password.match(/[0-9]/)
+  end
+
+  # Método para verificar si el código de recuperación es válido
+  def recovery_code_valid?(code)
+    return false if recovery_code.nil? || recovery_code_sent_at.nil?
+    return false if code != recovery_code
+    
+    # Verificar que no hayan pasado más de 15 minutos
+    Time.current - recovery_code_sent_at < 15.minutes
+  end
+
+  # Método para limpiar el código después de usarlo
+  def clear_recovery_code
+    update(recovery_code: nil, recovery_code_sent_at: nil)
+  end
 end

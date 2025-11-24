@@ -11,61 +11,60 @@
   <% if @favorites.any? %>
   <div class="product-grid" style="display: grid; grid-template-columns: repeat(5, 1fr); gap: 24px;">
       <% @favorites.each do |favorite| %>
-        <% producto = favorite.product %>
-        <div class="product-card" data-producto-id="<%= producto.id %>" style="cursor:pointer;">
+        <div class="product-card <%= 'product-no-disponible' unless favorite.product.disponible %>" data-producto-id="<%= favorite.product.id %>">
+          
+          <% unless favorite.product.disponible %>
+            <div class="badge-no-disponible">
+              No disponible
+            </div>
+          <% end %>
 
           <!-- Imagen -->
           <div class="product-thumb">
-            <% if producto.images.attached? %>
-              <%= image_tag(producto.images.first, alt: producto.nombre, class: "img-fluid") %>
+            <% if favorite.product.images.attached? %>
+              <%= image_tag(favorite.product.images.first, alt: favorite.product.nombre, class: "img-fluid") %>
             <% else %>
               <%= image_tag "ProductoNoDisponible.png", alt: t('productos.sin_imagen'), class: "img-fluid" %>
+            <% end %>
+            
+            <% unless favorite.product.disponible %>
+              <div class="overlay-no-disponible">
+                <p class="mt-2">Temporalmente no disponible</p>
+              </div>
             <% end %>
           </div>
 
           <!-- Detalles -->
           <div class="product-body">
             <div class="info-product">
-              <h3 class="product-name"><%= producto.nombre %></h3>
-              <p class="product-desc"><%= truncate(producto.descripcion, length: 80) %></p>
+              <h3 class="product-name"><%= favorite.product.nombre %></h3>
+              <p class="product-desc"><%= truncate(favorite.product.descripcion, length: 80) %></p>
             </div>
 
             <div class="product-meta">
-              <span class="price"><%= producto.precio_cop %></span>
+              <span class="price"><%= favorite.product.precio_cop %></span>
 
               <div class="d-flex flex-wrap gap-2 mt-2">
-
-                <!-- Botón comprar (fetch + toast, sin redirección) -->
-                <button 
-                  class="btn btn-sm btn-outline-primary d-flex align-items-center justify-content-center add-to-cart-btn" 
-                  data-url="<%= cart_items_path(product_id: producto.id) %>">
-                  <i class="fa-solid fa-cart-plus"></i>
-                </button>
-
-                <!-- Botón favoritos -->
-                <% if current_user %>
-                  <% favorite = current_user.favorites.find_by(product_id: producto.id) %>
-                  <% if favorite %>
-                    <button 
-                      class="btn btn-sm btn-warning d-flex align-items-center gap-1 favorite-btn"
-                      data-url="<%= favorite_path(favorite) %>"
-                      data-method="delete"
-                      data-product-id="<%= producto.id %>">
-                      <i class="fa-solid fa-star"></i>
-                    </button>
-                  <% else %>
-                    <button 
-                      class="btn btn-sm btn-outline-warning d-flex align-items-center gap-1 favorite-btn"
-                      data-url="<%= favorites_path(product_id: producto.id) %>"
-                      data-method="post"
-                      data-product-id="<%= producto.id %>">
-                      <i class="fa-regular fa-star"></i>
-                    </button>
+                <% if favorite.product.disponible %>
+                  <!-- Botón comprar -->
+                  <%= button_to cart_items_path(product_id: favorite.product.id), 
+                                method: :post, 
+                                class: "btn btn-sm btn-outline-primary d-flex align-items-center justify-content-center add-to-cart" do %>
+                    <i class="fa-solid fa-cart-plus"></i>
                   <% end %>
                 <% else %>
-                  <button class="btn btn-sm btn-outline-warning d-flex align-items-center gap-1" disabled>
-                    <i class="fa-regular fa-star"></i>
+                  <!-- Botón deshabilitado si no está disponible -->
+                  <button class="btn btn-sm btn-secondary d-flex align-items-center justify-content-center" disabled>
+                    <i class="fa-solid fa-cart-plus"></i>
                   </button>
+                <% end %>
+
+                <!-- Botón quitar de favoritos -->
+                <%= button_to favorite_path(favorite), 
+                              method: :delete, 
+                              class: "btn btn-sm btn-warning d-flex align-items-center gap-1 remove-favorite",
+                              data: { confirm: "¿Eliminar de favoritos?" } do %>
+                  <i class="fa-solid fa-star"></i>
                 <% end %>
               </div>
             </div>
@@ -111,7 +110,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const csrfToken = document.querySelector('meta[name="csrf-token"]').content;
   const notification = document.getElementById('notification');
 
-  // 🔹 Mostrar notificación animada
+  //  Mostrar notificación animada
   function showNotification(message, type = 'success') {
     notification.textContent = message;
     notification.className = `alert alert-${type} text-center position-fixed top-0 start-50 translate-middle-x mt-3 shadow`;
@@ -124,7 +123,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }, 2500);
   }
 
-  // 🔹 Agregar al carrito sin recargar
+  //  Agregar al carrito sin recargar
   document.addEventListener('click', async (e) => {
     const btn = e.target.closest('.add-to-cart');
     if (!btn) return;
@@ -144,13 +143,13 @@ document.addEventListener('DOMContentLoaded', () => {
       if (response.ok) {
         const data = await response.json();
 
-        // ✅ Actualiza contador del carrito
+        //  Actualiza contador del carrito
         const cartCount = document.getElementById('cart_count');
         if (cartCount && data.count !== undefined) {
           cartCount.textContent = data.count;
         }
 
-        // ✅ Actualiza el contenido del carrito lateral (offcanvas)
+        //  Actualiza el contenido del carrito lateral (offcanvas)
         const cartOffcanvasBody = document.getElementById('cart-offcanvas-body');
         if (cartOffcanvasBody && data.cart_html) {
           cartOffcanvasBody.innerHTML = data.cart_html;
@@ -166,7 +165,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 
-  // 🔹 Eliminar de favoritos sin recargar
+  //  Eliminar de favoritos sin recargar
   document.addEventListener('click', async (e) => {
     const btn = e.target.closest('.remove-favorite');
     if (!btn) return;
@@ -195,16 +194,116 @@ document.addEventListener('DOMContentLoaded', () => {
       showNotification('⚠️ Error de conexión', 'danger');
     }
   });
-});
 
-  // Click en la tarjeta → ir a producto_show.html.erb (excepto botones internos)
+  // Click en la tarjeta → ir a producto_show (solo si está disponible)
   document.addEventListener("click", (e) => {
     const card = e.target.closest(".product-card");
     if (!card) return;
-    if (e.target.closest("button") || e.target.closest("i")) return;
+    
+    // Ignorar clicks en botones, iconos o formularios
+    if (e.target.closest("button") || e.target.closest("i") || e.target.closest("form")) return;
+    
+    // NUEVA VALIDACIÓN: No permitir clic si el producto no está disponible
+    if (card.classList.contains('product-no-disponible')) {
+      e.preventDefault();
+      showNotification('⚠️ Este producto no está disponible actualmente', 'warning');
+      return;
+    }
+    
     // Redirigir a la ruta personalizada de producto_show
     const productoId = card.dataset.productoId;
     window.location = `/home/producto_show?id=${productoId}`;
   });
-
+});
 </script>
+
+<style>
+/* Estilos para productos no disponibles en favoritos */
+.product-no-disponible {
+  position: relative;
+  opacity: 0.75;
+  filter: grayscale(30%);
+}
+
+.badge-no-disponible {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: linear-gradient(135deg, #ff6b6b, #dc3545);
+  color: white;
+  padding: 8px 15px;
+  border-radius: 20px;
+  font-weight: 600;
+  font-size: 12px;
+  z-index: 10;
+  box-shadow: 0 4px 12px rgba(220, 53, 69, 0.4);
+  animation: pulse-badge 2s infinite;
+}
+
+@keyframes pulse-badge {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.05); }
+}
+
+.overlay-no-disponible {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(65, 65, 65, 0.7);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  border-radius: 8px;
+}
+
+.product-thumb:hover .overlay-no-disponible {
+  opacity: 1;
+}
+
+.overlay-no-disponible i {
+  color: #ffc107;
+  animation: shake 1s infinite;
+}
+
+@keyframes shake {
+  0%, 100% { transform: rotate(0deg); }
+  25% { transform: rotate(-10deg); }
+  75% { transform: rotate(10deg); }
+}
+
+.overlay-no-disponible p {
+  font-size: 14px;
+  font-weight: 600;
+  text-align: center;
+  margin: 0;
+}
+
+/* Botón deshabilitado */
+.product-no-disponible .btn-secondary {
+  cursor: not-allowed;
+  opacity: 0.6; 
+  position: relative !important;
+  border-radius: 6px !important;
+  top: 0px !important;
+  left: 0px !important;
+  border: #292727 1px solid !important;
+  height: 24px !important;
+}
+
+/* Destacar productos disponibles */
+.product-card:not(.product-no-disponible) {
+  border: 2px solid transparent;
+  transition: all 0.3s ease;
+}
+
+.product-card:not(.product-no-disponible):hover {
+  border-color: #28a745;
+  box-shadow: 0 8px 20px rgba(40, 167, 69, 0.2);
+}
+</style>
