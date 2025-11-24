@@ -1,7 +1,6 @@
 module Api
-  module V1
-      
-    class Api::V1::WebhooksController < ApplicationController
+  module V1      
+    class WebhooksController < ActionController::API
       skip_before_action :verify_authenticity_token
 
       def receive
@@ -11,14 +10,12 @@ module Api
         puts payload
 
         unless valid_webhook_signature?(payload)
-          puts "firma invalida en webhooks"
+          puts "Firma inválida"
           head :unauthorized and return
         end
           
-          process_wompi_event(payload)
-
-          head :ok
-          
+        process_wompi_event(payload)
+        head :ok
       end
 
       private
@@ -30,31 +27,31 @@ module Api
         properties = payload.dig("signature", "properties") || []
         transaction = payload.dig("data", "transaction")
         return false unless transaction
-        raw = properties.map { |prop| prop.split('.').inject(transaction) { |obj, key| obj[key] } }.join
 
-        secret = Rails.application.credentials.wompi[:secret] # O 'events' según tu credencial
+        raw = properties.map { |prop|)
+          prop.split('.').inject(transaction) { |obj, key| obj[key] }
+        }.join
+
+        secret = Rails.application.credentials.wompi[:events_secret]
+        
         expected_signature = Digest::SHA256.hexdigest(raw + secret)
-
         wompi_signature == expected_signature
       end
 
       def process_wompi_event(payload)
-        event_type = payload["event"]
         tx = payload.dig("data", "transaction")
-
         reference = tx["reference"]
         status = tx["status"]
 
-        puts "Procesando evento #{event_type}..."
         puts "Referencia: #{reference}"
-        puts  "Estado: #{status}"
-    
-        payment = Payment.find_by(reference: reference)
-        if payment
+        puts "Estado: #{status}"
+
+        if (payment = Payment.find_by(reference: reference))
           payment.update(status: status)
         else
-          puts "No se encontró Payment con referencia #{reference}"
+          puts "No existe Payment con esa referencia"
         end
+      end
     end
   end
 end

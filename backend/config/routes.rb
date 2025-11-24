@@ -143,7 +143,7 @@ Rails.application.routes.draw do
     post "payments/create_checkout", to: "payments#create_checkout"
     get "/wompi/return", to: "payments#return"
 
-    post "/webhooks/wompi", to: "payments/webhooks#receive"
+    post "/webhooks/wompi", to: "webhooks#receive"
 
 
   end

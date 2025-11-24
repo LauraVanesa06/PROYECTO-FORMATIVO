@@ -24,7 +24,6 @@ Pedido.delete_all
 CartItem.delete_all   # 👈 AGREGA ESTA LÍNEA ANTES DE Cart
 Cart.delete_all 
 Product.delete_all
-Customer.delete_all
 Marca.delete_all
 Category.delete_all
 Supplier.delete_all
@@ -39,7 +38,6 @@ reset_postgres_sequences(
   'marcas',
   'categories',
   'suppliers',
-  'customers',
   'users',
   'pedidos',
   'carts',
@@ -879,69 +877,22 @@ products.each do |product|
 end
 
 
-customers = Customer.create!([
-  { nombre: "Juan Pérez", telefono: "555-0101", documento: 123456789 },
-  { nombre: "Laura Torres", telefono: "555-0202", documento: 345678912 },
-  { nombre: "Carlos Sanchez", telefono: "555-0107", documento: 678912345 },
-  { nombre: "Michael Jackson", telefono: "555-0502", documento: 891234567},
-  { nombre: "Falcao Torres", telefono: "555-0121", documento: 987654321 }
+users = User.create!([
+  { name: "Juan Pérez", email: "juan@gmail.com", password: "123456",
+  password_confirmation: "123456", role: "user"},
+
+  { name: "Laura Torres", email: "laura@gmail.com", password: "123456",
+  password_confirmation: "123456", role: "user"},
+
+  { name: "Carlos Sanchez", email: "carlos@gmail.com", password: "123456",
+  password_confirmation: "123456", role: "user"},
+
+  { name: "Michael Jackson", email: "michael@gmail.com", password: "123456", password_confirmation: "123456", role: "user"},
+  
+  { name: "Falcao Torres", email: "falcao@gmail.com", password: "123456",
+  password_confirmation: "123456", role: "user"}
 ])
 
-buys = Buy.create!([
-  { customer: customers[0], fecha: Time.zone.now.change(hour: 9),  tipo: "Minorista",            metodo_pago: "Efectivo" },
-  { customer: customers[1], fecha: Time.zone.now.change(hour: 11), tipo: "Mayorista",            metodo_pago: "Online" },
-  { customer: customers[2], fecha: Time.zone.now.change(hour: 13), tipo: "Contratista/Empresa",  metodo_pago: "Efectivo" },
-  { customer: customers[2], fecha: Time.zone.now.change(hour: 13), tipo: "Contratista/Empresa",  metodo_pago: "Online" },
-
-  { customer: customers[3], fecha: 1.day.ago.change(hour: 10),     tipo: "Minorista",            metodo_pago: "Online" },
-  { customer: customers[4], fecha: 2.days.ago.change(hour: 14),    tipo: "Mayorista",            metodo_pago: "Efectivo" },
-  { customer: customers[4], fecha: 2.days.ago.change(hour: 14),    tipo: "Mayorista",            metodo_pago: "Online" },
-  { customer: customers[0], fecha: 3.days.ago.change(hour: 15),    tipo: "Contratista/Empresa",  metodo_pago: "Efectivo" },
-
-  { customer: customers[1], fecha: 10.days.ago.change(hour: 11),   tipo: "Minorista",            metodo_pago: "Efectivo" },
-  { customer: customers[1], fecha: 10.days.ago.change(hour: 11),   tipo: "Minorista",            metodo_pago: "Online" },
-  { customer: customers[2], fecha: 15.days.ago.change(hour: 16),   tipo: "Mayorista",            metodo_pago: "Efectivo" },
-  { customer: customers[3], fecha: 20.days.ago.change(hour: 12),   tipo: "Contratista/Empresa",  metodo_pago: "Online" },
-  { customer: customers[3], fecha: 20.days.ago.change(hour: 12),   tipo: "Contratista/Empresa",  metodo_pago: "Efectivo" },
-
-  { customer: customers[4], fecha: 2.months.ago.change(hour: 17),  tipo: "Minorista",            metodo_pago: "Online" },
-  { customer: customers[0], fecha: 4.months.ago.change(hour: 10),  tipo: "Mayorista",            metodo_pago: "Efectivo" },
-  { customer: customers[0], fecha: 4.months.ago.change(hour: 10),  tipo: "Mayorista",            metodo_pago: "Online" },
-  { customer: customers[1], fecha: 5.months.ago.change(hour: 13),  tipo: "Contratista/Empresa",  metodo_pago: "Efectivo" }
-])
-
-Purchasedetail.create!([
-  {
-    buy: buys[0],
-    product: products[0],
-    cantidad: 20,
-    preciounidad: 26_000
-  },
-  {
-    buy: buys[1],
-    product: products[1],
-    cantidad: 50,
-    preciounidad: 9_500
-  },
-  {
-    buy: buys[2],
-    product: products[2],
-    cantidad: 10,
-    preciounidad: 30_500
-  },
-  {
-    buy: buys[3],
-    product: products[3],
-    cantidad: 40,
-    preciounidad: 12_500
-  },
-  {
-    buy: buys[4],
-    product: products[4],
-    cantidad: 10,
-    preciounidad: 17_500
-  }
-])
 
 
 # Crear pedidos sin el campo 'productos' y asociar productos reales
