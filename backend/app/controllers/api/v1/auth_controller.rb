@@ -1,5 +1,6 @@
-class Api::V1::AuthController < ApplicationController
-  skip_before_action :authenticate_user!, only: [:login, :register]
+class Api::V1::AuthController < Api::V1::ApiController
+  skip_before_action :authenticate_user_from_token!, only: [:login, :register]
+
 
   def login
     Rails.logger.info "Login params: #{params.inspect}"
