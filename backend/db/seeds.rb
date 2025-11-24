@@ -1167,21 +1167,24 @@ buys = Buy.create!([
   { user_id: users[0].id, fecha: Time.zone.now.change(hour: 13), tipo: "Contratista/Empresa",  metodo_pago: "Efectivo" },
   { user_id: users[1].id, fecha: Time.zone.now.change(hour: 13), tipo: "Contratista/Empresa",  metodo_pago: "Online" },
 
-  { user_id: users[0].id, fecha: 1.day.ago.change(hour: 10),     tipo: "Minorista",            metodo_pago: "Online" },
-  { user_id: users[1].id, fecha: 2.days.ago.change(hour: 14),    tipo: "Mayorista",            metodo_pago: "Efectivo" },
-  { user_id: users[0].id, fecha: 2.days.ago.change(hour: 14),    tipo: "Mayorista",            metodo_pago: "Online" },
-  { user_id: users[1].id, fecha: 3.days.ago.change(hour: 15),    tipo: "Contratista/Empresa",  metodo_pago: "Efectivo" },
 
-  { user_id: users[0].id, fecha: 10.days.ago.change(hour: 11),   tipo: "Minorista",            metodo_pago: "Efectivo" },
-  { user_id: users[1].id, fecha: 10.days.ago.change(hour: 11),   tipo: "Minorista",            metodo_pago: "Online" },
-  { user_id: users[0].id, fecha: 15.days.ago.change(hour: 16),   tipo: "Mayorista",            metodo_pago: "Efectivo" },
-  { user_id: users[1].id, fecha: 20.days.ago.change(hour: 12),   tipo: "Contratista/Empresa",  metodo_pago: "Online" },
-  { user_id: users[0].id, fecha: 20.days.ago.change(hour: 12),   tipo: "Contratista/Empresa",  metodo_pago: "Efectivo" },
+users = User.create!([
+  { name: "Juan Pérez", email: "juan@gmail.com", password: "123456",
+  password_confirmation: "123456", role: "user"},
 
-  { user_id: users[1].id, fecha: 2.months.ago.change(hour: 17),  tipo: "Minorista",            metodo_pago: "Online" },
-  { user_id: users[0].id, fecha: 4.months.ago.change(hour: 10),  tipo: "Mayorista",            metodo_pago: "Efectivo" },
-  { user_id: users[1].id, fecha: 4.months.ago.change(hour: 10),  tipo: "Mayorista",            metodo_pago: "Online" },
-  { user_id: users[0].id, fecha: 5.months.ago.change(hour: 13),  tipo: "Contratista/Empresa",  metodo_pago: "Efectivo" }
+  { name: "Laura Torres", email: "laura@gmail.com", password: "123456",
+  password_confirmation: "123456", role: "user"},
+
+  { name: "Carlos Sanchez", email: "carlos@gmail.com", password: "123456",
+  password_confirmation: "123456", role: "user"},
+
+  { name: "Michael Jackson", email: "michael@gmail.com", password: "123456", password_confirmation: "123456", role: "user"},
+  
+  { name: "Falcao Torres", email: "falcao@gmail.com", password: "123456",
+  password_confirmation: "123456", role: "user"}
+
+
+
 ])
 
 # Purchasedetail.create!([
@@ -1234,6 +1237,7 @@ buys.each_with_index do |buy, idx|
 end
 
 puts "✅ #{BuyProduct.count} productos asociados a las ventas"
+
 
 # Crear pedidos sin el campo 'productos' y asociar productos reales
 pedidos = [

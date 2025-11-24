@@ -1,5 +1,6 @@
-class Api::V1::CartItemsController < Api::V1::ApiController
-  skip_before_action :verify_authenticity_token
+class Api::V1::CartItemsController < ApplicationController
+   skip_before_action :authenticate_user!, raise: false
+  
   before_action :authenticate_user_from_token!
   before_action :set_cart_item, only: [:update, :destroy]
 

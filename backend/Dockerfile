@@ -23,6 +23,13 @@ COPY Gemfile Gemfile.lock ./
 RUN bundle install
 RUN gem install bundler -v "~> 2.5"
 
+# Instalar ngrok
+RUN apt-get update && apt-get install -y wget unzip \
+    && wget https://bin.equinox.io/c/bNyj1mQVY4c/ngrok-v3-stable-linux-amd64.zip -O ngrok.zip \
+    && unzip ngrok.zip -d /usr/local/bin \
+    && rm ngrok.zip \
+    && chmod +x /usr/local/bin/ngrok
+
 
 # Copiar el código de la aplicación
 COPY . .
@@ -32,4 +39,3 @@ EXPOSE 3000
 
 # Evitar errores al reiniciar el servidor
 ENTRYPOINT ["bash", "-c", "rm -f tmp/pids/server.pid && bundle exec rails server -b 0.0.0.0 -p 3000"]
-

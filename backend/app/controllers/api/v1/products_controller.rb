@@ -1,5 +1,4 @@
 class Api::V1::ProductsController < ApplicationController
-  skip_before_action :authenticate_user!
 
   def index
     # Permite recibir tanto category_id (Rails style) como categoryId (Flutter style)

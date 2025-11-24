@@ -1,4 +1,5 @@
 class ApplicationController < ActionController::Base
+    protect_from_forgery with: :null_session  # Necesario para APIs
   # ✅ Solo exigir login si no es Devise y no es el controlador de productos
   before_action :authenticate_user!, unless: :public_controller?
 
