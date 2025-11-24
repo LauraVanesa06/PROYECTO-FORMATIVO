@@ -1,7 +1,8 @@
 module Api
   module V1      
-    class WebhooksController < ActionController::API
-      skip_before_action :verify_authenticity_token
+    class WebhooksController < Api::V1::ApiController
+        skip_before_action :authenticate_user_from_token!
+ 
 
       def receive
         payload = JSON.parse(request.raw_post) rescue {}
@@ -28,7 +29,7 @@ module Api
         transaction = payload.dig("data", "transaction")
         return false unless transaction
 
-        raw = properties.map { |prop|)
+        raw = properties.map { |prop|
           prop.split('.').inject(transaction) { |obj, key| obj[key] }
         }.join
 
@@ -47,7 +48,11 @@ module Api
         puts "Estado: #{status}"
 
         if (payment = Payment.find_by(reference: reference))
-          payment.update(status: status)
+          payment.update(
+            status: status,
+            transaction_id: tx["id"],
+            status_message: tx["status_message"]
+          )
         else
           puts "No existe Payment con esa referencia"
         end

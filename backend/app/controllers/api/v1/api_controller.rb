@@ -1,5 +1,4 @@
 class Api::V1::ApiController < ActionController::API
-  before_action :authenticate_user_from_token!
 
   private
 

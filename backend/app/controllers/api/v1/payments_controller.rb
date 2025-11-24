@@ -1,7 +1,7 @@
 module Api
   module V1 
     class PaymentsController <  Api::V1::ApiController
-     skip_before_action :authenticate_user_from_token!, only: [:create_checkout]
+    # skip_before_action :authenticate_user_from_token!, only: [:create_checkout]
 
       require 'uri'
 
@@ -18,6 +18,15 @@ module Api
         redirect_url = params[:redirect_url] || wompi[:redirect_url]
         encoded_redirect = URI.encode_www_form_component(redirect_url)
 
+        Payment.create!(
+          reference: reference,
+          amount: amount_in_cents,
+          user: @current_user,
+          cart: @current_cart,
+          status: "pending",
+        )
+
+
         # Firma correcta
         raw = "#{reference}#{amount_in_cents}COP#{integrity_secret}"
         integrity_signature = Digest::SHA256.hexdigest(raw)
@@ -29,6 +38,8 @@ module Api
                       "&reference=#{reference}" \
                       "&signature=#{integrity_signature}" \
                       "&redirect-url=#{encoded_redirect}"
+
+        
 
         render json: { 
           checkout_url: checkout_url,

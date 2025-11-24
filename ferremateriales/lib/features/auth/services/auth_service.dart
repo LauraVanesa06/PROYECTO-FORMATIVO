@@ -30,6 +30,17 @@ class AuthService {
       if (response.statusCode == 200) {
         final data = jsonDecode(response.body);
         await storage.write(key: 'auth_token', value: data['token']);
+
+        await storage.write(
+          key: 'user_id', 
+          value: data['user']['id'].toString(),
+        );
+
+        await storage.write(
+          key: 'cart_id', 
+          value: data['user']['cart_id'].toString(),
+          );
+          
         return data;
       } else if (response.statusCode == 401) {
         // Credenciales inválidas
@@ -136,6 +147,15 @@ class AuthService {
       print('Register error: $e'); // Debug
       rethrow;
     }
+  }
+
+  Future<void> saveCartId(int id) async{
+    await storage.write(key: 'cart_id', value: id.toString());
+  }
+
+  Future<int?> getCartId() async{
+    final value = await storage.read(key: 'cart_id');
+    return value != null ? int.tryParse(value) : null;
   }
 
   Future<Map<String, dynamic>?> getCurrentUser() async {

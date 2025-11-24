@@ -1,5 +1,5 @@
-class Api::V1::FavoritesController < Api::V1::ApiController
-  before_action :authenticate_user_from_token!
+class Api::V1::FavoritesController < ApplicationController
+      skip_before_action :authenticate_user_from_token!, only: [:create_checkout]
 
   def index
     return render json: { error: 'No autorizado' }, status: :unauthorized unless current_user

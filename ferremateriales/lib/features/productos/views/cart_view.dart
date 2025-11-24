@@ -11,6 +11,8 @@ import 'checkout_screen.dart';
 import '../services/service_wompi.dart'; 
 import 'package:universal_html/html.dart' as html;
 import 'package:flutter/foundation.dart';
+import 'package:ferremateriales/features/auth/services/auth_service.dart';
+const String BASE_URL = "https://interisland-uninferrably-leonie.ngrok-free.dev";
 
 class CartView extends StatefulWidget {
   const CartView({super.key});
@@ -244,26 +246,29 @@ class _CartViewState extends State<CartView> {
                                 ),
 
                                 const SizedBox(height: 16),
-
                                 SizedBox(
                                   width: double.infinity,
                                   height: 56,
                                   child: ElevatedButton(
                                     onPressed: () async {
                                       try {
+                                        final cartId = await AuthService(baseUrl: BASE_URL).getCartId(); 
+
+                                        if (cartId == null) {
+                                          print("⚠ No existe cart_id guardado");
+                                          return;
+                                        }
+
                                         final data = await PaymentService().createPayment(
-                                          cartId: 10,
+                                          cartId: cartId,
                                           amount: total.toInt(),
-                                          userId: 12,
                                         );
 
                                         final checkoutUrl = data["checkout_url"];
 
                                         if (kIsWeb) {
-                                          // ⭐ Web → abrir en nueva pestaña
                                           html.window.open(checkoutUrl, "_blank");
                                         } else {
-                                          // 📱 Móvil → usar WebView
                                           Navigator.push(
                                             context,
                                             MaterialPageRoute(
@@ -275,9 +280,10 @@ class _CartViewState extends State<CartView> {
                                         print("Error al procesar pago: $e");
                                       }
                                     },
-                                    child: const Text("Finalizar compra"),
+                                    child: Text("Pagar"),
                                   ),
-                                ),
+                                )
+
                               ],
                             ),
                           ),

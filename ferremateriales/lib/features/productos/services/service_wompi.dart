@@ -7,7 +7,7 @@ final String baseUrl = "https://interisland-uninferrably-leonie.ngrok-free.dev";
   Future<Map<String, dynamic>> createPayment({
     required int cartId,
     required int amount,
-    required int userId,
+    //required int userId,
   }) async {
 
 final url = Uri.parse("$baseUrl/api/v1/payments/create_checkout");
@@ -20,7 +20,7 @@ final url = Uri.parse("$baseUrl/api/v1/payments/create_checkout");
         "amount": amount,
         "currency": "COP",
         "pay_method": "card",
-        "user_id": userId,
+      //  "user_id": userId,
         "redirect_url": "https://interisland-uninferrably-leonie.ngrok-free.dev/mobile_redirect"
 
       }),
