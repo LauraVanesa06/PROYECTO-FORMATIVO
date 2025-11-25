@@ -80,9 +80,9 @@ class HomeController < ApplicationController
       Supplier.select(:id, :nombre).limit(5).to_a
     end
     
-    # Solo productos disponibles para clientes
+    # Solo productos disponibles para clientes con eager loading de imágenes
     @productos = Product.where(disponible: true)
-                       .includes(:marca, :category)
+                       .includes(:marca, :category, :images_attachments)
 
     if params[:category_id].present?
       @productos = @productos.where(category_id: params[:category_id])
@@ -101,6 +101,12 @@ class HomeController < ApplicationController
       @productos = @productos.where("precio <= ?", params[:max_price])
     end
 
+    # Ordenar productos
+    @productos = @productos.order(created_at: :desc)
+    
+    # PAGINACIÓN: 12 productos por página
+    @pagy, @productos = pagy(@productos, items: 12)
+
     # Si no hay productos después de los filtros, mostrar mensaje
     if @productos.empty?
       flash.now[:alert] = "No se encontraron productos disponibles con esos filtros."
@@ -108,7 +114,8 @@ class HomeController < ApplicationController
   end
 
   def producto_show
-    @product = Product.find(params[:id])
+    # Eager load de imágenes y relaciones para optimizar
+    @product = Product.includes(:images_attachments, :marca, :category).find(params[:id])
     
     # Solo mostrar si está disponible (o si es admin)
     unless @product.disponible || current_user&.admin?
@@ -116,9 +123,10 @@ class HomeController < ApplicationController
       return
     end
     
-    # Productos relacionados solo disponibles
+    # Productos relacionados solo disponibles con eager loading
     @relacionados = Product.where(category: @product.category, disponible: true)
                           .where.not(id: @product.id)
+                          .includes(:images_attachments, :marca)
                           .limit(5)
     
     # Variables para Wompi en producto individual
