@@ -253,6 +253,7 @@ class _CartViewState extends State<CartView> {
                                   ],
                                 ),
 
+                               
                                 const SizedBox(height: 16),
                                 SizedBox(
                                   width: double.infinity,
@@ -263,7 +264,7 @@ class _CartViewState extends State<CartView> {
                                         final cartId = await AuthService(baseUrl: BASE_URL).getCartId(); 
 
                                         if (cartId == null) {
-                                          print("⚠ No existe cart_id guardado");
+                                          print(" No existe cart_id guardado");
                                           return;
                                         }
 

@@ -1,4 +1,8 @@
 class Api::V1::ApiController < ActionController::API
+  include ActionController::RequestForgeryProtection
+  
+  protect_from_forgery with: :null_session
+    before_action :authenticate_user_from_token!
 
   private
 
