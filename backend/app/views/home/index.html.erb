@@ -236,25 +236,33 @@
         return;
       }
 
-      const response = await fetch(url, {
-        method: "POST",
-        headers: {
-          "X-CSRF-Token": document.querySelector("meta[name='csrf-token']").content,
-          "Accept": "application/json"
-        }
-      });
+      try {
+        const response = await fetch(url, {
+          method: "POST",
+          headers: {
+            "X-CSRF-Token": document.querySelector("meta[name='csrf-token']").content,
+            "Accept": "application/json"
+          }
+        });
 
-      if (response.ok) {
         const data = await response.json();
-        if (data.cart_html) {
-          const cartBody = document.querySelector("#cart-offcanvas-body");
-          if (cartBody) cartBody.innerHTML = data.cart_html;
+
+        if (response.ok) {
+          if (data.cart_html) {
+            const cartBody = document.querySelector("#cart-offcanvas-body");
+            if (cartBody) cartBody.innerHTML = data.cart_html;
+          }
+          const cartCount = document.querySelector("#cart-count");
+          if (cartCount && data.count !== undefined) cartCount.textContent = data.count;
+          showToast("Producto agregado al carrito", "success");
+        } else {
+          // Error: mostrar mensaje específico del servidor
+          const errorMessage = data.error || "Error al agregar al carrito";
+          showToast(errorMessage, "danger");
         }
-        const cartCount = document.querySelector("#cart-count");
-        if (cartCount && data.count !== undefined) cartCount.textContent = data.count;
-        showToast("Producto agregado al carrito", "success");
-      } else {
-        showToast("Error al agregar al carrito", "danger");
+      } catch (error) {
+        console.error("Error en la petición:", error);
+        showToast("Error de conexión al agregar al carrito", "danger");
       }
       return;
     }
