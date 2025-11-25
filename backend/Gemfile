@@ -70,3 +70,7 @@ gem "devise", "~> 4.9"
 
 gem "faraday"
 gem "jwt"
+
+# OPTIMIZACIONES DE PERFORMANCE
+gem "pagy", "~> 6.0"  # Paginación ultraligera (100x más rápida que kaminari)
+gem "rack-cache"      # HTTP caching de requests

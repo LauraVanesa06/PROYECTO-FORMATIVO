@@ -48,9 +48,14 @@
             <!-- Imagen -->
             <div class="product-thumb">
               <% if producto.images.attached? %>
-                <%= image_tag(producto.images.first, alt: producto.nombre, class: "img-fluid") %>
+                <%= image_tag(
+                    producto.images.first.variant(resize_to_fill: [250, 250], saver: { quality: 75 }),
+                    alt: producto.nombre,
+                    class: "img-fluid",
+                    loading: "lazy"
+                  ) %>
               <% else %>
-                <%= image_tag "ProductoNoDisponible.png", alt: t('productos.sin_imagen'), class: "img-fluid" %>
+                <%= image_tag "ProductoNoDisponible.png", alt: t('productos.sin_imagen'), class: "img-fluid", loading: "lazy" %>
               <% end %>
             </div>
 
@@ -111,6 +116,57 @@
       No se encontraron productos disponibles con los filtros aplicados.
     </div>
   <% end %>
+
+  <!-- PAGINACIÓN -->
+  <% if @pagy && @pagy.pages > 1 %>
+    <nav aria-label="Page navigation" class="d-flex justify-content-center my-4">
+      <ul class="pagination">
+        <% if @pagy.prev %>
+          <li class="page-item">
+            <%= link_to "← Anterior", 
+                        productos_path(params.to_unsafe_h.merge(page: @pagy.prev)), 
+                        class: "page-link" %>
+          </li>
+        <% else %>
+          <li class="page-item disabled">
+            <span class="page-link">← Anterior</span>
+          </li>
+        <% end %>
+
+        <% @pagy.series.each do |item| %>
+          <% if item.is_a?(Integer) %>
+            <% if item == @pagy.page %>
+              <li class="page-item active">
+                <span class="page-link"><%= item %></span>
+              </li>
+            <% else %>
+              <li class="page-item">
+                <%= link_to item, 
+                            productos_path(params.to_unsafe_h.merge(page: item)), 
+                            class: "page-link" %>
+              </li>
+            <% end %>
+          <% elsif item == "gap" %>
+            <li class="page-item disabled">
+              <span class="page-link">...</span>
+            </li>
+          <% end %>
+        <% end %>
+
+        <% if @pagy.next %>
+          <li class="page-item">
+            <%= link_to "Siguiente →", 
+                        productos_path(params.to_unsafe_h.merge(page: @pagy.next)), 
+                        class: "page-link" %>
+          </li>
+        <% else %>
+          <li class="page-item disabled">
+            <span class="page-link">Siguiente →</span>
+          </li>
+        <% end %>
+      </ul>
+    </nav>
+  <% end %>
 </section>
 
 <!-- TOAST container -->
@@ -131,7 +187,7 @@
   }
 
   document.addEventListener("click", async (e) => {
-    // CARRITO
+    // CARRITO - debe ser PRIMERO y específico
     if (e.target.closest(".add-to-cart-btn")) {
       e.preventDefault();
       e.stopPropagation();
@@ -139,39 +195,51 @@
       const btn = e.target.closest(".add-to-cart-btn");
       const url = btn.dataset.url;
 
+      if (!url) {
+        console.error("No URL found for cart button");
+        showToast("Error: URL no encontrada", "danger");
+        return;
+      }
+
       // Si no hay sesión, abrir sidebar y detener
       if (!window.isLoggedIn) {
         openProfileSidebar();
         return;
       }
 
-      const response = await fetch(url, {
-        method: "POST",
-        headers: {
-          "X-CSRF-Token": document.querySelector("meta[name='csrf-token']").content,
-          "Accept": "application/json"
+      try {
+        const response = await fetch(url, {
+          method: "POST",
+          headers: {
+            "X-CSRF-Token": document.querySelector("meta[name='csrf-token']").content,
+            "Accept": "application/json"
+          }
+        });
+
+        if (response.ok) {
+          const data = await response.json();
+
+          // 🔹 Actualiza el contenido del carrito (offcanvas)
+          if (data.cart_html) {
+            const cartBody = document.querySelector("#cart-offcanvas-body");
+            if (cartBody) cartBody.innerHTML = data.cart_html;
+          }
+
+          // 🔹 Actualiza el contador
+          const cartCount = document.querySelector("#cart-count");
+          if (cartCount && data.count !== undefined) {
+            cartCount.textContent = data.count;
+          }
+
+          // 🔹 Muestra notificación
+          showToast("Producto agregado al carrito", "success");
+        } else {
+          console.error("Response not ok:", response.status);
+          showToast("Error al agregar al carrito", "danger");
         }
-      });
-
-      if (response.ok) {
-        const data = await response.json();
-
-        // 🔹 Actualiza el contenido del carrito (offcanvas)
-        if (data.cart_html) {
-          const cartBody = document.querySelector("#cart-offcanvas-body");
-          if (cartBody) cartBody.innerHTML = data.cart_html;
-        }
-
-        // 🔹 Actualiza el contador
-        const cartCount = document.querySelector("#cart-count");
-        if (cartCount && data.count !== undefined) {
-          cartCount.textContent = data.count;
-        }
-
-        // 🔹 Muestra notificación
-        showToast("Producto agregado al carrito", "success");
-      } else {
-        showToast("Error al agregar al carrito", "danger");
+      } catch (error) {
+        console.error("Fetch error:", error);
+        showToast("Error de conexión", "danger");
       }
       return;
     }
@@ -222,6 +290,13 @@
       }
       return;
     }
+
+    // Click en la tarjeta → ir a producto_show (excepto botones internos)
+    const card = e.target.closest(".product-card");
+    if (!card) return;
+    if (e.target.closest("button") || e.target.closest("i")) return;
+    const productoId = card.dataset.productoId;
+    window.location = `/home/producto_show?id=${productoId}`;
   });
 
   // Función toast reutilizable
@@ -249,15 +324,6 @@
       setTimeout(() => toast.remove(), 500);
     }, 3000);
   }
-
-  // Click en la tarjeta → ir a producto_show (excepto botones internos)
-  document.addEventListener("click", (e) => {
-    const card = e.target.closest(".product-card");
-    if (!card) return;
-    if (e.target.closest("button") || e.target.closest("i")) return;
-    const productoId = card.dataset.productoId;
-    window.location = `/home/producto_show?id=${productoId}`;
-  });
 
   // --- Auto-submit del formulario de filtros ---
   function debounce(fn, wait) {

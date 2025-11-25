@@ -35,12 +35,12 @@
               <% if @product.images.attached? %>
                 <% @product.images.each_with_index do |img, i| %>
                   <div class="carousel-item <%= 'active' if i == 0 %>">
-                      <%= image_tag img, alt: @product.nombre, onerror: "this.onerror=null;this.src='/assets/ProductoNoDisponible.png';" %>
+                      <%= image_tag img.variant(resize_to_fill: [500, 500], saver: { quality: 80 }), alt: @product.nombre, loading: "lazy", onerror: "this.onerror=null;this.src='/assets/ProductoNoDisponible.png';" %>
                   </div>
                 <% end %>
               <% else %>
                 <div class="carousel-item active">
-              <%= image_tag "ProductoNoDisponible.png", alt: "Sin imagen", onerror: "this.onerror=null;this.src='/assets/ProductoNoDisponible.png';" %>
+              <%= image_tag "ProductoNoDisponible.png", alt: "Sin imagen", loading: "lazy", onerror: "this.onerror=null;this.src='/assets/ProductoNoDisponible.png';" %>
                 </div>
               <% end %>
 
@@ -84,7 +84,7 @@
             <div class="carousel-track" id="carousel-track">
               <% @product.images.drop(0).each do |img| %>
                 <div class="all-img">
-                    <%= image_tag img, alt: @product.nombre, onerror: "this.onerror=null;this.src='/assets/ProductoNoDisponible.png';" %>
+                    <%= image_tag img.variant(resize_to_fill: [100, 100], saver: { quality: 70 }), alt: @product.nombre, loading: "lazy", onerror: "this.onerror=null;this.src='/assets/ProductoNoDisponible.png';" %>
                 </div>
               <% end %>
             </div>
@@ -190,9 +190,10 @@
         <!-- Imagen -->
         <div class="product-thumb">
           <%= image_tag(
-              producto.images.attached? ? url_for(producto.images.first) : "martillo-dewalt.png",
+              producto.images.attached? ? producto.images.first.variant(resize_to_fill: [250, 250], saver: { quality: 75 }) : "martillo-dewalt.png",
               alt: producto.nombre,
-              class: "img-fluid"
+              class: "img-fluid",
+              loading: "lazy"
             ) %>
         </div>
 

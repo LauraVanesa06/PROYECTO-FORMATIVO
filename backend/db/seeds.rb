@@ -1,298 +1,3 @@
-# This file should ensure the existence of records required to run the application in every environment (production,
-# development, test). The code here should be idempotent so that it can be executed at any point in every environment.
-# The data can then be loaded with the bin/rails db:seed command (or created alongside the database with db:setup).
-#
-# Example:
-#
-#   ["Action", "Comedy", "Drama", "Horror"].each do |genre_name|
-#     MovieGenre.find_or_create_by!(name: genre_name)
-#   end
-
-def reset_postgres_sequences(*tables)
-  tables.each do |table|
-    ActiveRecord::Base.connection.reset_pk_sequence!(table)
-  end
-end
-
-puts "🧹 Limpiando base de datos..."
-
-# 🔹 Primero elimina las tablas hijas (dependientes)
-PedidoProduct.delete_all
-Purchasedetail.delete_all
-Buy.delete_all
-Pedido.delete_all
-CartItem.delete_all
-Cart.delete_all 
-Favorite.delete_all
-Product.delete_all
-Marca.delete_all
-Category.delete_all
-Supplier.delete_all
-User.delete_all
-
-puts "✅ Datos eliminados, guardando datos de la semilla..."
-
-reset_postgres_sequences(
-  'purchasedetails',
-  'buy_products',
-  'buys',
-  'products',
-  'marcas',
-  'categories',
-  'suppliers',
-  'users',
-  'pedidos',
-  'carts',
-  'cart_items',
-  'favorites'
-)
-
-users = User.create!([
-  { name: "Administrador", email: "user@gmail.com", password: "123456", role: "admin" },
-  { name: "Cliente", email: "cliente@gmail.com", password: "123456", role: "user" },
-  { name: "Usuario 3", email: "user3@gmail.com", password: "123456", role: "user" },
-  { name: "Usuario 4", email: "user4@gmail.com", password: "123456", role: "user" },
-  { name: "Usuario 5", email: "user5@gmail.com", password: "123456", role: "user" }
-])
-
-categories = Category.create!([
-  { nombre: "Herramientas" },
-  { nombre: "Tornilleria y Fijaciones" },
-  { nombre: "Plomeria" },
-  { nombre: "Electricidad" },
-  { nombre: "Construccion y Materiales" },
-  { nombre: "Pintura y Acabados" },
-  { nombre: "Ferreteria para el hogar" },
-  { nombre: "Limpieza y Mantenimiento" },
-  { nombre: "Adhesivos y Selladores" },
-  { nombre: "Jardineria" },
-])
-
-# Adjuntar imagen a cada categoría si existe una imagen con su nombre en db/seeds-img
-extensiones = [".jpg", ".jpeg", ".png", ".webp", ".avif"]
-categories.each do |category|
-  imagen_encontrada = false
-  extensiones.each do |ext|
-    nombre_archivo = "#{category.nombre}#{ext}"
-    ruta_imagen = Rails.root.join("db/seeds-img", nombre_archivo)
-    if File.exist?(ruta_imagen)
-      category.imagen.attach(
-        io: File.open(ruta_imagen),
-        filename: nombre_archivo,
-        content_type: Marcel::MimeType.for(ruta_imagen)
-      )
-      puts "✅ Imagen cargada para categoría #{category.nombre}"
-      imagen_encontrada = true
-      break
-    end
-  end
-  puts "⚠️  Imagen no encontrada para categoría #{category.nombre}" unless imagen_encontrada
-end
-
-suppliers = Supplier.create!([
-  { nombre: "Ferretería Industrial Martínez S.A. de C.V.", contacto: "5512345678", codigo_proveedor: "FIM001", correo: "contacto@fim.com" },
-  { nombre: "Suministros y Herramientas del Norte", contacto: "5523456789", codigo_proveedor: "SHN002", correo: "ventas@shn.com" },
-  { nombre: "Grupo Ferrecomex", contacto: "5534567896", codigo_proveedor: "GFX003", correo: "info@ferrecomex.com" },
-  { nombre: "Materiales y Tornillería El Águila", contacto: "5545678901", codigo_proveedor: "MTA004", correo: "atencion@elaguila.com" },
-  { nombre: "Distribuidora FerrePlus", contacto: "5556789012", codigo_proveedor: "DFP005", correo: "soporte@ferreplus.com" }
-])
-
-marcas = Marca.create!([
-  { nombre: "Stanley" },
-  { nombre: "Bosch" },
-  { nombre: "DeWalt" },
-  { nombre: "Makita" },
-  { nombre: "Black+Decker" },
-  { nombre: "Hilti" },
-  { nombre: "Truper" },
-  { nombre: "Irwin" },
-  { nombre: "Craftsman" },
-  { nombre: "Milwaukee" }
-])
-
-products = Product.create!([
-  # HERRAMIENTAS (6 productos)
-  {
-    nombre: "Martillo",
-    descripcion: "Martillo de alta resistencia con mango ergonómico y cabeza de acero forjado, ideal para trabajos de carpintería, construcción y reparaciones generales.",
-    precio: 25_000,
-    stock: 50,
-    codigo_producto: "MAR001",
-    modelo: "MX-200",
-    disponible: true,
-    category: categories[0],
-    supplier: suppliers[0],
-    marca: marcas[1],
-    purchases_count: rand(10..100),
-    buyers_count: rand(5..50)
-  },
-  {
-    nombre: "Destornillador Phillips",
-    descripcion: "Destornillador Phillips con mango ergonómico antideslizante y punta magnética, ideal para trabajos de precisión en electrónica y carpintería.",
-    precio: 12_000,
-    stock: 75,
-    codigo_producto: "DES001",
-    modelo: "DP-15",
-    disponible: true,
-    category: categories[0],
-    supplier: suppliers[1],
-    marca: marcas[0],
-    purchases_count: rand(10..100),
-    buyers_count: rand(5..50)
-  },
-  {
-    nombre: "Alicate Universal",
-    descripcion: "Alicate universal con mandíbulas dentadas y cortador lateral, fabricado en acero cromado para mayor durabilidad y resistencia.",
-    precio: 28_000,
-    stock: 40,
-    codigo_producto: "ALI001",
-    modelo: "AU-250",
-    disponible: true,
-    category: categories[0],
-    supplier: suppliers[2],
-    marca: marcas[6],
-    purchases_count: rand(10..100),
-    buyers_count: rand(5..50)
-  },
-  {
-    nombre: "Llave Inglesa Ajustable",
-    descripcion: "Llave inglesa ajustable de 12 pulgadas con mandíbulas templadas y mango con recubrimiento antideslizante.",
-    precio: 32_000,
-    stock: 35,
-    codigo_producto: "LIA001",
-    modelo: "LI-300",
-    disponible: true,
-    category: categories[0],
-    supplier: suppliers[3],
-    marca: marcas[6],
-    purchases_count: rand(10..100),
-    buyers_count: rand(5..50)
-  },
-  {
-    nombre: "Taladro Eléctrico",
-    descripcion: "Taladro eléctrico de 600W con portabrocas de 13mm y regulador de velocidad, ideal para perforaciones en múltiples materiales.",
-    precio: 85_000,
-    stock: 15,
-    codigo_producto: "TAL001",
-    modelo: "TE-600",
-    disponible: true,
-    category: categories[0],
-    supplier: suppliers[0],
-    marca: marcas[1],
-    purchases_count: rand(10..100),
-    buyers_count: rand(5..50)
-  },
-  {
-    nombre: "Sierra Circular Manual",
-    descripcion: "Sierra circular manual de 7¼ pulgadas con motor de 1400W y guía láser para cortes precisos en madera y derivados.",
-    precio: 120_000,
-    stock: 8,
-    codigo_producto: "SIE001",
-    modelo: "SC-1400",
-    disponible: true,
-    category: categories[0],
-    supplier: suppliers[1],
-    marca: marcas[2],
-    purchases_count: rand(10..100),
-    buyers_count: rand(5..50)
-  },
-
-  # TORNILLERIA Y FIJACIONES (6 productos)
-  {
-    nombre: "Llave combinada",
-    descripcion: "Llave combinada de acero cromado con boca fija y estrella, ideal para ajustar o aflojar tuercas y pernos de forma segura y eficiente.",
-    precio: 6_000,
-    stock: 80,
-    codigo_producto: "LLC001",
-    modelo: "LC-14",
-    disponible: true,
-    category: categories[1],
-    supplier: suppliers[0],
-    marca: marcas[6],
-    purchases_count: rand(10..100),
-    buyers_count: rand(5..50)
-  },
-  {
-    nombre: "Tornillos Autorroscantes",
-    descripcion: "Caja de 100 tornillos autorroscantes de acero galvanizado de 3x25mm, ideales para fijación en metal y madera.",
-    precio: 15_000,
-    stock: 200,
-    codigo_producto: "TOR001",
-    modelo: "TA-325",
-    disponible: true,
-    category: categories[1],
-    supplier: suppliers[1],
-    marca: marcas[6],
-    purchases_count: rand(10..100),
-    buyers_count: rand(5..50)
-  },
-  {
-    nombre: "Pernos Hexagonales",
-    descripcion: "Set de 50 pernos hexagonales M8x40mm con tuercas y arandelas incluidas, fabricados en acero inoxidable.",
-    precio: 25_000,
-    stock: 150,
-    codigo_producto: "PER001",
-    modelo: "PH-840",
-    disponible: true,
-    category: categories[1],
-    supplier: suppliers[2],
-    marca: marcas[6],
-    purchases_count: rand(10..100),
-    buyers_count: rand(5..50)
-  },
-  {
-    nombre: "Remaches de Aluminio",
-    descripcion: "Caja de 100 remaches de aluminio de 4mm con herramienta remachadora incluida, ideal para uniones permanentes.",
-    precio: 18_000,
-    stock: 120,
-    codigo_producto: "REM001",
-    modelo: "RA-400",
-    disponible: true,
-    category: categories[1],
-    supplier: suppliers[3],
-    marca: marcas[6],
-    purchases_count: rand(10..100),
-    buyers_count: rand(5..50)
-  },
-  {
-    nombre: "Clavos de Acero",
-    descripcion: "Kilogramo de clavos de acero de 2½ pulgadas con punta diamante, ideales para carpintería y construcción general.",
-    precio: 8_000,
-    stock: 300,
-    codigo_producto: "CLA001",
-    modelo: "CA-25",
-    disponible: true,
-    category: categories[1],
-    supplier: suppliers[0],
-    marca: marcas[6],
-    purchases_count: rand(10..100),
-    buyers_count: rand(5..50)
-  },
-  {
-    nombre: "Grapas para Grapadora",
-    descripcion: "Caja de 5000 grapas galvanizadas de 10mm para grapadora neumática, ideales para tapicería y carpintería.",
-    precio: 12_000,
-    stock: 180,
-    codigo_producto: "GRA001",
-    modelo: "GG-10",
-    disponible: true,
-    category: categories[1],
-    supplier: suppliers[1],
-    marca: marcas[6],
-    purchases_count: rand(10..100),
-    buyers_count: rand(5..50)
-  }
-])
-
-puts "✅ Seed completado exitosamente"
-puts "📊 Usuarios creados: #{User.count}"
-puts "📦 Categorías creadas: #{Category.count}"
-puts "🏭 Proveedores creados: #{Supplier.count}"
-puts "🏷️  Marcas creadas: #{Marca.count}"
-puts "🛠️  Productos creados: #{Product.count}"
-#     MovieGenre.find_or_create_by!(name: genre_name)
-#   end
-
 def reset_postgres_sequences(*tables)
   tables.each do |table|
     ActiveRecord::Base.connection.reset_pk_sequence!(table)
@@ -331,8 +36,8 @@ reset_postgres_sequences(
 
 
 users = User.create!([
-  { name: "Administrador", email: "user@gmail.com", password: "123456", role: "admin" },
-  { name: "Cliente", email: "cliente@gmail.com", password: "123456", role: "user" },
+  { name: "Administrador", email: "user@gmail.com", password: "Admin123456", role: "admin" },
+  { name: "Cliente", email: "cliente@gmail.com", password: "Cliente123456", role: "user" },
 ])
 
 
@@ -1133,111 +838,44 @@ products = Product.create!([
   }
 ])
 
-# Limpiar imágenes existentes y cargar nuevas
-puts "🖼️  Limpiando imágenes existentes de productos..."
-products.each { |product| product.images.purge }
+# Adjuntar imágenes a los productos
+puts "🖼️  Cargando imágenes de productos..."
+directorio_imagenes = Rails.root.join("db/seeds-img/products")
+puts "📁 Buscando imágenes en: #{directorio_imagenes}"
+
+# Obtener lista de archivos disponibles
+archivos_disponibles = Dir.glob("#{directorio_imagenes}/*").map { |f| File.basename(f) }
+puts "📊 Imágenes encontradas: #{archivos_disponibles.count}"
 
 products.each do |product|
-  extensiones = [".jpg", ".jpeg", ".png", ".webp", ".avif"]
-
   imagen_encontrada = false
-
-  extensiones.each do |ext|
-    nombre_archivo = "#{product.nombre}#{ext}"
-    ruta_imagen = Rails.root.join("db/seeds-img/products", nombre_archivo)
-
-    if File.exist?(ruta_imagen)
+  
+  # Buscar archivo que coincida con el nombre del producto
+  archivo_encontrado = archivos_disponibles.find do |archivo|
+    # Remover extensión del archivo para comparar
+    nombre_sin_ext = File.basename(archivo, ".*")
+    nombre_sin_ext == product.nombre
+  end
+  
+  if archivo_encontrado
+    ruta_imagen = directorio_imagenes.join(archivo_encontrado)
+    begin
       product.images.attach(
         io: File.open(ruta_imagen),
-        filename: nombre_archivo,
+        filename: archivo_encontrado,
         content_type: Marcel::MimeType.for(ruta_imagen)
       )
-      puts "✅ Imagen cargada para #{product.nombre}"
+      puts "✅ Imagen cargada para producto: #{product.nombre}"
       imagen_encontrada = true
-      break
+    rescue => e
+      puts "❌ Error al cargar imagen para #{product.nombre}: #{e.message}"
     end
   end
-
-  puts "⚠️  Imagen no encontrada para #{product.nombre}" unless imagen_encontrada
+  
+  puts "⚠️  Imagen no encontrada para producto: #{product.nombre}" unless imagen_encontrada
 end
 
-buys = Buy.create!([
-  { user_id: users[0].id, fecha: Time.zone.now.change(hour: 9),  tipo: "Minorista",            metodo_pago: "Efectivo" },
-  { user_id: users[1].id, fecha: Time.zone.now.change(hour: 11), tipo: "Mayorista",            metodo_pago: "Online" },
-  { user_id: users[0].id, fecha: Time.zone.now.change(hour: 13), tipo: "Contratista/Empresa",  metodo_pago: "Efectivo" },
-  { user_id: users[1].id, fecha: Time.zone.now.change(hour: 13), tipo: "Contratista/Empresa",  metodo_pago: "Online" },
-
-
-users = User.create!([
-  { name: "Juan Pérez", email: "juan@gmail.com", password: "123456",
-  password_confirmation: "123456", role: "user"},
-
-  { name: "Laura Torres", email: "laura@gmail.com", password: "123456",
-  password_confirmation: "123456", role: "user"},
-
-  { name: "Carlos Sanchez", email: "carlos@gmail.com", password: "123456",
-  password_confirmation: "123456", role: "user"},
-
-  { name: "Michael Jackson", email: "michael@gmail.com", password: "123456", password_confirmation: "123456", role: "user"},
-  
-  { name: "Falcao Torres", email: "falcao@gmail.com", password: "123456",
-  password_confirmation: "123456", role: "user"}
-
-
-
-])
-
-# Purchasedetail.create!([
-#   {
-#     buy_id: buys[0].id,
-#     product_id: products[0].id,
-#     cantidad: 20,
-#     preciounidad: 26_000
-#   },
-#   {
-#     buy_id: buys[1].id,
-#     product_id: products[1].id,
-#     cantidad: 50,
-#     preciounidad: 9_500
-#   },
-#   {
-#     buy_id: buys[2].id,
-#     product_id: products[2].id,
-#     cantidad: 10,
-#     preciounidad: 30_500
-#   },
-#   {
-#     buy_id: buys[3].id,
-#     product_id: products[3].id,
-#     cantidad: 40,
-#     preciounidad: 12_500
-#   },
-#   {
-#     buy_id: buys[4].id,
-#     product_id: products[4].id,
-#     cantidad: 10,
-#     preciounidad: 17_500
-#   }
-# ])
-
-# Crear asociaciones de productos para cada venta usando buy_products
-buys.each_with_index do |buy, idx|
-  # Seleccionar entre 2 y 4 productos aleatorios para cada venta
-  num_productos = rand(2..4)
-  productos_seleccionados = products.sample(num_productos)
-  
-  productos_seleccionados.each do |producto|
-    BuyProduct.create!(
-      buy: buy,
-      product: producto,
-      cantidad: rand(1..10),
-      precio_unitario: producto.precio * rand(0.9..1.1) # Precio con pequeña variación
-    )
-  end
-end
-
-puts "✅ #{BuyProduct.count} productos asociados a las ventas"
-
+puts "✅ Seed completada correctamente"
 
 # Crear pedidos sin el campo 'productos' y asociar productos reales
 pedidos = [
@@ -1290,28 +928,3 @@ pedidos = [
     proveedor: suppliers[3].nombre
   }
 ]
-
-pedidos_records = pedidos.map { |attrs| Pedido.create!(attrs) }
-
-# Asociar al menos tres productos reales a cada pedido
-productos_para_asociar = Product.limit(3).to_a
-pedidos_records.each_with_index do |pedido, idx|
-  productos = productos_para_asociar
-  # Para variedad, alternar productos si hay más de tres
-  if Product.count > 3 && (Product.count - 2) > 0
-    productos = Product.offset(idx % (Product.count - 2)).limit(3)
-  else
-    productos = Product.limit(3)
-  end
-  productos.each do |producto|
-    PedidoProduct.create!(pedido: pedido, product_id: producto.id, cantidad: rand(1..5))
-  end
-end
-
-# Agregar datos de ejemplo a los productos existentes
-Product.find_each do |product|
-  product.update(
-    purchases_count: rand(5..100),
-    buyers_count: rand(3..50)
-  )
-end
