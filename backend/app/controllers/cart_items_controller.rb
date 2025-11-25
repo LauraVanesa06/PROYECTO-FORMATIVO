@@ -48,7 +48,7 @@ class CartItemsController < ApplicationController
         format.json do
           render json: {
             count: @cart.cart_items.sum(:cantidad),
-            cart_html: render_to_string(partial: 'carts/cart_items', locals: { cart_items: @cart.cart_items })
+            cart_html: render_to_string(partial: 'carts/cart_items', locals: { cart_items: @cart.cart_items }, formats: [:html])
           }
         end
         format.html { redirect_to cart_path(@cart), notice: "Producto agregado al carrito" }

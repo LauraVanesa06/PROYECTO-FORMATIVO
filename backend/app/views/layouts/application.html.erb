@@ -53,6 +53,18 @@
                         class: "text-white1 position-relative",
                         data: { bs_toggle: "offcanvas", bs_target: "#cartOffcanvas" } do %>
               <i class="fa-solid fa-cart-shopping"></i>
+              <% cart_count = @cart&.cart_items&.sum(:cantidad) || 0 %>
+              <% if cart_count > 0 %>
+                <span id="cart-count" class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                  <%= cart_count %>
+                  <span class="visually-hidden">productos en carrito</span>
+                </span>
+              <% else %>
+                <span id="cart-count" class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" style="display: none;">
+                  0
+                  <span class="visually-hidden">productos en carrito</span>
+                </span>
+              <% end %>
             <% end %>
           <% end %>
 
