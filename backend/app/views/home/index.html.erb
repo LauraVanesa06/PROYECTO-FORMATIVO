@@ -253,7 +253,14 @@
             if (cartBody) cartBody.innerHTML = data.cart_html;
           }
           const cartCount = document.querySelector("#cart-count");
-          if (cartCount && data.count !== undefined) cartCount.textContent = data.count;
+          if (cartCount && data.count !== undefined) {
+            cartCount.textContent = data.count;
+            if (data.count > 0) {
+              cartCount.style.display = 'inline';
+            } else {
+              cartCount.style.display = 'none';
+            }
+          }
           showToast("Producto agregado al carrito", "success");
         } else {
           // Error: mostrar mensaje específico del servidor
