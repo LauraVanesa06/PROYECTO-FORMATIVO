@@ -146,12 +146,13 @@ Rails.application.routes.draw do
 
  namespace :api do
   namespace :v1 do
+    resources :buys, only: [:create]
     post "payments/create_checkout", to: "payments#create_checkout"
     get "/wompi/return", to: "payments#return"
 
     post "/webhooks/wompi", to: "webhooks#receive"
     get "/payments/redirect", to: "payments#redirect"
-    get "/payment_success", to: "payments#success"
+    get "/payments/success", to: "payments#success"
 
 
   end

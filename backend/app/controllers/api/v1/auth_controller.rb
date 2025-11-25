@@ -42,7 +42,8 @@ class Api::V1::AuthController < Api::V1::ApiController
           id: user.id,
           name: user.name,
           email: user.email,
-          role: user.role
+          role: user.role,
+          cart_id: user.cart.id
         }
       }, status: :created
     else

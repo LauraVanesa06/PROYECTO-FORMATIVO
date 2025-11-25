@@ -17,7 +17,7 @@ module Api
         public_key = wompi[:public_key]
         integrity_secret = wompi[:integrity_secret]
 
-        redirect_url = "https://interisland-uninferrably-leonie.ngrok-free.app/api/v1/payments/success"
+        redirect_url = "https://interisland-uninferrably-leonie.ngrok-free.dev/api/v1/payments/success"
        
         
         encoded_redirect = URI.encode_www_form_component(redirect_url)
@@ -54,11 +54,24 @@ module Api
       end
 
       def success
-  # Limpia el carrito del usuario
-  current_user.cart.cart_items.destroy_all if current_user&.cart
 
+        cart_id = params[:cart_id]
+  user_id = params[:user_id]
+
+  # 1. Borrar carrito
+  if cart_id
+    cart = Cart.find_by(id: cart_id)
+    cart&.cart_items&.destroy_all
+  elsif user_id
+    user = User.find_by(id: user_id)
+    user&.cart&.cart_items&.destroy_all
+  end
+  
   # Cierra la ventana de Wompi
   render html: "<script>window.close()</script>".html_safe
+
+  user&.cart
+
 end
 
     
