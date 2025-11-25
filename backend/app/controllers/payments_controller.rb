@@ -168,6 +168,20 @@ class PaymentsController < ApplicationController
     Rails.logger.error "[WOMPI] Error webhook: #{e.full_message}"
     head :internal_server_error
   end
+  def redirect
+    transaction_id = params[:id]
+
+    payment = Payment.find_by(reference: reference)rescue nil
+
+    # Si existe, limpiar carrito
+    if payment&.cart
+      payment.cart.cart_items.destroy_all
+    end
+
+      flutter_url = "myapp://payment_success" 
+
+    redirect_to flutter_url, allow_other_host: true
+  end
 
   ##########################################
   # 4) CREAR LA COMPRA

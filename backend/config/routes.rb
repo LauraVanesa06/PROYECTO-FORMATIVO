@@ -99,7 +99,7 @@ Rails.application.routes.draw do
   end
   
 #web ruby
-  resources :payments, only: [:new, :create, :show]
+  resources :payments, only: [:new, :create]
   post "/payments/webhook", to: "payments#webhook"
   get  '/payments/widget_token', to: 'payments#widget_token' # opcional: para generar signature desde JS
 
@@ -146,10 +146,13 @@ Rails.application.routes.draw do
 
  namespace :api do
   namespace :v1 do
+    resources :buys, only: [:create]
     post "payments/create_checkout", to: "payments#create_checkout"
     get "/wompi/return", to: "payments#return"
 
     post "/webhooks/wompi", to: "webhooks#receive"
+    get "/payments/redirect", to: "payments#redirect"
+    get "/payments/success", to: "payments#success"
 
 
   end

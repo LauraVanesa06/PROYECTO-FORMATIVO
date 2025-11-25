@@ -36,10 +36,22 @@ class AuthService {
           value: data['user']['id'].toString(),
         );
 
-        await storage.write(
-          key: 'cart_id', 
-          value: data['user']['cart_id'].toString(),
-          );
+      // Manejo de cart_id correctamente
+        if (data['user'] != null) {
+          if (data['user']['cart_id'] != null) {
+            await storage.write(
+              key: 'cart_id',
+              value: data['user']['cart_id'].toString(),
+            );
+
+          } else if (data['user']['cart'] != null && data['user']['cart']['id'] != null) {
+            await storage.write(
+              key: 'cart_id',
+              value: data['user']['cart']['id'].toString(),
+            );
+          }
+        }
+
           
         return data;
       } else if (response.statusCode == 401) {

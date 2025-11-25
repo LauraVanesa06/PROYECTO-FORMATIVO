@@ -8,6 +8,9 @@ class Api::V1::AuthController < Api::V1::ApiController
     user = User.find_by(email: params[:email])
     if user&.valid_password?(params[:password])
       token = JsonWebToken.encode({ user_id: user.id })
+
+      cart = user.cart || user.create_cart   
+
       render json: {
         status: 'success',
         token: token,
@@ -15,8 +18,9 @@ class Api::V1::AuthController < Api::V1::ApiController
           id: user.id,
           name: user.name,
           email: user.email,
-          role: user.role
-        }
+          role: user.role,
+          cart_id: user.cart.id
+        } 
       }
     else
       render json: { 
@@ -29,7 +33,7 @@ class Api::V1::AuthController < Api::V1::ApiController
   def register
     user = User.new(register_params)
     
-    if user.save
+    if  user.save
       token = JsonWebToken.encode({ user_id: user.id })
       render json: {
         status: 'success',
@@ -38,7 +42,8 @@ class Api::V1::AuthController < Api::V1::ApiController
           id: user.id,
           name: user.name,
           email: user.email,
-          role: user.role
+          role: user.role,
+          cart_id: user.cart.id
         }
       }, status: :created
     else
