@@ -1,10 +1,9 @@
 class Api::V1::BuysController < ApplicationController
     before_action :authenticate_user_from_token!
     def create
-Rails.logger.info "🔥 INIT BUY for user: #{current_user.id}"
 
-cart = current_user.cart
-Rails.logger.info "🛒 Cart items count: #{cart.cart_items.count}"
+
+      cart = current_user.cart
       return render json: { error: "Carrito vacío" }, status: 400 if cart.cart_items.empty?
 
       buy = Buy.create!(user: current_user)

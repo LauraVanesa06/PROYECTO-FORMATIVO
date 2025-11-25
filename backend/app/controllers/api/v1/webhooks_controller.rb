@@ -20,39 +20,41 @@ module Api
       end
 
       def webhook
-  data = params[:data][:transaction]
-  reference = data[:reference]
-  status = data[:status]
+        data = params[:data][:transaction]
+        reference = data[:reference]
+        status = data[:status]
 
-  payment = Payment.find_by(reference: reference)
+        payment = Payment.find_by(reference: reference)
 
-  return head :not_found unless payment
+        return head :not_found unless payment
 
-  payment.update!(
-    status: status,
-    wompi_id: data[:id],
-    pay_method: data[:payment_method_type],
-    raw_response: params.to_json
-  )
+        payment.update!(
+          status: status,
+          wompi_id: data[:id],
+          pay_method: data[:payment_method_type],
+          raw_response: params.to_json
+        )
 
-  if status == "APPROVED"
-    process_successful_payment(payment)
-  end
+        if status == "APPROVED"
+          process_successful_payment(payment)
+        end
 
-  head :ok
-end
-def process_successful_payment(payment)
-  cart = payment.cart
+        head :ok
+      end
 
-  return unless cart
 
-  cart.cart_items.each do |item|
-    product = item.product
-    product.update!(stock: product.stock - item.quantity)
-  end
+      def process_successful_payment(payment)
+        cart = payment.cart
 
-  cart.cart_items.destroy_all
-end
+        return unless cart
+
+        cart.cart_items.each do |item|
+          product = item.product
+          product.update!(stock: product.stock - item.quantity)
+        end
+
+        cart.cart_items.destroy_all
+      end
 
 
 
@@ -86,20 +88,20 @@ end
 
         wompi_status = data["status"]
 
-mapped_status =
-  case wompi_status
-  when "APPROVED" then 1
-  when "DECLINED" then 2
-  when "ERROR"    then 3
-  else 0 # PENDING
-  end
+        mapped_status =
+          case wompi_status
+          when "APPROVED" then 1
+          when "DECLINED" then 2
+          when "ERROR"    then 3
+          else 0 # PENDING
+          end
 
-payment.update!(
-  status: mapped_status,
-  wompi_id: data["id"],
-  pay_method: data["payment_method_type"],
-  raw_response: raw
-)
+        payment.update!(
+          status: mapped_status,
+          wompi_id: data["id"],
+          pay_method: data["payment_method_type"],
+          raw_response: raw
+        )
       end
     end
   end

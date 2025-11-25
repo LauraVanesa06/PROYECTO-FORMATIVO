@@ -6,8 +6,6 @@ module Api
     #skip_before_action :verify_authenticity_token
       require 'uri'
 
-
-
       def create_checkout
         raw_amount = params[:amount].to_i
         amount_in_cents = raw_amount > 100000 ? raw_amount : raw_amount * 100
@@ -50,29 +48,28 @@ module Api
         render json: {
           checkout_url: checkout_url,
           reference: reference
-        }
+         }
       end
 
       def success
 
         cart_id = params[:cart_id]
-  user_id = params[:user_id]
+        user_id = params[:user_id]
 
-  # 1. Borrar carrito
-  if cart_id
-    cart = Cart.find_by(id: cart_id)
-    cart&.cart_items&.destroy_all
-  elsif user_id
-    user = User.find_by(id: user_id)
-    user&.cart&.cart_items&.destroy_all
-  end
-  
-  # Cierra la ventana de Wompi
-  render html: "<script>window.close()</script>".html_safe
+    
+        if cart_id
+          cart = Cart.find_by(id: cart_id)
+          cart&.cart_items&.destroy_all
+        elsif user_id
+          user = User.find_by(id: user_id)
+          user&.cart&.cart_items&.destroy_all
+        end
 
-  user&.cart
+        render html: "<script>window.close()</script>".html_safe
 
-end
+        user&.cart
+
+      end
 
     
 
