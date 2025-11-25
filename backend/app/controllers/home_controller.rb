@@ -1,9 +1,52 @@
 class HomeController < ApplicationController
+  include Pagy::Backend
   layout "application"
-  skip_before_action :authenticate_user!, only: [:index, :producto, :contacto, :producto_show] # Añadir producto_show aquí
+  skip_before_action :authenticate_user!, only: [:index, :producto, :contacto, :producto_show, :restore_images]
+
+  def restore_images
+    puts "🔗 Revinculando imágenes antiguas..."
+    
+    # Obtener los blobs huérfanos (sin attachment)
+    orphan_blobs = ActiveStorage::Blob.where.not(id: ActiveStorage::Attachment.select(:blob_id))
+    
+    puts "Blobs huérfanos: #{orphan_blobs.count}"
+    
+    relinked_count = 0
+    
+    orphan_blobs.each do |blob|
+      # Extraer el nombre del producto del filename
+      filename = blob.filename.to_s
+      puts "  Procesando: #{filename}"
+      
+      # Intentar encontrar un producto cuyo nombre coincida
+      # Por ejemplo: "Martillo" o "martillo-ef7a0562.jpg" 
+      product_name = filename.split('-').first.capitalize
+      
+      product = Product.where("LOWER(nombre) LIKE ?", "%#{product_name}%").first
+      
+      if product
+        # Crear un nuevo attachment vinculando el blob con el producto
+        ActiveStorage::Attachment.create(
+          name: 'images',
+          record_type: 'Product',
+          record_id: product.id,
+          blob_id: blob.id
+        )
+        puts "    ✓ Vinculado a: #{product.nombre}"
+        relinked_count += 1
+      else
+        puts "    ✗ No se encontró producto para: #{filename}"
+      end
+    end
+    
+    render plain: "✅ Se revincularon #{relinked_count} imágenes\n\nRecarga la página para ver los cambios."
+  end # Añadir producto_show aquí
 
   def index
-    @categories = Category.all
+    # OPTIMIZACIÓN: Cachear categorías (raramente cambian)
+    @categories = Rails.cache.fetch("categories:all", expires_in: 24.hours) do
+      Category.includes(:imagen_attachment).limit(10).to_a
+    end
     
     # Solo mostrar productos disponibles en la vista pública
     if params[:category_id].present?
@@ -13,6 +56,9 @@ class HomeController < ApplicationController
       @productos = Product.where(disponible: true)
     end
     
+    # OPTIMIZACIÓN: Eager load de marca y categoría (evita N+1 queries)
+    @productos = @productos.includes(:marca, :category)
+    
     # Aplicar filtros adicionales si existen
     if params[:search].present?
       @productos = @productos.where("LOWER(nombre) LIKE ? OR LOWER(descripcion) LIKE ?", 
@@ -20,15 +66,23 @@ class HomeController < ApplicationController
                                   "%#{params[:search].downcase}%")
     end
     
-    # Ordenar productos
+    # Ordenar y paginar con Pagy (ultraligero)
     @productos = @productos.order(created_at: :desc)
+    @pagy, @productos = pagy(@productos, items: 12)
   end
 
   def producto
+    # OPTIMIZACIÓN: Cachear categorías y suppliers (raramente cambian)
+    @categories = Rails.cache.fetch("categories:all", expires_in: 24.hours) do
+      Category.includes(:imagen_attachment).limit(10).to_a
+    end
+    @suppliers = Rails.cache.fetch("suppliers:all", expires_in: 24.hours) do
+      Supplier.select(:id, :nombre).limit(5).to_a
+    end
+    
     # Solo productos disponibles para clientes
     @productos = Product.where(disponible: true)
-    @categories = Category.all
-    @suppliers = Supplier.all
+                       .includes(:marca, :category)
 
     if params[:category_id].present?
       @productos = @productos.where(category_id: params[:category_id])

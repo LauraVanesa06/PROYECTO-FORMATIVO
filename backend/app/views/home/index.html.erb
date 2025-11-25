@@ -38,8 +38,8 @@
       <% @categories.each do |c| %>
         <div class="category-card" role="listitem">
           <%= link_to productos_path(category_id: c.id), class: "category-link d-flex flex-column align-items-center" do %>
-            <% if c.imagen.attached? %>
-              <%= image_tag c.imagen.variant(resize_to_limit: [80, 80]), class: "mb-2 rounded-circle" %>
+            <% if c.imagen&.attached? %>
+              <%= image_tag c.imagen.variant(resize_to_fill: [80, 80], saver: { quality: 70 }), class: "mb-2 rounded-circle", loading: "lazy" %>
             <% else %>
               <i class="fa-solid fa-tag fa-2x mb-2"></i>
             <% end %>
@@ -87,12 +87,23 @@
             
             <!-- Imagen -->
             <div class="product-thumb">
-              <%= image_tag(
-                  producto.images.attached? ? url_for(producto.images.first) : "martillo-dewalt.png",
-                  alt: producto.nombre,
-                  class: "img-fluid",
-                  onerror: "this.onerror=null;this.src='/assets/ProductoNoDisponible.png';"
-                ) %>
+              <% if producto.images.attached? %>
+                <%= image_tag(
+                    url_for(producto.images.first.variant(resize_to_limit: [300, 300])),
+                    alt: producto.nombre,
+                    class: "img-fluid",
+                    loading: "lazy",
+                    decoding: "async",
+                    onerror: "this.src='/assets/ProductoNoDisponible.png';"
+                  ) %>
+              <% else %>
+                <%= image_tag("martillo-dewalt.png", 
+                    alt: producto.nombre, 
+                    class: "img-fluid",
+                    loading: "lazy",
+                    decoding: "async"
+                  ) %>
+              <% end %>
             </div>
 
             <!-- Detalles -->
@@ -149,6 +160,47 @@
         <% end %>
       <% end %>
     </div>
+
+    <!-- PAGINACIÓN CON PAGY (ULTRALIGERA Y RÁPIDA) -->
+    <% if @pagy.pages > 1 %>
+      <nav aria-label="Navegación de páginas" class="mt-5 mb-5">
+        <ul class="pagination justify-content-center">
+          <% if @pagy.prev %>
+            <li class="page-item">
+              <%= link_to "← Anterior", url_for(page: @pagy.prev), class: "page-link" %>
+            </li>
+          <% else %>
+            <li class="page-item disabled">
+              <span class="page-link">← Anterior</span>
+            </li>
+          <% end %>
+
+          <% @pagy.series.each do |page_item| %>
+            <% if page_item == "..." %>
+              <li class="page-item disabled"><span class="page-link">...</span></li>
+            <% elsif page_item == @pagy.page %>
+              <li class="page-item active">
+                <span class="page-link"><%= page_item %></span>
+              </li>
+            <% else %>
+              <li class="page-item">
+                <%= link_to page_item, url_for(page: page_item), class: "page-link" %>
+              </li>
+            <% end %>
+          <% end %>
+
+          <% if @pagy.next %>
+            <li class="page-item">
+              <%= link_to "Siguiente →", url_for(page: @pagy.next), class: "page-link" %>
+            </li>
+          <% else %>
+            <li class="page-item disabled">
+              <span class="page-link">Siguiente →</span>
+            </li>
+          <% end %>
+        </ul>
+      </nav>
+    <% end %>
   <% else %>
     <div class="alert alert-info text-center mt-4">
       <i class="fa-solid fa-info-circle me-2"></i>
