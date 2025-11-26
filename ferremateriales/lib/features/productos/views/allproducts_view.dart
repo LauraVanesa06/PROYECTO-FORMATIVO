@@ -165,55 +165,6 @@ class _AllProductsViewState extends State<AllProductsView> {
                 );
               }
 
-              if (state is ProductLoadFailure) {
-                debugPrint('AllProductsView - showing error: ${state.message}');
-                return SliverFillRemaining(
-                  child: Center(
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Icon(
-                          Icons.error_outline,
-                          size: 64,
-                          color: Colors.red.shade400,
-                        ),
-                        const SizedBox(height: 16),
-                        Text(
-                          'Error al cargar productos',
-                          style: TextStyle(
-                            color: isDark ? Colors.white : const Color(0xFF222222),
-                            fontSize: 18,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                        const SizedBox(height: 8),
-                        Text(
-                          state.message ?? 'Error desconocido',
-                          style: TextStyle(
-                            color: isDark ? Colors.grey.shade400 : Colors.grey.shade600,
-                            fontSize: 14,
-                          ),
-                          textAlign: TextAlign.center,
-                        ),
-                        const SizedBox(height: 24),
-                        ElevatedButton.icon(
-                          onPressed: () {
-                            context.read<ProductBloc>().add(CargarTodosLosProductos());
-                          },
-                          icon: const Icon(Icons.refresh),
-                          label: const Text('Reintentar'),
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: const Color(0xFF2e67a3),
-                            foregroundColor: Colors.white,
-                            padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                );
-              }
-
               if (state is ProductLoadSuccess) {
                 debugPrint('AllProductsView - ProductLoadSuccess with ${state.productos.length} products');
                 if (state.productos.isEmpty) {

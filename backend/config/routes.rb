@@ -26,12 +26,6 @@ Rails.application.routes.draw do
   # soporte pagina principal
   post '/contacto/enviar', to: 'home#send_report', as: :send_report
 
-  # Perfil de usuario
-  resource :profile, only: [:show, :edit, :update], controller: 'profile' do
-    get 'change_password', on: :member
-    patch 'update_password', on: :member
-  end
-
   # Carrito
   resource :cart, only: [:show] do
     post "add_item/:product_id", to: "carts#add_item", as: :add_item

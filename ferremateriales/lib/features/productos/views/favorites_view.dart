@@ -55,12 +55,6 @@ class _FavoritesViewState extends State<FavoritesView> {
     }
   }
 
-  // M\u00e9todo para refrescar favoritos (pull-to-refresh)
-  Future<void> _refreshFavorites() async {
-    await _favoritesService.refreshFavorites();
-    await _loadFavorites();
-  }
-
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
@@ -103,13 +97,11 @@ body: _isLoading
               ],
             ),
           )
-        : RefreshIndicator(
-            onRefresh: _refreshFavorites,
-            child: ListView.builder(
-              padding: const EdgeInsets.all(16),
-              itemCount: _favorites.length,
-              itemBuilder: (context, index) {
-                final fav = _favorites[index];
+        : ListView.builder(
+            padding: const EdgeInsets.all(16),
+            itemCount: _favorites.length,
+            itemBuilder: (context, index) {
+              final fav = _favorites[index];
 
               return Container(
                 margin: const EdgeInsets.only(bottom: 16),
@@ -323,7 +315,6 @@ body: _isLoading
               );
             },
           ),
-        ),
     );
   }
 }

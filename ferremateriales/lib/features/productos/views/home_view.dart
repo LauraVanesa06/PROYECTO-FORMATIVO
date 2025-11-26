@@ -34,6 +34,13 @@ class _HomeViewState extends State<HomeView> {
     
     // Cargar cachés locales y luego recargar productos para actualizar estado de favoritos
     _loadCaches(productBloc);
+    
+    // Pre-cargar todos los productos en background para tenerlos en caché
+    Future.delayed(const Duration(milliseconds: 500), () {
+      if (mounted) {
+        productBloc.add(CargarTodosLosProductos());
+      }
+    });
   }
 
   Future<void> _loadCaches(ProductBloc productBloc) async {
@@ -256,122 +263,8 @@ class _HomeViewState extends State<HomeView> {
               const SizedBox(height: 6),
               BlocBuilder<ProductBloc, ProductState>(
                 builder: (context, state) {
-                  if (state is ProductLoadInProgress && !_isSearching) {
-                    return Column(
-                      children: [
-                        const ProductShimmer(),
-                        const SizedBox(height: 8),
-                        Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 16),
-                          child: SizedBox(
-                            width: double.infinity,
-                            height: 50,
-                            child: OutlinedButton(
-                              onPressed: () {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (_) => BlocProvider.value(
-                                      value: context.read<ProductBloc>(),
-                                      child: const AllProductsView(),
-                                    ),
-                                  ),
-                                ).then((_) {
-                                  context.read<ProductBloc>().add(CargarDestacados());
-                                });
-                              },
-                              style: OutlinedButton.styleFrom(
-                                foregroundColor: isDark ? Colors.white : const Color(0xFF2e67a3),
-                                side: BorderSide(
-                                  color: isDark ? Colors.grey.shade600 : const Color(0xFF2e67a3),
-                                  width: 2,
-                                ),
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(12),
-                                ),
-                              ),
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Text(
-                                    'Ver todos los productos',
-                                    style: TextStyle(
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.w600,
-                                      color: isDark ? Colors.white : const Color(0xFF2e67a3),
-                                    ),
-                                  ),
-                                  const SizedBox(width: 8),
-                                  Icon(
-                                    Icons.arrow_forward,
-                                    color: isDark ? Colors.white : const Color(0xFF2e67a3),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
-                        ),
-                      ],
-                    );
-                  }
-
                   if (state is ProductLoadInProgress) {
-                    return Column(
-                      children: [
-                        const ProductShimmer(),
-                        const SizedBox(height: 8),
-                        Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 16),
-                          child: SizedBox(
-                            width: double.infinity,
-                            height: 50,
-                            child: OutlinedButton(
-                              onPressed: () {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (_) => BlocProvider.value(
-                                      value: context.read<ProductBloc>(),
-                                      child: const AllProductsView(),
-                                    ),
-                                  ),
-                                ).then((_) {
-                                  context.read<ProductBloc>().add(CargarDestacados());
-                                });
-                              },
-                              style: OutlinedButton.styleFrom(
-                                foregroundColor: isDark ? Colors.white : const Color(0xFF2e67a3),
-                                side: BorderSide(
-                                  color: isDark ? Colors.grey.shade600 : const Color(0xFF2e67a3),
-                                  width: 2,
-                                ),
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(12),
-                                ),
-                              ),
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Text(
-                                    'Ver todos los productos',
-                                    style: TextStyle(
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.w600,
-                                      color: isDark ? Colors.white : const Color(0xFF2e67a3),
-                                    ),
-                                  ),
-                                  const SizedBox(width: 8),
-                                  Icon(
-                                    Icons.arrow_forward,
-                                    color: isDark ? Colors.white : const Color(0xFF2e67a3),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
-                        ),
-                      ],
-                    );
+                    return const ProductShimmer();
                   }
 
                   // 🔹 Modo búsqueda: mostrar todos los productos o filtrados
@@ -395,7 +288,7 @@ class _HomeViewState extends State<HomeView> {
 
                   // 🔹 Modo normal: mostrar solo destacados
                   if (!_isSearching && state is ProductDestacadosSuccess) {
-                    final destacados = state.destacados.take(10).toList();
+                    final destacados = state.destacados.take(8).toList();
                     return Column(
                       children: [
                         ProductsList(products: destacados),
@@ -456,117 +349,7 @@ class _HomeViewState extends State<HomeView> {
                   }
 
                   if (state is ProductLoadFailure) {
-                    return Column(
-                      children: [
-                        Center(
-                          child: Padding(
-                            padding: const EdgeInsets.all(32),
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Container(
-                                  padding: const EdgeInsets.all(20),
-                                  decoration: BoxDecoration(
-                                    color: isDark ? Colors.grey.shade800 : Colors.red.shade50,
-                                    shape: BoxShape.circle,
-                                  ),
-                                  child: Icon(
-                                    Icons.error_outline,
-                                    size: 60,
-                                    color: isDark ? Colors.red.shade400 : Colors.red.shade400,
-                                  ),
-                                ),
-                                const SizedBox(height: 24),
-                                Text(
-                                  '¡Ups! Algo salió mal',
-                                  style: TextStyle(
-                                    fontSize: 20,
-                                    fontWeight: FontWeight.bold,
-                                    color: isDark ? Colors.white : Colors.grey.shade800,
-                                  ),
-                                ),
-                                const SizedBox(height: 12),
-                                Text(
-                                  'No pudimos cargar los productos',
-                                  textAlign: TextAlign.center,
-                                  style: TextStyle(
-                                    fontSize: 15,
-                                    color: isDark ? Colors.grey.shade400 : Colors.grey.shade600,
-                                  ),
-                                ),
-                                const SizedBox(height: 24),
-                                ElevatedButton.icon(
-                                  onPressed: () {
-                                    context.read<ProductBloc>().add(CargarDestacados());
-                                  },
-                                  icon: const Icon(Icons.refresh),
-                                  label: const Text('Reintentar'),
-                                  style: ElevatedButton.styleFrom(
-                                    backgroundColor: isDark ? const Color(0xFF2e67a3) : const Color(0xFF2e67a3),
-                                    foregroundColor: Colors.white,
-                                    padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 14),
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(12),
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
-                        const SizedBox(height: 8),
-                        Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 16),
-                          child: SizedBox(
-                            width: double.infinity,
-                            height: 50,
-                            child: OutlinedButton(
-                              onPressed: () {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (_) => BlocProvider.value(
-                                      value: context.read<ProductBloc>(),
-                                      child: const AllProductsView(),
-                                    ),
-                                  ),
-                                ).then((_) {
-                                  context.read<ProductBloc>().add(CargarDestacados());
-                                });
-                              },
-                              style: OutlinedButton.styleFrom(
-                                foregroundColor: isDark ? Colors.white : const Color(0xFF2e67a3),
-                                side: BorderSide(
-                                  color: isDark ? Colors.grey.shade600 : const Color(0xFF2e67a3),
-                                  width: 2,
-                                ),
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(12),
-                                ),
-                              ),
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Text(
-                                    'Ver todos los productos',
-                                    style: TextStyle(
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.w600,
-                                      color: isDark ? Colors.white : const Color(0xFF2e67a3),
-                                    ),
-                                  ),
-                                  const SizedBox(width: 8),
-                                  Icon(
-                                    Icons.arrow_forward,
-                                    color: isDark ? Colors.white : const Color(0xFF2e67a3),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
-                        ),
-                      ],
-                    );
+                    return Center(child: Text(l10n.errorLoadingProducts));
                   }
 
                   return const ProductShimmer();

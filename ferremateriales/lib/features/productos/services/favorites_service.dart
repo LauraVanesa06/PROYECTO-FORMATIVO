@@ -14,17 +14,7 @@ class FavoritesService {
   List<Map<String, dynamic>> _favoritesCache = [];
   bool _cacheLoaded = false;
 
-  // Método para limpiar el caché y forzar recarga
-  void clearCache() {
-    _favoriteProductIds = [];
-    _favoritesCache = [];
-    _cacheLoaded = false;
-  }
-
-  Future<void> loadFavoritesCache({bool force = false}) async {
-    // Si ya está cargado y no se fuerza, retornar
-    if (_cacheLoaded && !force) return;
-
+  Future<void> loadFavoritesCache() async {
     final token = await storage.read(key: 'auth_token');
     if (token == null) return;
 
@@ -46,11 +36,6 @@ class FavoritesService {
           .toList();
       _cacheLoaded = true;
     }
-  }
-
-  // Método para refrescar favoritos desde el servidor (pull-to-refresh)
-  Future<void> refreshFavorites() async {
-    await loadFavoritesCache(force: true);
   }
 
   bool isFavoriteCached(int productId) => _favoriteProductIds.contains(productId);

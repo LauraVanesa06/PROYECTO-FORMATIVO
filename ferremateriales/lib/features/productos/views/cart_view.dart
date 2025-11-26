@@ -24,7 +24,6 @@ class CartView extends StatefulWidget {
 class _CartViewState extends State<CartView> {
   final CartService _cartService = CartService();
   bool _isLoading = true;
-  bool _isProcessingPayment = false;
   List<CartItemModel> _cartItems = [];
 
   @override
@@ -84,10 +83,7 @@ class _CartViewState extends State<CartView> {
                 Icons.arrow_back,
                 color: isDark ? Colors.white : const Color(0xFF222222),
               ),
-              onPressed: () {
-                // Volver al home (primera ruta)
-                Navigator.of(context).popUntil((route) => route.isFirst);
-              },
+              onPressed: () => Navigator.pop(context),
             ),
           ),
 
@@ -190,20 +186,7 @@ class _CartViewState extends State<CartView> {
                                                 IconButton(
                                                   icon: const Icon(Icons.remove, size: 18),
                                                   onPressed: () async {
-                                                    // Actualizar UI inmediatamente
-                                                    setState(() {
-                                                      final itemIndex = _cartItems.indexWhere((i) => i.id == item.id);
-                                                      if (itemIndex != -1 && _cartItems[itemIndex].quantity > 1) {
-                                                        _cartItems[itemIndex] = CartItemModel(
-                                                          id: _cartItems[itemIndex].id,
-                                                          product: _cartItems[itemIndex].product,
-                                                          quantity: _cartItems[itemIndex].quantity - 1,
-                                                        );
-                                                      }
-                                                    });
-                                                    // Sincronizar con backend
                                                     await _cartService.decreaseQuantity(item.id);
-                                                    // Recargar desde servidor para confirmar
                                                     _loadCartItems();
                                                   },
                                                 ),
@@ -212,20 +195,7 @@ class _CartViewState extends State<CartView> {
                                                 IconButton(
                                                   icon: const Icon(Icons.add, size: 18),
                                                   onPressed: () async {
-                                                    // Actualizar UI inmediatamente
-                                                    setState(() {
-                                                      final itemIndex = _cartItems.indexWhere((i) => i.id == item.id);
-                                                      if (itemIndex != -1) {
-                                                        _cartItems[itemIndex] = CartItemModel(
-                                                          id: _cartItems[itemIndex].id,
-                                                          product: _cartItems[itemIndex].product,
-                                                          quantity: _cartItems[itemIndex].quantity + 1,
-                                                        );
-                                                      }
-                                                    });
-                                                    // Sincronizar con backend
                                                     await _cartService.increaseQuantity(item.id);
-                                                    // Recargar desde servidor para confirmar
                                                     _loadCartItems();
                                                   },
                                                 ),
@@ -238,33 +208,8 @@ class _CartViewState extends State<CartView> {
                                       IconButton(
                                         icon: const Icon(Icons.delete_outline, color: Colors.red),
                                         onPressed: () async {
-                                          // Actualizar UI inmediatamente
-                                          setState(() {
-                                            _cartItems.removeWhere((i) => i.id == item.id);
-                                          });
-                                          // Sincronizar con backend
-                                          try {
-                                            await _cartService.removeItem(item.id);
-                                            if (mounted) {
-                                              ScaffoldMessenger.of(context).showSnackBar(
-                                                const SnackBar(
-                                                  content: Text('Producto eliminado del carrito'),
-                                                  duration: Duration(seconds: 1),
-                                                ),
-                                              );
-                                            }
-                                          } catch (e) {
-                                            // Recargar en caso de error
-                                            _loadCartItems();
-                                            if (mounted) {
-                                              ScaffoldMessenger.of(context).showSnackBar(
-                                                SnackBar(
-                                                  content: Text('Error: $e'),
-                                                  backgroundColor: Colors.red,
-                                                ),
-                                              );
-                                            }
-                                          }
+                                          await _cartService.removeItem(item.id);
+                                          _loadCartItems();
                                         },
                                       ),
                                     ],
@@ -314,85 +259,37 @@ class _CartViewState extends State<CartView> {
                                   width: double.infinity,
                                   height: 56,
                                   child: ElevatedButton(
-                                    onPressed: _isProcessingPayment || _cartItems.isEmpty
-                                        ? null
-                                        : () async {
-                                      setState(() => _isProcessingPayment = true);
+                                    onPressed: () async {
                                       try {
-                                        print('=== INICIANDO PAGO ===');
                                         final cartId = await AuthService(baseUrl: BASE_URL).getCartId(); 
-                                        print('Cart ID obtenido: $cartId');
 
                                         if (cartId == null) {
-                                          print('ERROR: No existe cart_id guardado');
-                                          if (mounted) {
-                                            ScaffoldMessenger.of(context).showSnackBar(
-                                              const SnackBar(
-                                                content: Text('Error: No se pudo obtener el carrito'),
-                                                backgroundColor: Colors.red,
-                                              ),
-                                            );
-                                          }
+                                          print(" No existe cart_id guardado");
                                           return;
                                         }
 
-                                        print('Creando pago - Total: ${total.toInt()}');
                                         final data = await PaymentService().createPayment(
                                           cartId: cartId,
                                           amount: total.toInt(),
                                         );
-                                        print('Respuesta de pago: $data');
 
                                         final checkoutUrl = data["checkout_url"];
-                                        print('Checkout URL: $checkoutUrl');
 
-                                        if (checkoutUrl == null || checkoutUrl.isEmpty) {
-                                          throw Exception('URL de pago no válida');
-                                        }
-
-                                        // Abrir URL de pago (el carrito se vacia cuando se complete el pago en el backend)
                                         if (kIsWeb) {
                                           html.window.open(checkoutUrl, "_blank");
                                         } else {
-                                          if (mounted) {
-                                            Navigator.push(
-                                              context,
-                                              MaterialPageRoute(
-                                                builder: (_) => CheckoutScreen(checkoutUrl: checkoutUrl),
-                                              ),
-                                            ).then((_) {
-                                              // Recargar carrito después de cerrar webview
-                                              _loadCartItems();
-                                            });
-                                          }
-                                        }
-                                      } catch (e) {
-                                        print('ERROR AL PROCESAR PAGO: $e');
-                                        if (mounted) {
-                                          ScaffoldMessenger.of(context).showSnackBar(
-                                            SnackBar(
-                                              content: Text('Error al procesar pago: $e'),
-                                              backgroundColor: Colors.red,
-                                              duration: const Duration(seconds: 4),
+                                          Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                              builder: (_) => CheckoutScreen(checkoutUrl: checkoutUrl),
                                             ),
                                           );
                                         }
-                                      } finally {
-                                        if (mounted) {
-                                          setState(() => _isProcessingPayment = false);
-                                        }
+                                      } catch (e) {
+                                        print("Error al procesar pago: $e");
                                       }
                                     },
-                                    child: _isProcessingPayment
-                                        ? const SizedBox(
-                                            height: 20,
-                                            width: 20,
-                                            child: CircularProgressIndicator(
-                                              strokeWidth: 2,
-                                              valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
-                                            ),
-                                          )
-                                        : const Text('Pagar'),
+                                    child: Text("Pagar"),
                                   ),
                                 )
 

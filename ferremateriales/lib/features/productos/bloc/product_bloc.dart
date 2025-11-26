@@ -29,23 +29,12 @@ class ProductBloc extends Bloc<ProductEvent, ProductState> {
   Future<void> _onCargarDestacados(
       CargarDestacados event, Emitter<ProductState> emit) async {
 
-    // 🔹 Si ya tenemos destacados en caché, emitirlos inmediatamente sin hacer HTTP
-    if (_destacados.isNotEmpty) {
-      emit(ProductDestacadosSuccess(_destacados));
-      return;
-    }
-
     emit(ProductLoadInProgress());
 
     try {
-      final url = 'http://localhost:3000/api/v1/products';
-      debugPrint('ProductBloc - Fetching destacados from: $url');
-
       final response = await http.get(
-        Uri.parse(url),
+        Uri.parse('http://localhost:3000/api/v1/products'),
       );
-
-      debugPrint('ProductBloc - Destacados response status: ${response.statusCode}');
 
       if (response.statusCode == 200) {
         final decoded = jsonDecode(response.body);
@@ -56,20 +45,14 @@ class ProductBloc extends Bloc<ProductEvent, ProductState> {
               .map((item) => ProductModel.fromJson(item))
               .toList();
 
-          debugPrint('ProductBloc - Loaded ${_destacados.length} destacados');
           emit(ProductDestacadosSuccess(_destacados));
           return;
         }
       }
 
-      final errorMsg = 'Error cargando destacados (Status: ${response.statusCode})';
-      debugPrint('ProductBloc - $errorMsg');
-      emit(ProductLoadFailure(errorMsg));
-    } catch (e, stackTrace) {
-      final errorMsg = 'Error de conexión: $e';
-      debugPrint('ProductBloc - $errorMsg');
-      debugPrint('ProductBloc - StackTrace: $stackTrace');
-      emit(ProductLoadFailure(errorMsg));
+      emit(const ProductLoadFailure("Error cargando destacados"));
+    } catch (e) {
+      emit(const ProductLoadFailure("Error de conexión"));
     }
   }
 
@@ -82,15 +65,9 @@ class ProductBloc extends Bloc<ProductEvent, ProductState> {
     emit(ProductLoadInProgress());
 
     try {
-      final url = 'http://localhost:3000/api/v1/products/all_products';
-      debugPrint('ProductBloc - Fetching all products from: $url');
-
       final response = await http.get(
-        Uri.parse(url),
+        Uri.parse('http://localhost:3000/api/v1/products/all_products'),
       );
-
-      debugPrint('ProductBloc - Response status: ${response.statusCode}');
-      debugPrint('ProductBloc - Response body: ${response.body}');
 
       if (response.statusCode == 200) {
         final decoded = jsonDecode(response.body);
@@ -108,14 +85,9 @@ class ProductBloc extends Bloc<ProductEvent, ProductState> {
         }
       }
 
-      final errorMsg = 'Error al cargar productos (Status: ${response.statusCode})';
-      debugPrint('ProductBloc - $errorMsg');
-      emit(ProductLoadFailure(errorMsg));
-    } catch (e, stackTrace) {
-      final errorMsg = 'Error de conexión: $e';
-      debugPrint('ProductBloc - $errorMsg');
-      debugPrint('ProductBloc - StackTrace: $stackTrace');
-      emit(ProductLoadFailure(errorMsg));
+      emit(const ProductLoadFailure("Error cargando productos"));
+    } catch (e) {
+      emit(const ProductLoadFailure("Error de conexión"));
     }
   }
 
