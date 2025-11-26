@@ -17,12 +17,6 @@ class CartService {
   bool get isCacheLoaded => _cacheLoaded;
   List<CartItemModel> get cartCache => _cartCache;
 
-  // Método para limpiar el carrito localmente después de una compra
-  void clearCart() {
-    _cartCache = [];
-    _cacheLoaded = false;
-  }
-
   Future<void> loadCartCache() async {
     try {
       final token = await storage.read(key: 'auth_token');
@@ -45,11 +39,6 @@ class CartService {
     } catch (e) {
       print('Error loading cart cache: $e');
     }
-  }
-
-  // Método para refrescar carrito desde el servidor
-  Future<void> refreshCart() async {
-    await loadCartCache();
   }
 
   Future<List<CartItemModel>> getCartItems() async {

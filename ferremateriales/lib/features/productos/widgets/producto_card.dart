@@ -54,10 +54,6 @@ class _ProductCardState extends State<ProductCard> {
       
       // Hacer petición HTTP en background
       await favoritesService.toggleFavorite(widget.product.id!);
-      
-      // Recargar caché completo para actualizar FavoritesView en tiempo real
-      await favoritesService.loadFavoritesCache(force: true);
-      
       ScaffoldMessenger.of(context)
         ..hideCurrentSnackBar()
         ..showSnackBar(
@@ -129,43 +125,6 @@ class _ProductCardState extends State<ProductCard> {
   }
 
   Future<void> _addToCart(BuildContext context) async {
-    // Mostrar feedback instantáneo
-    ScaffoldMessenger.of(context)
-      ..hideCurrentSnackBar()
-      ..showSnackBar(
-        SnackBar(
-          content: Row(
-            children: [
-              const SizedBox(
-                width: 16,
-                height: 16,
-                child: CircularProgressIndicator(
-                  strokeWidth: 2,
-                  valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
-                ),
-              ),
-              const SizedBox(width: 12),
-              const Expanded(
-                child: Text(
-                  'Agregando al carrito...',
-                  style: TextStyle(
-                    fontSize: 15,
-                    fontWeight: FontWeight.w500,
-                  ),
-                ),
-              ),
-            ],
-          ),
-          backgroundColor: const Color(0xFF2e67a3),
-          behavior: SnackBarBehavior.floating,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(12),
-          ),
-          margin: const EdgeInsets.all(16),
-          duration: const Duration(seconds: 2),
-        ),
-      );
-
     try {
       await cartService.addToCart(widget.product.id!);
       ScaffoldMessenger.of(context)
@@ -181,7 +140,7 @@ class _ProductCardState extends State<ProductCard> {
                     shape: BoxShape.circle,
                   ),
                   child: const Icon(
-                    Icons.check_circle,
+                    Icons.shopping_cart,
                     color: Colors.white,
                     size: 20,
                   ),
@@ -198,43 +157,41 @@ class _ProductCardState extends State<ProductCard> {
                 ),
               ],
             ),
-            backgroundColor: Colors.green.shade600,
+            backgroundColor: const Color(0xFF2e67a3),
             behavior: SnackBarBehavior.floating,
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(12),
             ),
             margin: const EdgeInsets.all(16),
-            duration: const Duration(seconds: 1),
+            duration: const Duration(seconds: 2),
           ),
         );
     } catch (_) {
-      ScaffoldMessenger.of(context)
-        ..hideCurrentSnackBar()
-        ..showSnackBar(
-          SnackBar(
-            content: Row(
-              children: [
-                const Icon(Icons.error_outline, color: Colors.white),
-                const SizedBox(width: 12),
-                const Expanded(
-                  child: Text(
-                    'Error al agregar al carrito',
-                    style: TextStyle(
-                      fontSize: 15,
-                      fontWeight: FontWeight.w500,
-                    ),
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Row(
+            children: [
+              const Icon(Icons.error_outline, color: Colors.white),
+              const SizedBox(width: 12),
+              const Expanded(
+                child: Text(
+                  'Error al agregar al carrito',
+                  style: TextStyle(
+                    fontSize: 15,
+                    fontWeight: FontWeight.w500,
                   ),
                 ),
-              ],
-            ),
-            backgroundColor: Colors.red.shade700,
-            behavior: SnackBarBehavior.floating,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(12),
-            ),
-            margin: const EdgeInsets.all(16),
+              ),
+            ],
           ),
-        );
+          backgroundColor: Colors.red.shade700,
+          behavior: SnackBarBehavior.floating,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12),
+          ),
+          margin: const EdgeInsets.all(16),
+        ),
+      );
     }
   }
 
