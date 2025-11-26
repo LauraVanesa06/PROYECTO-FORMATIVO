@@ -24,6 +24,7 @@ class CartView extends StatefulWidget {
 class _CartViewState extends State<CartView> {
   final CartService _cartService = CartService();
   bool _isLoading = true;
+  bool _isProcessingPayment = false;
   List<CartItemModel> _cartItems = [];
 
   @override
@@ -83,7 +84,10 @@ class _CartViewState extends State<CartView> {
                 Icons.arrow_back,
                 color: isDark ? Colors.white : const Color(0xFF222222),
               ),
-              onPressed: () => Navigator.pop(context),
+              onPressed: () {
+                // Volver al home (primera ruta)
+                Navigator.of(context).popUntil((route) => route.isFirst);
+              },
             ),
           ),
 
@@ -234,8 +238,33 @@ class _CartViewState extends State<CartView> {
                                       IconButton(
                                         icon: const Icon(Icons.delete_outline, color: Colors.red),
                                         onPressed: () async {
-                                          await _cartService.removeItem(item.id);
-                                          _loadCartItems();
+                                          // Actualizar UI inmediatamente
+                                          setState(() {
+                                            _cartItems.removeWhere((i) => i.id == item.id);
+                                          });
+                                          // Sincronizar con backend
+                                          try {
+                                            await _cartService.removeItem(item.id);
+                                            if (mounted) {
+                                              ScaffoldMessenger.of(context).showSnackBar(
+                                                const SnackBar(
+                                                  content: Text('Producto eliminado del carrito'),
+                                                  duration: Duration(seconds: 1),
+                                                ),
+                                              );
+                                            }
+                                          } catch (e) {
+                                            // Recargar en caso de error
+                                            _loadCartItems();
+                                            if (mounted) {
+                                              ScaffoldMessenger.of(context).showSnackBar(
+                                                SnackBar(
+                                                  content: Text('Error: $e'),
+                                                  backgroundColor: Colors.red,
+                                                ),
+                                              );
+                                            }
+                                          }
                                         },
                                       ),
                                     ],
@@ -285,43 +314,85 @@ class _CartViewState extends State<CartView> {
                                   width: double.infinity,
                                   height: 56,
                                   child: ElevatedButton(
-                                    onPressed: () async {
+                                    onPressed: _isProcessingPayment || _cartItems.isEmpty
+                                        ? null
+                                        : () async {
+                                      setState(() => _isProcessingPayment = true);
                                       try {
+                                        print('=== INICIANDO PAGO ===');
                                         final cartId = await AuthService(baseUrl: BASE_URL).getCartId(); 
+                                        print('Cart ID obtenido: $cartId');
 
                                         if (cartId == null) {
-                                          print(" No existe cart_id guardado");
+                                          print('ERROR: No existe cart_id guardado');
+                                          if (mounted) {
+                                            ScaffoldMessenger.of(context).showSnackBar(
+                                              const SnackBar(
+                                                content: Text('Error: No se pudo obtener el carrito'),
+                                                backgroundColor: Colors.red,
+                                              ),
+                                            );
+                                          }
                                           return;
                                         }
 
+                                        print('Creando pago - Total: ${total.toInt()}');
                                         final data = await PaymentService().createPayment(
                                           cartId: cartId,
                                           amount: total.toInt(),
                                         );
-
-                                        // Limpiar carrito local inmediatamente
-                                        _cartService.clearCart();
-                                        setState(() {
-                                          _cartItems = [];
-                                        });
+                                        print('Respuesta de pago: $data');
 
                                         final checkoutUrl = data["checkout_url"];
+                                        print('Checkout URL: $checkoutUrl');
 
+                                        if (checkoutUrl == null || checkoutUrl.isEmpty) {
+                                          throw Exception('URL de pago no válida');
+                                        }
+
+                                        // Abrir URL de pago (el carrito se vacia cuando se complete el pago en el backend)
                                         if (kIsWeb) {
                                           html.window.open(checkoutUrl, "_blank");
                                         } else {
-                                          Navigator.push(
-                                            context,
-                                            MaterialPageRoute(
-                                              builder: (_) => CheckoutScreen(checkoutUrl: checkoutUrl),
+                                          if (mounted) {
+                                            Navigator.push(
+                                              context,
+                                              MaterialPageRoute(
+                                                builder: (_) => CheckoutScreen(checkoutUrl: checkoutUrl),
+                                              ),
+                                            ).then((_) {
+                                              // Recargar carrito después de cerrar webview
+                                              _loadCartItems();
+                                            });
+                                          }
+                                        }
+                                      } catch (e) {
+                                        print('ERROR AL PROCESAR PAGO: $e');
+                                        if (mounted) {
+                                          ScaffoldMessenger.of(context).showSnackBar(
+                                            SnackBar(
+                                              content: Text('Error al procesar pago: $e'),
+                                              backgroundColor: Colors.red,
+                                              duration: const Duration(seconds: 4),
                                             ),
                                           );
                                         }
-                                      } catch (e) {
-                                        print("Error al procesar pago: $e");
+                                      } finally {
+                                        if (mounted) {
+                                          setState(() => _isProcessingPayment = false);
+                                        }
                                       }
                                     },
-                                    child: Text("Pagar"),
+                                    child: _isProcessingPayment
+                                        ? const SizedBox(
+                                            height: 20,
+                                            width: 20,
+                                            child: CircularProgressIndicator(
+                                              strokeWidth: 2,
+                                              valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                                            ),
+                                          )
+                                        : const Text('Pagar'),
                                   ),
                                 )
 

@@ -34,13 +34,6 @@ class _HomeViewState extends State<HomeView> {
     
     // Cargar cachés locales y luego recargar productos para actualizar estado de favoritos
     _loadCaches(productBloc);
-    
-    // Pre-cargar todos los productos en background para tenerlos en caché
-    Future.delayed(const Duration(milliseconds: 500), () {
-      if (mounted) {
-        productBloc.add(CargarTodosLosProductos());
-      }
-    });
   }
 
   Future<void> _loadCaches(ProductBloc productBloc) async {
@@ -323,7 +316,62 @@ class _HomeViewState extends State<HomeView> {
                   }
 
                   if (state is ProductLoadInProgress) {
-                    return const ProductShimmer();
+                    return Column(
+                      children: [
+                        const ProductShimmer(),
+                        const SizedBox(height: 8),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 16),
+                          child: SizedBox(
+                            width: double.infinity,
+                            height: 50,
+                            child: OutlinedButton(
+                              onPressed: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (_) => BlocProvider.value(
+                                      value: context.read<ProductBloc>(),
+                                      child: const AllProductsView(),
+                                    ),
+                                  ),
+                                ).then((_) {
+                                  context.read<ProductBloc>().add(CargarDestacados());
+                                });
+                              },
+                              style: OutlinedButton.styleFrom(
+                                foregroundColor: isDark ? Colors.white : const Color(0xFF2e67a3),
+                                side: BorderSide(
+                                  color: isDark ? Colors.grey.shade600 : const Color(0xFF2e67a3),
+                                  width: 2,
+                                ),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(12),
+                                ),
+                              ),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Text(
+                                    'Ver todos los productos',
+                                    style: TextStyle(
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.w600,
+                                      color: isDark ? Colors.white : const Color(0xFF2e67a3),
+                                    ),
+                                  ),
+                                  const SizedBox(width: 8),
+                                  Icon(
+                                    Icons.arrow_forward,
+                                    color: isDark ? Colors.white : const Color(0xFF2e67a3),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    );
                   }
 
                   // 🔹 Modo búsqueda: mostrar todos los productos o filtrados
@@ -347,7 +395,7 @@ class _HomeViewState extends State<HomeView> {
 
                   // 🔹 Modo normal: mostrar solo destacados
                   if (!_isSearching && state is ProductDestacadosSuccess) {
-                    final destacados = state.destacados.take(8).toList();
+                    final destacados = state.destacados.take(10).toList();
                     return Column(
                       children: [
                         ProductsList(products: destacados),
