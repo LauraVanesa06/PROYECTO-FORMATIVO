@@ -1,31 +1,192 @@
 <!-- backend/app/views/devise/passwords/edit.html.erb -->
 
 <turbo-frame id="auth_frame">
-  <div class="auth-form">
-    <h2 class="text-center mb-4">Restablecer contraseña</h2>
+  <div class="login-form-container">
+    <div class="text-center mb-4">
+      <div class="recover-password-icon" style="background: #4CAF50;">
+        <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" fill="white" viewBox="0 0 16 16">
+          <path d="M8 1a2 2 0 0 1 2 2v4H6V3a2 2 0 0 1 2-2zm3 6V3a3 3 0 0 0-6 0v4a2 2 0 0 0-2 2v5a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2z"/>
+        </svg>
+      </div>
+    </div>
 
-    <%= form_for(resource, as: resource_name, url: password_path(resource_name), html: { method: :put }) do |f| %>
-      <%= render "devise/shared/error_messages", resource: resource %>
-      <%= f.hidden_field :reset_password_token %>
+    <h3 class="text-center mb-3">Nueva contraseña</h3>
+    <p class="text-center mb-4 subtitle-text">
+      Ingresa tu nueva contraseña
+    </p>
+
+    <form id="reset-password-form">
+      <input type="hidden" id="user_email" value="<%= params[:email] %>">
+      <input type="hidden" id="recovery_code" value="<%= params[:code] %>">
 
       <div class="mb-3">
-        <%= f.label :password, "Nueva contraseña", class: "form-label" %>
-        <%= f.password_field :password, class: "form-control", placeholder: "Nueva contraseña" %>
+        <label class="form-label">Nueva contraseña</label>
+        <div class="input-group">
+          <input type="password" id="new_password" class="form-control login-input-box" placeholder="Nueva contraseña" required>
+          <button class="btn btn-outline-secondary" type="button" onclick="togglePassword('new_password', this)">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+              <path d="M16 8s-3-5.5-8-5.5S0 8 0 8s3 5.5 8 5.5S16 8 16 8zM1.173 8a13.133 13.133 0 0 1 1.66-2.043C4.12 4.668 5.88 3.5 8 3.5c2.12 0 3.879 1.168 5.168 2.457A13.133 13.133 0 0 1 14.828 8c-.058.087-.122.183-.195.288-.335.48-.83 1.12-1.465 1.755C11.879 11.332 10.119 12.5 8 12.5c-2.12 0-3.879-1.168-5.168-2.457A13.134 13.134 0 0 1 1.172 8z"/>
+              <path d="M8 5.5a2.5 2.5 0 1 0 0 5 2.5 2.5 0 0 0 0-5zM4.5 8a3.5 3.5 0 1 1 7 0 3.5 3.5 0 0 1-7 0z"/>
+            </svg>
+          </button>
+        </div>
+        <div id="password-requirements" class="mt-2" style="font-size: 13px;">
+          <div class="requirement" data-rule="length">
+            <span class="icon">○</span> Al menos 6 caracteres
+          </div>
+          <div class="requirement" data-rule="uppercase">
+            <span class="icon">○</span> Una letra mayúscula
+          </div>
+          <div class="requirement" data-rule="lowercase">
+            <span class="icon">○</span> Una letra minúscula
+          </div>
+          <div class="requirement" data-rule="number">
+            <span class="icon">○</span> Un número
+          </div>
+        </div>
       </div>
 
-      <div class="mb-3">
-        <%= f.label :password_confirmation, "Confirmar contraseña", class: "form-label" %>
-        <%= f.password_field :password_confirmation, class: "form-control", placeholder: "Confirmar contraseña" %>
+      <div class="mb-4">
+        <label class="form-label">Confirmar contraseña</label>
+        <div class="input-group">
+          <input type="password" id="confirm_password" class="form-control login-input-box" placeholder="Confirmar contraseña" required>
+          <button class="btn btn-outline-secondary" type="button" onclick="togglePassword('confirm_password', this)">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+              <path d="M16 8s-3-5.5-8-5.5S0 8 0 8s3 5.5 8 5.5S16 8 16 8zM1.173 8a13.133 13.133 0 0 1 1.66-2.043C4.12 4.668 5.88 3.5 8 3.5c2.12 0 3.879 1.168 5.168 2.457A13.133 13.133 0 0 1 14.828 8c-.058.087-.122.183-.195.288-.335.48-.83 1.12-1.465 1.755C11.879 11.332 10.119 12.5 8 12.5c-2.12 0-3.879-1.168-5.168-2.457A13.134 13.134 0 0 1 1.172 8z"/>
+              <path d="M8 5.5a2.5 2.5 0 1 0 0 5 2.5 2.5 0 0 0 0-5zM4.5 8a3.5 3.5 0 1 1 7 0 3.5 3.5 0 0 1-7 0z"/>
+            </svg>
+          </button>
+        </div>
       </div>
 
       <div class="d-grid mb-3">
-        <%= f.submit "Actualizar contraseña", class: "btn btn-primary" %>
+        <button type="submit" id="update-password-btn" class="btn btn-primary w-100 login-btn-submit">
+          Actualizar contraseña
+        </button>
       </div>
-    <% end %>
+    </form>
 
-    <hr class="my-4">
-    <p class="text-center mb-0">
-      <%= link_to "Volver al inicio de sesión", new_user_session_path, data: { turbo_frame: "auth_frame" }, class: "text-decoration-none" %>
-    </p>
+    <div class="text-center mt-4">
+      <%= link_to "Volver al inicio de sesión", new_user_session_path, class: "back-to-login-link" %>
+    </div>
   </div>
 </turbo-frame>
+
+<style>
+  .requirement {
+    padding: 4px 0;
+    color: #999;
+    transition: all 0.2s;
+  }
+
+  .requirement.valid {
+    color: #4CAF50;
+  }
+
+  .requirement .icon {
+    display: inline-block;
+    width: 16px;
+    text-align: center;
+    font-weight: bold;
+  }
+
+  .requirement.valid .icon::before {
+    content: '✓';
+  }
+</style>
+
+<script>
+  function togglePassword(inputId, button) {
+    const input = document.getElementById(inputId);
+    if (input.type === 'password') {
+      input.type = 'text';
+      button.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16"><path d="m10.79 12.912-1.614-1.615a3.5 3.5 0 0 1-4.474-4.474l-2.06-2.06C.938 6.278 0 8 0 8s3 5.5 8 5.5a7.029 7.029 0 0 0 2.79-.588zM5.21 3.088A7.028 7.028 0 0 1 8 2.5c5 0 8 5.5 8 5.5s-.939 1.721-2.641 3.238l-2.062-2.062a3.5 3.5 0 0 0-4.474-4.474L5.21 3.089z"/><path d="M5.525 7.646a2.5 2.5 0 0 0 2.829 2.829l-2.83-2.829zm4.95.708-2.829-2.83a2.5 2.5 0 0 1 2.829 2.829zm3.171 6-12-12 .708-.708 12 12-.708.708z"/></svg>';
+    } else {
+      input.type = 'password';
+      button.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16"><path d="M16 8s-3-5.5-8-5.5S0 8 0 8s3 5.5 8 5.5S16 8 16 8zM1.173 8a13.133 13.133 0 0 1 1.66-2.043C4.12 4.668 5.88 3.5 8 3.5c2.12 0 3.879 1.168 5.168 2.457A13.133 13.133 0 0 1 14.828 8c-.058.087-.122.183-.195.288-.335.48-.83 1.12-1.465 1.755C11.879 11.332 10.119 12.5 8 12.5c-2.12 0-3.879-1.168-5.168-2.457A13.134 13.134 0 0 1 1.172 8z"/><path d="M8 5.5a2.5 2.5 0 1 0 0 5 2.5 2.5 0 0 0 0-5zM4.5 8a3.5 3.5 0 1 1 7 0 3.5 3.5 0 0 1-7 0z"/></svg>';
+    }
+  }
+
+  document.addEventListener('DOMContentLoaded', function() {
+    const passwordInput = document.getElementById('new_password');
+    const confirmInput = document.getElementById('confirm_password');
+    const form = document.getElementById('reset-password-form');
+
+    // Validación de contraseña en tiempo real
+    passwordInput.addEventListener('input', function() {
+      const password = this.value;
+      
+      document.querySelector('[data-rule="length"]').classList.toggle('valid', password.length >= 6);
+      document.querySelector('[data-rule="uppercase"]').classList.toggle('valid', /[A-Z]/.test(password));
+      document.querySelector('[data-rule="lowercase"]').classList.toggle('valid', /[a-z]/.test(password));
+      document.querySelector('[data-rule="number"]').classList.toggle('valid', /[0-9]/.test(password));
+    });
+
+    // Enviar formulario
+    form.addEventListener('submit', async function(e) {
+      e.preventDefault();
+
+      const email = document.getElementById('user_email').value;
+      const code = document.getElementById('recovery_code').value;
+      const password = passwordInput.value;
+      const passwordConfirmation = confirmInput.value;
+
+      if (password !== passwordConfirmation) {
+        alert('Las contraseñas no coinciden');
+        return;
+      }
+
+      if (password.length < 6) {
+        alert('La contraseña debe tener al menos 6 caracteres');
+        return;
+      }
+
+      if (!/[A-Z]/.test(password) || !/[a-z]/.test(password) || !/[0-9]/.test(password)) {
+        alert('La contraseña debe contener al menos una mayúscula, una minúscula y un número');
+        return;
+      }
+
+      const btn = document.getElementById('update-password-btn');
+      btn.disabled = true;
+      btn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Actualizando...';
+
+      const csrfToken = document.querySelector('meta[name="csrf-token"]').content;
+
+      try {
+        const response = await fetch('/users/password', {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+            'X-CSRF-Token': csrfToken,
+            'Accept': 'application/json'
+          },
+          body: JSON.stringify({
+            user: {
+              email: email,
+              recovery_code: code,
+              password: password,
+              password_confirmation: passwordConfirmation
+            }
+          })
+        });
+
+        const data = await response.json();
+
+        if (response.ok) {
+          alert('Contraseña actualizada exitosamente');
+          window.location.href = '/users/sign_in';
+        } else {
+          alert(data.error || 'Error al actualizar la contraseña');
+          btn.disabled = false;
+          btn.innerHTML = 'Actualizar contraseña';
+        }
+      } catch (error) {
+        console.error('Error:', error);
+        alert('Error de conexión. Por favor intenta de nuevo.');
+        btn.disabled = false;
+        btn.innerHTML = 'Actualizar contraseña';
+      }
+    });
+  });
+</script>
+

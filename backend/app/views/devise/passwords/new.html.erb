@@ -19,13 +19,34 @@
       Ingresa tu correo para recibir instrucciones
     </p>
 
-    <%= form_for(resource, as: resource_name, url: password_path(resource_name), html: { method: :post }) do |f| %>
+    <%= form_for(resource, as: resource_name, url: password_path(resource_name), html: { method: :post, id: 'reset-password-form' }) do |f| %>
       <div class="mb-4">
-        <%= f.email_field :email, class: "form-control login-input-box", placeholder: "Correo electrónico", autofocus: true, required: true %>
+        <%= f.email_field :email, class: "form-control login-input-box", placeholder: "Correo electrónico", autofocus: true, required: true, id: 'user_email_input' %>
+      </div>
+
+      <!-- Campo de código (inicialmente oculto) -->
+      <div id="code-section" style="display: none;">
+        <label class="form-label" style="color: #2e67a3; font-weight: 600; margin-bottom: 8px;">Código de verificación</label>
+        <div class="verification-code-inputs mb-4">
+          <input type="text" class="code-input" maxlength="1" pattern="[0-9]" inputmode="numeric" data-index="0">
+          <input type="text" class="code-input" maxlength="1" pattern="[0-9]" inputmode="numeric" data-index="1">
+          <input type="text" class="code-input" maxlength="1" pattern="[0-9]" inputmode="numeric" data-index="2">
+          <input type="text" class="code-input" maxlength="1" pattern="[0-9]" inputmode="numeric" data-index="3">
+          <input type="text" class="code-input" maxlength="1" pattern="[0-9]" inputmode="numeric" data-index="4">
+          <input type="text" class="code-input" maxlength="1" pattern="[0-9]" inputmode="numeric" data-index="5">
+        </div>
+        <p class="text-center text-muted" style="font-size: 14px;">
+          <span id="code-counter">0/6</span>
+        </p>
       </div>
 
       <div class="d-grid mb-3">
-        <%= f.submit "Enviar instrucciones", class: "btn btn-primary w-100 login-btn-submit" %>
+        <button type="button" id="send-code-btn" class="btn btn-primary w-100 login-btn-submit">
+          Enviar código
+        </button>
+        <button type="button" id="verify-code-btn" class="btn btn-primary w-100 login-btn-submit" style="display: none;">
+          Verificar código
+        </button>
       </div>
     <% end %>
 
@@ -34,3 +55,179 @@
     </div>
   </div>
 </turbo-frame>
+
+<style>
+  .verification-code-inputs {
+    display: flex;
+    justify-content: space-between;
+    gap: 8px;
+  }
+
+  .code-input {
+    width: 45px;
+    height: 50px;
+    text-align: center;
+    font-size: 20px;
+    font-weight: bold;
+    border: 2px solid #e0e0e0;
+    border-radius: 8px;
+    transition: all 0.2s;
+  }
+
+  .code-input:focus {
+    outline: none;
+    border-color: #2e67a3;
+    box-shadow: 0 0 0 3px rgba(46, 103, 163, 0.1);
+  }
+
+  .code-input.filled {
+    background: rgba(46, 103, 163, 0.05);
+    border-color: #2e67a3;
+  }
+</style>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    const emailInput = document.getElementById('user_email_input');
+    const sendCodeBtn = document.getElementById('send-code-btn');
+    const verifyCodeBtn = document.getElementById('verify-code-btn');
+    const codeSection = document.getElementById('code-section');
+    const codeInputs = document.querySelectorAll('.code-input');
+    const codeCounter = document.getElementById('code-counter');
+    let userEmail = '';
+
+    // Manejar inputs de código de verificación
+    codeInputs.forEach((input, index) => {
+      input.addEventListener('input', function(e) {
+        const value = this.value;
+        
+        // Solo permitir números
+        if (!/^[0-9]$/.test(value) && value !== '') {
+          this.value = '';
+          return;
+        }
+
+        // Actualizar clase filled
+        if (value) {
+          this.classList.add('filled');
+          // Mover al siguiente input
+          if (index < codeInputs.length - 1) {
+            codeInputs[index + 1].focus();
+          }
+        } else {
+          this.classList.remove('filled');
+        }
+
+        // Actualizar contador
+        const filledCount = Array.from(codeInputs).filter(inp => inp.value).length;
+        codeCounter.textContent = `${filledCount}/6`;
+      });
+
+      input.addEventListener('keydown', function(e) {
+        // Retroceder al input anterior con Backspace
+        if (e.key === 'Backspace' && !this.value && index > 0) {
+          codeInputs[index - 1].focus();
+        }
+      });
+
+      // Permitir pegar código completo
+      input.addEventListener('paste', function(e) {
+        e.preventDefault();
+        const pastedData = e.clipboardData.getData('text');
+        const digits = pastedData.replace(/\D/g, '').slice(0, 6);
+        
+        digits.split('').forEach((digit, i) => {
+          if (codeInputs[i]) {
+            codeInputs[i].value = digit;
+            codeInputs[i].classList.add('filled');
+          }
+        });
+
+        const filledCount = Array.from(codeInputs).filter(inp => inp.value).length;
+        codeCounter.textContent = `${filledCount}/6`;
+        
+        if (digits.length === 6) {
+          codeInputs[5].focus();
+        }
+      });
+    });
+
+    // Enviar código
+    sendCodeBtn.addEventListener('click', async function() {
+      const email = emailInput.value.trim();
+      
+      if (!email) {
+        alert('Por favor ingresa tu correo electrónico');
+        return;
+      }
+
+      const csrfToken = document.querySelector('meta[name="csrf-token"]').content;
+      
+      sendCodeBtn.disabled = true;
+      sendCodeBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Enviando...';
+
+      try {
+        const response = await fetch('/users/password', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'X-CSRF-Token': csrfToken,
+            'Accept': 'application/json'
+          },
+          body: JSON.stringify({
+            user: { email: email }
+          })
+        });
+
+        const data = await response.json();
+
+        if (response.ok) {
+          userEmail = email;
+          emailInput.disabled = true;
+          codeSection.style.display = 'block';
+          sendCodeBtn.style.display = 'none';
+          verifyCodeBtn.style.display = 'block';
+          codeInputs[0].focus();
+          
+          // Mostrar notificación de éxito
+          showNotification('Código enviado a tu correo', 'success');
+        } else {
+          alert(data.error || 'Error al enviar el código');
+          sendCodeBtn.disabled = false;
+          sendCodeBtn.innerHTML = 'Enviar código';
+        }
+      } catch (error) {
+        console.error('Error:', error);
+        alert('Error de conexión. Por favor intenta de nuevo.');
+        sendCodeBtn.disabled = false;
+        sendCodeBtn.innerHTML = 'Enviar código';
+      }
+    });
+
+    // Verificar código
+    verifyCodeBtn.addEventListener('click', function() {
+      const code = Array.from(codeInputs).map(input => input.value).join('');
+      
+      if (code.length !== 6) {
+        alert('Por favor ingresa el código completo de 6 dígitos');
+        return;
+      }
+
+      // Redirigir a la página de nueva contraseña con el código
+      window.location.href = `/users/password/edit?email=${encodeURIComponent(userEmail)}&code=${code}`;
+    });
+
+    function showNotification(message, type) {
+      const notification = document.createElement('div');
+      notification.className = `alert alert-${type === 'success' ? 'success' : 'danger'} notification-toast`;
+      notification.textContent = message;
+      notification.style.cssText = 'position: fixed; top: 20px; right: 20px; z-index: 9999; min-width: 300px;';
+      document.body.appendChild(notification);
+      
+      setTimeout(() => {
+        notification.remove();
+      }, 3000);
+    }
+  });
+</script>
+

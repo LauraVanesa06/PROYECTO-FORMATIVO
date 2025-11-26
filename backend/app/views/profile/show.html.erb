@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Mi Perfil - Ferremateriales</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    .profile-container {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 20px;
+      font-family: 'Poppins', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    }
+
+    .profile-header {
+      background: white;
+      border-radius: 30px;
+      padding: 40px;
+      text-align: center;
+      margin-bottom: 24px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    }
+
+    .profile-avatar {
+      width: 120px;
+      height: 120px;
+      border-radius: 50%;
+      border: 4px solid #2e67a3;
+      box-shadow: 0 5px 20px rgba(46, 103, 163, 0.2);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      background: rgba(46, 103, 163, 0.1);
+      margin-bottom: 20px;
+    }
+
+    .profile-avatar svg {
+      width: 60px;
+      height: 60px;
+      fill: #2e67a3;
+    }
+
+    .profile-name {
+      font-size: 24px;
+      font-weight: bold;
+      color: #222;
+      margin-bottom: 8px;
+    }
+
+    .profile-badge {
+      display: inline-block;
+      padding: 6px 16px;
+      background: rgba(46, 103, 163, 0.1);
+      border-radius: 20px;
+      color: #2e67a3;
+      font-size: 14px;
+      margin-top: 8px;
+    }
+
+    .menu-section {
+      background: white;
+      border-radius: 16px;
+      padding: 8px;
+      margin-bottom: 12px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    }
+
+    .menu-item {
+      display: flex;
+      align-items: center;
+      padding: 16px;
+      text-decoration: none;
+      color: #333;
+      border-radius: 12px;
+      transition: all 0.2s;
+      cursor: pointer;
+    }
+
+    .menu-item:hover {
+      background: #f8f9fa;
+      transform: translateX(4px);
+    }
+
+    .menu-icon {
+      width: 48px;
+      height: 48px;
+      background: rgba(46, 103, 163, 0.1);
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-right: 16px;
+      flex-shrink: 0;
+    }
+
+    .menu-icon svg {
+      width: 24px;
+      height: 24px;
+      fill: #2e67a3;
+    }
+
+    .menu-content {
+      flex: 1;
+    }
+
+    .menu-title {
+      font-weight: 600;
+      font-size: 16px;
+      color: #222;
+      margin-bottom: 4px;
+    }
+
+    .menu-subtitle {
+      font-size: 13px;
+      color: #999;
+    }
+
+    .menu-arrow {
+      color: #ccc;
+      font-size: 18px;
+    }
+
+    .logout-button {
+      width: 100%;
+      padding: 16px;
+      background: white;
+      border: 2px solid #e74c3c;
+      color: #e74c3c;
+      border-radius: 12px;
+      font-weight: 600;
+      font-size: 16px;
+      cursor: pointer;
+      transition: all 0.2s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      margin-top: 32px;
+    }
+
+    .logout-button:hover {
+      background: #e74c3c;
+      color: white;
+    }
+
+    .back-button {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 12px 20px;
+      background: white;
+      border: 2px solid #2e67a3;
+      color: #2e67a3;
+      border-radius: 12px;
+      text-decoration: none;
+      font-weight: 600;
+      margin-bottom: 20px;
+      transition: all 0.2s;
+    }
+
+    .back-button:hover {
+      background: #2e67a3;
+      color: white;
+    }
+
+    @media (max-width: 768px) {
+      .profile-container {
+        padding: 16px;
+      }
+
+      .profile-header {
+        padding: 30px 20px;
+        border-radius: 20px;
+      }
+
+      .profile-name {
+        font-size: 20px;
+      }
+    }
+  </style>
+</head>
+<body style="background: #f5f5f5; margin: 0; padding: 20px 0;">
+  
+  <div class="profile-container">
+    <%= link_to root_path, class: 'back-button' do %>
+      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M19 12H5M12 19l-7-7 7-7"/>
+      </svg>
+      Volver
+    <% end %>
+
+    <!-- Header con avatar y nombre -->
+    <div class="profile-header">
+      <div class="profile-avatar">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+          <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z"/>
+        </svg>
+      </div>
+      
+      <h1 class="profile-name"><%= @user.name.present? ? @user.name : "Usuario" %></h1>
+      <p style="color: #666; margin: 0;"><%= @user.email %></p>
+      <div class="profile-badge">
+        <%= @user.role == 'admin' ? 'Administrador' : 'Cliente' %>
+      </div>
+    </div>
+
+    <!-- Opciones de perfil -->
+    <div class="menu-section">
+      <%= link_to edit_profile_path, class: 'menu-item' do %>
+        <div class="menu-icon">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z"/>
+          </svg>
+        </div>
+        <div class="menu-content">
+          <div class="menu-title">Cuenta</div>
+          <div class="menu-subtitle">Administra tu información personal</div>
+        </div>
+        <span class="menu-arrow">›</span>
+      <% end %>
+    </div>
+
+    <div class="menu-section">
+      <a href="#" class="menu-item" onclick="alert('Función en desarrollo'); return false;">
+        <div class="menu-icon">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M19.14 12.94c.04-.3.06-.61.06-.94 0-.32-.02-.64-.07-.94l2.03-1.58c.18-.14.23-.41.12-.61l-1.92-3.32c-.12-.22-.37-.29-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94L14.4 2.81c-.04-.24-.24-.41-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.05.3-.09.63-.09.94s.02.64.07.94l-2.03 1.58c-.18.14-.23.41-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z"/>
+          </svg>
+        </div>
+        <div class="menu-content">
+          <div class="menu-title">Configuración</div>
+          <div class="menu-subtitle">Preferencias y configuración</div>
+        </div>
+        <span class="menu-arrow">›</span>
+      </a>
+    </div>
+
+    <div class="menu-section">
+      <a href="#" class="menu-item" onclick="alert('Función en desarrollo'); return false;">
+        <div class="menu-icon">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/>
+          </svg>
+        </div>
+        <div class="menu-content">
+          <div class="menu-title">Ayuda y soporte</div>
+          <div class="menu-subtitle">Preguntas frecuentes y contacto</div>
+        </div>
+        <span class="menu-arrow">›</span>
+      </a>
+    </div>
+
+    <div class="menu-section">
+      <a href="#" class="menu-item" onclick="showAboutDialog(); return false;">
+        <div class="menu-icon">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/>
+          </svg>
+        </div>
+        <div class="menu-content">
+          <div class="menu-title">Acerca de</div>
+          <div class="menu-subtitle">Información de la aplicación</div>
+        </div>
+        <span class="menu-arrow">›</span>
+      </a>
+    </div>
+
+    <!-- Botón de cerrar sesión -->
+    <%= button_to destroy_user_session_path, method: :delete, class: 'logout-button', data: { confirm: '¿Estás seguro de que deseas cerrar sesión?' } do %>
+      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+        <polyline points="16 17 21 12 16 7"></polyline>
+        <line x1="21" y1="12" x2="9" y2="12"></line>
+      </svg>
+      Cerrar sesión
+    <% end %>
+  </div>
+
+  <script>
+    function showAboutDialog() {
+      const dialog = confirm(`Ferremateriales\n\nVersión 3.1.4\n© 2025 Ferremateriales\n\nTu tienda de confianza para materiales de construcción y herramientas.`);
+    }
+  </script>
+
+</body>
+</html>

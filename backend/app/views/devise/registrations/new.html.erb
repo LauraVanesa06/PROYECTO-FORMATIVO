@@ -22,6 +22,20 @@
 
     <div class="mb-3 position-relative">
       <%= f.password_field :password, autocomplete: "new-password", class: "form-control login-input-box", id: "register-password-field", placeholder: "Contraseña", required: true %>
+      <div id="password-strength" class="mt-2" style="font-size: 13px;">
+        <div class="requirement" data-rule="length">
+          <span class="icon text-muted">✓</span> <span class="text-muted">Al menos 6 caracteres</span>
+        </div>
+        <div class="requirement" data-rule="uppercase">
+          <span class="icon text-muted">✓</span> <span class="text-muted">Una letra mayúscula</span>
+        </div>
+        <div class="requirement" data-rule="lowercase">
+          <span class="icon text-muted">✓</span> <span class="text-muted">Una letra minúscula</span>
+        </div>
+        <div class="requirement" data-rule="number">
+          <span class="icon text-muted">✓</span> <span class="text-muted">Un número</span>
+        </div>
+      </div>
     </div>
 
     <div class="mb-3 position-relative">
@@ -42,6 +56,38 @@
 </div>
 
 <script>
+  document.addEventListener('DOMContentLoaded', function() {
+    const passwordField = document.getElementById('register-password-field');
+    
+    // Validación en tiempo real
+    passwordField.addEventListener('input', function() {
+      const password = this.value;
+      
+      updateRequirement('length', password.length >= 6);
+      updateRequirement('uppercase', /[A-Z]/.test(password));
+      updateRequirement('lowercase', /[a-z]/.test(password));
+      updateRequirement('number', /[0-9]/.test(password));
+    });
+    
+    function updateRequirement(rule, isValid) {
+      const requirement = document.querySelector(`[data-rule="${rule}"]`);
+      const icon = requirement.querySelector('.icon');
+      const text = requirement.querySelector('span:last-child');
+      
+      if (isValid) {
+        icon.classList.remove('text-muted');
+        icon.classList.add('text-success');
+        text.classList.remove('text-muted');
+        text.classList.add('text-success');
+      } else {
+        icon.classList.remove('text-success');
+        icon.classList.add('text-muted');
+        text.classList.remove('text-success');
+        text.classList.add('text-muted');
+      }
+    }
+  });
+
   function toggleRegisterPassword() {
     const passwordField = document.getElementById('register-password-field');
     const type = passwordField.getAttribute('type') === 'password' ? 'text' : 'password';

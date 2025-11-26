@@ -26,6 +26,9 @@ Rails.application.routes.draw do
   # soporte pagina principal
   post '/contacto/enviar', to: 'home#send_report', as: :send_report
 
+  # Perfil de usuario
+  resource :profile, only: [:show, :edit, :update], controller: 'profile'
+
   # Carrito
   resource :cart, only: [:show] do
     post "add_item/:product_id", to: "carts#add_item", as: :add_item

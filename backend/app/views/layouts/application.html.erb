@@ -137,7 +137,9 @@
             </p>
             <p class="profile-email text-muted mb-0"><%= current_user.email %></p>
           </div>
-          <p class="profile-info-text text-center">Aquí pronto podrás editar tu perfil.</p>
+          <%= link_to profile_path, class: "btn btn-primary w-100 mb-2", style: "background: #2e67a3; border: none; border-radius: 12px; padding: 12px; font-weight: 600;" do %>
+            <span style="margin-right: 8px;">👤</span> Ver mi perfil completo
+          <% end %>
         <% else %>
           <div class="text-center">
             <p class="profile-info-text">Inicia sesión para acceder a tu perfil.</p>
