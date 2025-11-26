@@ -169,6 +169,139 @@
     <% end %>
     <script>
       console.log("CSRF:", document.querySelector('meta[name=csrf-token]').content);
+      
+      // Convertir alertas en notificaciones toast arriba
+      document.addEventListener("DOMContentLoaded", function() {
+        const alerts = document.querySelectorAll(".alert:not(.offcanvas-body .alert)");
+        
+        alerts.forEach(alert => {
+          // Obtener el mensaje y tipo de alerta
+          const message = alert.textContent.trim();
+          const isSuccess = alert.classList.contains("alert-success");
+          const type = isSuccess ? "success" : "danger";
+          
+          // Crear el contenedor de notificación
+          const notification = document.createElement("div");
+          notification.className = `notification notification-${type}`;
+          notification.innerHTML = `
+            <div class="notification-content">
+              <span class="notification-message">${message}</span>
+              <button class="notification-close">&times;</button>
+            </div>
+          `;
+          
+          // Agregar estilos
+          const style = document.createElement("style");
+          style.textContent = `
+            .notification {
+              position: fixed;
+              top: 20px;
+              right: 20px;
+              max-width: 400px;
+              padding: 16px 20px;
+              border-radius: 8px;
+              box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+              z-index: 9999;
+              animation: slideIn 0.3s ease;
+              font-family: 'Poppins', sans-serif;
+            }
+            
+            .notification-success {
+              background-color: #d4edda;
+              color: #155724;
+              border: 1px solid #c3e6cb;
+            }
+            
+            .notification-danger {
+              background-color: #f8d7da;
+              color: #721c24;
+              border: 1px solid #f5c6cb;
+            }
+            
+            .notification-content {
+              display: flex;
+              justify-content: space-between;
+              align-items: center;
+              gap: 15px;
+            }
+            
+            .notification-message {
+              flex: 1;
+            }
+            
+            .notification-close {
+              background: none;
+              border: none;
+              font-size: 24px;
+              cursor: pointer;
+              padding: 0;
+              color: inherit;
+              opacity: 0.7;
+              transition: opacity 0.2s;
+            }
+            
+            .notification-close:hover {
+              opacity: 1;
+            }
+            
+            @keyframes slideIn {
+              from {
+                transform: translateX(400px);
+                opacity: 0;
+              }
+              to {
+                transform: translateX(0);
+                opacity: 1;
+              }
+            }
+            
+            @keyframes slideOut {
+              from {
+                transform: translateX(0);
+                opacity: 1;
+              }
+              to {
+                transform: translateX(400px);
+                opacity: 0;
+              }
+            }
+            
+            @media (max-width: 768px) {
+              .notification {
+                top: 10px;
+                right: 10px;
+                left: 10px;
+                max-width: none;
+              }
+            }
+          `;
+          
+          if (!document.querySelector("style[data-notifications]")) {
+            style.setAttribute("data-notifications", "true");
+            document.head.appendChild(style);
+          }
+          
+          // Agregar la notificación al body
+          document.body.appendChild(notification);
+          
+          // Ocultar la alerta original
+          alert.style.display = "none";
+          
+          // Función para remover la notificación
+          const removeNotification = () => {
+            notification.style.animation = "slideOut 0.3s ease";
+            setTimeout(() => {
+              notification.remove();
+            }, 300);
+          };
+          
+          // Botón de cerrar
+          notification.querySelector(".notification-close").addEventListener("click", removeNotification);
+          
+          // Auto-remover después de 4 segundos
+          setTimeout(removeNotification, 4000);
+        });
+      });
     </script>
 
     <div id="deviseSidebarContainer"></div>

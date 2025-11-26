@@ -80,54 +80,15 @@
         <section>
           <div class="ingresos">
             <p class="flecha" id="F1">🡅</p>
-            <p class="etiqueta">Ingresos</p>
+            <p class="etiqueta">Ingresos Totales</p>
             <p class="monto" id="ingresos">0$</p>
           </div>
-          <!--<div class="contenedor-moneda">
-            <div class="texto-centro">
-              <div class="flecha">↑</div>
-              <div class="etiqueta">Ingresos</div>
-              <div class="monto">$3.250.000</div>
-          </div>-->
-          <div class="texto-3">Total de dinero recibido por ventas y otras entradas durante el periodo.</div>
-        </section>
-        <section>
-          <div class="egresos">
-            <p class="monto" id="egresos">0$</p>
-            <p class="etiqueta">Egresos</p>
-            <p class="flecha" id="F2">🡇</p>
-          </div>
-          <div class="texto-3">Total de dinero destinado a compras, pagos y gastos operativos del periodo.</div>
         </section>
       </div>
     </section>
 
     <section class="section-2">
       <div class="grafica-4">
-        <section class="texto-4">
-          <div class="texto-4-2"><div class="titulo-4">Ventas por método de pago y canal</div>Este gráfico muestra las ventas según su canal de origen 
-            (física, online y por cotización) y el método de pago utilizado en tienda. La información permite analizar el comportamiento de compra del
-            cliente y mejorar la gestión comercial y financiera.</div>
-            <div class="graf-4-1">
-              <!-- Ventas online -->
-              <div>
-                <div class="gauge">
-                  <canvas id="gaugeOnline"></canvas>
-                  <div class="gauge-label">0%</div>
-                </div>
-                <div class="gauge-title">Online</div>
-              </div>
-
-              <!-- Efectivo -->
-              <div>
-                <div class="gauge">
-                  <canvas id="gaugeEfectivo"></canvas>
-                  <div class="gauge-label">0%</div>
-                </div>
-                <div class="gauge-title">Efectivo</div>
-              </div>
-            </div>
-        </section>
         <section class="graf-4-2">
           <div class="titulo-4-2">Ventas por Método de Pago</div>
           <canvas id="graficoPago"></canvas>
@@ -379,45 +340,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
 <!-- grafica 1 de la seccion 4 -->
 <script>
-  const crearGauge = (ctxId, porcentaje, color) => {
-    const ctx = document.getElementById(ctxId).getContext('2d');
-    new Chart(ctx, {
-      type: 'doughnut',
-      data: {
-        datasets: [{
-          data: [porcentaje, 100 - porcentaje],
-          backgroundColor: [color, '#1A1C2D'],
-          borderColor: '#ffffff',
-          borderWidth: 0,
-          cutout: '3%'
-        }]
-      },
-      options: {
-        responsive: false,
-        plugins: {
-          legend: { display: false },
-          tooltip: { enabled: false }
-        }
-      }
-    });
-  };
-
-  fetch('/api/v1/ventas_por_canal')
-    .then(res => res.json())
-    .then(data => {
-      crearGauge('gaugeOnline', data.online, '#1976D2');
-      crearGauge('gaugeEfectivo', data.efectivo, '#03A9F4');
-
-      document.querySelector('#gaugeOnline + .gauge-label').textContent = `${data.online}%`;
-      document.querySelector('#gaugeEfectivo + .gauge-label').textContent = `${data.efectivo}%`;
-    })
-    .catch(err => console.error('Error al cargar ventas por canal:', err));
-</script>
-
-
-
-<!-- grafica 2 de la seccion 4 -->
-<script>
   const canvas = document.getElementById('graficoPago');
   const ctx = canvas.getContext('2d');
 
@@ -456,9 +378,8 @@ document.addEventListener('DOMContentLoaded', () => {
             legend: { display: false },
             tooltip: { enabled: false },
             datalabels: {
-              anchor: 'end',
-              align: 'top',
-              offset: 4,
+              anchor: 'center',
+              align: 'center',
               color: 'white',
               font: {
                 family: 'Segoe UI',
@@ -473,7 +394,6 @@ document.addEventListener('DOMContentLoaded', () => {
           scales: {
             y: {
               beginAtZero: true,
-              max: 100,
               ticks: {
                 color: '#ffffff',
                 font: {
