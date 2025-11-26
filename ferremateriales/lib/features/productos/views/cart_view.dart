@@ -186,7 +186,20 @@ class _CartViewState extends State<CartView> {
                                                 IconButton(
                                                   icon: const Icon(Icons.remove, size: 18),
                                                   onPressed: () async {
+                                                    // Actualizar UI inmediatamente
+                                                    setState(() {
+                                                      final itemIndex = _cartItems.indexWhere((i) => i.id == item.id);
+                                                      if (itemIndex != -1 && _cartItems[itemIndex].quantity > 1) {
+                                                        _cartItems[itemIndex] = CartItemModel(
+                                                          id: _cartItems[itemIndex].id,
+                                                          product: _cartItems[itemIndex].product,
+                                                          quantity: _cartItems[itemIndex].quantity - 1,
+                                                        );
+                                                      }
+                                                    });
+                                                    // Sincronizar con backend
                                                     await _cartService.decreaseQuantity(item.id);
+                                                    // Recargar desde servidor para confirmar
                                                     _loadCartItems();
                                                   },
                                                 ),
@@ -195,7 +208,20 @@ class _CartViewState extends State<CartView> {
                                                 IconButton(
                                                   icon: const Icon(Icons.add, size: 18),
                                                   onPressed: () async {
+                                                    // Actualizar UI inmediatamente
+                                                    setState(() {
+                                                      final itemIndex = _cartItems.indexWhere((i) => i.id == item.id);
+                                                      if (itemIndex != -1) {
+                                                        _cartItems[itemIndex] = CartItemModel(
+                                                          id: _cartItems[itemIndex].id,
+                                                          product: _cartItems[itemIndex].product,
+                                                          quantity: _cartItems[itemIndex].quantity + 1,
+                                                        );
+                                                      }
+                                                    });
+                                                    // Sincronizar con backend
                                                     await _cartService.increaseQuantity(item.id);
+                                                    // Recargar desde servidor para confirmar
                                                     _loadCartItems();
                                                   },
                                                 ),
@@ -272,6 +298,12 @@ class _CartViewState extends State<CartView> {
                                           cartId: cartId,
                                           amount: total.toInt(),
                                         );
+
+                                        // Limpiar carrito local inmediatamente
+                                        _cartService.clearCart();
+                                        setState(() {
+                                          _cartItems = [];
+                                        });
 
                                         final checkoutUrl = data["checkout_url"];
 
