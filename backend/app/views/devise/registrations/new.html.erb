@@ -13,19 +13,51 @@
 
   <%= form_for(resource, as: resource_name, url: registration_path(resource_name)) do |f| %>
     <div class="mb-3">
-      <%= f.text_field :name, class: "form-control login-input-box", placeholder: "Nombre completo", required: true %>
+      <%= f.text_field :name, class: "form-control login-input-box", placeholder: "Nombre completo", required: true, autocomplete: "off" %>
     </div>
 
     <div class="mb-3">
-      <%= f.email_field :email, autofocus: true, class: "form-control login-input-box", placeholder: "Correo electrónico", required: true %>
+      <%= f.email_field :email, class: "form-control login-input-box", placeholder: "Correo electrónico", required: true, autocomplete: "off" %>
     </div>
 
     <div class="mb-3 position-relative">
       <%= f.password_field :password, autocomplete: "new-password", class: "form-control login-input-box", id: "register-password-field", placeholder: "Contraseña", required: true %>
+      <button type="button" onclick="toggleRegisterPassword()" class="password-toggle-btn">
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="eye-icon" viewBox="0 0 16 16">
+          <path d="M16 8s-3-5.5-8-5.5S0 8 0 8s3 5.5 8 5.5S16 8 16 8zM1.173 8a13.133 13.133 0 0 1 1.66-2.043C4.12 4.668 5.88 3.5 8 3.5c2.12 0 3.879 1.168 5.168 2.457A13.133 13.133 0 0 1 14.828 8c-.058.087-.122.183-.195.288-.335.48-.83 1.12-1.465 1.755C11.879 11.332 10.119 12.5 8 12.5c-2.12 0-3.879-1.168-5.168-2.457A13.134 13.134 0 0 1 1.172 8z"/>
+          <path d="M8 5.5a2.5 2.5 0 1 0 0 5 2.5 2.5 0 0 0 0-5zM4.5 8a3.5 3.5 0 1 1 7 0 3.5 3.5 0 0 1-7 0z"/>
+        </svg>
+      </button>
+    </div>
+
+    <!-- Requisitos de contraseña -->
+    <div class="password-requirements mb-3" id="password-requirements">
+      <div class="requirement" id="req-length">
+        <span class="requirement-icon">○</span>
+        <span>Mínimo 6 caracteres</span>
+      </div>
+      <div class="requirement" id="req-uppercase">
+        <span class="requirement-icon">○</span>
+        <span>Al menos una mayúscula</span>
+      </div>
+      <div class="requirement" id="req-lowercase">
+        <span class="requirement-icon">○</span>
+        <span>Al menos una minúscula</span>
+      </div>
+      <div class="requirement" id="req-number">
+        <span class="requirement-icon">○</span>
+        <span>Al menos un número</span>
+      </div>
     </div>
 
     <div class="mb-3 position-relative">
       <%= f.password_field :password_confirmation, autocomplete: "new-password", class: "form-control login-input-box", id: "register-password-confirmation-field", placeholder: "Confirmar contraseña", required: true %>
+      <button type="button" onclick="toggleRegisterPasswordConfirmation()" class="password-toggle-btn">
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="eye-icon" viewBox="0 0 16 16">
+          <path d="M16 8s-3-5.5-8-5.5S0 8 0 8s3 5.5 8 5.5S16 8 16 8zM1.173 8a13.133 13.133 0 0 1 1.66-2.043C4.12 4.668 5.88 3.5 8 3.5c2.12 0 3.879 1.168 5.168 2.457A13.133 13.133 0 0 1 14.828 8c-.058.087-.122.183-.195.288-.335.48-.83 1.12-1.465 1.755C11.879 11.332 10.119 12.5 8 12.5c-2.12 0-3.879-1.168-5.168-2.457A13.134 13.134 0 0 1 1.172 8z"/>
+          <path d="M8 5.5a2.5 2.5 0 1 0 0 5 2.5 2.5 0 0 0 0-5zM4.5 8a3.5 3.5 0 1 1 7 0 3.5 3.5 0 0 1-7 0z"/>
+        </svg>
+      </button>
     </div>
 
     <div class="actions mb-3">
@@ -53,4 +85,53 @@
     const type = passwordField.getAttribute('type') === 'password' ? 'text' : 'password';
     passwordField.setAttribute('type', type);
   }
+
+  // Validación en tiempo real de requisitos de contraseña
+  document.addEventListener('DOMContentLoaded', function() {
+    const passwordField = document.getElementById('register-password-field');
+    
+    passwordField.addEventListener('input', function() {
+      const password = passwordField.value;
+      
+      // Validar longitud
+      const reqLength = document.getElementById('req-length');
+      if (password.length >= 6) {
+        reqLength.classList.add('valid');
+        reqLength.querySelector('.requirement-icon').textContent = '✓';
+      } else {
+        reqLength.classList.remove('valid');
+        reqLength.querySelector('.requirement-icon').textContent = '○';
+      }
+      
+      // Validar mayúscula
+      const reqUppercase = document.getElementById('req-uppercase');
+      if (/[A-Z]/.test(password)) {
+        reqUppercase.classList.add('valid');
+        reqUppercase.querySelector('.requirement-icon').textContent = '✓';
+      } else {
+        reqUppercase.classList.remove('valid');
+        reqUppercase.querySelector('.requirement-icon').textContent = '○';
+      }
+      
+      // Validar minúscula
+      const reqLowercase = document.getElementById('req-lowercase');
+      if (/[a-z]/.test(password)) {
+        reqLowercase.classList.add('valid');
+        reqLowercase.querySelector('.requirement-icon').textContent = '✓';
+      } else {
+        reqLowercase.classList.remove('valid');
+        reqLowercase.querySelector('.requirement-icon').textContent = '○';
+      }
+      
+      // Validar número
+      const reqNumber = document.getElementById('req-number');
+      if (/[0-9]/.test(password)) {
+        reqNumber.classList.add('valid');
+        reqNumber.querySelector('.requirement-icon').textContent = '✓';
+      } else {
+        reqNumber.classList.remove('valid');
+        reqNumber.querySelector('.requirement-icon').textContent = '○';
+      }
+    });
+  });
 </script>

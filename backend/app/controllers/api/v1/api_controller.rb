@@ -14,7 +14,8 @@ class Api::V1::ApiController < ActionController::API
 
     begin
       payload = JsonWebToken.decode(token)
-      @current_user = User.find_by("user_id")
+      @current_user = User.find_by(id: payload['user_id'])
+      return render json: { error: 'Usuario no encontrado' }, status: :unauthorized unless @current_user
     rescue JWT::DecodeError => e
       render json: { error: 'Token inválido' }, status: :unauthorized
     end

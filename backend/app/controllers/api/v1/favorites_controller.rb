@@ -1,5 +1,4 @@
-class Api::V1::FavoritesController < ApplicationController
-      skip_before_action :authenticate_user_from_token!, only: [:create_checkout]
+class Api::V1::FavoritesController < Api::V1::ApiController
 
   def index
     return render json: { error: 'No autorizado' }, status: :unauthorized unless current_user
@@ -51,23 +50,6 @@ class Api::V1::FavoritesController < ApplicationController
       render json: { message: 'Eliminado de favoritos' }, status: :ok
     else
       render json: { error: 'Producto no encontrado en favoritos' }, status: :not_found
-    end
-  end
-
-  private
-
-  def authenticate_user_from_token!
-    if request.headers['Authorization'].present?
-      token = request.headers['Authorization'].split(' ').last
-      begin
-        payload = JsonWebToken.decode(token)
-        @current_user = User.find_by(id: payload['user_id'])
-        return render json: { error: 'Usuario no encontrado' }, status: :unauthorized unless @current_user
-      rescue JWT::DecodeError
-        render json: { error: 'Token inválido' }, status: :unauthorized
-      end
-    else
-      render json: { error: 'Token no proporcionado' }, status: :unauthorized
     end
   end
 end

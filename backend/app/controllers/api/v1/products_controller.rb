@@ -1,4 +1,7 @@
-class Api::V1::ProductsController < ApplicationController
+class Api::V1::ProductsController < Api::V1::ApiController
+
+  # Permitir acceso público a estos endpoints
+  skip_before_action :authenticate_user_from_token!, only: [:index, :all_products, :show]
 
   def index
     # Permite recibir tanto category_id (Rails style) como categoryId (Flutter style)
@@ -6,15 +9,16 @@ class Api::V1::ProductsController < ApplicationController
 
     if category_param.present?
       # 🔎 Filtrar por categoría
-      products = Product.where(category_id: category_param)
+      products = Product.where(category_id: category_param).includes(:category, images_attachments: :blob)
     else
-      # 🏆 Top 8 productos más comprados
+      # 🏆 Top 10 productos más comprados
       products = Product
+        .includes(:category, images_attachments: :blob)
         .left_joins(:purchasedetails)
         .group('products.id')
         .select('products.*, COALESCE(SUM(purchasedetails.cantidad), 0) AS total_comprados')
         .order('total_comprados DESC')
-        .limit(8)
+        .limit(10)
     end
 
     render json: products.map { |product| product_json(product) }
