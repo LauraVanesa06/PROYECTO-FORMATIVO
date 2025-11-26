@@ -56,14 +56,14 @@
     </div> 
     <section id=sect1>
       <div class="degradado">
-        <p class= "titulo-cant">Cantidad total de Ventas:</p>
+        <p class= "titulo-cant">Cantidad total de Ventas: <%= @ventas_total %></p>
         <div class="conten">
-          <div class="info3"><a class="info2">10</a><a class="info">Hoy</a></div>
-          <div class="info3"><a class="info2">20</a><a class="info">Semana</a></div>
-          <div class="info3"><a class="info2">15</a><a class="info">Mes</a></div>
-          <div class="info3"><a class="info2">40</a><a class="info">Año</a></div>
+          <div class="info3"><a class="info2"><%= @ventas_hoy %></a><a class="info">Hoy</a></div>
+          <div class="info3"><a class="info2"><%= @ventas_semana %></a><a class="info">Semana</a></div>
+          <div class="info3"><a class="info2"><%= @ventas_mes %></a><a class="info">Mes</a></div>
+          <div class="info3"><a class="info2"><%= @ventas_anio %></a><a class="info">Año</a></div>
         </div>
-        <canvas id="grafica"></canvas>
+        <canvas id="grafica" style="max-height: 300px;"></canvas>
       </div>
       <div class="div-white"></div>
     </section>
@@ -132,58 +132,70 @@
   let grafica = null;
 
   function cargarGrafica() {
-    fetch('/api/v1/buys/ventas_por_tipo')
-      .then(response => response.json())
-      .then(datos => {
-        if (grafica) {
-          grafica.data.labels = datos.labels;
-          grafica.data.datasets = datos.datasets;
-          grafica.update();
-        } else {
-          grafica = new Chart(document.getElementById('grafica'), {
-            type: 'bar',
-            data: {
-              labels: datos.labels,
-              datasets: datos.datasets
-            },
-            options: {
-              responsive: true,
-              maintainAspectRatio: false,
-              plugins: {
-                legend: {
-                  labels: {
-                    usePointStyle: true,
-                    pointStyle: 'circle',
-                    color: '#1c1c1cff',
-                    font: {
-                      family: 'Poppins',
-                      size: 12,
-                      weight: 'bold'
-                    }
-                  }
-                }
-              },
-              scales: {
-                y: {
-                  beginAtZero: true,
-                  ticks: {
-                    color: '#1c1c1cff',
-                    font: { family: 'Poppins', size: 14, weight: '600' }
-                  },
-                  grid: { color: '#888888' }
-                },
-                x: {
-                  ticks: {
-                    color: '#1c1c1cff',
-                    font: { family: 'Poppins', size: 14, weight: '600' }
-                  },
-                  grid: { color: '#888888' }
-                }
+    const datos = {
+      labels: ['Hoy', 'Semana', 'Mes', 'Año'],
+      datasets: [{
+        label: 'Ventas',
+        data: [
+          <%= @ventas_hoy %>,
+          <%= @ventas_semana %>,
+          <%= @ventas_mes %>,
+          <%= @ventas_anio %>
+        ],
+        borderColor: '#4472B8',
+        backgroundColor: 'rgba(68, 114, 184, 0.1)',
+        borderWidth: 2,
+        fill: true,
+        tension: 0.4,
+        pointRadius: 5,
+        pointBackgroundColor: '#4472B8',
+        pointBorderColor: '#fff',
+        pointBorderWidth: 2
+      }]
+    };
+
+    const ctx = document.getElementById('grafica');
+    if (!ctx) return;
+
+    grafica = new Chart(ctx, {
+      type: 'line',
+      data: datos,
+      options: {
+        responsive: true,
+        maintainAspectRatio: true,
+        plugins: {
+          legend: {
+            labels: {
+              usePointStyle: true,
+              color: '#1c1c1c',
+              font: {
+                family: 'Poppins',
+                size: 14,
+                weight: 'bold'
               }
             }
-          });
+          }
+        },
+        scales: {
+          y: {
+            beginAtZero: true,
+            ticks: {
+              color: '#1c1c1c',
+              font: { family: 'Poppins', size: 12, weight: '600' },
+              stepSize: 1
+            },
+            grid: { color: 'rgba(0, 0, 0, 0.1)' }
+          },
+          x: {
+            ticks: {
+              color: '#1c1c1c',
+              font: { family: 'Poppins', size: 12, weight: '600' }
+            },
+            grid: { color: 'rgba(0, 0, 0, 0.1)' }
+          }
         }
-      });
+      }
+    });
   }
 
   document.addEventListener("DOMContentLoaded", cargarGrafica);
@@ -193,25 +205,18 @@
     const modal = document.getElementById("modal-reutilizable");
     const closeBtn = modal?.querySelector("#modal-close");
 
-    console.log('Modal encontrado:', modal);
-    console.log('Botones encontrados:', document.querySelectorAll(".show-buy").length);
-
     if (!modal) {
-      console.error('No se encontró el modal con id "modal-reutilizable"');
       return;
     }
 
     if (!closeBtn) {
-      console.error('No se encontró el botón de cerrar modal');
       return;
     }
 
     // Abrir modal al hacer click en botones
     document.querySelectorAll(".show-buy").forEach(button => {
       button.addEventListener("click", async () => {
-        console.log('Click en botón Ver detalles');
         const buyId = button.dataset.buyId;
-        console.log('Buy ID:', buyId);
         
         const data = {
           cliente: button.dataset.nombreCliente,
@@ -236,8 +241,6 @@
         try {
           const response = await fetch(`/buys/${buyId}/productos`);
           const productos = await response.json();
-          
-          console.log('Productos recibidos:', productos);
           
           if (productos.length === 0) {
             productosLista.innerHTML = '<p style="text-align: center; padding: 20px; color: #7f8c8d;">No hay productos en esta venta</p>';
@@ -377,12 +380,10 @@
             }
           }
         } catch (error) {
-          console.error('Error al cargar productos:', error);
           productosLista.innerHTML = '<p style="text-align: center; padding: 20px; color: red;">Error al cargar los productos</p>';
         }
 
         // Mostrar modal
-        console.log('Mostrando modal...');
         modal.style.display = "flex";
       });
     });
