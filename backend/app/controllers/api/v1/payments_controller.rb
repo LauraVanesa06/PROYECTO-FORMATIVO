@@ -59,12 +59,13 @@ module Api
     
         if cart_id
           cart = Cart.find_by(id: cart_id)
-          cart&.cart_items&.destroy_all
+         
         elsif user_id
           user = User.find_by(id: user_id)
           user&.cart&.cart_items&.destroy_all
         end
-
+        
+        
         render html: "<script>window.close()</script>".html_safe
 
         user&.cart
