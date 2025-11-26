@@ -19,8 +19,8 @@ class PasswordValidator {
     }
 
     // Verificar longitud mínima
-    if (password.length < 6) {
-      return 'La contraseña debe tener al menos 6 caracteres';
+    if (password.length < 8) {
+      return 'La contraseña debe tener al menos 8 caracteres';
     }
 
     // Verificar si está en la lista de contraseñas comunes
@@ -43,6 +43,11 @@ class PasswordValidator {
       return 'La contraseña debe contener al menos un número';
     }
 
+    // Verificar que tenga al menos un carácter especial
+    if (!password.contains(RegExp(r'[!@#$%^&*(),.?":{}|<>]'))) {
+      return 'La contraseña debe contener al menos un carácter especial (!@#\$%^&*(),.?":{}|<>)';
+    }
+
     return null; // Contraseña válida
   }
 
@@ -50,11 +55,12 @@ class PasswordValidator {
   static int getStrength(String password) {
     int strength = 0;
 
-    if (password.length >= 6) strength += 25;
-    if (password.length >= 10) strength += 15;
-    if (password.contains(RegExp(r'[A-Z]'))) strength += 20;
-    if (password.contains(RegExp(r'[a-z]'))) strength += 20;
-    if (password.contains(RegExp(r'[0-9]'))) strength += 20;
+    if (password.length >= 8) strength += 20;
+    if (password.length >= 12) strength += 10;
+    if (password.contains(RegExp(r'[A-Z]'))) strength += 15;
+    if (password.contains(RegExp(r'[a-z]'))) strength += 15;
+    if (password.contains(RegExp(r'[0-9]'))) strength += 15;
+    if (password.contains(RegExp(r'[!@#$%^&*(),.?":{}|<>]'))) strength += 15;
     if (!commonPasswords.contains(password.toLowerCase())) strength += 10;
 
     return strength.clamp(0, 100);

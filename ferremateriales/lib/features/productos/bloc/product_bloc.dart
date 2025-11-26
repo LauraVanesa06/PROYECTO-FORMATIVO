@@ -29,6 +29,12 @@ class ProductBloc extends Bloc<ProductEvent, ProductState> {
   Future<void> _onCargarDestacados(
       CargarDestacados event, Emitter<ProductState> emit) async {
 
+    // 🔹 Si ya tenemos destacados en caché, emitirlos inmediatamente sin hacer HTTP
+    if (_destacados.isNotEmpty) {
+      emit(ProductDestacadosSuccess(_destacados));
+      return;
+    }
+
     emit(ProductLoadInProgress());
 
     try {
