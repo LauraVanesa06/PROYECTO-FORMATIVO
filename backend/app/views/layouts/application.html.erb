@@ -136,9 +136,52 @@
               Bienvenido, <%= current_user.name.present? ? current_user.name : current_user.email.split('@').first %> 👋
             </p>
             <p class="profile-email text-muted mb-0"><%= current_user.email %></p>
+            <span class="badge bg-secondary mt-2"><%= current_user.role == 'admin' ? 'Administrador' : 'Cliente' %></span>
           </div>
-          <%= link_to profile_path, class: "btn btn-primary w-100 mb-2", style: "background: #2e67a3; border: none; border-radius: 12px; padding: 12px; font-weight: 600;" do %>
-            <span style="margin-right: 8px;">👤</span> Ver mi perfil completo
+
+          <!-- Formulario de información personal -->
+          <%= form_with(model: current_user, url: profile_path, method: :patch, local: true, class: 'profile-form-sidebar') do |f| %>
+            <div class="form-group-sidebar">
+              <%= f.label :name, "Nombre completo", class: 'form-label-sidebar' %>
+              <%= f.text_field :name, class: 'form-input-sidebar', placeholder: 'Tu nombre' %>
+            </div>
+
+            <div class="form-group-sidebar">
+              <%= f.label :email, "Correo electrónico", class: 'form-label-sidebar' %>
+              <%= f.email_field :email, class: 'form-input-sidebar', placeholder: 'tu@email.com' %>
+            </div>
+
+            <div class="divider-sidebar"></div>
+
+            <h6 class="subsection-title-sidebar">Cambiar contraseña</h6>
+
+            <div class="form-group-sidebar">
+              <%= label_tag :current_password, "Contraseña actual", class: 'form-label-sidebar' %>
+              <div class="password-wrapper-sidebar">
+                <%= password_field_tag :current_password, nil, class: 'form-input-sidebar', placeholder: '••••••', id: 'sidebar_current_pwd' %>
+                <button type="button" class="toggle-pwd-sidebar" onclick="toggleSidebarPwd('sidebar_current_pwd')">👁️</button>
+              </div>
+            </div>
+
+            <div class="form-group-sidebar">
+              <%= label_tag :new_password, "Nueva contraseña", class: 'form-label-sidebar' %>
+              <div class="password-wrapper-sidebar">
+                <%= password_field_tag :new_password, nil, class: 'form-input-sidebar', placeholder: '••••••', id: 'sidebar_new_pwd' %>
+                <button type="button" class="toggle-pwd-sidebar" onclick="toggleSidebarPwd('sidebar_new_pwd')">👁️</button>
+              </div>
+            </div>
+
+            <div class="form-group-sidebar">
+              <%= label_tag :password_confirmation, "Confirmar nueva", class: 'form-label-sidebar' %>
+              <div class="password-wrapper-sidebar">
+                <%= password_field_tag :password_confirmation, nil, class: 'form-input-sidebar', placeholder: '••••••', id: 'sidebar_confirm_pwd' %>
+                <button type="button" class="toggle-pwd-sidebar" onclick="toggleSidebarPwd('sidebar_confirm_pwd')">👁️</button>
+              </div>
+            </div>
+
+            <div class="form-actions-sidebar">
+              <%= f.submit "Guardar cambios", class: 'btn-save-sidebar' %>
+            </div>
           <% end %>
         <% else %>
           <div class="text-center">
@@ -311,6 +354,20 @@
     <script>
       // Indica al frontend si hay sesión activa
       window.isLoggedIn = <%= user_signed_in? %>;
+
+      // Toggle de contraseña en sidebar
+      function toggleSidebarPwd(fieldId) {
+        const field = document.getElementById(fieldId);
+        const btn = field.nextElementSibling;
+        
+        if (field.type === 'password') {
+          field.type = 'text';
+          btn.textContent = '🙈';
+        } else {
+          field.type = 'password';
+          btn.textContent = '👁️';
+        }
+      }
     </script>
   </body>
 </html>

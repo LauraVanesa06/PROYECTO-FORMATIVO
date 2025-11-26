@@ -119,6 +119,136 @@
       font-size: 18px;
     }
 
+    .section-header {
+      cursor: pointer;
+    }
+
+    .expandable-section {
+      padding: 20px;
+      background: #f8f9fa;
+      border-radius: 12px;
+      margin-top: 12px;
+    }
+
+    .menu-section-expanded {
+      background: white;
+      border-radius: 16px;
+      padding: 24px;
+      margin-bottom: 12px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    }
+
+    .section-header-static {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 20px;
+      padding-bottom: 16px;
+      border-bottom: 2px solid #f0f0f0;
+    }
+
+    .menu-icon-static {
+      width: 48px;
+      height: 48px;
+      background: rgba(46, 103, 163, 0.1);
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .menu-icon-static svg {
+      width: 24px;
+      height: 24px;
+      fill: #2e67a3;
+    }
+
+    .section-title-static {
+      font-size: 20px;
+      font-weight: 600;
+      color: #222;
+    }
+
+    .form-group-inline {
+      margin-bottom: 16px;
+    }
+
+    .form-label-inline {
+      display: block;
+      font-size: 13px;
+      font-weight: 600;
+      color: #555;
+      margin-bottom: 6px;
+    }
+
+    .form-input-inline {
+      width: 100%;
+      padding: 10px 12px;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      font-size: 14px;
+      transition: all 0.2s;
+      box-sizing: border-box;
+    }
+
+    .form-input-inline:focus {
+      outline: none;
+      border-color: #2e67a3;
+      box-shadow: 0 0 0 2px rgba(46, 103, 163, 0.1);
+    }
+
+    .password-field-wrapper {
+      position: relative;
+    }
+
+    .toggle-pwd-inline {
+      position: absolute;
+      right: 10px;
+      top: 50%;
+      transform: translateY(-50%);
+      background: none;
+      border: none;
+      cursor: pointer;
+      font-size: 16px;
+      padding: 0;
+    }
+
+    .form-divider {
+      height: 1px;
+      background: #ddd;
+      margin: 20px 0;
+    }
+
+    .subsection-title {
+      font-size: 15px;
+      font-weight: 600;
+      color: #333;
+      margin: 0 0 16px 0;
+    }
+
+    .form-actions {
+      margin-top: 20px;
+    }
+
+    .save-btn-inline {
+      width: 100%;
+      padding: 12px;
+      background: #2e67a3;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-weight: 600;
+      font-size: 14px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .save-btn-inline:hover {
+      background: #245283;
+      transform: translateY(-1px);
+    }
+
     .logout-button {
       width: 100%;
       padding: 16px;
@@ -203,19 +333,61 @@
       </div>
     </div>
 
-    <!-- Opciones de perfil -->
-    <div class="menu-section">
-      <%= link_to edit_profile_path, class: 'menu-item' do %>
-        <div class="menu-icon">
+    <!-- Sección de Cuenta - Siempre Visible -->
+    <div class="menu-section-expanded">
+      <div class="section-header-static">
+        <div class="menu-icon-static">
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
             <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z"/>
           </svg>
         </div>
-        <div class="menu-content">
-          <div class="menu-title">Cuenta</div>
-          <div class="menu-subtitle">Información personal y seguridad</div>
+        <div class="section-title-static">Cuenta</div>
+      </div>
+
+      <%= form_with(model: @user, url: profile_path, method: :patch, local: true, class: 'profile-form') do |f| %>
+        <div class="form-group-inline">
+          <%= f.label :name, "Nombre completo", class: 'form-label-inline' %>
+          <%= f.text_field :name, class: 'form-input-inline', placeholder: 'Tu nombre' %>
         </div>
-        <span class="menu-arrow">›</span>
+
+        <div class="form-group-inline">
+          <%= f.label :email, "Correo electrónico", class: 'form-label-inline' %>
+          <%= f.email_field :email, class: 'form-input-inline', placeholder: 'tu@email.com' %>
+        </div>
+
+        <div class="form-divider"></div>
+
+        <h4 class="subsection-title">Cambiar contraseña</h4>
+
+        <%= fields_for :password_change do |p| %>
+          <div class="form-group-inline">
+            <%= label_tag :current_password, "Contraseña actual", class: 'form-label-inline' %>
+            <div class="password-field-wrapper">
+              <%= password_field_tag :current_password, nil, class: 'form-input-inline', placeholder: '••••••', id: 'current_pwd' %>
+              <button type="button" class="toggle-pwd-inline" onclick="togglePwd('current_pwd')">👁️</button>
+            </div>
+          </div>
+
+          <div class="form-group-inline">
+            <%= label_tag :new_password, "Nueva contraseña", class: 'form-label-inline' %>
+            <div class="password-field-wrapper">
+              <%= password_field_tag :new_password, nil, class: 'form-input-inline', placeholder: '••••••', id: 'new_pwd' %>
+              <button type="button" class="toggle-pwd-inline" onclick="togglePwd('new_pwd')">👁️</button>
+            </div>
+          </div>
+
+          <div class="form-group-inline">
+            <%= label_tag :password_confirmation, "Confirmar nueva", class: 'form-label-inline' %>
+            <div class="password-field-wrapper">
+              <%= password_field_tag :password_confirmation, nil, class: 'form-input-inline', placeholder: '••••••', id: 'confirm_pwd' %>
+              <button type="button" class="toggle-pwd-inline" onclick="togglePwd('confirm_pwd')">👁️</button>
+            </div>
+          </div>
+        <% end %>
+
+        <div class="form-actions">
+          <%= f.submit "Guardar cambios", class: 'save-btn-inline' %>
+        </div>
       <% end %>
     </div>
 
@@ -278,6 +450,19 @@
   <script>
     function showAboutDialog() {
       const dialog = confirm(`Ferremateriales\n\nVersión 3.1.4\n© 2025 Ferremateriales\n\nTu tienda de confianza para materiales de construcción y herramientas.`);
+    }
+
+    function togglePwd(fieldId) {
+      const field = document.getElementById(fieldId);
+      const btn = field.nextElementSibling;
+      
+      if (field.type === 'password') {
+        field.type = 'text';
+        btn.textContent = '🙈';
+      } else {
+        field.type = 'password';
+        btn.textContent = '👁️';
+      }
     }
   </script>
 
