@@ -45,7 +45,7 @@ class HomeController < ApplicationController
   def index
     # OPTIMIZACIÓN: Cachear categorías (raramente cambian)
     @categories = Rails.cache.fetch("categories:all", expires_in: 24.hours) do
-      Category.includes(:imagen_attachment).limit(10).to_a
+      Category.includes(:imagen_attachment).to_a
     end
     
     # Solo mostrar productos disponibles y destacados en la vista pública
@@ -78,7 +78,7 @@ class HomeController < ApplicationController
   def producto
     # OPTIMIZACIÓN: Cachear categorías y suppliers (raramente cambian)
     @categories = Rails.cache.fetch("categories:all", expires_in: 24.hours) do
-      Category.includes(:imagen_attachment).limit(10).to_a
+      Category.includes(:imagen_attachment).to_a
     end
     @suppliers = Rails.cache.fetch("suppliers:all", expires_in: 24.hours) do
       Supplier.select(:id, :nombre).limit(5).to_a

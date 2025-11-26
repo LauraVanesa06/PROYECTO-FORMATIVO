@@ -1,9 +1,17 @@
 class CategoriesController < ApplicationController
+  before_action :authenticate_user!, except: [:test]
   before_action :set_category, only: %i[ show edit update destroy ]
 
   # GET /categories or /categories.json
   def index
     @categories = Category.all
+  end
+
+  # GET /categories/test
+  def test
+    Rails.logger.info("TEST ACTION CALLED")
+    @category = Category.new
+    render :test_form, layout: false
   end
 
   # GET /categories/1 or /categories/1.json
@@ -21,14 +29,20 @@ class CategoriesController < ApplicationController
 
   # POST /categories or /categories.json
   def create
+    Rails.logger.info("CREATE ACTION CALLED WITH PARAMS: #{params.inspect}")
     @category = Category.new(category_params)
+    
+    Rails.logger.info("CategoryController#create - params: #{category_params.inspect}")
+    Rails.logger.info("Category errors BEFORE save: #{@category.errors.inspect}") unless @category.save
 
     respond_to do |format|
       if @category.save
+        Rails.logger.info("Category created successfully: #{@category.inspect}")
         format.html { redirect_to inventario_path, notice: "La Categoria fue Creada Exitosamente!" }
         format.json { render :show, status: :created, location: @category }
       else
-        format.html { render :new, status: :unprocessable_entity }
+        Rails.logger.error("Category creation failed - errors: #{@category.errors.full_messages}")
+        format.html { redirect_to inventario_path, alert: "Error: #{@category.errors.full_messages.join(', ')}" }
         format.json { render json: @category.errors, status: :unprocessable_entity }
       end
     end

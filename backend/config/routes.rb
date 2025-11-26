@@ -69,6 +69,9 @@ Rails.application.routes.draw do
   resources :cart_items, only: [:create, :update, :destroy]
   
   resources :categories do
+    collection do
+      get :test
+    end
     member do
       get :products
     end 
