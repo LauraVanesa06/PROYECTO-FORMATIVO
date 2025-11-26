@@ -45,15 +45,19 @@ class HomeController < ApplicationController
   def index
     # OPTIMIZACIÓN: Cachear categorías (raramente cambian)
     @categories = Rails.cache.fetch("categories:all", expires_in: 24.hours) do
-      Category.includes(:imagen_attachment).limit(10).to_a
+      Category.includes(:imagen_attachment).to_a
     end
     
-    # Solo mostrar productos disponibles en la vista pública
+    # Solo mostrar productos disponibles y destacados en la vista pública
     if params[:category_id].present?
       @category = Category.find(params[:category_id])
       @productos = @category.products.where(disponible: true)
     else
+      # Mostrar solo productos destacados (con más compras/favoritos)
       @productos = Product.where(disponible: true)
+                          .where("purchases_count > 0 OR buyers_count > 0")
+                          .order(purchases_count: :desc, buyers_count: :desc)
+                          .limit(12)
     end
     
     # OPTIMIZACIÓN: Eager load de marca y categoría (evita N+1 queries)
@@ -67,14 +71,14 @@ class HomeController < ApplicationController
     end
     
     # Ordenar y paginar con Pagy (ultraligero)
-    @productos = @productos.order(created_at: :desc)
+    @productos = @productos.order(created_at: :desc) unless params[:category_id].present?
     @pagy, @productos = pagy(@productos, items: 12)
   end
 
   def producto
     # OPTIMIZACIÓN: Cachear categorías y suppliers (raramente cambian)
     @categories = Rails.cache.fetch("categories:all", expires_in: 24.hours) do
-      Category.includes(:imagen_attachment).limit(10).to_a
+      Category.includes(:imagen_attachment).to_a
     end
     @suppliers = Rails.cache.fetch("suppliers:all", expires_in: 24.hours) do
       Supplier.select(:id, :nombre).limit(5).to_a

@@ -29,10 +29,10 @@ class Api::V1::DashboardController < ApplicationController
         }
     end
     def ventas_por_metodo_pago
-        metodos = ['efectivo', 'online']
+        metodos = ['Online', 'Efectivo']
 
         conteos = metodos.map do |metodo|
-            Buy.where('LOWER(metodo_pago) = ?', metodo.downcase).count
+            Buy.where(metodo_pago: metodo).count
         end
 
         render json: {
@@ -43,9 +43,9 @@ class Api::V1::DashboardController < ApplicationController
 
     def ventas_por_canal
         total = Buy.count.to_f
-        online     = Buy.where('LOWER(metodo_pago) = ?', 'online').count
-        efectivo   = Buy.where('LOWER(metodo_pago) = ?', 'efectivo').count
-        cotizadas  = Buy.where('LOWER(metodo_pago) = ?', 'cotizadas').count
+        online     = Buy.where(metodo_pago: 'Online').count
+        efectivo   = Buy.where(metodo_pago: 'Efectivo').count
+        cotizadas  = Buy.where(metodo_pago: 'Cotizadas').count
 
         render json: {
             online:    ((online / total) * 100).round,

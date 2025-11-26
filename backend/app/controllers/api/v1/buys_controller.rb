@@ -1,5 +1,5 @@
 class Api::V1::BuysController < ApplicationController
-    before_action :authenticate_user_from_token!
+    before_action :authenticate_user_from_token!, except: [:ventas_por_tipo]
     def create
 
 
@@ -33,31 +33,36 @@ class Api::V1::BuysController < ApplicationController
     end
 
   def ventas_por_tipo
-    hoy     = Time.zone.today
-    semana  = hoy.beginning_of_week..hoy.end_of_week
-    mes     = hoy.beginning_of_month..hoy.end_of_month
-    anio    = hoy.beginning_of_year..hoy.end_of_year
+    begin
+      hoy     = Time.zone.today
+      semana  = hoy.beginning_of_week..hoy.end_of_week
+      mes     = hoy.beginning_of_month..hoy.end_of_month
+      anio    = hoy.beginning_of_year..hoy.end_of_year
 
-    tipos = ["Minorista", "Mayorista", "Contratista/Empresa"]
-    datos = {
-      labels: ["Hoy", "Semana", "Mes", "Año"],
-      datasets: []
-    }
-
-    tipos.each do |tipo|
-      datos[:datasets] << {
-        label: tipo,
-        data: [
-          Buy.where(tipo: tipo, fecha: hoy.all_day).count,
-          Buy.where(tipo: tipo, fecha: semana).count,
-          Buy.where(tipo: tipo, fecha: mes).count,
-          Buy.where(tipo: tipo, fecha: anio).count
-        ],
-        backgroundColor: tipo_color(tipo)
+      tipos = ["Minorista", "Mayorista", "Contratista/Empresa", "Online", "Física"]
+      datos = {
+        labels: ["Hoy", "Semana", "Mes", "Año"],
+        datasets: []
       }
-    end
 
-    render json: datos
+      tipos.each do |tipo|
+        datos[:datasets] << {
+          label: tipo,
+          data: [
+            Buy.where(tipo: tipo, fecha: hoy.all_day).count,
+            Buy.where(tipo: tipo, fecha: semana).count,
+            Buy.where(tipo: tipo, fecha: mes).count,
+            Buy.where(tipo: tipo, fecha: anio).count
+          ],
+          backgroundColor: tipo_color(tipo)
+        }
+      end
+
+      render json: datos
+    rescue => e
+      Rails.logger.error("Error en ventas_por_tipo: #{e.message}")
+      render json: { error: e.message }, status: 500
+    end
   end
 
   private
@@ -70,6 +75,10 @@ class Api::V1::BuysController < ApplicationController
           "#C08D7B"       # Marrón claro
         when "Contratista/Empresa"
           "#97683B"       # Gris metálico
+        when "Online"
+          "#4472B8"       # Azul
+        when "Física"
+          "#70AD47"       # Verde
         else
           "#BDBDBD"       # Gris neutro por defecto
         end

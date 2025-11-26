@@ -28,7 +28,7 @@ class WebhooksController < ApplicationController
           customer: Customer.find_by(user_id: payment.user_id),
           fecha: Time.zone.now,
           tipo: "Minorista",
-          metodo_pago: "Wompi",
+          metodo_pago: "Online",
           total: payment.amount,
           payment: payment
         )

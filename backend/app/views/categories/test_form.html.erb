@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Crear Categoría - Test</title>
+  <%= csrf_meta_tags %>
+  <%= csp_meta_tag %>
+</head>
+<body>
+  <h1>Crear Categoría (Test)</h1>
+
+  <%= form_with(model: @category, local: true, data: { turbo: false }) do |form| %>
+    <% if @category.errors.any? %>
+      <div id="error_explanation">
+        <h2><%= pluralize(@category.errors.count, "error") %> prohibited this category from being saved:</h2>
+        <ul>
+          <% @category.errors.full_messages.each do |message| %>
+            <li><%= message %></li>
+          <% end %>
+        </ul>
+      </div>
+    <% end %>
+
+    <div class="field">
+      <%= form.label :nombre %>
+      <%= form.text_field :nombre %>
+    </div>
+
+    <div class="actions">
+      <%= form.submit "Crear Categoría" %>
+    </div>
+  <% end %>
+
+  <%= link_to "Volver", dashboard_path %>
+</body>
+</html>

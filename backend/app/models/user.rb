@@ -10,6 +10,7 @@ class User < ApplicationRecord
   # relacion con compras
   has_many :buys, dependent: :destroy
   has_many :payments, dependent: :destroy
+  has_many :purchasedetails, through: :buys, dependent: :destroy
 
   after_create :crear_carrito
 
@@ -25,6 +26,10 @@ class User < ApplicationRecord
 
   def user?
     role == "user"
+  end
+
+  def has_purchased?(product)
+    purchasedetails.exists?(product_id: product.id)
   end
 
   private

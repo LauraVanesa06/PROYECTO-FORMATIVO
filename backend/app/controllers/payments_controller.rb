@@ -199,7 +199,7 @@ class PaymentsController < ApplicationController
         user_id: payment.user.id,
         fecha: Time.current,
         tipo: "Online",
-        metodo_pago: "Wompi",
+        metodo_pago: "Online",
         total: total_compra,
         payment_id: payment.id
       )
@@ -211,6 +211,11 @@ class PaymentsController < ApplicationController
           cantidad: item.cantidad || 1,
           preciounidad: item.product&.precio&.to_d || 0
         )
+        
+        # Incrementar contadores del producto
+        product = item.product
+        product.increment!(:purchases_count)
+        product.increment!(:buyers_count) unless payment.user.has_purchased?(product)
       end
 
       cart.cart_items.destroy_all

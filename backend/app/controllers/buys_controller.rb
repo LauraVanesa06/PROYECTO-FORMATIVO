@@ -30,6 +30,18 @@ class BuysController < ApplicationController
       flash.now[:alert] = "No se encontraron compras con esos filtros."
       @buys = Buy.includes(:payment, :user).order(fecha: :desc)
     end
+    
+    # Calcular estadísticas
+    hoy = Time.zone.today
+    semana = (hoy.beginning_of_week..hoy.end_of_week)
+    mes = (hoy.beginning_of_month..hoy.end_of_month)
+    anio = (hoy.beginning_of_year..hoy.end_of_year)
+    
+    @ventas_hoy = Buy.where(fecha: hoy.all_day).count
+    @ventas_semana = Buy.where(fecha: semana).count
+    @ventas_mes = Buy.where(fecha: mes).count
+    @ventas_anio = Buy.where(fecha: anio).count
+    @ventas_total = Buy.count
   end
 
   # GET /buys/1 or /buys/1.json
@@ -76,17 +88,26 @@ class BuysController < ApplicationController
 
   def productos
     @buy = Buy.find(params[:id])
-    productos = @buy.buy_products.includes(:product).map do |bp|
+    
+    if @buy.purchasedetails.empty?
+      render json: []
+      return
+    end
+    
+    productos = @buy.purchasedetails.includes(:product).map do |detail|
       {
-        nombre: bp.product.nombre,
-        cantidad: bp.cantidad,
-        precio_unitario: ActionController::Base.helpers.number_to_currency(bp.product.precio, unit: "COP ", separator: ",", delimiter: ".", precision: 2),
-        subtotal: ActionController::Base.helpers.number_to_currency(bp.cantidad * bp.product.precio, unit: "COP ", separator: ",", delimiter: ".", precision: 2),
-        imagen: bp.product.images.attached? ? url_for(bp.product.images.first) : nil
+        nombre: detail.product&.nombre || "Producto desconocido",
+        cantidad: detail.cantidad || 0,
+        precio_unitario: ActionController::Base.helpers.number_to_currency(detail.preciounidad || 0, unit: "COP ", separator: ",", delimiter: ".", precision: 2),
+        subtotal: ActionController::Base.helpers.number_to_currency((detail.cantidad || 0) * (detail.preciounidad || 0), unit: "COP ", separator: ",", delimiter: ".", precision: 2),
+        imagen: detail.product&.images&.attached? ? url_for(detail.product.images.first) : nil
       }
     end
     
     render json: productos
+  rescue => e
+    Rails.logger.error("Error en buys#productos: #{e.message}")
+    render json: { error: e.message }, status: :internal_server_error
   end
 
   private

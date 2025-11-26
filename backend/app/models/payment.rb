@@ -18,7 +18,7 @@ class Payment < ApplicationRecord
         user_id: user.id,
         fecha: Time.current,
         tipo: "Online",
-        metodo_pago: "Wompi",
+        metodo_pago: "Online",
         total: total_compra,
         payment_id: id
       )
