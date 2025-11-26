@@ -211,6 +211,11 @@ class PaymentsController < ApplicationController
           cantidad: item.cantidad || 1,
           preciounidad: item.product&.precio&.to_d || 0
         )
+        
+        # Incrementar contadores del producto
+        product = item.product
+        product.increment!(:purchases_count)
+        product.increment!(:buyers_count) unless payment.user.has_purchased?(product)
       end
 
       cart.cart_items.destroy_all
