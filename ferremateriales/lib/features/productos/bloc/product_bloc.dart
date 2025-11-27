@@ -33,7 +33,7 @@ class ProductBloc extends Bloc<ProductEvent, ProductState> {
 
     try {
       final response = await http.get(
-        Uri.parse('http://localhost:3000/api/v1/products'),
+        Uri.parse('https://interisland-uninferrably-leonie.ngrok-free.dev/api/v1/products'),
       );
 
       if (response.statusCode == 200) {
@@ -66,7 +66,7 @@ class ProductBloc extends Bloc<ProductEvent, ProductState> {
 
     try {
       final response = await http.get(
-        Uri.parse('http://localhost:3000/api/v1/products/all_products'),
+        Uri.parse('https://interisland-uninferrably-leonie.ngrok-free.dev/api/v1/products/all_products'),
       );
 
       if (response.statusCode == 200) {
@@ -143,7 +143,7 @@ class ProductBloc extends Bloc<ProductEvent, ProductState> {
 
     try {
       final response = await http.get(Uri.parse(
-        'http://localhost:3000/api/v1/products?category_id=${event.categoryId}',
+        'https://interisland-uninferrably-leonie.ngrok-free.dev/api/v1/products?category_id=${event.categoryId}',
       ));
 
       if (response.statusCode == 200) {
