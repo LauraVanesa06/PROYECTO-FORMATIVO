@@ -254,6 +254,7 @@ class _CartViewState extends State<CartView> {
                                     ),
                                   ],
                                 ),
+                                const SizedBox(height: 16),
 
                               SizedBox(
                                   width: double.infinity,
