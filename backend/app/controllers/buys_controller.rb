@@ -5,7 +5,9 @@ class BuysController < ApplicationController
   # GET /buys or /buys.json
   def index
     # Base: todas las ventas con relaciones
+    
     @buys = Buy.includes(:payment, :user).order(fecha: :desc)
+    @products = Product.all
 
     # Filtro por nombre de cliente (case-insensitive)
     if params[:customer].present?
@@ -60,37 +62,67 @@ class BuysController < ApplicationController
   # POST /buys or /buys.json
   def create
     @buy = Buy.new(
-      buy_params
-      email: params[email]
+      user: params[:user],
       tipo: "fisica",
-      fecha: Time.zone.now
+      fecha: Time.current,
+      total: params[:total]
       )
 
-      productos_param = param[:ventas][:product]
+      productos_param = params[:venta][:products]
 
 
       if productos_param.present?
         productos_param.each do |id, data|
           next unless data["select"] == "on"
-        producto = Producto.find(id)
-      cantidad = data["cantidad"].to_i
+          product = Product.find(id)
+          cantidad = data["cantidad"].to_i
 
-      # Crear el item
-        buy.items.build(
-        producto: producto,
-        cantidad: cantidad,
-        precio: producto.precio
-      )
+          # Crear el item
+          @buy.buy_products.build(
+            product: product,
+            cantidad: cantidad,
+           # metodo_pago: "efectivo"
+          
+          )
+          productos_param = params.dig(:venta, :products)
+          total_compra = 0
 
-      # Reducir stock
-      producto.stock -= cantidad
-      producto.save
+          if productos_param.present?
+            productos_param.each do |id, data|
+              next unless data["select"] == "on"
 
-    if @buy.save
-      redirect_to @buy, notice: "Compra creada."
-    else
-      render :new
-    end
+              product = Product.find(id)
+              cantidad = data["cantidad"].to_i
+              cantidad = 1 if cantidad <= 0
+
+              subtotal = product.precio * cantidad
+              total_compra += subtotal
+              @buy.buy_products.build(
+                product: product,
+                cantidad: cantidad,
+                precio_unitario: product.precio
+              )
+              product.update(stock: product.stock - cantidad)
+            end
+          end
+          @buy.total = total_compra
+          if @buy.save
+            redirect_to @buy, notice: "Su compra fue realizada de manera correcta"
+          else
+            render :new
+          end
+          # Reducir stock
+          #producto.stock -= cantidad
+          #producto.save
+        end
+      end
+
+     # if @buy.save
+      #  redirect_to buys_path, notice: "Venta física registrada correctamente."
+     # else
+      #  redirect_to buys_path, alert: "Error al registrar la venta."
+     # end
+      
   end
 
   # PATCH/PUT /buys/1 or /buys/1.json
@@ -141,7 +173,7 @@ class BuysController < ApplicationController
     buy = Buy.create!(
       tipo: "Física",
       fecha: Time.current,
-      metodo_pago: "Efectivo",
+      method: "Efectivo",
       cliente_nombre: params[:cliente_nombre],
       cliente_email: params[:cliente_email],
       total: 0
