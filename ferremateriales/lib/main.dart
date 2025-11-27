@@ -38,7 +38,7 @@ class MyApp extends StatelessWidget {
       providers: [
         BlocProvider(
           create: (_) => AuthBloc(
-            AuthService(baseUrl: 'http://localhost:3000'),
+            AuthService(baseUrl: 'https://interisland-uninferrably-leonie.ngrok-free.dev'),
           )
           ..add(ContinueAsGuest()),
         ),

@@ -17,7 +17,7 @@ class CategoryBloc extends Bloc<CategoryEvent, CategoryState> {
     emit(CategoryLoading());
     try {
       final response =
-          await http.get(Uri.parse('http://localhost:3000/api/v1/categories'));
+          await http.get(Uri.parse('https://interisland-uninferrably-leonie.ngrok-free.dev/api/v1/categories'));
 
       if (response.statusCode == 200) {
         final List<dynamic> data = jsonDecode(response.body);

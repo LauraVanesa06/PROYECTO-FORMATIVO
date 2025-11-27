@@ -7,7 +7,7 @@ class FavoritesService {
   factory FavoritesService() => _instance;
   FavoritesService._internal();
 
-  final String baseUrl = 'http://localhost:3000';
+  final String baseUrl = 'https://interisland-uninferrably-leonie.ngrok-free.dev';
   final storage = const FlutterSecureStorage();
 
   List<int> _favoriteProductIds = [];
