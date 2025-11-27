@@ -1,11 +1,14 @@
 class Api::V1::FavoritesController < ApplicationController
-      skip_before_action :authenticate_user_from_token!, only: [:create_checkout]
+  include Rails.application.routes.url_helpers
+  skip_before_action :authenticate_user!, raise: false
+  skip_before_action :verify_authenticity_token
+  before_action :authenticate_user_from_token!
 
   def index
-    return render json: { error: 'No autorizado' }, status: :unauthorized unless current_user
+    return render json: { error: 'No autorizado' }, status: :unauthorized unless @current_user
     
     begin
-      favorites = current_user.favorite_products
+      favorites = @current_user.favorite_products
       
       render json: favorites.map { |product|
         {
@@ -13,7 +16,13 @@ class Api::V1::FavoritesController < ApplicationController
           nombre: product.nombre,
           descripcion: product.descripcion,
           precio: product.precio,
-          imagen_url: product.images.attached? ? url_for(product.images.first) : nil
+          stock: product.stock,
+          category_id: product.category_id,
+          categoria: product.category&.nombre,
+          imagen_url: product.images.attached? ? rails_blob_url(product.images.first) : "NO_IMAGE",
+          has_images: product.images.attached?,
+          images_count: product.images.count,
+          favorito: true
         }
       }
     rescue => e
@@ -23,14 +32,14 @@ class Api::V1::FavoritesController < ApplicationController
   end
 
   def create
-    return render json: { error: 'No autorizado' }, status: :unauthorized unless current_user
+    return render json: { error: 'No autorizado' }, status: :unauthorized unless @current_user
 
     product = Product.find_by(id: params[:product_id])
     unless product
       return render json: { error: 'Producto no encontrado' }, status: :not_found
     end
 
-    favorite = current_user.favorites.find_or_create_by(product: product)
+    favorite = @current_user.favorites.find_or_create_by(product: product)
 
     render json: {
       message: 'Agregado a favoritos',
@@ -39,13 +48,13 @@ class Api::V1::FavoritesController < ApplicationController
   end
 
   def check
-    is_favorite = current_user.favorites.exists?(product_id: params[:id])
+    is_favorite = @current_user.favorites.exists?(product_id: params[:id])
     render json: { favorite: is_favorite }, status: :ok
   end
 
 
   def destroy
-    favorite = current_user.favorites.find_by(product_id: params[:id])
+    favorite = @current_user.favorites.find_by(product_id: params[:id])
     if favorite
       favorite.destroy
       render json: { message: 'Eliminado de favoritos' }, status: :ok

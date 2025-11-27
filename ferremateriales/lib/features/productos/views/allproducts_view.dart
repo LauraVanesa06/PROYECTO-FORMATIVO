@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../bloc/product_bloc.dart';
+import '../services/favorites_service.dart';
 import '../widgets/producto_card.dart';
 
 class AllProductsView extends StatefulWidget {
@@ -18,8 +19,26 @@ class _AllProductsViewState extends State<AllProductsView> {
     super.initState();
     _searchController = TextEditingController();
 
-    /// ✅ CARGAR TODOS LOS PRODUCTOS AL ENTRAR
-    context.read<ProductBloc>().add(CargarTodosLosProductos());
+    /// ✅ CARGAR FAVORITOS Y LUEGO PRODUCTOS
+    _initializeData();
+  }
+
+  Future<void> _initializeData() async {
+    // 1. Cargar cache de favoritos primero
+    await FavoritesService().loadFavoritesCache();
+    
+    // 2. Cargar productos (solo si no están cargados)
+    if (mounted) {
+      final bloc = context.read<ProductBloc>();
+      if (bloc.state is! ProductLoadSuccess) {
+        debugPrint('AllProductsView - Cargando todos los productos...');
+        bloc.add(CargarTodosLosProductos());
+      } else {
+        debugPrint('AllProductsView - Productos ya cargados, solo aplicando favoritos');
+        // Si ya hay productos cargados, forzar re-render con favoritos actualizados
+        bloc.add(ProductBuscarPorNombre(''));
+      }
+    }
   }
 
   @override
@@ -88,8 +107,16 @@ class _AllProductsViewState extends State<AllProductsView> {
                       debugPrint('AllProductsView - onChanged search: "$value"');
 
                       final bloc = context.read<ProductBloc>();
+                      
+                      // Si está en progreso, no hacer nada
+                      if (bloc.state is ProductLoadInProgress) {
+                        debugPrint('AllProductsView - ignorando onChanged porque está cargando');
+                        return;
+                      }
+                      
+                      // Si el cache está vacío y NO está cargando, cargar
                       if (bloc.state is! ProductLoadSuccess) {
-                        debugPrint('AllProductsView - cache vacío o carga en progreso, dispatch CargarTodosLosProductos');
+                        debugPrint('AllProductsView - cache vacío, dispatch CargarTodosLosProductos');
                         bloc.add(CargarTodosLosProductos());
                         return;
                       }
@@ -117,7 +144,8 @@ class _AllProductsViewState extends State<AllProductsView> {
                               ),
                               onPressed: () {
                                 _searchController.clear();
-                                context.read<ProductBloc>().add(CargarTodosLosProductos());
+                                // En vez de recargar, solo limpiar el filtro de búsqueda
+                                context.read<ProductBloc>().add(ProductBuscarPorNombre(''));
                               },
                             )
                           : null,
