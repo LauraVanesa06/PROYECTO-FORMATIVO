@@ -64,7 +64,8 @@ module Api
           user = User.find_by(id: user_id)
           user&.cart&.cart_items&.destroy_all
         end
-
+        
+        
         render html: "<script>window.close()</script>".html_safe
 
         user&.cart

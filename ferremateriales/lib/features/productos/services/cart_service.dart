@@ -17,6 +17,8 @@ class CartService {
   bool get isCacheLoaded => _cacheLoaded;
   List<CartItemModel> get cartCache => _cartCache;
 
+  
+
   Future<void> loadCartCache() async {
     try {
       final token = await storage.read(key: 'auth_token');
