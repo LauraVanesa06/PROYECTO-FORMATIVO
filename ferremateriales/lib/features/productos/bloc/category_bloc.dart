@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:equatable/equatable.dart';
+import 'package:ferremateriales/core/config/api_config.dart';
 import 'package:http/http.dart' as http;
 import '../model/category_model.dart';
 
@@ -17,7 +18,7 @@ class CategoryBloc extends Bloc<CategoryEvent, CategoryState> {
     emit(CategoryLoading());
     try {
       final response =
-          await http.get(Uri.parse('https://interisland-uninferrably-leonie.ngrok-free.dev/api/v1/categories'));
+          await http.get(Uri.parse(ApiConfig.categoriesUrl));
 
       if (response.statusCode == 200) {
         final List<dynamic> data = jsonDecode(response.body);

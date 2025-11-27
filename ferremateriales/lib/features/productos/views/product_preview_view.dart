@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../model/product_model.dart';
 import '../bloc/cart_bloc.dart';
 import '../bloc/cart_event.dart';
+// favorites handled in ProductBloc; no direct toggle from this view
 import '../../auth/bloc/auth_bloc.dart';
 import '../../auth/bloc/auth_state.dart';
 import '../../auth/views/login_view.dart';
@@ -158,29 +159,17 @@ class _ProductPreviewViewState extends State<ProductPreviewView> {
           ),
         ),
         actions: [
+          // Mostrar solo un icono estático si el producto está en favoritos.
+          // No es interactivo desde esta vista según lo solicitado.
           BlocBuilder<AuthBloc, AuthState>(
             builder: (context, authState) {
-              return IconButton(
-                icon: Icon(
-                  widget.product.isFavorite ? Icons.favorite : Icons.favorite_border,
-                  color: widget.product.isFavorite ? Colors.red : Colors.white,
-                ),
-                onPressed: () {
-                  if (authState.status == AuthStatus.guest) {
-                    _showAuthDialog(context, action: 'agregar favoritos');
-                    return;
-                  }
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(
-                      content: Text(
-                        widget.product.isFavorite
-                            ? 'Eliminado de favoritos'
-                            : 'Agregado a favoritos',
-                      ),
-                    ),
-                  );
-                },
-              );
+              if (widget.product.isFavorite) {
+                return const Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 8.0),
+                  child: Icon(Icons.favorite, color: Colors.red),
+                );
+              }
+              return const SizedBox.shrink();
             },
           ),
           IconButton(

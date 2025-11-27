@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:ferremateriales/core/config/api_config.dart';
 import 'package:ferremateriales/features/productos/models/cart_item_model.dart';
 
 class CartService {
@@ -8,7 +9,6 @@ class CartService {
   factory CartService() => _instance;
   CartService._internal();
 
-  final String baseUrl = 'https://interisland-uninferrably-leonie.ngrok-free.dev';
   final storage = const FlutterSecureStorage();
   
   List<CartItemModel> _cartCache = [];
@@ -25,10 +25,10 @@ class CartService {
       if (token == null) return;
 
       final response = await http.get(
-        Uri.parse('$baseUrl/api/v1/cart_items'),
+        Uri.parse(ApiConfig.cartItemsUrl),
         headers: {
           'Authorization': 'Bearer $token',
-          'Content-Type': 'application/json',
+          ...ApiConfig.headers,
           'Accept': 'application/json',
         },
       );
@@ -49,10 +49,10 @@ class CartService {
       if (token == null) throw Exception('No token found');
 
       final response = await http.get(
-        Uri.parse('$baseUrl/api/v1/cart_items'),
+        Uri.parse(ApiConfig.cartItemsUrl),
         headers: {
           'Authorization': 'Bearer $token',
-          'Content-Type': 'application/json',
+          ...ApiConfig.headers,
           'Accept': 'application/json',
         },
       );
@@ -76,8 +76,8 @@ class CartService {
 
   Future<void> increaseQuantity(int id) async {
     final response = await http.patch(
-      Uri.parse('$baseUrl/api/v1/cart_items/$id'),
-      headers: {'Content-Type': 'application/json'},
+      Uri.parse('${ApiConfig.baseUrl}/api/v1/cart_items/$id'),
+      headers: ApiConfig.headers,
       body: jsonEncode({'quantity_action': 'increase'}),
     );
     if (response.statusCode != 200) {
@@ -90,8 +90,8 @@ class CartService {
 
   Future<void> decreaseQuantity(int id) async {
     final response = await http.patch(
-      Uri.parse('$baseUrl/api/v1/cart_items/$id'),
-      headers: {'Content-Type': 'application/json'},
+      Uri.parse('${ApiConfig.baseUrl}/api/v1/cart_items/$id'),
+      headers: ApiConfig.headers,
       body: jsonEncode({'quantity_action': 'decrease'}),
     );
     if (response.statusCode != 200) {
@@ -102,7 +102,7 @@ class CartService {
   }
 
   Future<void> removeItem(int id) async {
-    final response = await http.delete(Uri.parse('$baseUrl/api/v1/cart_items/$id'));
+    final response = await http.delete(Uri.parse('${ApiConfig.baseUrl}/api/v1/cart_items/$id'));
     if (response.statusCode != 204) {
       throw Exception('Error al eliminar producto del carrito');
     }
@@ -114,7 +114,7 @@ class CartService {
     final token = await storage.read(key: 'auth_token');
     if (token == null) throw Exception('No token found');
 
-    final url = Uri.parse('$baseUrl/api/v1/cart_items');
+    final url = Uri.parse(ApiConfig.cartItemsUrl);
 
     final response = await http.post(
       url,

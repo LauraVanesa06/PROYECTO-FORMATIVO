@@ -1,4 +1,7 @@
 class Api::V1::ProductsController < ApplicationController
+  include Rails.application.routes.url_helpers
+  skip_before_action :authenticate_user!, only: [:index, :all_products, :show]
+  skip_before_action :verify_authenticity_token
 
   def index
     # Permite recibir tanto category_id (Rails style) como categoryId (Flutter style)
@@ -18,6 +21,8 @@ class Api::V1::ProductsController < ApplicationController
     end
 
     render json: products.map { |product| product_json(product) }
+  rescue => e
+    render json: { error: e.message }, status: :internal_server_error
   end
 
   # 📌 Obtiene TODOS los productos (para el buscador)
@@ -25,12 +30,16 @@ class Api::V1::ProductsController < ApplicationController
     products = Product.all.includes(:category, images_attachments: :blob)
 
     render json: products.map { |product| product_json(product) }
+  rescue => e
+    render json: { error: e.message }, status: :internal_server_error
   end
 
   # 📌 Mostrar detalle de producto
   def show
     product = Product.find(params[:id])
     render json: product_json(product)
+  rescue => e
+    render json: { error: e.message }, status: :internal_server_error
   end
 
   private
@@ -46,9 +55,12 @@ class Api::V1::ProductsController < ApplicationController
       category_id: product.category_id,
       categoria: product.category&.nombre,
       total_comprados: (product.try(:total_comprados) || 0).to_i,
-      imagen_url: product.images.attached? ? url_for(product.images.first) : "NO_IMAGE",
+      imagen_url: product.images.attached? ? rails_blob_url(product.images.first) : "NO_IMAGE",
       has_images: product.images.attached?,
       images_count: product.images.count
     }
+  rescue => e
+    Rails.logger.error "Error generando JSON para producto #{product.id}: #{e.message}"
+    raise e
   end
 end

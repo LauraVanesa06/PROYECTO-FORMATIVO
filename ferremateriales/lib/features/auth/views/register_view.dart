@@ -9,6 +9,8 @@ import '../utils/password_validator.dart';
 import '../../productos/views/main_view.dart';
 
 class RegisterView extends StatefulWidget {
+  const RegisterView({super.key});
+
   @override
   State<RegisterView> createState() => _RegisterViewState();
 }

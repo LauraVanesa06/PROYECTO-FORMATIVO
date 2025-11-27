@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:ferremateriales/core/config/api_config.dart';
 import 'firebase_options.dart';
 import 'features/productos/bloc/cart_bloc.dart';
 import 'features/productos/bloc/product_bloc.dart';
@@ -38,7 +39,7 @@ class MyApp extends StatelessWidget {
       providers: [
         BlocProvider(
           create: (_) => AuthBloc(
-            AuthService(baseUrl: 'https://interisland-uninferrably-leonie.ngrok-free.dev'),
+            AuthService(baseUrl: ApiConfig.baseUrl),
           )
           ..add(ContinueAsGuest()),
         ),

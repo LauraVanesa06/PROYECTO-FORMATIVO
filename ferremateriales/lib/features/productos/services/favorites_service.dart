@@ -1,13 +1,13 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:ferremateriales/core/config/api_config.dart';
 
 class FavoritesService {
   static final FavoritesService _instance = FavoritesService._internal();
   factory FavoritesService() => _instance;
   FavoritesService._internal();
 
-  final String baseUrl = 'https://interisland-uninferrably-leonie.ngrok-free.dev';
   final storage = const FlutterSecureStorage();
 
   List<int> _favoriteProductIds = [];
@@ -18,23 +18,32 @@ class FavoritesService {
     final token = await storage.read(key: 'auth_token');
     if (token == null) return;
 
-    final response = await http.get(
-      Uri.parse('$baseUrl/api/v1/favorites'),
-      headers: {
-        'Authorization': 'Bearer $token',
-        'Content-Type': 'application/json',
-      },
-    );
+    try {
+      final response = await http.get(
+        Uri.parse(ApiConfig.favoritesUrl),
+        headers: {
+          'Authorization': 'Bearer $token',
+          ...ApiConfig.headers,
+        },
+      );
 
-    if (response.statusCode == 200) {
-      final List<dynamic> data = json.decode(response.body);
-      _favoritesCache = List<Map<String, dynamic>>.from(data);
-      _favoriteProductIds = data
-          .map((f) => f['product_id'])
-          .where((id) => id != null)
-          .map<int>((id) => id as int)
-          .toList();
-      _cacheLoaded = true;
+      if (response.statusCode == 200) {
+        final List<dynamic> data = json.decode(response.body);
+        _favoritesCache = List<Map<String, dynamic>>.from(data);
+        
+        // El backend ahora devuelve 'id' en vez de 'product_id'
+        _favoriteProductIds = data
+            .map((f) => f['id'] ?? f['product_id'])
+            .where((id) => id != null)
+            .map<int>((id) => id as int)
+            .toList();
+        
+        _cacheLoaded = true;
+        print('✅ Favoritos cargados: ${_favoriteProductIds.length} productos');
+        print('IDs favoritos: $_favoriteProductIds');
+      }
+    } catch (e) {
+      print('❌ Error cargando favoritos cache: $e');
     }
   }
 
@@ -60,10 +69,10 @@ class FavoritesService {
       print('Using token: $token');
 
       final response = await http.get(
-        Uri.parse('$baseUrl/api/v1/favorites'),
+        Uri.parse(ApiConfig.favoritesUrl),
         headers: {
           'Authorization': 'Bearer $token',
-          'Content-Type': 'application/json',
+          ...ApiConfig.headers,
           'Accept': 'application/json',
         },
       );
@@ -96,13 +105,13 @@ class FavoritesService {
     final token = await storage.read(key: 'auth_token');
     if (token == null) throw Exception('No token found');
 
-    final url = Uri.parse('$baseUrl/api/v1/favorites/$productId');
+    final url = Uri.parse('${ApiConfig.baseUrl}/api/v1/favorites/$productId');
 
     // Primero intenta eliminar (si ya es favorito)
     final deleteResponse = await http.delete(
       url,
       headers: {
-        "Content-Type": "application/json",
+        ...ApiConfig.headers,
         "Authorization": "Bearer $token",
       },
     );
@@ -115,9 +124,9 @@ class FavoritesService {
 
     // Si no existía, intenta agregar
     final postResponse = await http.post(
-      Uri.parse('$baseUrl/api/v1/favorites'),
+      Uri.parse(ApiConfig.favoritesUrl),
       headers: {
-        "Content-Type": "application/json",
+        ...ApiConfig.headers,
         "Authorization": "Bearer $token",
       },
       body: jsonEncode({"product_id": productId}),
@@ -136,12 +145,12 @@ class FavoritesService {
     final token = await storage.read(key: 'auth_token');
     if (token == null) throw Exception('No token found');
 
-    final url = Uri.parse('$baseUrl/api/v1/cart_items');
+    final url = Uri.parse(ApiConfig.cartItemsUrl);
 
     final response = await http.post(
       url,
       headers: {
-        "Content-Type": "application/json",
+        ...ApiConfig.headers,
         "Authorization": "Bearer $token",
       },
       body: jsonEncode({
