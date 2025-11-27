@@ -65,57 +65,46 @@ class BuysController < ApplicationController
       user: params[:user],
       tipo: "fisica",
       fecha: Time.current,
-      total: params[:total]
-      )
+      #total: params[:total]
+       metodo_pago: "Efectivo"   
+    )
 
-      productos_param = params[:venta][:products]
+    productos_param = params[:venta][:product]
+    total_compra = 0
 
 
-      if productos_param.present?
-        productos_param.each do |id, data|
-          next unless data["select"] == "on"
-          product = Product.find(id)
-          cantidad = data["cantidad"].to_i
+    if productos_param.present?
+      productos_param.each do |id, data|
+        next unless data["select"] == "on"
+        product = Product.find(id)
+        cantidad = data["cantidad"].to_i
+
+        subtotal = product.precio * cantidad
+        total_compra += subtotal
 
           # Crear el item
-          @buy.buy_products.build(
-            product: product,
-            cantidad: cantidad,
+        @buy.buy_products.build(
+          product: product,
+          cantidad: cantidad,
+          precio_unitario: product.precio
            # metodo_pago: "efectivo"
           
-          )
-          productos_param = params.dig(:venta, :products)
-          total_compra = 0
+        )
+          
 
-          if productos_param.present?
-            productos_param.each do |id, data|
-              next unless data["select"] == "on"
-
-              product = Product.find(id)
-              cantidad = data["cantidad"].to_i
-              cantidad = 1 if cantidad <= 0
-
-              subtotal = product.precio * cantidad
-              total_compra += subtotal
-              @buy.buy_products.build(
-                product: product,
-                cantidad: cantidad,
-                precio_unitario: product.precio
-              )
-              product.update(stock: product.stock - cantidad)
-            end
-          end
-          @buy.total = total_compra
-          if @buy.save
-            redirect_to @buy, notice: "Su compra fue realizada de manera correcta"
-          else
-            render :new
-          end
+        product.update(stock: product.stock - cantidad)
+      end
+    end
+    @buy.total = total_compra
+    if @buy.save
+      redirect_to @buy, notice: "Su compra fue realizada de manera correcta"
+    else
+      render :new
+    end
           # Reducir stock
           #producto.stock -= cantidad
           #producto.save
-        end
-      end
+  end
 
      # if @buy.save
       #  redirect_to buys_path, notice: "Venta física registrada correctamente."
@@ -123,7 +112,7 @@ class BuysController < ApplicationController
       #  redirect_to buys_path, alert: "Error al registrar la venta."
      # end
       
-  end
+  
 
   # PATCH/PUT /buys/1 or /buys/1.json
   def update
