@@ -59,7 +59,33 @@ class BuysController < ApplicationController
 
   # POST /buys or /buys.json
   def create
-    @buy = Buy.new(buy_params)
+    @buy = Buy.new(
+      buy_params
+      email: params[email]
+      tipo: "fisica",
+      fecha: Time.zone.now
+      )
+
+      productos_param = param[:ventas][:product]
+
+
+      if productos_param.present?
+        productos_param.each do |id, data|
+          next unless data["select"] == "on"
+        producto = Producto.find(id)
+      cantidad = data["cantidad"].to_i
+
+      # Crear el item
+        buy.items.build(
+        producto: producto,
+        cantidad: cantidad,
+        precio: producto.precio
+      )
+
+      # Reducir stock
+      producto.stock -= cantidad
+      producto.save
+
     if @buy.save
       redirect_to @buy, notice: "Compra creada."
     else
@@ -109,6 +135,40 @@ class BuysController < ApplicationController
     Rails.logger.error("Error en buys#productos: #{e.message}")
     render json: { error: e.message }, status: :internal_server_error
   end
+
+  def physical_sale
+  ActiveRecord::Base.transaction do
+    buy = Buy.create!(
+      tipo: "Física",
+      fecha: Time.current,
+      metodo_pago: "Efectivo",
+      cliente_nombre: params[:cliente_nombre],
+      cliente_email: params[:cliente_email],
+      total: 0
+    )
+
+    params[:products].each do |p|
+      product = Product.find(p[:id])
+      cantidad = p[:cantidad].to_i
+
+      Purchasedetail.create!(
+        buy_id: buy.id,
+        product_id: product.id,
+        cantidad: cantidad,
+        preciounidad: product.precio
+      )
+
+      product.update!(stock: product.stock - cantidad)
+
+      buy.total += product.precio * cantidad
+    end
+
+    buy.save!
+  end
+
+  redirect_to dashboard_ventas_path, notice: "Venta registrada correctamente ✅"
+end
+
 
   private
 

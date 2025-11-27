@@ -19,6 +19,7 @@ class CartView extends StatefulWidget {
 
   @override
   _CartViewState createState() => _CartViewState();
+  
 }
 
 class _CartViewState extends State<CartView> {
@@ -26,15 +27,16 @@ class _CartViewState extends State<CartView> {
   bool _isLoading = true;
   List<CartItemModel> _cartItems = [];
 
-  @override
+  
   void initState() {
     super.initState();
+     
     // Cargar desde caché inmediatamente si está disponible
     if (_cartService.isCacheLoaded) {
-      setState(() {
+    
         _cartItems = _cartService.cartCache;
         _isLoading = false;
-      });
+    
     }
     // Recargar desde API en background
     _loadCartItems();
@@ -253,9 +255,7 @@ class _CartViewState extends State<CartView> {
                                   ],
                                 ),
 
-                               
-                                const SizedBox(height: 16),
-                                SizedBox(
+                              SizedBox(
                                   width: double.infinity,
                                   height: 56,
                                   child: ElevatedButton(
@@ -294,7 +294,10 @@ class _CartViewState extends State<CartView> {
                                             MaterialPageRoute(
                                               builder: (_) => CheckoutScreen(checkoutUrl: checkoutUrl),
                                             ),
-                                          );
+                                          ).then((_) {
+                                            _loadCartItems();
+
+                                          });
                                         }
                                       } catch (e) {
                                         print("❌ ERROR al procesar pago: $e");
@@ -304,7 +307,8 @@ class _CartViewState extends State<CartView> {
                                     child: Text("Pagar"),
                                   ),
                                 )
-
+ 
+                              
                               ],
                             ),
                           ),

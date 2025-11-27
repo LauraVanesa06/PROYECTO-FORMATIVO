@@ -120,6 +120,13 @@
 
         </div>
       </div>
+
+      <div class="text-end mb-3">
+  <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#ventaFisicaModal">
+    + Añadir venta física
+  </button>
+</div>
+
     </section>
   </section>
 
@@ -127,6 +134,7 @@
   <div id="modal-reutilizable" class="modal" style="display:none;">
     <%= render 'buys/modal' %>
   </div>
+
 
 <script>
   let grafica = null;
@@ -432,6 +440,58 @@
       }
     });
 </script>
+
+<div class="modal fade" id="ventaFisicaModal" tabindex="-1">
+  <div class="modal-dialog modal-xl">
+    <div class="modal-content">
+
+      <div class="modal-header">
+        <h5 class="modal-title">Registrar Venta Física</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+
+      <div class="modal-body">
+        <%= form_with url: physical_sales_path, local: true do |f| %>
+
+          <div class="mb-3">
+            <%= f.label :cliente_nombre, "Nombre del cliente" %>
+            <%= f.text_field :cliente_nombre, class: "form-control" %>
+          </div>
+
+          <div class="mb-3">
+            <%= f.label :cliente_email, "Correo del cliente" %>
+            <%= f.email_field :cliente_email, class: "form-control" %>
+          </div>
+
+          <h5>Productos</h5>
+          <div class="row">
+            <% @products.each do |product| %>
+              <div class="col-3 mb-3">
+                <label class="border p-2 d-block">
+                  <% if product.images.attached? %>
+                    <%= image_tag product.images.first, class: "img-fluid" %>
+                  <% end %>
+
+                  <p><%= product.nombre %></p>
+                  <p>Stock: <%= product.stock %></p>
+
+                  <input type="checkbox" name="products[][id]" value="<%= product.id %>">
+                  <input type="number" name="products[][cantidad]" min="1" value="1" class="form-control mt-1">
+                </label>
+              </div>
+            <% end %>
+          </div>
+
+          <div class="text-end">
+            <%= f.submit "Guardar venta", class: "btn btn-primary" %>
+          </div>
+
+        <% end %>
+      </div>
+
+    </div>
+  </div>
+</div>
 
  
   <footer>
