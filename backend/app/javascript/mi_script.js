@@ -256,13 +256,17 @@ window.addEventListener('DOMContentLoaded', () => {
         const formData = new FormData(form);
         const innerContent = container.querySelector(".login-inner-content");
         
+        // Detectar si es formulario de recuperar contraseña o login
+        const isPasswordRecovery = action.includes('password') || form.querySelector('input[name*="email"]');
+        const loadingText = isPasswordRecovery ? 'Cargando...' : 'Iniciando sesión...';
+        
         // Agregar spinner de carga full-page
         const loadingSpinner = document.createElement('div');
         loadingSpinner.className = 'login-loading-spinner';
         loadingSpinner.innerHTML = `
           <div class="spinner-container">
             <div class="spinner"></div>
-            <p class="loading-text">Iniciando sesión...</p>
+            <p class="loading-text">${loadingText}</p>
           </div>
         `;
         innerContent.innerHTML = '';
