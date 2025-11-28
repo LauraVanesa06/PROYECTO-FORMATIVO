@@ -455,9 +455,9 @@
     border: 1px solid #dee2e6;
     box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
     overflow: hidden;
-    max-height: 679px;
     display: flex;
     flex-direction: column;
+    max-height: 655px;
   }
 
   #modalVentaFisica .modal-header {
@@ -733,6 +733,7 @@
     display: flex;
     justify-content: center;
     gap: 12px;
+    padding-bottom: 0px;
     flex-shrink: 0;
   }
 
@@ -840,7 +841,7 @@
               <div class="row">
                 <% if @products.present? %>
                   <% @products.each do |product| %>
-                    <div class="col-lg-3 col-md-4 col-sm-6 mb-3">
+                    <div class="col-lg-4 col-md-4 col-sm-6 mb-3">
                       <div class="product-card" data-product-id="<%= product.id %>">
                         <div class="product-image-container">
                           <% if product.images.attached? %>
