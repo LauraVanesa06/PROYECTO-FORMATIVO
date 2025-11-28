@@ -6,20 +6,35 @@
     </div>
     
     <div class="buy-details-grid">
-      <div class="detail-row">
-        <span class="detail-label">Cliente:</span>
-        <span class="detail-value"><%= buy.user.name %></span>
-      </div>
-      <div class="detail-row">
-        <span class="detail-label">Fecha:</span>
-        <span class="detail-value"><%= buy.fecha.strftime("%d/%m/%Y") %></span>
-      </div>
-      <div class="detail-row">
-        <span class="detail-label">Tipo:</span>
-        <span class="detail-value <%= buy.payment_id.present? ? 'online-badge' : 'physical-badge' %>">
-          <%= buy.payment_id.present? ? "En línea" : "Física" %>
-        </span>
-      </div>
+  <% if buy.tipo == "presencial" %>
+        <div class="detail-row">
+          <span class="detail-label">Cliente:</span>
+          <span class="detail-value"><%= buy.client_name %></span>
+        </div>
+        <div class="detail-row">
+          <span class="detail-label">Fecha:</span>
+          <span class="detail-value"><%= buy.fecha.strftime("%d/%m/%Y") %></span>
+        </div>
+        <div class="detail-row">
+          <span class="detail-label">email:</span>
+          <span class="detail-value"><%=  buy.client_email %></span>
+        </div>
+      else
+        <div class="detail-row">
+          <span class="detail-label">Cliente:</span>
+          <span class="detail-value"><%= buy.user.name %></span>
+        </div>
+        <div class="detail-row">
+          <span class="detail-label">Fecha:</span>
+          <span class="detail-value"><%= buy.fecha.strftime("%d/%m/%Y") %></span>
+        </div>
+        <div class="detail-row">
+          <span class="detail-label">Tipo:</span>
+          <span class="detail-value <%= buy.payment_id.present? ? 'online-badge' : 'physical-badge' %>">
+            <%= buy.payment_id.present? ? "En línea" : "Física" %>
+          </span>
+        </div>
+      <% end %>
     </div>
   </div>
 
@@ -36,8 +51,10 @@
     </div>
     <button class="show-buy btn-view-formal"
       data-buy-id="<%= buy.id %>"
-      data-nombre-cliente="<%= buy.user.name %>"
-      data-documento-cliente="<%= buy.user.email %>"
+      data-nombre-cliente="<%= buy.tipo == 'presencial' ? buy.client_name : buy.user&.name %>"
+      
+      data-documento-cliente="<%= buy.tipo == 'presencial' ? buy.client_email : buy.user&.email %>"
+
       data-fecha-compra="<%= buy.fecha.strftime("%d/%m/%Y") %>"
       data-tipo-compra="<%= buy.payment_id.present? ? 'En línea (Wompi)' : 'Física' %>"
       data-metodo-compra="<%= buy.payment&.pay_method || 'Efectivo' %>"

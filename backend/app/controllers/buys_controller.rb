@@ -5,7 +5,9 @@ class BuysController < ApplicationController
   # GET /buys or /buys.json
   def index
     # Base: todas las ventas con relaciones
-    
+
+    @buys = Buy.all.order(created_at: :desc)
+    @buy = Buy.new
     @buys = Buy.includes(:payment, :user).order(fecha: :desc)
     @products = Product.all
 
@@ -61,21 +63,29 @@ class BuysController < ApplicationController
 
   # POST /buys or /buys.json
   def create
-    @buy = Buy.new(
+       @buy = Buy.new(
       user: params[:user],
       tipo: "fisica",
       fecha: Time.current,
       #total: params[:total]
        metodo_pago: "Efectivo"   
     )
+    if params[:buy][:tipo] == "presencial"
+      @buy.client_name = params[:buy][:client_name]
+      @buy.client_email = params[:buy][:client_email]
+      @buy.user_id = nil
+    else
+      @buy.user = current_user
+    end
 
-    productos_param = params[:venta][:product]
+    productos_param = params[:venta][:products]
     total_compra = 0
 
 
     if productos_param.present?
       productos_param.each do |id, data|
         next unless data["select"] == "on"
+
         product = Product.find(id)
         cantidad = data["cantidad"].to_i
 
@@ -200,6 +210,13 @@ end
 
     # Only allow a list of trusted parameters through.
     def buy_params
-      params.require(:buy).permit(:user_id, :fecha, :total, :payment_id)
+      params.require(:buy).permit(
+        :user_id, 
+        :fecha, 
+        :client_name,
+        :client_email,                           
+        :tipo,        
+          
+        :total, :payment_id)
     end
 end

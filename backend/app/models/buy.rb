@@ -1,5 +1,5 @@
 class Buy < ApplicationRecord
-  belongs_to :user
+  belongs_to :user, optional: true
   has_many :purchasedetails, dependent: :destroy
   has_many :buy_products, dependent: :destroy
   belongs_to :payment, optional: true
