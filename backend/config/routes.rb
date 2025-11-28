@@ -10,6 +10,7 @@ Rails.application.routes.draw do
     get '/acceso', to: 'usuarios/sessions#new', as: :custom_login
     get '/registro', to: 'usuarios/registrations#new', as: :custom_signup
     get '/olvide-contrasena', to: 'usuarios/passwords#new', as: :custom_new_password
+    get '/profile-sidebar', to: 'usuarios/registrations#profile_sidebar', as: :profile_sidebar
   end
 
   # Página principal

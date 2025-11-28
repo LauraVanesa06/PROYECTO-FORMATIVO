@@ -12,7 +12,8 @@ Purchasedetail.delete_all
 Buy.delete_all
 Pedido.delete_all
 CartItem.delete_all   # 👈 AGREGA ESTA LÍNEA ANTES DE Cart
-Cart.delete_all 
+Cart.delete_all
+Favorite.delete_all
 Product.delete_all
 Marca.delete_all
 Category.delete_all

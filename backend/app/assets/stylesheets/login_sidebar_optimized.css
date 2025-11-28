@@ -1,0 +1,382 @@
+/* === OPTIMIZACIÓN DEL SIDEBAR DE LOGIN === */
+
+/* === OCULTAR SOLO MENSAJES DE AUTENTICACIÓN Y ERROR === */
+/* No ocultar todos los alerts, solo los específicos de autenticación y error */
+.alert-danger,
+.devise-alert-error,
+[data-alert-type="authentication"],
+[data-alert-type="error"] {
+  display: none !important;
+  visibility: hidden !important;
+  height: 0 !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  border: none !important;
+  opacity: 0 !important;
+}
+
+/* Asegurar que no ocupen espacio */
+.alert-danger + *,
+[data-alert-type="error"] + * {
+  margin-top: 0 !important;
+}
+
+/* === SPINNER ANIMATION (GLOBAL) === */
+@keyframes spin {
+  0% { 
+    transform: rotate(0deg); 
+  }
+  100% { 
+    transform: rotate(360deg); 
+  }
+}
+
+/* Overlay para el sidebar */
+#overlay {
+  will-change: opacity;
+  transition: opacity 0.3s ease;
+  opacity: 0;
+  pointer-events: none;
+}
+
+#overlay.show {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+/* Sidebar flotante */
+.login-sidebar {
+  will-change: transform;
+  backface-visibility: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+
+.login-sidebar.active {
+  transform: translateX(0) !important;
+}
+
+.login-sidebar.closing {
+  transform: translateX(100%) !important;
+}
+
+/* === SKELETON LOADING === */
+.login-skeleton {
+  background: #f8f9fa;
+}
+
+.skeleton-container {
+  padding: 20px 0;
+  animation: pulse 1.5s infinite;
+}
+
+.skeleton-box {
+  background: linear-gradient(
+    90deg,
+    #f0f0f0 0%,
+    #e8e8e8 50%,
+    #f0f0f0 100%
+  );
+  background-size: 200% 100%;
+  animation: loading 1.5s infinite;
+  margin: 15px 0;
+}
+
+@keyframes loading {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
+}
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.95;
+  }
+}
+
+/* === ANIMACIONES DE SLIDE ENTRE VISTAS === */
+.login-content-wrapper {
+  contain: layout style paint;
+  position: relative;
+  overflow: hidden;
+  padding: 20px;
+  flex: 1;
+  background: white;
+}
+
+.login-inner-content {
+  position: relative;
+  width: 100%;
+  will-change: transform, opacity;
+  min-height: 100%;
+}
+
+/* Slide in from right (nueva vista) */
+@keyframes slideInRight {
+  from {
+    opacity: 0;
+    transform: translateX(50px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+/* Slide out to left (vista anterior) */
+@keyframes slideOutLeft {
+  from {
+    opacity: 1;
+    transform: translateX(0);
+  }
+  to {
+    opacity: 0;
+    transform: translateX(-50px);
+  }
+}
+
+/* Fade in (para reemplazar skeleton) */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/* Fade out (cuando sale skeleton) */
+@keyframes fadeOut {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}
+
+/* Loading indicator */
+.login-loading {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 300px;
+}
+
+.spinner {
+  border: 4px solid #f3f3f3;
+  border-top: 4px solid #3498db;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* Prevenir jank durante transiciones */
+@media (prefers-reduced-motion: no-preference) {
+  .login-sidebar {
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  
+  #overlay {
+    transition: opacity 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+}
+
+/* Accesibilidad */
+@media (prefers-reduced-motion: reduce) {
+  .login-sidebar,
+  #overlay,
+  .login-inner-content,
+  .skeleton-container {
+    animation: none !important;
+    transition: none !important;
+  }
+  
+  /* Permitir que el spinner siga girando */
+  .login-loading-spinner .spinner {
+    animation: spin 1s linear infinite !important;
+  }
+  
+  @keyframes slideInRight {
+    from { opacity: 1; transform: none; }
+    to { opacity: 1; transform: none; }
+  }
+  
+  @keyframes slideOutLeft {
+    from { opacity: 1; transform: none; }
+    to { opacity: 1; transform: none; }
+  }
+  
+  @keyframes fadeIn {
+    from { opacity: 1; }
+    to { opacity: 1; }
+  }
+  
+  @keyframes fadeOut {
+    from { opacity: 1; }
+    to { opacity: 1; }
+  }
+}
+
+/* Responsivo */
+@media (max-width: 480px) {
+  .login-sidebar {
+    width: 100% !important;
+  }
+}
+
+/* === ESTILOS DE ELEMENTOS ESPECÍFICOS === */
+
+.close-login {
+  position: absolute;
+  top: 15px;
+  right: 15px;
+  background: none;
+  border: none;
+  font-size: 28px;
+  cursor: pointer;
+  color: #666;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  transition: all 0.2s ease;
+  z-index: 10;
+}
+
+.close-login:hover {
+  background: #f0f0f0;
+  color: #000;
+}
+
+.close-login:active {
+  transform: scale(0.95);
+}
+
+/* === SHOW PASSWORD CHECKBOX === */
+.login-inner-content .form-check {
+  padding-left: 0;
+  margin-bottom: 15px;
+}
+
+.login-inner-content .form-check-input {
+  width: 18px;
+  height: 18px;
+  margin-top: 3px;
+  margin-right: 60%;
+  cursor: pointer;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  transition: all 0.2s ease;
+}
+
+.login-inner-content .form-check-input:checked {
+  background-color: #0066cc;
+  border-color: #0066cc;
+}
+
+.login-inner-content .form-check-input:hover {
+  border-color: #0066cc;
+}
+
+.login-inner-content .form-check-label {
+  margin-bottom: 0;
+  font-size: 14px;
+  color: #666;
+  cursor: pointer;
+  user-select: none;
+  padding-left: 4px;
+}
+
+/* Ocultar ojo nativo de Chrome/Firefox en password fields */
+.login-inner-content input[type="password"]::-webkit-outer-spin-button,
+.login-inner-content input[type="password"]::-webkit-inner-spin-button,
+.login-inner-content input[type="password"]::-webkit-textfield-decoration-container {
+  display: none !important;
+}
+
+/* Centrar checkbox abajo del input */
+.login-inner-content .form-check {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding-left: 0;
+  margin-top: 12px;
+  margin-bottom: 20px;
+  flex-direction: row;
+  gap: 8px;
+}
+
+/* Mejorar visibilidad de formularios */
+.login-inner-content form {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.login-inner-content input[type="text"],
+.login-inner-content input[type="email"],
+.login-inner-content input[type="password"],
+.login-inner-content input[type="submit"],
+.login-inner-content button {
+  transition: all 0.2s ease;
+  position: relative;
+}
+
+.login-inner-content input[type="submit"],
+.login-inner-content button {
+  cursor: pointer;
+  position: relative;
+}
+
+.login-loading-spinner {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 500px;
+  z-index: 100;
+}
+
+.spinner-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+}
+
+.spinner {
+  width: 50px;
+  height: 50px;
+  border: 4px solid #f3f3f3;
+  border-top: 4px solid #0066cc;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+.loading-text {
+  font-size: 16px;
+  color: #666;
+  font-weight: 500;
+  margin: 0;
+}
+
+/* Focus styles para accesibilidad */
+.login-inner-content input:focus,
+.login-inner-content button:focus {
+  outline: 2px solid #0066cc;
+  outline-offset: 2px;
+}

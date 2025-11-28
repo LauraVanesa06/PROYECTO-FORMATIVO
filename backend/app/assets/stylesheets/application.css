@@ -178,6 +178,8 @@
   border: 1.5px solid #b6d4fe;
   border-radius: 14px;
   font-size: 1.1rem;
+  margin: 10%;
+  margin-bottom: 50%;
 }
 #footer{
   font-size: 15px;
@@ -272,10 +274,95 @@ footer {
 
 #toast-container {
   position: fixed !important;
-    top: 20px !important;
-    left: 50%;
-    transform: translateX(-50%);
-    z-index: 2000 !important;
+  top: 20px !important;
+  left: 50% !important;
+  transform: translateX(-50%) !important;
+  z-index: 2000 !important;
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 10px !important;
+}
+
+/* === ANIMACIÓN DE CARGA EN ICONOS === */
+@keyframes spinSmooth {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes cartPulse {
+  0%, 100% {
+    opacity: 1;
+    filter: brightness(1);
+  }
+  50% {
+    opacity: 0.6;
+    filter: brightness(1.2);
+  }
+}
+
+@keyframes spinSmooth {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes cartPulse {
+  0%, 100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.1);
+  }
+}
+
+.icon-loading {
+  animation: spinSmooth 1s linear infinite !important;
+  will-change: transform !important;
+}
+
+/* Para el icono del carrito, usar un pulse subtil */
+.add-to-cart-btn {
+  position: relative !important;
+}
+
+.add-to-cart-btn i {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  width: 1em !important;
+  height: 1em !important;
+  line-height: 1 !important;
+}
+
+.add-to-cart-btn .icon-loading {
+  animation: cartPulse 0.8s ease-in-out infinite !important;
+  transform-origin: center !important;
+}
+
+#toast-container .toast {
+  max-width: 100% !important;
+  font-size: 12px !important;
+  padding: 2px 6px !important;
+  height: 10% !important;
+  max-height: 10% !important;
+  border-radius: 4px !important;
+  display: flex !important;
+  align-items: center !important;
+  overflow: hidden !important;
+  white-space: nowrap !important;
+}
+
+#toast-container .toast-body {
+  padding: 2px !important;
+  margin: 0 !important;
+  line-height: 1 !important;
 }
 
 
@@ -1193,7 +1280,6 @@ body {
 .hero-header {
   width: 100%;
   overflow: hidden;
-  background: #00000038;
   color: #fff;
   text-align: center;
   z-index: 1;
@@ -1464,8 +1550,6 @@ hr{
   background-color: #ffe60043 !important;
   border: 2px solid #ffe700 !important;
 }
-
-.favorite-btn{}
 
 /* Estilos generales de flash */
 .flash {
@@ -1958,6 +2042,62 @@ body.dark-mode a {
   backdrop-filter: blur(4px);
   background: rgba(0, 0, 0, 0.3);
   z-index: 1500;
+}
+
+/* === ESTILOS OFFCANVAS DE FAVORITOS === */
+#favoritesOffcanvas .offcanvas-header {
+  border-bottom: 1px solid #e0e0e0;
+}
+
+#favoritesOffcanvas .offcanvas-body {
+  padding: 20px;
+}
+
+.favorite-item {
+  animation: slideInRight 0.3s ease !important;
+}
+
+@keyframes slideInRight {
+  from {
+    opacity: 0;
+    transform: translateX(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.btn-add-to-cart,
+.btn-remove-favorite {
+  transition: all 0.2s ease;
+}
+
+.btn-add-to-cart:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+
+.btn-remove-favorite:hover {
+  transform: scale(1.05);
+}
+
+#favorites-count {
+  animation: badgePop 0.3s ease;
+}
+
+@keyframes badgePop {
+  0% {
+    transform: scale(0.8);
+    opacity: 0;
+  }
+  50% {
+    transform: scale(1.1);
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
 }
 
 /* Estilos para el botón de Wompi */
