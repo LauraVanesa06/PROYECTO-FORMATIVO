@@ -146,7 +146,7 @@
               remote: true,
               class: "btn-agg add-to-cart-btn",
               data: { url: cart_items_path(product_id: @product.id) } do %>
-              Agregar al carrito
+              <i class="fa-solid fa-cart-plus"></i> Agregar al carrito
             <% end %>
 
             <!-- Reemplazar el botón estático con Wompi -->
@@ -335,6 +335,13 @@
         return;
       }
 
+      // Agregar animación de carga al icono
+      const icon = btn.querySelector("i");
+      if (icon) {
+        icon.classList.add("icon-loading");
+      }
+      btn.disabled = true;
+
       try {
         const response = await fetch(url, {
           method: "POST",
@@ -368,6 +375,12 @@
       } catch (error) {
         console.error("Error:", error);
         showToast("Error de conexión", "danger");
+      } finally {
+        // Remover animación de carga
+        if (icon) {
+          icon.classList.remove("icon-loading");
+        }
+        btn.disabled = false;
       }
       return;
     }
@@ -423,9 +436,9 @@
     const card = e.target.closest(".product-card");
     if (!card) return;
     if (e.target.closest("button") || e.target.closest("i")) return;
-    // Redirigir a la ruta personalizada de producto_show
+    // Cargar dinámicamente la ruta personalizada de producto_show
     const productoId = card.dataset.productoId;
-    window.location = `/home/producto_show?id=${productoId}`;
+    if (productoId) loadProductDetails(productoId);
   });
 
 </script>

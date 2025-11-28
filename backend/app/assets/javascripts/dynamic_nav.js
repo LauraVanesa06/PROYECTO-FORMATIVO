@@ -99,6 +99,77 @@ document.addEventListener('DOMContentLoaded', function() {
   // Inicializar en carga
   initializeCategories();
 
+  // Función para cargar detalles de producto dinámicamente
+  window.loadProductDetails = async function(productoId) {
+    const url = `/home/producto_show?id=${productoId}`;
+    const currentContent = document.querySelector('#dynamic-content');
+    
+    if (!currentContent) {
+      // Si no está en flujo dinámico, usar navegación normal
+      window.location = url;
+      return;
+    }
+
+    // Agregar efecto de carga
+    currentContent.style.transition = 'opacity 0.3s ease';
+    currentContent.style.opacity = '0.6';
+
+    try {
+      const response = await fetch(url, {
+        headers: {
+          'X-Requested-With': 'XMLHttpRequest',
+          'Accept': 'text/html'
+        }
+      });
+
+      if (response.ok) {
+        const html = await response.text();
+        
+        const parser = new DOMParser();
+        const doc = parser.parseFromString(html, 'text/html');
+        const sourceContent = doc.querySelector('#dynamic-content');
+        
+        if (sourceContent) {
+          // Animar salida
+          currentContent.style.opacity = '0';
+          
+          setTimeout(() => {
+            // Reemplazar contenido
+            currentContent.innerHTML = sourceContent.innerHTML;
+            
+            // Animar entrada
+            currentContent.style.opacity = '0';
+            
+            setTimeout(() => {
+              currentContent.style.opacity = '1';
+            }, 10);
+            
+            // Reinicializar scripts
+            reinitializeScripts(currentContent);
+          }, 200);
+
+          // Actualizar URL sin recargar
+          history.pushState({ view: 'producto_show', id: productoId }, '', url);
+        }
+
+        // Actualizar vista actual
+        currentView = 'producto_show';
+        updateActiveNav();
+
+        // Scroll suave al inicio
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }
+    } catch (error) {
+      console.error('Error al cargar producto:', error);
+      showToast('Error al cargar producto', 'danger');
+      
+      // Restaurar
+      if (currentContent) {
+        currentContent.style.opacity = '1';
+      }
+    }
+  };
+
   // Función para cargar contenido dinámicamente
   async function loadView(viewName, url) {
     if (isLoading) return; // Evitar cargas simultáneas
@@ -280,7 +351,7 @@ document.addEventListener('DOMContentLoaded', function() {
           // No navegar si el click fue en botones/iconos
           if (e.target.closest('button') || e.target.closest('i')) return;
           const productId = newCard.dataset.productoId;
-          if (productId) window.location.href = `/home/producto_show?id=${productId}`;
+          if (productId) loadProductDetails(productId);
         });
       });
 
@@ -858,4 +929,13 @@ document.addEventListener('DOMContentLoaded', function() {
       }
     });
   }
+
+  // Manejar botón atrás del navegador
+  window.addEventListener('popstate', async (event) => {
+    if (event.state && event.state.view === 'producto_show' && event.state.id) {
+      await loadProductDetails(event.state.id);
+    } else if (event.state && event.state.view) {
+      await loadView(event.state.view, event.state.view === 'home' ? '/' : `/${event.state.view}`);
+    }
+  });
 });

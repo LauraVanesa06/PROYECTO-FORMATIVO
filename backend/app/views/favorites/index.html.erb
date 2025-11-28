@@ -198,7 +198,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 
-  // Click en la tarjeta → ir a producto_show (solo si está disponible)
+  // Click en la tarjeta → ir a producto_show dinámicamente (solo si está disponible)
   document.addEventListener("click", (e) => {
     const card = e.target.closest(".product-card");
     if (!card) return;
@@ -206,16 +206,21 @@ document.addEventListener('DOMContentLoaded', () => {
     // Ignorar clicks en botones, iconos o formularios
     if (e.target.closest("button") || e.target.closest("i") || e.target.closest("form")) return;
     
-    // NUEVA VALIDACIÓN: No permitir clic si el producto no está disponible
+    // Validación: No permitir clic si el producto no está disponible
     if (card.classList.contains('product-no-disponible')) {
       e.preventDefault();
       showNotification('⚠️ Este producto no está disponible actualmente', 'warning');
       return;
     }
     
-    // Redirigir a la ruta personalizada de producto_show
+    // Cargar dinámicamente
     const productoId = card.dataset.productoId;
-    window.location = `/home/producto_show?id=${productoId}`;
+    if (typeof loadProductDetails === 'function') {
+      loadProductDetails(productoId);
+    } else {
+      // Fallback a navegación normal si no está disponible la función
+      window.location = `/home/producto_show?id=${productoId}`;
+    }
   });
 });
 </script>

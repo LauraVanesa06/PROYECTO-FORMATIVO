@@ -286,12 +286,14 @@
       return;
     }
 
-    // Click en la tarjeta → ir a producto_show (excepto botones internos)
+    // Click en la tarjeta → ir a producto_show dinámicamente (excepto botones internos)
     const card = e.target.closest(".product-card");
     if (!card) return;
     if (e.target.closest("button") || e.target.closest("i")) return;
     const productoId = card.dataset.productoId;
-    window.location = `/home/producto_show?id=${productoId}`;
+    
+    // Cargar dinámicamente en lugar de recargar
+    loadProductDetails(productoId);
   });
 
   // Función toast reutilizable

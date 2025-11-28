@@ -274,14 +274,6 @@
       btn.disabled = false;
       return;
     }
-
-    // NAVEGACIÓN A DETALLE (evitar cuando el click proviene de botones/iconos)
-    const card = e.target.closest(".product-card");
-    if (card) {
-      if (e.target.closest("button") || e.target.closest(".favorite-btn") || e.target.closest("i")) return;
-      const productId = card.dataset.productoId;
-      window.location.href = `/home/producto_show?id=${productId}`;
-    }
   });
 
   function showToast(message, type) {
@@ -326,7 +318,7 @@
     card.addEventListener("click", (e) => {
       if (e.target.closest("button") || e.target.closest("i")) return;
       const productId = card.dataset.productoId;
-      window.location.href = `/home/producto_show?id=${productId}`;
+      loadProductDetails(productId);
     });
   });
 </script>
