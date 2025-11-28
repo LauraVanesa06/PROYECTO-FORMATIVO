@@ -63,64 +63,62 @@ class BuysController < ApplicationController
 
   # POST /buys or /buys.json
   def create
-       @buy = Buy.new(
-      user: params[:user],
-      tipo: "fisica",
-      fecha: Time.current,
-      #total: params[:total]
-       metodo_pago: "Efectivo"   
-    )
-    if params[:buy][:tipo] == "presencial"
-      @buy.client_name = params[:buy][:client_name]
-      @buy.client_email = params[:buy][:client_email]
-      @buy.user_id = nil
-    else
-      @buy.user = current_user
-    end
+  venta_fisica = params[:buy][:tipo] == "presencial"
 
-    productos_param = params[:venta][:products]
-    total_compra = 0
+  @buy = Buy.new(
+    tipo: venta_fisica ? "fisica" : "online",
+    fecha: Time.current,
+    metodo_pago: venta_fisica ? "Efectivo" : "Wompi"
+  )
 
+  if venta_fisica
+    # Datos de venta física
+    @buy.nombre_cliente    = params[:buy][:client_name]
+    @buy.documento_cliente = params[:buy][:client_email]
 
-    if productos_param.present?
-      productos_param.each do |id, data|
-        next unless data["select"] == "on"
+    @buy.user_id     = nil
+    @buy.payment_id  = nil
 
-        product = Product.find(id)
-        cantidad = data["cantidad"].to_i
-
-        subtotal = product.precio * cantidad
-        total_compra += subtotal
-
-          # Crear el item
-        @buy.buy_products.build(
-          product: product,
-          cantidad: cantidad,
-          precio_unitario: product.precio
-           # metodo_pago: "efectivo"
-          
-        )
-          
-
-        product.update(stock: product.stock - cantidad)
-      end
-    end
-    @buy.total = total_compra
-    if @buy.save
-      redirect_to @buy, notice: "Su compra fue realizada de manera correcta"
-    else
-      render :new
-    end
-          # Reducir stock
-          #producto.stock -= cantidad
-          #producto.save
+  else
+    # Venta Online
+    @buy.user       = current_user
+    @buy.payment_id = params[:buy][:payment_id]
   end
 
-     # if @buy.save
-      #  redirect_to buys_path, notice: "Venta física registrada correctamente."
-     # else
-      #  redirect_to buys_path, alert: "Error al registrar la venta."
-     # end
+  # --- Procesar productos ---
+  productos_param = params[:venta][:products]
+  total_compra = 0
+
+  if productos_param.present?
+    productos_param.each do |id, data|
+      next unless data["select"] == "on"
+
+      product   = Product.find(id)
+      cantidad  = data["cantidad"].to_i
+      subtotal  = product.precio * cantidad
+      total_compra += subtotal
+
+      # Items de compra
+      @buy.purchasedetails.build(
+        product: product,
+        cantidad: cantidad,
+preciounidad: product.precio
+      )
+
+      # Reducir stock
+      product.update(stock: product.stock - cantidad)
+    end
+  end
+
+  @buy.total = total_compra
+
+  if @buy.save
+    redirect_to buys_path, notice: "Su compra fue realizada correctamente"
+  else
+    render :new
+  end
+end
+
       
   
 

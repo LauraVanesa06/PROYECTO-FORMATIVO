@@ -243,6 +243,18 @@
         // modal.querySelector(".modal-tipo-compra").textContent = data.tipoCompra;
         modal.querySelector(".modal-metodo-compra").textContent = data.metodo;
 
+        // === Mostrar tipo de venta (física u online) ===
+const tipoVentaField = modal.querySelector(".tipo-venta-field");
+const tipoVentaTexto = modal.querySelector(".modal-tipo-venta");
+
+if (data.tipoCompra === "fisica") {
+  tipoVentaField.style.display = "flex";
+  tipoVentaTexto.textContent = "Compra Física";
+} else {
+  tipoVentaField.style.display = "none"; // se oculta si es online
+}
+
+
         // Cargar productos mediante AJAX
         const productosLista = modal.querySelector("#modal-productos-lista");
         productosLista.innerHTML = '<p style="text-align: center; padding: 20px;">Cargando productos...</p>';
@@ -453,27 +465,25 @@
 
       <div class="modal-body">
         <%= form_with model: @buy, url: buys_path, method: :post, local: true do |f| %>
+<!-- DATOS DEL CLIENTE -->
+<div class="row g-3 mb-3 datos-cliente">
+  <div class="col-md-6">
+    <%= f.label :client_name, "Nombre del cliente", class: "form-label fw-semibold" %>
+    <%= f.text_field :client_name, class: "form-control campo-pretty", required: true %>
+  </div>
 
-          <!-- DATOS DEL CLIENTE -->
-          <div class="row mb-3">
-            <div class="col-6">
-               <%= f.label :client_name, "Nombre del cliente" %>
-              <%= f.text_field :client_name, class: "form-control", required: true %>
-            </div>
+  <div class="col-md-6">
+    <%= f.label :client_email, "Correo del cliente", class: "form-label fw-semibold" %>
+    <%= f.email_field :client_email, class: "form-control campo-pretty" %>
+  </div>
 
-            <div class="col-6">
-              <%= f.label :client_email, "Correo del cliente" %>
-              <%= f.email_field :client_email, class: "form-control" %>
-            </div>
-            
-              <%= f.hidden_field :tipo, value: "fisica" %>
-              <%= f.hidden_field :metodo_pago, value: "efectivo" %>
-              <%= f.hidden_field :fecha, value: Time.current %>
+  <%= f.hidden_field :tipo, value: "fisica" %>
+  <%= f.hidden_field :metodo_pago, value: "efectivo" %>
+  <%= f.hidden_field :fecha, value: Time.current %>
+</div>
 
-          </div>
-
+          <br>
           <hr>
-
           <!-- CATÁLOGO DE PRODUCTOS -->
           <h5>Seleccionar productos</h5>
 
@@ -502,10 +512,14 @@
             <% end %>
           </div>
 
-          <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-            <%= f.submit "Registrar Venta", class: "btn btn-success" %>
-          </div>
+   <div class="modal-footer botones-footer">
+  <button type="button" class="btn btn-secondary btn-pretty" data-bs-dismiss="modal">
+    Cancelar
+  </button>
+
+  <%= f.submit "Registrar Venta", class: "btn btn-success btn-pretty" %>
+</div>
+
 
         <% end %>
       </div>
