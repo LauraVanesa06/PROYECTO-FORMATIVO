@@ -13,6 +13,92 @@ document.addEventListener('DOMContentLoaded', function() {
   let currentView = 'home';
   let isLoading = false;
 
+  // Inicializar categorías en home
+  function initializeCategories() {
+    const categoryLinks = document.querySelectorAll('.category-link');
+    categoryLinks.forEach(link => {
+      link.removeEventListener('click', handleCategoryClickEvent);
+      link.addEventListener('click', handleCategoryClickEvent);
+    });
+  }
+
+  // Manejador de click de categoría
+  async function handleCategoryClickEvent(e) {
+    e.preventDefault();
+    e.stopPropagation();
+    
+    const categoryId = this.dataset.categoryId;
+    if (!categoryId) return;
+
+    // Navegar a productos con el filtro
+    const url = `/productos?category_id=${categoryId}`;
+    
+    // Agregar efecto de carga
+    const currentContent = document.querySelector('#dynamic-content');
+    if (currentContent) {
+      currentContent.style.transition = 'opacity 0.3s ease';
+      currentContent.style.opacity = '0.6';
+    }
+
+    try {
+      const response = await fetch(url, {
+        headers: {
+          'X-Requested-With': 'XMLHttpRequest',
+          'Accept': 'text/html'
+        }
+      });
+
+      if (response.ok) {
+        const html = await response.text();
+        
+        // Usar la función loadView existente para cargar dinámicamente
+        const parser = new DOMParser();
+        const doc = parser.parseFromString(html, 'text/html');
+        const sourceContent = doc.querySelector('#dynamic-content');
+        
+        if (sourceContent && currentContent) {
+          // Animar salida
+          currentContent.style.opacity = '0';
+          
+          setTimeout(() => {
+            // Reemplazar contenido
+            currentContent.innerHTML = sourceContent.innerHTML;
+            
+            // Animar entrada
+            currentContent.style.opacity = '0';
+            
+            setTimeout(() => {
+              currentContent.style.opacity = '1';
+            }, 10);
+            
+            // Reinicializar scripts
+            reinitializeScripts(currentContent);
+          }, 200);
+        }
+
+        // Actualizar vista actual
+        currentView = 'productos';
+        updateActiveNav();
+
+        // Scroll suave al inicio
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }
+    } catch (error) {
+      console.error('Error al cargar categoría:', error);
+      showToast('Error al cargar categoría', 'danger');
+      
+      // Restaurar
+      if (currentContent) {
+        currentContent.style.opacity = '1';
+      }
+    }
+
+    return false;
+  }
+
+  // Inicializar en carga
+  initializeCategories();
+
   // Función para cargar contenido dinámicamente
   async function loadView(viewName, url) {
     if (isLoading) return; // Evitar cargas simultáneas
@@ -496,7 +582,6 @@ document.addEventListener('DOMContentLoaded', function() {
         currentGrid.style.pointerEvents = 'auto';
       }
     }
-
     return false;
   }
 

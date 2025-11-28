@@ -37,14 +37,14 @@
     <div class="category-carousel" id="category-carousel" role="list">
       <% @categories.each do |c| %>
         <div class="category-card" role="listitem">
-          <%= link_to productos_path(category_id: c.id), class: "category-link d-flex flex-column align-items-center" do %>
+          <a href="#" class="category-link d-flex flex-column align-items-center" data-category-id="<%= c.id %>">
             <% if c.imagen&.attached? %>
               <%= image_tag c.imagen.variant(resize_to_fill: [80, 80], saver: { quality: 70 }), class: "mb-2 rounded-circle", loading: "lazy" %>
             <% else %>
               <i class="fa-solid fa-tag fa-2x mb-2"></i>
             <% end %>
             <span><%= c.nombre %></span>
-          <% end %>
+          </a>
         </div>
       <% end %>
     </div>
