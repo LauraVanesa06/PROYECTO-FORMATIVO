@@ -53,7 +53,7 @@
             <%= link_to "#",
                         class: "text-white1 position-relative",
                         data: { bs_toggle: "offcanvas", bs_target: "#favoritesOffcanvas" } do %>
-              <i class="fa-solid fa-heart"></i>
+              <i class="fa-solid fa-star"></i>
               <% favorites_count = current_user&.favorites&.count || 0 %>
               <% if favorites_count > 0 %>
                 <span id="favorites-count" class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
@@ -68,9 +68,9 @@
               <% end %>
             <% end %>
           <% else %>
-            <%= link_to favoritos_path, class: "text-white1" do %>
+            <button id="layoutFavoritesBtn" class="btn btn-link text-white1 p-0">
               <i class="fa-solid fa-star"></i>
-            <% end %>
+            </button>
           <% end %>
 
           <% unless current_page?(cart_path) %>
@@ -141,56 +141,27 @@
 
     <!-- 🧩 Sidebar del perfil (logueado o no) -->
     <div id="profileSidebar" class="profile-sidebar shadow-lg">
-      <div class="profile-sidebar-header d-flex justify-content-between align-items-center mb-4">
-        <h5 class="mb-0 profile-title">Mi Perfil</h5>
-        <button id="closeSidebar" class="btn-close-profile">✕</button>
-      </div>
+      <% if user_signed_in? %>
+        <%= render 'shared/user_profile_sidebar' %>
+      <% else %>
+        <div class="profile-sidebar-header d-flex justify-content-between align-items-center mb-4">
+          <h5 class="mb-0 profile-title">Mi Perfil</h5>
+          <button id="closeSidebar" class="btn-close-profile">✕</button>
+        </div>
 
-      <div class="text-center mb-4">
-        <% if user_signed_in? %>
-          <!-- Icono de usuario circular como en login -->
+        <div class="text-center mb-4">
           <div class="profile-user-icon mx-auto mb-3">
             <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" fill="white" viewBox="0 0 16 16">
               <path d="M8 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm2-3a2 2 0 1 1-4 0 2 2 0 0 1 4 0zm4 8c0 1-1 1-1 1H3s-1 0-1-1 1-4 6-4 6 3 6 4zm-1-.004c-.001-.246-.154-.986-.832-1.664C11.516 10.68 10.289 10 8 10c-2.29 0-3.516.68-4.168 1.332-.678.678-.83 1.418-.832 1.664h10z"/>
             </svg>
           </div>
-          <label for="avatar-upload" class="btn btn-change-photo">Cambiar foto</label>
-          <input type="file" id="avatar-upload" style="display:none">
-        <% else %>
-          <div class="profile-user-icon mx-auto mb-3">
-            <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" fill="white" viewBox="0 0 16 16">
-              <path d="M8 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm2-3a2 2 0 1 1-4 0 2 2 0 0 1 4 0zm4 8c0 1-1 1-1 1H3s-1 0-1-1 1-4 6-4 6 3 6 4zm-1-.004c-.001-.246-.154-.986-.832-1.664C11.516 10.68 10.289 10 8 10c-2.29 0-3.516.68-4.168 1.332-.678.678-.83 1.418-.832 1.664h10z"/>
-            </svg>
-          </div>
-        <% end %>
-      </div>
+        </div>
 
-      <div class="profile-sidebar-body">
-        <% if user_signed_in? %>
-          <div class="profile-welcome-text text-center mb-3">
-            <p class="profile-greeting mb-2">
-              Bienvenido, <%= current_user.name.present? ? current_user.name : current_user.email.split('@').first %> 👋
-            </p>
-            <p class="profile-email text-muted mb-0"><%= current_user.email %></p>
-          </div>
-          <p class="profile-info-text text-center">Aquí pronto podrás editar tu perfil.</p>
-        <% else %>
+        <div class="profile-sidebar-body">
           <div class="text-center">
             <p class="profile-info-text">Inicia sesión para acceder a tu perfil.</p>
             <%= link_to "Ir al login", new_user_session_path, class: "btn btn-primary w-100 login-btn-submit" %>
           </div>
-        <% end %>
-
-      </div>
-
-      <% if user_signed_in? %>
-        <div class="profile-actions mt-4">
-          <button id="darkModeToggle" class="btn btn-profile-action w-100 mb-2">
-            <span class="me-2">🌙</span> Modo oscuro
-          </button>
-          <%= button_to t("user.logout"), destroy_user_session_path,
-                        method: :delete,
-                        class: "btn btn-profile-logout w-100" %>
         </div>
       <% end %>
     </div>
@@ -345,6 +316,18 @@
     <script>
       // Indica al frontend si hay sesión activa
       window.isLoggedIn = <%= user_signed_in? %>;
+
+      // Botón de favorito en el layout para usuarios NO logueados
+      document.addEventListener('DOMContentLoaded', function() {
+        const layoutFavoritesBtn = document.getElementById('layoutFavoritesBtn');
+        if (layoutFavoritesBtn) {
+          layoutFavoritesBtn.addEventListener('click', function(e) {
+            e.preventDefault();
+            // Simplemente abre el sidebar de login
+            openProfileSidebar();
+          });
+        }
+      });
     </script>
   </body>
 </html>

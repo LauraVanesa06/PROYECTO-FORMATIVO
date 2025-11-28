@@ -6,6 +6,15 @@ class Usuarios::RegistrationsController < Devise::RegistrationsController
   before_action :configure_sign_up_params, only: [:create]
   before_action :configure_account_update_params, only: [:update]
 
+  # Acción para renderizar el sidebar del perfil
+  def profile_sidebar
+    if user_signed_in?
+      render partial: 'shared/user_profile_sidebar', layout: false
+    else
+      render json: { error: 'Not authenticated' }, status: :unauthorized
+    end
+  end
+
   private
 
   def resolve_layout

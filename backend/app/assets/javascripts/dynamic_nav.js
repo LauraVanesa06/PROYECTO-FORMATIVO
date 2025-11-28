@@ -428,11 +428,6 @@ document.addEventListener('DOMContentLoaded', function() {
           e.preventDefault();
           e.stopPropagation();
 
-          if (!window.isLoggedIn) {
-            openProfileSidebar();
-            return;
-          }
-
           const url = newBtn.dataset.url;
           const method = (newBtn.dataset.method || 'post').toUpperCase();
           const productId = newBtn.dataset.productId;
@@ -475,8 +470,28 @@ document.addEventListener('DOMContentLoaded', function() {
               }
             });
 
-            if (response.ok) {
-              const data = await response.json();
+            const data = await response.json();
+
+            // Si no está autenticado, abrir el sidebar de login y revertir cambios
+            if (!response.ok && response.status === 401 && data.show_login_sidebar) {
+              openProfileSidebar();
+              // Revertir cambios visuales
+              if (method === 'POST') {
+                newBtn.classList.remove('btn-warning');
+                newBtn.classList.add('btn-outline-warning');
+                if (icon) {
+                  icon.classList.add('fa-regular');
+                  icon.classList.remove('fa-solid');
+                }
+              } else {
+                newBtn.classList.remove('btn-outline-warning');
+                newBtn.classList.add('btn-warning');
+                if (icon) {
+                  icon.classList.remove('fa-regular');
+                  icon.classList.add('fa-solid');
+                }
+              }
+            } else if (response.ok) {
               console.log('Favorite response:', data);
 
               if (method === 'POST') {
@@ -519,7 +534,8 @@ document.addEventListener('DOMContentLoaded', function() {
                   icon.classList.add('fa-solid');
                 }
               }
-              showToast('Error al actualizar favorito', 'danger');
+              const errorMessage = data.error || 'Error al actualizar favorito';
+              showToast(errorMessage, 'danger');
             }
           } catch (error) {
             console.error('Error:', error);
@@ -539,7 +555,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 icon.classList.add('fa-solid');
               }
             }
-            showToast('Error al actualizar favorito', 'danger');
+            showToast('Error de conexión al actualizar favorito', 'danger');
           } finally {
             // Remover animación de carga
             if (icon) {

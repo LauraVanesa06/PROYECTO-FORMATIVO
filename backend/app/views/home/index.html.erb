@@ -225,53 +225,58 @@
       const productId = btn.dataset.productId;
       const icon = btn.querySelector("i");
 
-      if (!window.isLoggedIn) {
-        openProfileSidebar();
-        return;
-      }
-
       // Agregar animación de carga al icono
       if (icon) {
         icon.classList.add("icon-loading");
       }
       btn.disabled = true;
 
-      const response = await fetch(url, {
-        method: method,
-        headers: {
-          "X-CSRF-Token": document.querySelector("meta[name='csrf-token']").content,
-          "Accept": "application/json"
-        }
-      });
+      try {
+        const response = await fetch(url, {
+          method: method,
+          headers: {
+            "X-CSRF-Token": document.querySelector("meta[name='csrf-token']").content,
+            "Accept": "application/json"
+          }
+        });
 
-      if (response.ok) {
         const data = await response.json();
 
-        if (method === "POST") {
-          // creado -> pasar a delete con /favorites/:id
-          if (data.id) btn.dataset.url = `/favorites/${data.id}`;
-          btn.dataset.method = "delete";
-          btn.classList.remove("btn-outline-warning");
-          btn.classList.add("btn-warning");
-          if (icon) { icon.classList.remove("fa-regular"); icon.classList.add("fa-solid"); }
-          showToast("Producto agregado a favoritos", "success");
+        // Si no está autenticado, abrir el sidebar de login
+        if (!response.ok && response.status === 401 && data.show_login_sidebar) {
+          openProfileSidebar();
+        } else if (response.ok) {
+          if (method === "POST") {
+            // creado -> pasar a delete con /favorites/:id
+            if (data.id) btn.dataset.url = `/favorites/${data.id}`;
+            btn.dataset.method = "delete";
+            btn.classList.remove("btn-outline-warning");
+            btn.classList.add("btn-warning");
+            if (icon) { icon.classList.remove("fa-regular"); icon.classList.add("fa-solid"); }
+            showToast("Producto agregado a favoritos", "success");
+          } else {
+            // eliminado -> volver a post con /favorites?product_id=...
+            btn.dataset.url = `/favorites?product_id=${productId}`;
+            btn.dataset.method = "post";
+            btn.classList.add("btn-outline-warning");
+            btn.classList.remove("btn-warning");
+            if (icon) { icon.classList.add("fa-regular"); icon.classList.remove("fa-solid"); }
+            showToast("Producto eliminado de favoritos", "success");
+          }
         } else {
-          // eliminado -> volver a post con /favorites?product_id=...
-          btn.dataset.url = `/favorites?product_id=${productId}`;
-          btn.dataset.method = "post";
-          btn.classList.add("btn-outline-warning");
-          btn.classList.remove("btn-warning");
-          if (icon) { icon.classList.add("fa-regular"); icon.classList.remove("fa-solid"); }
-          showToast("Producto eliminado de favoritos", "success");
+          const errorMessage = data.error || "Error al actualizar favorito";
+          showToast(errorMessage, "danger");
         }
-      } else {
-        showToast("Error al actualizar favorito", "danger");
+      } catch (error) {
+        console.error("Error en la petición:", error);
+        showToast("Error de conexión al actualizar favorito", "danger");
+      } finally {
+        // Remover animación de carga
+        if (icon) {
+          icon.classList.remove("icon-loading");
+        }
+        btn.disabled = false;
       }
-      // Remover animación de carga
-      if (icon) {
-        icon.classList.remove("icon-loading");
-      }
-      btn.disabled = false;
       return;
     }
   });
