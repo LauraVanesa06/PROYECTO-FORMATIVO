@@ -40,8 +40,7 @@ class MyApp extends StatelessWidget {
         BlocProvider(
           create: (_) => AuthBloc(
             AuthService(baseUrl: ApiConfig.baseUrl),
-          )
-          ..add(ContinueAsGuest()),
+          )..add(AuthStarted()),
         ),
         BlocProvider(create: (_) => CartBloc()),
         BlocProvider(create: (_) => ProductBloc()),
@@ -65,21 +64,24 @@ class MyApp extends StatelessWidget {
             ],
             home: BlocListener<AuthBloc, AuthState>(
               listener: (context, state) {
-                print('Main - Estado de auth: ${state.status}'); // Debug
+                print('Main - Estado de auth: ${state.status}');
               },
               child: BlocBuilder<AuthBloc, AuthState>(
+                buildWhen: (previous, current) {
+                  // Reconstruir solo cuando el status cambia significativamente
+                  print('Main - buildWhen: ${previous.status} -> ${current.status}');
+                  return previous.status != current.status && 
+                         current.status != AuthStatus.loading;
+                },
                 builder: (context, authState) {
-                  print('Main - Construyendo con estado: ${authState.status}'); // Debug
-                  switch (authState.status) {
-                    case AuthStatus.success:
-                    case AuthStatus.guest:
-                      return MainView();
-                    case AuthStatus.failure:
-                    case AuthStatus.loggedOut:
-                      return const LoginView();
-                    default:
-                      return const LoginView();
+                  print('Main - Construyendo con estado: ${authState.status}');
+                  
+                  if (authState.status == AuthStatus.success || 
+                      authState.status == AuthStatus.guest) {
+                    return MainView();
                   }
+                  
+                  return const LoginView();
                 },
               ),
             ),
