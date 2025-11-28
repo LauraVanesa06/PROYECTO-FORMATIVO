@@ -1,3 +1,36 @@
+// === OCULTAR SOLO MENSAJES DE AUTENTICACIÓN Y ERROR === 
+document.addEventListener('DOMContentLoaded', () => {
+  // Ocultar solo mensajes de autenticación y error
+  const hideAuthErrorMessages = () => {
+    document.querySelectorAll('.alert, .notification, [role="alert"]').forEach(el => {
+      const text = el.textContent.toLowerCase();
+      const classes = el.className.toLowerCase();
+      
+      // Ocultar solo si es mensaje de autenticación o error
+      if (classes.includes('alert-danger') ||
+          text.includes('translation missing') || 
+          text.includes('ya estás') || 
+          text.includes('already authenticated') ||
+          text.includes('authentication') ||
+          text.includes('error de autenticación') ||
+          text.includes('invalid email') ||
+          text.includes('invalid password')) {
+        el.style.display = 'none';
+        el.style.visibility = 'hidden';
+        el.style.height = '0';
+        el.style.margin = '0';
+        el.style.padding = '0';
+        el.remove();
+      }
+    });
+  };
+  
+  hideAuthErrorMessages();
+  
+  // Ejecutar cada 100ms para alertas dinámicas
+  setInterval(hideAuthErrorMessages, 100);
+});
+
 // === CACHE Y PRELOAD DE LOGIN ===
 window.loginCache = null;
 window.loginCacheLoading = false;

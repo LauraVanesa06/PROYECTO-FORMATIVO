@@ -1,5 +1,26 @@
 /* === OPTIMIZACIÓN DEL SIDEBAR DE LOGIN === */
 
+/* === OCULTAR SOLO MENSAJES DE AUTENTICACIÓN Y ERROR === */
+/* No ocultar todos los alerts, solo los específicos de autenticación y error */
+.alert-danger,
+.devise-alert-error,
+[data-alert-type="authentication"],
+[data-alert-type="error"] {
+  display: none !important;
+  visibility: hidden !important;
+  height: 0 !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  border: none !important;
+  opacity: 0 !important;
+}
+
+/* Asegurar que no ocupen espacio */
+.alert-danger + *,
+[data-alert-type="error"] + * {
+  margin-top: 0 !important;
+}
+
 /* === SPINNER ANIMATION (GLOBAL) === */
 @keyframes spin {
   0% { 

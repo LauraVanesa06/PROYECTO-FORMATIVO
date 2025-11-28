@@ -1,0 +1,438 @@
+// Sistema de navegación dinámica para Inicio, Productos y Contactos
+
+document.addEventListener('DOMContentLoaded', function() {
+  // Contenedor principal donde se cargará el contenido
+  const mainContent = document.querySelector('main') || document.body;
+  
+  // Enlaces de navegación - buscar por id y clase
+  const navHome = document.getElementById('nav-home') || document.querySelector('.nav-home');
+  const navProducts = document.querySelector('.nav-products');
+  const navContacts = document.querySelector('.nav-contacts');
+
+  // Variable para rastrear la vista actual
+  let currentView = 'home';
+  let isLoading = false;
+
+  // Función para cargar contenido dinámicamente
+  async function loadView(viewName, url) {
+    if (isLoading) return; // Evitar cargas simultáneas
+    isLoading = true;
+
+    try {
+      // Validar URL
+      if (!url || typeof url !== 'string') {
+        throw new Error('URL inválida');
+      }
+
+      // Agregar efecto de carga suave
+      const loadingArea = document.querySelector('#dynamic-content');
+      if (loadingArea) {
+        loadingArea.style.transition = 'opacity 0.3s ease';
+        loadingArea.style.opacity = '0.6';
+      }
+
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 10000); // Timeout de 10 segundos
+
+      const response = await fetch(url, {
+        headers: {
+          'X-Requested-With': 'XMLHttpRequest',
+          'Accept': 'text/html'
+        },
+        signal: controller.signal
+      });
+
+      clearTimeout(timeoutId);
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const html = await response.text();
+      
+      if (!html || html.trim().length === 0) {
+        throw new Error('Response vacío');
+      }
+
+      // Extraer el contenido principal usando DOMParser
+      const parser = new DOMParser();
+      const doc = parser.parseFromString(html, 'text/html');
+      
+      // Buscar el contenedor #dynamic-content en el HTML descargado
+      const sourceContent = doc.querySelector('#dynamic-content');
+      
+      if (!sourceContent) {
+        console.warn('No content container found in response');
+        throw new Error('No se encontró contenido en la respuesta');
+      }
+
+      // Obtener el contenedor de destino
+      const targetContent = document.querySelector('#dynamic-content');
+      if (!targetContent) {
+        throw new Error('Dynamic content container not found en página actual');
+      }
+
+      // Limpiar listeners anteriores antes de reemplazar contenido
+      const oldContent = targetContent.cloneNode(false);
+      targetContent.parentNode.replaceChild(oldContent, targetContent);
+      
+      // Re-obtener referencia después del reemplazo
+      const newTargetContent = document.querySelector('#dynamic-content');
+      
+      // Copiar el HTML del contenido descargado
+      newTargetContent.innerHTML = sourceContent.innerHTML;
+      newTargetContent.style.opacity = '1';
+      newTargetContent.style.transition = 'opacity 0.3s ease';
+
+      // Reinicializar scripts de la nueva página
+      reinitializeScripts(newTargetContent);
+
+      // Actualizar vista actual
+      currentView = viewName;
+      updateActiveNav();
+
+      // Scroll suave al inicio del contenido
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+
+    } catch (error) {
+      console.error('Error loading view:', error);
+      isLoading = false;
+      showToast('Error al cargar la página: ' + error.message, 'danger');
+      
+      // Restaurar opacidad en caso de error
+      const errorArea = document.querySelector('#dynamic-content');
+      if (errorArea) errorArea.style.opacity = '1';
+    } finally {
+      if (isLoading) {
+        isLoading = false;
+        const finalArea = document.querySelector('#dynamic-content');
+        if (finalArea) finalArea.style.opacity = '1';
+      }
+    }
+  }
+
+  // Función para reinicializar scripts después de cargar contenido
+  function reinitializeScripts(container) {
+    if (!container) return;
+
+    try {
+      // Reinicializar carrusel de categorías si existe
+      const carousel = container.querySelector('#category-carousel');
+      if (carousel) {
+        try {
+          const leftBtn = container.querySelector(".category-arrow.left");
+          const rightBtn = container.querySelector(".category-arrow.right");
+          const card = carousel.querySelector(".category-card");
+          
+          if (card && leftBtn && rightBtn) {
+            const cardWidth = card.offsetWidth + 16;
+            const scrollAmount = cardWidth * 2;
+
+            // Remover listeners anteriores
+            const newLeftBtn = leftBtn.cloneNode(true);
+            const newRightBtn = rightBtn.cloneNode(true);
+            leftBtn.parentNode.replaceChild(newLeftBtn, leftBtn);
+            rightBtn.parentNode.replaceChild(newRightBtn, rightBtn);
+
+            // Agregar nuevos listeners
+            const updatedLeftBtn = container.querySelector(".category-arrow.left");
+            const updatedRightBtn = container.querySelector(".category-arrow.right");
+
+            if (updatedLeftBtn) {
+              updatedLeftBtn.addEventListener("click", () => {
+                carousel.scrollBy({ left: -scrollAmount, behavior: "smooth" });
+              });
+            }
+            if (updatedRightBtn) {
+              updatedRightBtn.addEventListener("click", () => {
+                carousel.scrollBy({ left: scrollAmount, behavior: "smooth" });
+              });
+            }
+          }
+        } catch (e) {
+          console.warn('Error initializing category carousel:', e);
+        }
+      }
+
+      // Reinicializar carrusel principal de imágenes
+      const mainCarousel = container.querySelector('#carouselExampleIndicators');
+      if (mainCarousel && window.bootstrap) {
+        try {
+          const existingInstance = bootstrap.Carousel.getInstance(mainCarousel);
+          if (existingInstance) {
+            existingInstance.dispose();
+          }
+          new bootstrap.Carousel(mainCarousel);
+        } catch (e) {
+          console.warn('Error initializing main carousel:', e);
+        }
+      }
+
+      // Reinicializar listeners de productos (carrito, favoritos, etc.)
+      initializeProductListeners(container);
+    } catch (error) {
+      console.error('Error in reinitializeScripts:', error);
+    }
+  }
+
+  // Función para inicializar listeners de productos
+  function initializeProductListeners(container) {
+    if (!container) return;
+
+    try {
+      const productCards = container.querySelectorAll('.product-card');
+      const addToCartBtns = container.querySelectorAll('.add-to-cart-btn');
+      const favoriteBtns = container.querySelectorAll('.favorite-btn');
+
+      // Click en tarjeta de producto
+      productCards.forEach(card => {
+        // Clonar para remover listeners anteriores
+        const newCard = card.cloneNode(true);
+        card.parentNode.replaceChild(newCard, card);
+        
+        newCard.addEventListener('click', (e) => {
+          // No navegar si el click fue en botones/iconos
+          if (e.target.closest('button') || e.target.closest('i')) return;
+          const productId = newCard.dataset.productoId;
+          if (productId) window.location.href = `/home/producto_show?id=${productId}`;
+        });
+      });
+
+      // Botones agregar al carrito
+      addToCartBtns.forEach(btn => {
+        // Clonar para remover listeners anteriores
+        const newBtn = btn.cloneNode(true);
+        btn.parentNode.replaceChild(newBtn, btn);
+        
+        newBtn.addEventListener('click', async (e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          
+          if (!window.isLoggedIn) {
+            openProfileSidebar();
+            return;
+          }
+
+          const url = newBtn.dataset.url;
+          if (!url) return;
+
+          try {
+            const csrfToken = document.querySelector("meta[name='csrf-token']");
+            const response = await fetch(url, {
+              method: 'POST',
+              headers: {
+                'X-CSRF-Token': csrfToken ? csrfToken.content : '',
+                'Accept': 'application/json'
+              }
+            });
+
+            if (response.ok) {
+              const data = await response.json();
+              if (data.cart_html) {
+                const cartBody = document.querySelector('#cart-offcanvas-body');
+                if (cartBody) cartBody.innerHTML = data.cart_html;
+              }
+              const cartCount = document.querySelector('#cart-count');
+              if (cartCount && data.count !== undefined) {
+                cartCount.textContent = data.count;
+                cartCount.style.display = data.count > 0 ? 'inline' : 'none';
+              }
+              showToast('Producto agregado al carrito', 'success');
+            } else {
+              showToast('Error al agregar al carrito', 'danger');
+            }
+          } catch (error) {
+            console.error('Error:', error);
+            showToast('Error de conexión', 'danger');
+          }
+        });
+      });
+
+      // Botones favoritos
+      favoriteBtns.forEach(btn => {
+        // Clonar para remover listeners anteriores
+        const newBtn = btn.cloneNode(true);
+        btn.parentNode.replaceChild(newBtn, btn);
+        
+        newBtn.addEventListener('click', async (e) => {
+          e.preventDefault();
+          e.stopPropagation();
+
+          if (!window.isLoggedIn) {
+            openProfileSidebar();
+            return;
+          }
+
+          const url = newBtn.dataset.url;
+          const method = (newBtn.dataset.method || 'post').toUpperCase();
+          const productId = newBtn.dataset.productId;
+
+          if (!url) return;
+
+          try {
+            const csrfToken = document.querySelector("meta[name='csrf-token']");
+            const response = await fetch(url, {
+              method: method,
+              headers: {
+                'X-CSRF-Token': csrfToken ? csrfToken.content : '',
+                'Accept': 'application/json'
+              }
+            });
+
+            if (response.ok) {
+              const data = await response.json();
+              const icon = newBtn.querySelector('i');
+
+              if (method === 'POST') {
+                if (data.id) newBtn.dataset.url = `/favorites/${data.id}`;
+                newBtn.dataset.method = 'delete';
+                newBtn.classList.remove('btn-outline-warning');
+                newBtn.classList.add('btn-warning');
+                if (icon) {
+                  icon.classList.remove('fa-regular');
+                  icon.classList.add('fa-solid');
+                }
+                showToast('Agregado a favoritos', 'success');
+              } else {
+                newBtn.dataset.url = `/favorites?product_id=${productId}`;
+                newBtn.dataset.method = 'post';
+                newBtn.classList.add('btn-outline-warning');
+                newBtn.classList.remove('btn-warning');
+                if (icon) {
+                  icon.classList.add('fa-regular');
+                  icon.classList.remove('fa-solid');
+                }
+                showToast('Removido de favoritos', 'success');
+              }
+            } else {
+              showToast('Error al actualizar favorito', 'danger');
+            }
+          } catch (error) {
+            console.error('Error:', error);
+            showToast('Error al actualizar favorito', 'danger');
+          }
+        });
+      });
+
+      // Inicializar formulario de filtros si existe
+      const filterForm = container.querySelector('#productos-filter-form');
+      if (filterForm) {
+        initializeAutoFilter(filterForm);
+      }
+    } catch (error) {
+      console.error('Error in initializeProductListeners:', error);
+    }
+  }
+
+  // Función para auto-submit del formulario de filtros
+  function initializeAutoFilter(form) {
+    function debounce(fn, wait) {
+      let t;
+      return function (...args) {
+        clearTimeout(t);
+        t = setTimeout(() => fn.apply(this, args), wait);
+      };
+    }
+
+    const inputs = Array.from(form.querySelectorAll('select, input[type="text"], input[type="number"], input[type="search"]'));
+
+    inputs.forEach((el) => {
+      if (el.tagName.toLowerCase() === 'select' || el.type === 'number') {
+        el.addEventListener('change', () => {
+          form.submit();
+        });
+      } else {
+        el.addEventListener('input', debounce(() => {
+          form.submit();
+        }, 450));
+      }
+    });
+  }
+
+  // Función para mostrar toasts
+  function showToast(message, type) {
+    let toastContainer = document.getElementById('toast-container');
+    if (!toastContainer) {
+      toastContainer = document.createElement('div');
+      toastContainer.id = 'toast-container';
+      toastContainer.className = 'toast-container position-fixed bottom-0 end-0 p-3';
+      toastContainer.style.zIndex = '1055';
+      document.body.appendChild(toastContainer);
+    }
+
+    const toast = document.createElement('div');
+    const bg = type === 'success' ? 'bg-success' : (type === 'danger' ? 'bg-danger' : `bg-${type}`);
+
+    toast.className = `toast fade show ${bg} text-white`;
+    toast.innerHTML = `<div class="toast-body">${message}</div>`;
+    toastContainer.appendChild(toast);
+
+    setTimeout(() => {
+      toast.classList.remove('show');
+      setTimeout(() => toast.remove(), 300);
+    }, 3000);
+  }
+
+  // Función para abrir sidebar de perfil
+  function openProfileSidebar() {
+    const btn = document.getElementById('userButton');
+    if (btn) btn.click();
+    else {
+      const sidebar = document.getElementById('profileSidebar');
+      if (sidebar) sidebar.classList.add('open');
+    }
+  }
+
+  // Actualizar enlace activo en navegación
+  function updateActiveNav() {
+    // Remover clase activa de TODOS los enlaces de navegación
+    const allNavLinks = document.querySelectorAll('.main-nav a, .nav-home, .nav-products, .nav-contacts');
+    allNavLinks.forEach(link => {
+      link.classList.remove('active');
+    });
+
+    // Agregar clase activa al enlace correspondiente
+    if (currentView === 'home' && navHome) {
+      navHome.classList.add('active');
+    } else if (currentView === 'productos' && navProducts) {
+      navProducts.classList.add('active');
+    } else if (currentView === 'contactos' && navContacts) {
+      navContacts.classList.add('active');
+    }
+  }
+
+  // Event listeners para navegación con validación
+  if (navHome) {
+    navHome.addEventListener('click', (e) => {
+      if (currentView !== 'home') {
+        e.preventDefault();
+        const url = navHome.href || navHome.getAttribute('href');
+        if (url) loadView('home', url);
+      }
+    });
+  }
+
+  if (navProducts) {
+    navProducts.addEventListener('click', (e) => {
+      if (currentView !== 'productos') {
+        e.preventDefault();
+        const url = navProducts.href || navProducts.getAttribute('href');
+        if (url) loadView('productos', url);
+      }
+    });
+  }
+
+  if (navContacts) {
+    navContacts.addEventListener('click', (e) => {
+      if (currentView !== 'contactos') {
+        e.preventDefault();
+        const url = navContacts.href || navContacts.getAttribute('href');
+        if (url) loadView('contactos', url);
+      }
+    });
+  }
+
+  // Inicializar vista actual y listeners
+  updateActiveNav();
+  initializeProductListeners(document);
+});

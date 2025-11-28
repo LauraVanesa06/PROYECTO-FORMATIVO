@@ -99,19 +99,28 @@
 document.addEventListener('DOMContentLoaded', function() {
   const csrfToken = document.querySelector('meta[name="csrf-token"]').content;
 
-  function showNotification(message, type = 'success') {
-    const existing = document.querySelector('.custom-alert');
-    if (existing) existing.remove();
+  function showToast(message, type = 'success') {
+    const toastContainer = document.getElementById('toast-container') || (() => {
+      const container = document.createElement('div');
+      container.id = 'toast-container';
+      container.className = 'position-fixed top-0 start-50 translate-middle-x p-3';
+      container.style.zIndex = '2000';
+      document.body.appendChild(container);
+      return container;
+    })();
 
-    const alert = document.createElement('div');
-    alert.className = `custom-alert alert-${type}`;
-    alert.textContent = message;
-    document.body.appendChild(alert);
-    setTimeout(() => alert.classList.add('show'), 50);
+    const toast = document.createElement('div');
+    const bg = type === 'success' ? 'bg-success' : (type === 'danger' ? 'bg-danger' : `bg-${type}`);
+    
+    toast.className = `toast fade show ${bg} text-white`;
+    toast.style.minWidth = '250px';
+    toast.innerHTML = `<div class="toast-body" style="padding: 4px; font-size: 12px;">${message}</div>`;
+    toastContainer.appendChild(toast);
+
     setTimeout(() => {
-      alert.classList.remove('show');
-      setTimeout(() => alert.remove(), 300);
-    }, 2500);
+      toast.classList.remove('show');
+      setTimeout(() => toast.remove(), 300);
+    }, 3000);
   }
 
   // 🔹 Actualizar subtotal y total al cambiar cantidad
@@ -153,9 +162,9 @@ document.addEventListener('DOMContentLoaded', function() {
         },
         body: JSON.stringify({ cart_item: { cantidad } })
       });
-      if (response.ok) showNotification('Cantidad actualizada');
+      if (response.ok) showToast('Cantidad actualizada', 'success');
     } catch {
-      showNotification('Error al actualizar cantidad', 'danger');
+      showToast('Error al actualizar cantidad', 'danger');
     }
   });
 
@@ -182,12 +191,22 @@ document.addEventListener('DOMContentLoaded', function() {
           itemCard.remove();
           updateCartTotal();
           if (!document.querySelectorAll('.cart-item-card').length) {
-            document.querySelector('#cart-summary').innerHTML = `
-              <div class="alert alert-info text-center p-4 mt-4">
-                <i class="fa-solid fa-cart-arrow-down fa-2x mb-2"></i><br>
-                <span class="fs-5">Tu carrito está vacío</span>
-              </div>
+            // Reemplazar todo el contenido con el mensaje de carrito vacío
+            const cartItemsList = document.querySelector('.cart-items-list');
+            const cartSummary = document.querySelector('#cart-summary');
+            
+            if (cartItemsList) cartItemsList.remove();
+            if (cartSummary) cartSummary.remove();
+            
+            // Encontrar el padre del contenido y agregar el mensaje
+            const parent = document.querySelector('#cart-offcanvas-body') || document.body;
+            const emptyMessage = document.createElement('div');
+            emptyMessage.className = 'alert alert-info text-center p-4 mt-4';
+            emptyMessage.innerHTML = `
+              <i class="fa-solid fa-cart-arrow-down fa-2x mb-2"></i><br>
+              <span class="fs-5">Tu carrito está vacío</span>
             `;
+            parent.appendChild(emptyMessage);
           }
           if (data.count !== undefined) {
             const cartCount = document.getElementById('cart_count');
@@ -196,11 +215,11 @@ document.addEventListener('DOMContentLoaded', function() {
               cartCount.style.display = data.count == 0 ? 'none' : 'inline';
             }
           }
-          showNotification('🗑️ Producto eliminado del carrito', 'danger');
+          showToast('Producto eliminado del carrito', 'danger');
         }, 300);
       }
     } catch {
-      showNotification('Error al eliminar producto', 'danger');
+      showToast('Error al eliminar producto', 'danger');
     }
   });
 

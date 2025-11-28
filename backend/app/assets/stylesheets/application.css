@@ -178,6 +178,8 @@
   border: 1.5px solid #b6d4fe;
   border-radius: 14px;
   font-size: 1.1rem;
+  margin: 10%;
+  margin-bottom: 50%;
 }
 #footer{
   font-size: 15px;
@@ -272,10 +274,32 @@ footer {
 
 #toast-container {
   position: fixed !important;
-    top: 20px !important;
-    left: 50%;
-    transform: translateX(-50%);
-    z-index: 2000 !important;
+  top: 20px !important;
+  left: 50% !important;
+  transform: translateX(-50%) !important;
+  z-index: 2000 !important;
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 10px !important;
+}
+
+#toast-container .toast {
+  max-width: 100% !important;
+  font-size: 12px !important;
+  padding: 2px 6px !important;
+  height: 10% !important;
+  max-height: 10% !important;
+  border-radius: 4px !important;
+  display: flex !important;
+  align-items: center !important;
+  overflow: hidden !important;
+  white-space: nowrap !important;
+}
+
+#toast-container .toast-body {
+  padding: 2px !important;
+  margin: 0 !important;
+  line-height: 1 !important;
 }
 
 
@@ -1193,7 +1217,6 @@ body {
 .hero-header {
   width: 100%;
   overflow: hidden;
-  background: #00000038;
   color: #fff;
   text-align: center;
   z-index: 1;
