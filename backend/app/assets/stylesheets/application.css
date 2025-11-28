@@ -283,6 +283,69 @@ footer {
   gap: 10px !important;
 }
 
+/* === ANIMACIÓN DE CARGA EN ICONOS === */
+@keyframes spinSmooth {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes cartPulse {
+  0%, 100% {
+    opacity: 1;
+    filter: brightness(1);
+  }
+  50% {
+    opacity: 0.6;
+    filter: brightness(1.2);
+  }
+}
+
+@keyframes spinSmooth {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes cartPulse {
+  0%, 100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.1);
+  }
+}
+
+.icon-loading {
+  animation: spinSmooth 1s linear infinite !important;
+  will-change: transform !important;
+}
+
+/* Para el icono del carrito, usar un pulse subtil */
+.add-to-cart-btn {
+  position: relative !important;
+}
+
+.add-to-cart-btn i {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  width: 1em !important;
+  height: 1em !important;
+  line-height: 1 !important;
+}
+
+.add-to-cart-btn .icon-loading {
+  animation: cartPulse 0.8s ease-in-out infinite !important;
+  transform-origin: center !important;
+}
+
 #toast-container .toast {
   max-width: 100% !important;
   font-size: 12px !important;
@@ -1487,8 +1550,6 @@ hr{
   background-color: #ffe60043 !important;
   border: 2px solid #ffe700 !important;
 }
-
-.favorite-btn{}
 
 /* Estilos generales de flash */
 .flash {

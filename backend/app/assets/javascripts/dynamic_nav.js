@@ -216,6 +216,13 @@ document.addEventListener('DOMContentLoaded', function() {
           const url = newBtn.dataset.url;
           if (!url) return;
 
+          // Agregar animación de carga solo al icono
+          const icon = newBtn.querySelector('i');
+          if (icon) {
+            icon.classList.add('icon-loading');
+          }
+          newBtn.disabled = true;
+
           try {
             const csrfToken = document.querySelector("meta[name='csrf-token']");
             const response = await fetch(url, {
@@ -244,6 +251,12 @@ document.addEventListener('DOMContentLoaded', function() {
           } catch (error) {
             console.error('Error:', error);
             showToast('Error de conexión', 'danger');
+          } finally {
+            // Remover animación de carga del icono
+            if (icon) {
+              icon.classList.remove('icon-loading');
+            }
+            newBtn.disabled = false;
           }
         });
       });
@@ -269,6 +282,13 @@ document.addEventListener('DOMContentLoaded', function() {
 
           if (!url) return;
 
+          // Agregar animación de carga al icono
+          const icon = newBtn.querySelector('i');
+          if (icon) {
+            icon.classList.add('icon-loading');
+          }
+          newBtn.disabled = true;
+
           try {
             const csrfToken = document.querySelector("meta[name='csrf-token']");
             const response = await fetch(url, {
@@ -281,7 +301,6 @@ document.addEventListener('DOMContentLoaded', function() {
 
             if (response.ok) {
               const data = await response.json();
-              const icon = newBtn.querySelector('i');
 
               if (method === 'POST') {
                 if (data.id) newBtn.dataset.url = `/favorites/${data.id}`;
@@ -310,6 +329,12 @@ document.addEventListener('DOMContentLoaded', function() {
           } catch (error) {
             console.error('Error:', error);
             showToast('Error al actualizar favorito', 'danger');
+          } finally {
+            // Remover animación de carga
+            if (icon) {
+              icon.classList.remove('icon-loading');
+            }
+            newBtn.disabled = false;
           }
         });
       });

@@ -121,7 +121,8 @@
                   <button 
                     class="btn btn-sm btn-outline-primary d-flex align-items-center justify-content-center add-to-cart-btn" 
                     data-url="<%= cart_items_path(product_id: producto.id) %>" 
-                    type="button">
+                    type="button"
+                    style="width: 38px; height: 36px; min-width: 38px; padding: 0;">
                     <i class="fa-solid fa-cart-plus"></i>
                   </button>
 
@@ -230,11 +231,18 @@
       e.stopPropagation();
       const btn = e.target.closest(".add-to-cart-btn");
       const url = btn.dataset.url;
+      const icon = btn.querySelector("i");
 
       if (!window.isLoggedIn) {
         openProfileSidebar();
         return;
       }
+
+      // Agregar animación de carga solo al icono
+      if (icon) {
+        icon.classList.add("icon-loading");
+      }
+      btn.disabled = true;
 
       try {
         const response = await fetch(url, {
@@ -270,6 +278,12 @@
       } catch (error) {
         console.error("Error en la petición:", error);
         showToast("Error de conexión al agregar al carrito", "danger");
+      } finally {
+        // Remover animación de carga del icono
+        if (icon) {
+          icon.classList.remove("icon-loading");
+        }
+        btn.disabled = false;
       }
       return;
     }
@@ -283,11 +297,18 @@
       const url = btn.dataset.url;
       const method = (btn.dataset.method || "post").toUpperCase();
       const productId = btn.dataset.productId;
+      const icon = btn.querySelector("i");
 
       if (!window.isLoggedIn) {
         openProfileSidebar();
         return;
       }
+
+      // Agregar animación de carga al icono
+      if (icon) {
+        icon.classList.add("icon-loading");
+      }
+      btn.disabled = true;
 
       const response = await fetch(url, {
         method: method,
@@ -299,7 +320,6 @@
 
       if (response.ok) {
         const data = await response.json();
-        const icon = btn.querySelector("i");
 
         if (method === "POST") {
           // creado -> pasar a delete con /favorites/:id
@@ -321,6 +341,11 @@
       } else {
         showToast("Error al actualizar favorito", "danger");
       }
+      // Remover animación de carga
+      if (icon) {
+        icon.classList.remove("icon-loading");
+      }
+      btn.disabled = false;
       return;
     }
 
