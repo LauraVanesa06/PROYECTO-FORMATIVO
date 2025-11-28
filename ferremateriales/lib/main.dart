@@ -40,7 +40,8 @@ class MyApp extends StatelessWidget {
         BlocProvider(
           create: (_) => AuthBloc(
             AuthService(baseUrl: ApiConfig.baseUrl),
-          )..add(AuthStarted()),
+          )
+          ..add(ContinueAsGuest()),
         ),
         BlocProvider(create: (_) => CartBloc()),
         BlocProvider(create: (_) => ProductBloc()),
