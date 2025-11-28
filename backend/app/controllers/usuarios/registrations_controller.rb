@@ -15,6 +15,17 @@ class Usuarios::RegistrationsController < Devise::RegistrationsController
     end
   end
 
+  # Acción personalizada para editar en sidebar
+  def edit
+    if request.xhr?
+      # Si es una solicitud AJAX, renderizar el partial del formulario
+      render partial: 'devise/registrations/edit_form', layout: false
+    else
+      # Si no, renderizar la vista completa
+      super
+    end
+  end
+
   private
 
   def resolve_layout
