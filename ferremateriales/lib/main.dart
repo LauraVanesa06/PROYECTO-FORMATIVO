@@ -40,8 +40,7 @@ class MyApp extends StatelessWidget {
         BlocProvider(
           create: (_) => AuthBloc(
             AuthService(baseUrl: ApiConfig.baseUrl),
-          )
-          ..add(ContinueAsGuest()),
+          )..add(AuthStarted()),
         ),
         BlocProvider(create: (_) => CartBloc()),
         BlocProvider(create: (_) => ProductBloc()),
@@ -73,7 +72,7 @@ class MyApp extends StatelessWidget {
                   switch (authState.status) {
                     case AuthStatus.success:
                     case AuthStatus.guest:
-                      return const MainView();
+                      return MainView();
                     case AuthStatus.failure:
                     case AuthStatus.loggedOut:
                       return const LoginView();

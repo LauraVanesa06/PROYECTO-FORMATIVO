@@ -11,16 +11,24 @@ class AllProductsView extends StatefulWidget {
   State<AllProductsView> createState() => _AllProductsViewState();
 }
 
-class _AllProductsViewState extends State<AllProductsView> {
+class _AllProductsViewState extends State<AllProductsView> with AutomaticKeepAliveClientMixin {
+  @override
+  bool get wantKeepAlive => true; // Mantener el estado vivo
+  
   late TextEditingController _searchController;
+  String _sortOption = 'none'; // none, name_asc, name_desc, price_asc, price_desc
 
   @override
   void initState() {
     super.initState();
     _searchController = TextEditingController();
 
-    /// ✅ CARGAR FAVORITOS Y LUEGO PRODUCTOS
-    _initializeData();
+    /// ✅ CARGAR FAVORITOS Y LUEGO PRODUCTOS SOLO UNA VEZ
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted) {
+        _initializeData();
+      }
+    });
   }
 
   Future<void> _initializeData() async {
@@ -43,6 +51,7 @@ class _AllProductsViewState extends State<AllProductsView> {
 
   @override
   Widget build(BuildContext context) {
+    super.build(context); // Necesario para AutomaticKeepAliveClientMixin
     final isDark = Theme.of(context).brightness == Brightness.dark;
     
     return Scaffold(
@@ -77,7 +86,7 @@ class _AllProductsViewState extends State<AllProductsView> {
             ),
           ),
           
-          // Campo de búsqueda sticky
+          // Campo de búsqueda y filtro en la misma línea
           SliverPersistentHeader(
             pinned: true,
             delegate: _SearchBarDelegate(
@@ -85,74 +94,214 @@ class _AllProductsViewState extends State<AllProductsView> {
               child: Container(
                 color: isDark ? Colors.grey.shade900 : Colors.grey.shade50,
                 padding: const EdgeInsets.fromLTRB(16, 12, 16, 12),
-                child: Container(
-                  decoration: BoxDecoration(
-                    color: isDark ? Colors.grey.shade800 : Colors.white,
-                    borderRadius: BorderRadius.circular(16),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.black.withOpacity(0.05),
-                        blurRadius: 10,
-                        offset: const Offset(0, 2),
-                      ),
-                    ],
-                  ),
-                  child: TextField(
-                    controller: _searchController,
-                    style: TextStyle(
-                      color: isDark ? Colors.white : const Color(0xFF222222),
-                      fontSize: 15,
-                    ),
-                    onChanged: (value) {
-                      debugPrint('AllProductsView - onChanged search: "$value"');
+                child: Row(
+                  children: [
+                    // Barra de búsqueda
+                    Expanded(
+                      child: Container(
+                        decoration: BoxDecoration(
+                          color: isDark ? Colors.grey.shade800 : Colors.white,
+                          borderRadius: BorderRadius.circular(16),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.black.withOpacity(0.05),
+                              blurRadius: 10,
+                              offset: const Offset(0, 2),
+                            ),
+                          ],
+                        ),
+                        child: TextField(
+                          controller: _searchController,
+                          style: TextStyle(
+                            color: isDark ? Colors.white : const Color(0xFF222222),
+                            fontSize: 15,
+                          ),
+                          onChanged: (value) {
+                            debugPrint('AllProductsView - onChanged search: "$value"');
 
-                      final bloc = context.read<ProductBloc>();
-                      
-                      // Si está en progreso, no hacer nada
-                      if (bloc.state is ProductLoadInProgress) {
-                        debugPrint('AllProductsView - ignorando onChanged porque está cargando');
-                        return;
-                      }
-                      
-                      // Si el cache está vacío y NO está cargando, cargar
-                      if (bloc.state is! ProductLoadSuccess) {
-                        debugPrint('AllProductsView - cache vacío, dispatch CargarTodosLosProductos');
-                        bloc.add(CargarTodosLosProductos());
-                        return;
-                      }
+                            final bloc = context.read<ProductBloc>();
+                            
+                            if (bloc.state is ProductLoadInProgress) {
+                              debugPrint('AllProductsView - ignorando onChanged porque está cargando');
+                              return;
+                            }
+                            
+                            if (bloc.state is! ProductLoadSuccess) {
+                              debugPrint('AllProductsView - cache vacío, dispatch CargarTodosLosProductos');
+                              bloc.add(CargarTodosLosProductos());
+                              return;
+                            }
 
-                      /// 🔎 Buscar en tiempo real sobre el CACHE
-                      bloc.add(ProductBuscarPorNombre(value));
-                    },
-                    decoration: InputDecoration(
-                      hintText: 'Buscar productos...',
-                      hintStyle: TextStyle(
-                        color: isDark ? Colors.grey.shade400 : Colors.grey.shade500,
-                        fontSize: 15,
+                            bloc.add(ProductBuscarPorNombre(value));
+                          },
+                          decoration: InputDecoration(
+                            hintText: 'Buscar productos...',
+                            hintStyle: TextStyle(
+                              color: isDark ? Colors.grey.shade400 : Colors.grey.shade500,
+                              fontSize: 15,
+                            ),
+                            prefixIcon: Icon(
+                              Icons.search_rounded,
+                              color: isDark ? Colors.grey.shade400 : const Color(0xFF2e67a3),
+                              size: 22,
+                            ),
+                            suffixIcon: _searchController.text.isNotEmpty
+                                ? IconButton(
+                                    icon: Icon(
+                                      Icons.clear_rounded,
+                                      color: isDark ? Colors.grey.shade400 : Colors.grey.shade600,
+                                      size: 20,
+                                    ),
+                                    onPressed: () {
+                                      _searchController.clear();
+                                      context.read<ProductBloc>().add(ProductBuscarPorNombre(''));
+                                    },
+                                  )
+                                : null,
+                            border: InputBorder.none,
+                            contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+                          ),
+                        ),
                       ),
-                      prefixIcon: Icon(
-                        Icons.search_rounded,
-                        color: isDark ? Colors.grey.shade400 : const Color(0xFF2e67a3),
-                        size: 22,
-                      ),
-                      suffixIcon: _searchController.text.isNotEmpty
-                          ? IconButton(
-                              icon: Icon(
-                                Icons.clear_rounded,
-                                color: isDark ? Colors.grey.shade400 : Colors.grey.shade600,
-                                size: 20,
-                              ),
-                              onPressed: () {
-                                _searchController.clear();
-                                // En vez de recargar, solo limpiar el filtro de búsqueda
-                                context.read<ProductBloc>().add(ProductBuscarPorNombre(''));
-                              },
-                            )
-                          : null,
-                      border: InputBorder.none,
-                      contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
                     ),
-                  ),
+                    const SizedBox(width: 12),
+                    // Botón de filtro
+                    Container(
+                      decoration: BoxDecoration(
+                        color: _sortOption != 'none' 
+                            ? const Color(0xFF2e67a3) 
+                            : (isDark ? Colors.grey.shade800 : Colors.white),
+                        borderRadius: BorderRadius.circular(16),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black.withOpacity(0.05),
+                            blurRadius: 10,
+                            offset: const Offset(0, 2),
+                          ),
+                        ],
+                      ),
+                      child: PopupMenuButton<String>(
+                        onSelected: (value) {
+                          setState(() {
+                            _sortOption = value;
+                          });
+                        },
+                        icon: Icon(
+                          Icons.filter_list_rounded,
+                          color: _sortOption != 'none'
+                              ? Colors.white
+                              : (isDark ? Colors.grey.shade400 : const Color(0xFF2e67a3)),
+                          size: 24,
+                        ),
+                        color: isDark ? Colors.grey.shade800 : Colors.white,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        itemBuilder: (context) => [
+                          PopupMenuItem(
+                            value: 'none',
+                            child: Row(
+                              children: [
+                                Icon(
+                                  _sortOption == 'none' ? Icons.check_circle : Icons.circle_outlined,
+                                  color: _sortOption == 'none' ? const Color(0xFF2e67a3) : Colors.grey,
+                                  size: 20,
+                                ),
+                                const SizedBox(width: 12),
+                                Text(
+                                  'Sin ordenar',
+                                  style: TextStyle(
+                                    color: isDark ? Colors.white : Colors.black87,
+                                    fontWeight: _sortOption == 'none' ? FontWeight.bold : FontWeight.normal,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                          PopupMenuItem(
+                            value: 'name_asc',
+                            child: Row(
+                              children: [
+                                Icon(
+                                  _sortOption == 'name_asc' ? Icons.check_circle : Icons.circle_outlined,
+                                  color: _sortOption == 'name_asc' ? const Color(0xFF2e67a3) : Colors.grey,
+                                  size: 20,
+                                ),
+                                const SizedBox(width: 12),
+                                Text(
+                                  'Nombre A-Z',
+                                  style: TextStyle(
+                                    color: isDark ? Colors.white : Colors.black87,
+                                    fontWeight: _sortOption == 'name_asc' ? FontWeight.bold : FontWeight.normal,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                          PopupMenuItem(
+                            value: 'name_desc',
+                            child: Row(
+                              children: [
+                                Icon(
+                                  _sortOption == 'name_desc' ? Icons.check_circle : Icons.circle_outlined,
+                                  color: _sortOption == 'name_desc' ? const Color(0xFF2e67a3) : Colors.grey,
+                                  size: 20,
+                                ),
+                                const SizedBox(width: 12),
+                                Text(
+                                  'Nombre Z-A',
+                                  style: TextStyle(
+                                    color: isDark ? Colors.white : Colors.black87,
+                                    fontWeight: _sortOption == 'name_desc' ? FontWeight.bold : FontWeight.normal,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                          PopupMenuItem(
+                            value: 'price_asc',
+                            child: Row(
+                              children: [
+                                Icon(
+                                  _sortOption == 'price_asc' ? Icons.check_circle : Icons.circle_outlined,
+                                  color: _sortOption == 'price_asc' ? const Color(0xFF2e67a3) : Colors.grey,
+                                  size: 20,
+                                ),
+                                const SizedBox(width: 12),
+                                Text(
+                                  'Precio: Menor a Mayor',
+                                  style: TextStyle(
+                                    color: isDark ? Colors.white : Colors.black87,
+                                    fontWeight: _sortOption == 'price_asc' ? FontWeight.bold : FontWeight.normal,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                          PopupMenuItem(
+                            value: 'price_desc',
+                            child: Row(
+                              children: [
+                                Icon(
+                                  _sortOption == 'price_desc' ? Icons.check_circle : Icons.circle_outlined,
+                                  color: _sortOption == 'price_desc' ? const Color(0xFF2e67a3) : Colors.grey,
+                                  size: 20,
+                                ),
+                                const SizedBox(width: 12),
+                                Text(
+                                  'Precio: Mayor a Menor',
+                                  style: TextStyle(
+                                    color: isDark ? Colors.white : Colors.black87,
+                                    fontWeight: _sortOption == 'price_desc' ? FontWeight.bold : FontWeight.normal,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
                 ),
               ),
             ),
@@ -195,7 +344,28 @@ class _AllProductsViewState extends State<AllProductsView> {
 
               if (state is ProductLoadSuccess) {
                 debugPrint('AllProductsView - ProductLoadSuccess with ${state.productos.length} products');
-                if (state.productos.isEmpty) {
+                
+                // Aplicar ordenamiento
+                var sortedProducts = List.from(state.productos);
+                switch (_sortOption) {
+                  case 'name_asc':
+                    sortedProducts.sort((a, b) => (a.nombre ?? '').compareTo(b.nombre ?? ''));
+                    break;
+                  case 'name_desc':
+                    sortedProducts.sort((a, b) => (b.nombre ?? '').compareTo(a.nombre ?? ''));
+                    break;
+                  case 'price_asc':
+                    sortedProducts.sort((a, b) => (a.precio ?? 0).compareTo(b.precio ?? 0));
+                    break;
+                  case 'price_desc':
+                    sortedProducts.sort((a, b) => (b.precio ?? 0).compareTo(a.precio ?? 0));
+                    break;
+                  default:
+                    // Sin ordenar
+                    break;
+                }
+                
+                if (sortedProducts.isEmpty) {
                   return SliverFillRemaining(
                     child: Center(
                       child: Column(
@@ -240,9 +410,9 @@ class _AllProductsViewState extends State<AllProductsView> {
                     ),
                     delegate: SliverChildBuilderDelegate(
                       (context, index) {
-                        return ProductCard(product: state.productos[index]);
+                        return ProductCard(product: sortedProducts[index]);
                       },
-                      childCount: state.productos.length,
+                      childCount: sortedProducts.length,
                     ),
                   ),
                 );

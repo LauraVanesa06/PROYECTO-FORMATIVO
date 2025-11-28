@@ -1,6 +1,8 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:ferremateriales/core/utils/custom_cache_manager.dart';
+import 'package:ferremateriales/core/utils/price_formatter.dart';
 import 'package:ferremateriales/features/productos/model/product_model.dart';
+import 'package:ferremateriales/features/productos/views/main_view.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../auth/bloc/auth_bloc.dart';
@@ -8,6 +10,7 @@ import '../../auth/bloc/auth_state.dart';
 import '../../auth/views/login_view.dart';
 import '../services/favorites_service.dart';
 import '../services/cart_service.dart';
+import '../views/main_view.dart';
 import '../views/product_preview_view.dart';
 
 class ProductCard extends StatefulWidget {
@@ -329,13 +332,19 @@ class _ProductCardState extends State<ProductCard> {
         ),
       ),
       child: InkWell(
-        onTap: () {
-          Navigator.push(
+        onTap: () async {
+          final result = await Navigator.push(
             context,
             MaterialPageRoute(
               builder: (context) => ProductPreviewView(product: product),
             ),
           );
+          
+          // Si result es true, significa que el usuario presionó "Ver carrito"
+          if (result == true && mounted) {
+            // Usar la GlobalKey para acceder al MainView y cambiar al tab del carrito (índice 2)
+            mainViewKey.currentState?.changeTab(2);
+          }
         },
         borderRadius: BorderRadius.circular(12),
         child: Column(
@@ -472,7 +481,7 @@ class _ProductCardState extends State<ProductCard> {
                   children: [
                     // Precio
                     Text(
-                      'COP ${double.tryParse(product.precio.toString())?.toStringAsFixed(2) ?? '0.00'}',
+                      PriceFormatter.formatWithCurrency(product.precio),
                       style: TextStyle(
                         fontWeight: FontWeight.bold,
                         fontSize: 16,

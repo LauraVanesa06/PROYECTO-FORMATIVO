@@ -18,7 +18,7 @@ class PasswordValidator {
       return 'La contraseña es requerida';
     }
 
-    // Verificar longitud mínima
+    // Verificar longitud mínima (cambiado a 8 caracteres)
     if (password.length < 8) {
       return 'La contraseña debe tener al menos 8 caracteres';
     }
@@ -43,10 +43,7 @@ class PasswordValidator {
       return 'La contraseña debe contener al menos un número';
     }
 
-    // Verificar que tenga al menos un carácter especial
-    if (!password.contains(RegExp(r'[!@#$%^&*(),.?":{}|<>]'))) {
-      return 'La contraseña debe contener al menos un carácter especial (!@#\$%^&*(),.?":{}|<>)';
-    }
+    // ❌ REMOVIDO: Ya no se requiere carácter especial
 
     return null; // Contraseña válida
   }

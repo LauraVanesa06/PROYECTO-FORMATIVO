@@ -1,3 +1,4 @@
+import 'package:ferremateriales/core/utils/price_formatter.dart';
 import 'package:ferremateriales/features/productos/models/cart_item_model.dart';
 import 'package:ferremateriales/features/productos/services/cart_service.dart';
 import 'package:ferremateriales/features/productos/widgets/loading_shimmer.dart';
@@ -22,7 +23,10 @@ class CartView extends StatefulWidget {
   
 }
 
-class _CartViewState extends State<CartView> {
+class _CartViewState extends State<CartView> with AutomaticKeepAliveClientMixin {
+  @override
+  bool get wantKeepAlive => true; // Mantener el estado vivo
+  
   final CartService _cartService = CartService();
   bool _isLoading = true;
   List<CartItemModel> _cartItems = [];
@@ -57,6 +61,7 @@ class _CartViewState extends State<CartView> {
 
   @override
   Widget build(BuildContext context) {
+    super.build(context); // Necesario para AutomaticKeepAliveClientMixin
     final l10n = AppLocalizations.of(context)!;
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
@@ -174,7 +179,7 @@ class _CartViewState extends State<CartView> {
                                             ),
                                             const SizedBox(height: 8),
                                             Text(
-                                              "COP ${(product.precio ?? 0) * item.quantity}",
+                                              PriceFormatter.formatWithCurrency((product.precio ?? 0) * item.quantity),
                                               style: TextStyle(
                                                 fontSize: 16,
                                                 fontWeight: FontWeight.bold,
@@ -245,7 +250,7 @@ class _CartViewState extends State<CartView> {
                                       ),
                                     ),
                                     Text(
-                                      "COP ${total.toStringAsFixed(0)}",
+                                      PriceFormatter.formatWithCurrency(total),
                                       style: TextStyle(
                                         fontSize: 22,
                                         fontWeight: FontWeight.bold,

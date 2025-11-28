@@ -102,7 +102,17 @@ class CartService {
   }
 
   Future<void> removeItem(int id) async {
-    final response = await http.delete(Uri.parse('${ApiConfig.baseUrl}/api/v1/cart_items/$id'));
+    final token = await storage.read(key: 'auth_token');
+    if (token == null) throw Exception('No token found');
+
+    final response = await http.delete(
+      Uri.parse('${ApiConfig.baseUrl}/api/v1/cart_items/$id'),
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": "Bearer $token",
+      },
+    );
+    
     if (response.statusCode != 204) {
       throw Exception('Error al eliminar producto del carrito');
     }

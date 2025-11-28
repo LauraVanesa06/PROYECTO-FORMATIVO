@@ -10,8 +10,11 @@ import 'favorites_view.dart';
 import 'cart_view.dart';
 import 'profile_view.dart';
 
+// GlobalKey para acceder al estado de MainView desde otros widgets
+final GlobalKey<_MainViewState> mainViewKey = GlobalKey<_MainViewState>();
+
 class MainView extends StatefulWidget {
-  const MainView({super.key});
+  MainView({Key? key}) : super(key: key ?? mainViewKey);
 
   @override
   State<MainView> createState() => _MainViewState();
@@ -21,6 +24,15 @@ class MainView extends StatefulWidget {
 
 class _MainViewState extends State<MainView> {
   int _selectedIndex = 0;
+
+  // Método público para cambiar de tab desde otros widgets
+  void changeTab(int index) {
+    if (mounted && index >= 0 && index < 4) {
+      setState(() {
+        _selectedIndex = index;
+      });
+    }
+  }
 
   @override
   void initState() {

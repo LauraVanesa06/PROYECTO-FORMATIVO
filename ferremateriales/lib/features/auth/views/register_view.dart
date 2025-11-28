@@ -37,7 +37,7 @@ class _RegisterViewState extends State<RegisterView> {
           );
           // Redirigir al MainView después del registro exitoso
           Navigator.of(context).pushReplacement(
-            MaterialPageRoute(builder: (_) => const MainView()),
+            MaterialPageRoute(builder: (_) => MainView()),
           );
         } else if (state.status == AuthStatus.failure) {
           print('🔴 Error en registro: ${state.error}'); // Debug
@@ -343,8 +343,8 @@ class _RegisterViewState extends State<RegisterView> {
                                   const SizedBox(height: 12),
                                   // Lista de requisitos
                                   _buildPasswordRequirement(
-                                    'Al menos 6 caracteres',
-                                    _password.length >= 6,
+                                    'Al menos 8 caracteres',
+                                    _password.length >= 8,
                                   ),
                                   _buildPasswordRequirement(
                                     'Una letra mayúscula',

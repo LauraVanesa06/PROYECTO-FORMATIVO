@@ -18,8 +18,12 @@ class HomeView extends StatefulWidget {
   State<HomeView> createState() => _HomeViewState();
 }
 
-class _HomeViewState extends State<HomeView> {
+class _HomeViewState extends State<HomeView> with AutomaticKeepAliveClientMixin {
+  @override
+  bool get wantKeepAlive => true; // Mantener el estado vivo
+  
   bool _isSearching = false;
+  bool _dataLoaded = false; // Flag para evitar recargas múltiples
   late TextEditingController _searchController;
 
   @override
@@ -28,8 +32,11 @@ class _HomeViewState extends State<HomeView> {
     print("=== HOME VIEW INIT STATE ===");
     _searchController = TextEditingController();
 
-    // Primero cargar cachés, LUEGO cargar productos
-    _initializeData();
+    // Solo cargar una vez cuando se monta el widget
+    if (!_dataLoaded) {
+      _dataLoaded = true;
+      _initializeData();
+    }
   }
 
   Future<void> _initializeData() async {
@@ -51,27 +58,8 @@ class _HomeViewState extends State<HomeView> {
   }
 
   @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    // 🔄 Recargar destacados cuando vuelves desde otra vista
-    // Pero SOLO si ya pasó el initState
-    if (mounted) {
-      _reloadDataAfterNavigation();
-    }
-  }
-
-  Future<void> _reloadDataAfterNavigation() async {
-    // Recargar cache de favoritos por si cambió
-    await FavoritesService().loadFavoritesCache();
-    
-    // Recargar destacados con los favoritos actualizados
-    if (mounted) {
-      context.read<ProductBloc>().add(CargarDestacados());
-    }
-  }
-
-  @override
   Widget build(BuildContext context) {
+    super.build(context); // Necesario para AutomaticKeepAliveClientMixin
     final l10n = AppLocalizations.of(context)!;
     final isDark = Theme.of(context).brightness == Brightness.dark;
 

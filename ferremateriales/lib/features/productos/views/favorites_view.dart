@@ -1,3 +1,4 @@
+import 'package:ferremateriales/core/utils/price_formatter.dart';
 import 'package:ferremateriales/features/productos/services/favorites_service.dart';
 import 'package:flutter/material.dart';
 
@@ -12,7 +13,10 @@ class FavoritesView extends StatefulWidget {
   _FavoritesViewState createState() => _FavoritesViewState();
 }
 
-class _FavoritesViewState extends State<FavoritesView> {
+class _FavoritesViewState extends State<FavoritesView> with AutomaticKeepAliveClientMixin, WidgetsBindingObserver, RouteAware {
+  @override
+  bool get wantKeepAlive => true; // Mantener el estado vivo
+  
   final FavoritesService _favoritesService = FavoritesService();
   bool _isLoading = true;
   List<Map<String, dynamic>> _favorites = [];
@@ -21,20 +25,45 @@ class _FavoritesViewState extends State<FavoritesView> {
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addObserver(this);
     // Cargar desde caché inmediatamente si está disponible
-    if (_favoritesService.isCacheLoaded) {
+    _reloadFromCache();
+    // Recargar desde API en background
+    _loadFavorites();
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    // Recargar cada vez que se vuelve visible
+    if (_mounted) {
+      _reloadFromCache();
+    }
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    super.didChangeAppLifecycleState(state);
+    // Recargar favoritos cuando la app vuelve a estar activa
+    if (state == AppLifecycleState.resumed && _mounted) {
+      _reloadFromCache();
+    }
+  }
+
+  void _reloadFromCache() {
+    // Recargar desde cache inmediatamente
+    if (_favoritesService.isCacheLoaded && _mounted) {
       setState(() {
         _favorites = _favoritesService.favoritesCache;
         _isLoading = false;
       });
     }
-    // Recargar desde API en background
-    _loadFavorites();
   }
 
   @override 
   void dispose() {
     _mounted = false;
+    WidgetsBinding.instance.removeObserver(this);
     super.dispose();
   }
 
@@ -57,6 +86,7 @@ class _FavoritesViewState extends State<FavoritesView> {
 
   @override
   Widget build(BuildContext context) {
+    super.build(context); // Necesario para AutomaticKeepAliveClientMixin
     final l10n = AppLocalizations.of(context)!;
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
@@ -178,7 +208,7 @@ body: _isLoading
                               ),
                               const SizedBox(height: 8),
                               Text(
-                                'COP ${((double.tryParse(fav["precio"].toString()) ?? 0).toStringAsFixed(2))}',
+                                PriceFormatter.formatWithCurrency(fav["precio"]),
                                 style: TextStyle(
                                   fontSize: 16,
                                   fontWeight: FontWeight.bold,

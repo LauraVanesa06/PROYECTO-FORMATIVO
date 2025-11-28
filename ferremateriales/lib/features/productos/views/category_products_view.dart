@@ -21,18 +21,26 @@ class CategoryProductsView extends StatefulWidget {
   State<CategoryProductsView> createState() => _CategoryProductsViewState();
 }
 
-class _CategoryProductsViewState extends State<CategoryProductsView> {
+class _CategoryProductsViewState extends State<CategoryProductsView> with AutomaticKeepAliveClientMixin {
+  @override
+  bool get wantKeepAlive => true; // Mantener el estado vivo
+  
   @override
   void initState() {
     super.initState();
-    // El ProductBloc ahora filtra desde caché si está disponible
-    context
-        .read<ProductBloc>()
-        .add(ProductFilterByCategory(widget.categoryId));
+    // El ProductBloc carga desde caché si está disponible
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted) {
+        context
+            .read<ProductBloc>()
+            .add(ProductFilterByCategory(widget.categoryId));
+      }
+    });
   }
 
   @override
   Widget build(BuildContext context) {
+    super.build(context); // Necesario para AutomaticKeepAliveClientMixin
     final l10n = AppLocalizations.of(context)!;
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
@@ -58,6 +66,13 @@ class _CategoryProductsViewState extends State<CategoryProductsView> {
       ),
       body: SafeArea(
         child: BlocBuilder<ProductBloc, ProductState>(
+          buildWhen: (previous, current) {
+            // Solo rebuilder si cambia el estado relevante para esta categoría
+            if (current is ProductLoadSuccess && previous is ProductLoadSuccess) {
+              return current.productos != previous.productos;
+            }
+            return true;
+          },
           builder: (context, state) {
             if (state is ProductLoadInProgress) {
               return const Padding(

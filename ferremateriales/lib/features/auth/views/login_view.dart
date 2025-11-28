@@ -8,7 +8,6 @@ import '../bloc/auth_event.dart';
 import '../bloc/auth_state.dart';
 import '../widgets/login_form.dart';
 import 'register_view.dart';
-import '../../productos/views/main_view.dart';
 
 class LoginView extends StatelessWidget {
   const LoginView({super.key});
@@ -19,11 +18,7 @@ class LoginView extends StatelessWidget {
 
     return BlocConsumer<AuthBloc, AuthState>(
       listener: (context, state) {
-        if (state.status == AuthStatus.success) {
-          Navigator.of(context).pushReplacement(
-            MaterialPageRoute(builder: (_) => const MainView()),
-          );
-        } else if (state.status == AuthStatus.failure) {
+        if (state.status == AuthStatus.failure) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
               content: Row(
@@ -183,7 +178,7 @@ class LoginView extends StatelessWidget {
                                   onPressed: () {
                                     context.read<AuthBloc>().add(ContinueAsGuest());
                                     Navigator.of(context).pushReplacement(
-                                      MaterialPageRoute(builder: (_) => const MainView()),
+                                      MaterialPageRoute(builder: (_) => MainView()),
                                     );
                                   },
                                   icon: const Icon(Icons.person_outline, color: Colors.white),

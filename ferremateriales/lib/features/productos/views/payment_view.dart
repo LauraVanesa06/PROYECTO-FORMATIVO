@@ -1,4 +1,5 @@
 
+import 'package:ferremateriales/core/utils/price_formatter.dart';
 import 'package:flutter/material.dart';
 
 class PaymentView extends StatefulWidget {
@@ -82,7 +83,7 @@ class _PaymentViewState extends State<PaymentView> {
                   ),
                 ),
                 child: Text(
-                  "Total a pagar: COP ${widget.total.toStringAsFixed(2)}",
+                  "Total a pagar: ${PriceFormatter.formatWithCurrency(widget.total)}",
                   style: TextStyle(
                     fontSize: 20,
                     fontWeight: FontWeight.bold,

@@ -1,3 +1,4 @@
+import 'package:ferremateriales/core/utils/price_formatter.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../model/product_model.dart';
@@ -208,7 +209,7 @@ class _ProductPreviewViewState extends State<ProductPreviewView> {
                   
                   // Precio
                   Text(
-                    '\$${widget.product.precio?.toStringAsFixed(2) ?? '0.00'}',
+                    PriceFormatter.format(widget.product.precio),
                     style: const TextStyle(
                       fontSize: 28,
                       fontWeight: FontWeight.bold,
@@ -400,7 +401,7 @@ class _ProductPreviewViewState extends State<ProductPreviewView> {
                     ),
                   ),
                   Text(
-                    '\$${totalPrice.toStringAsFixed(2)}',
+                    PriceFormatter.format(totalPrice),
                     style: const TextStyle(
                       fontSize: 22,
                       fontWeight: FontWeight.bold,
@@ -441,13 +442,14 @@ class _ProductPreviewViewState extends State<ProductPreviewView> {
                             ScaffoldMessenger.of(context).showSnackBar(
                               SnackBar(
                                 content: Text('$quantity x ${widget.product.nombre} agregado al carrito'),
-                                duration: const Duration(seconds: 2),
+                                duration: const Duration(seconds: 3),
                                 backgroundColor: Colors.green,
                                 action: SnackBarAction(
                                   label: 'Ver carrito',
                                   textColor: Colors.white,
                                   onPressed: () {
-                                    Navigator.pop(context);
+                                    // Cerrar la vista actual y pasar señal para ir al carrito
+                                    Navigator.pop(context, true); // true = ir al carrito
                                   },
                                 ),
                               ),

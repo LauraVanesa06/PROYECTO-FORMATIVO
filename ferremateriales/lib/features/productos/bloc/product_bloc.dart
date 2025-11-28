@@ -106,6 +106,14 @@ class ProductBloc extends Bloc<ProductEvent, ProductState> {
       CargarTodosLosProductos event, Emitter<ProductState> emit) async {
 
     print("=== CARGAR TODOS LOS PRODUCTOS INICIADO ===");
+    
+    // 🔹 Si ya tenemos productos en caché, emitirlos inmediatamente
+    if (_productosCache.isNotEmpty) {
+      print("✅ Usando caché de productos (${_productosCache.length} productos)");
+      emit(ProductLoadSuccess(_productosCache));
+      return;
+    }
+
     emit(ProductLoadInProgress());
 
     try {
