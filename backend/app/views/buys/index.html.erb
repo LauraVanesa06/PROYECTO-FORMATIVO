@@ -442,6 +442,368 @@
     });
 </script>
 
+<style>
+  #modalVentaFisica .modal-dialog {
+    max-height: 95vh;
+    margin: 1rem auto;
+    display: flex;
+    align-items: center;
+  }
+
+  #modalVentaFisica .modal-content {
+    border-radius: 12px;
+    border: 1px solid #dee2e6;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    max-height: 679px;
+    display: flex;
+    flex-direction: column;
+  }
+
+  #modalVentaFisica .modal-header {
+    background: white;
+    color: #2c3e50;
+    padding: 16px 24px;
+    border-bottom: 1px solid #dee2e6;
+    flex-shrink: 0;
+    width: 110%;
+    height: 40px;
+    display: flex;
+    justify-content: center;
+  }
+
+  #modalVentaFisica .modal-title {
+    font-size: 18px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: #2c3e50;
+    padding-top: 6px;
+  }
+
+  #modalVentaFisica .modal-title::before {
+    content: "🛒";
+    font-size: 22px;
+  }
+
+  #modalVentaFisica .btn-close {
+    opacity: 0.6;
+  }
+
+  #modalVentaFisica .btn-close:hover {
+    opacity: 1;
+  }
+
+  #modalVentaFisica .modal-body {
+    padding: 9px 20px;
+    background: #ffffff;
+    flex: 1;
+    width: 110%;
+  }
+
+  .cliente-section {
+    background: #e7ebee;
+    padding: 16px;
+    padding-top: 5px;
+    border-radius: 10px;
+    border: 1px solid #e9ecef;
+    margin-bottom: 6px;
+  }
+
+  .cliente-section h6 {
+    color: #495057;
+    font-weight: 600;
+    font-size: 14px;
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .cliente-section h6::before {
+    font-size: 16px;
+  }
+
+  .cliente-section label {
+    font-weight: 500;
+    color: #495057;
+    font-size: 13px;
+    margin-bottom: 5px;
+    display: block;
+  }
+
+  .cliente-section .form-control {
+    border: 1px solid #ced4da;
+    border-radius: 6px;
+    padding: 8px 12px;
+    font-size: 14px;
+    transition: all 0.2s ease;
+    background: white;
+    width: 100%;
+  }
+
+  .cliente-section .form-control:focus {
+    border-color: #6c757d;
+    box-shadow: 0 0 0 0.2rem rgba(108, 117, 125, 0.1);
+  }
+
+  .productos-section {
+    background: white;
+    /* padding: 16px; */
+    /* padding-top: 5px; */
+    /* border-radius: 10px; */
+    border: 1px solid white;
+  }
+
+  .productos-section h6 {
+    color: #495057;
+    font-weight: 600;
+    font-size: 14px;
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .productos-section h6::before {
+    font-size: 16px;
+  }
+
+  .productos-grid {
+    max-height: 340px;
+    overflow-y: auto;
+    padding-right: 8px;
+  }
+
+  .productos-grid::-webkit-scrollbar {
+    width: 6px;
+  }
+
+  .productos-grid::-webkit-scrollbar-track {
+    background: #f1f3f5;
+    border-radius: 10px;
+  }
+
+  .productos-grid::-webkit-scrollbar-thumb {
+    background: #adb5bd;
+    border-radius: 10px;
+  }
+
+  .productos-grid::-webkit-scrollbar-thumb:hover {
+    background: #6c757d;
+  }
+
+  .product-card {
+    background: white;
+    border: 1px solid #dee2e6;
+    border-radius: 10px;
+    padding: 12px;
+    transition: all 0.2s ease;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .product-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    border-color: #adb5bd;
+  }
+
+  .product-card.selected {
+    border-color: #6c757d;
+    background: #f8f9fa;
+    box-shadow: 0 2px 8px rgba(108, 117, 125, 0.15);
+  }
+
+  .product-image-container {
+    width: 100%;
+    height: 100px;
+    background: #f8f9fa;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 10px;
+    overflow: hidden;
+    border: 1px solid #e9ecef;
+  }
+
+  .product-image-container img {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+  }
+
+  .product-name {
+    font-weight: 600;
+    color: #343a40;
+    font-size: 13px;
+    margin-bottom: 6px;
+    min-height: 32px;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-align: center;
+    line-height: 1.3;
+  }
+
+  .product-stock {
+    display: inline-block;
+    background: #e9ecef;
+    color: #495057;
+    padding: 3px 8px;
+    border-radius: 12px;
+    font-size: 11px;
+    font-weight: 500;
+    margin-bottom: 10px;
+  }
+
+  .product-stock.low-stock {
+    background: #fff3cd;
+    color: #856404;
+  }
+
+  .product-stock.out-of-stock {
+    background: #f8d7da;
+    color: #721c24;
+  }
+
+  .product-selection {
+    margin-top: auto;
+    padding-top: 10px;
+    border-top: 1px solid #e9ecef;
+  }
+
+  .checkbox-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-bottom: 8px;
+    justify-content: center;
+  }
+
+  .checkbox-wrapper input[type="checkbox"] {
+    width: 16px;
+    height: 16px;
+    cursor: pointer;
+    accent-color: #6c757d;
+  }
+
+  .checkbox-wrapper label {
+    font-weight: 500;
+    color: #495057;
+    font-size: 12px;
+    margin: 0;
+    cursor: pointer;
+    user-select: none;
+  }
+
+  .cantidad-input {
+    width: 100%;
+    border: 1px solid #ced4da;
+    border-radius: 6px;
+    padding: 6px 10px;
+    font-size: 13px;
+    transition: all 0.2s ease;
+    text-align: center;
+  }
+
+  .cantidad-input:focus {
+    border-color: #6c757d;
+    outline: none;
+    box-shadow: 0 0 0 0.2rem rgba(108, 117, 125, 0.1);
+  }
+
+  .cantidad-input:disabled {
+    background: #e9ecef;
+    cursor: not-allowed;
+  }
+
+  #modalVentaFisica {
+    padding: 0;
+  }
+
+  #modalVentaFisica .modal-footer {
+    background: #f8f9fa;
+    border-top: 1px solid #dee2e6;
+    padding: 12px 24px;
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+    flex-shrink: 0;
+  }
+
+  #modalVentaFisica .btn {
+    padding: 8px 20px;
+    font-weight: 500;
+    border-radius: 6px;
+    font-size: 14px;
+    transition: all 0.2s ease;
+    border: none;
+  }
+
+  #modalVentaFisica .btn-secondary {
+    background: #6c757d;
+    color: white;
+  }
+
+  #modalVentaFisica .btn-secondary:hover {
+    background: #5a6268;
+    transform: translateY(-1px);
+    box-shadow: 0 2px 8px rgba(108, 117, 125, 0.3);
+  }
+
+  #modalVentaFisica .btn-success {
+    background: #28a745;
+    color: white;
+  }
+
+  #modalVentaFisica .btn-success:hover {
+    background: #218838;
+    transform: translateY(-1px);
+    box-shadow: 0 2px 8px rgba(40, 167, 69, 0.3);
+  }
+
+  .empty-products {
+    text-align: center;
+    padding: 60px 20px;
+    color: #6c757d;
+  }
+
+  .empty-products i {
+    font-size: 64px;
+    color: #dee2e6;
+    margin-bottom: 20px;
+  }
+
+  @media (max-width: 768px) {
+    #modalVentaFisica .modal-dialog {
+      margin: 0.5rem;
+      max-height: 98vh;
+    }
+
+    #modalVentaFisica .modal-body {
+      padding: 12px 16px;
+    }
+
+    .productos-grid {
+      max-height: 250px;
+    }
+
+    .product-card {
+      margin-bottom: 12px;
+    }
+
+    .cliente-section,
+    .productos-section {
+      padding: 12px;
+    }
+  }
+</style>
+
 <div class="modal fade" id="modalVentaFisica" tabindex="-1">
   <div class="modal-dialog modal-xl">
     <div class="modal-content">
@@ -452,54 +814,89 @@
       </div>
 
       <div class="modal-body">
-        <%= form_with url: buys_path, method: :post, local: true do |f| %>
+        <%= form_with url: buys_path, method: :post, local: true, id: "form-venta-fisica" do |f| %>
 
           <!-- DATOS DEL CLIENTE -->
-          <div class="row mb-3">
-            <div class="col-6">
-              <label>Cliente</label>
-              <%= f.text_field :cliente, name: "buy[cliente]", class: "form-control", required: true %>
-            </div>
+          <div class="cliente-section">
+            <h6>Información del Cliente</h6>
+            <div class="row">
+              <div class="col-md-6 mb-3">
+                <label>Cliente <span style="color: #dc3545;">*</span></label>
+                <%= f.text_field :cliente, name: "buy[cliente]", class: "form-control", required: true, placeholder: "Nombre completo del cliente" %>
+              </div>
 
-            <div class="col-6">
-              <label>Correo</label>
-              <%= f.email_field :correo, name: "buy[correo]", class: "form-control" %>
+              <div class="col-md-6 mb-3">
+                <label>Correo Electrónico</label>
+                <%= f.email_field :correo, name: "buy[correo]", class: "form-control", placeholder: "correo@ejemplo.com" %>
+              </div>
             </div>
           </div>
 
-          <hr>
-
           <!-- CATÁLOGO DE PRODUCTOS -->
-          <h5>Seleccionar productos</h5>
+          <div class="productos-section">
+            <h6>Catálogo de Productos</h6>
+            
+            <div class="productos-grid">
+              <div class="row">
+                <% if @products.present? %>
+                  <% @products.each do |product| %>
+                    <div class="col-lg-3 col-md-4 col-sm-6 mb-3">
+                      <div class="product-card" data-product-id="<%= product.id %>">
+                        <div class="product-image-container">
+                          <% if product.images.attached? %>
+                            <%= image_tag product.images.first, alt: product.nombre %>
+                          <% else %>
+                            <i class="fas fa-box" style="font-size: 48px; color: #dee2e6;"></i>
+                          <% end %>
+                        </div>
+                        
+                        <div class="product-name"><%= product.nombre %></div>
+                        
+                        <span class="product-stock <%= product.stock <= 5 ? 'low-stock' : '' %> <%= product.stock == 0 ? 'out-of-stock' : '' %>">
+                          <i class="fas fa-cubes"></i> Stock: <%= product.stock %>
+                        </span>
 
-          <div class="row mt-3" style="max-height: 450px; overflow-y: scroll;">
-            <% @products.each do |product| %>
-              <div class="col-3 mb-3">
-                <div class="card p-2">
-                  <%= image_tag product.images.first, height: 100, class: "mb-2" if product.images.attached? %>
-                  <b><%= product.nombre %></b><br>
-                  <small>Stock: <%= product.stock %></small>
+                        <div class="product-selection">
+                          <div class="checkbox-wrapper">
+                            <input type="checkbox" 
+                                   id="select_<%= product.id %>"
+                                   name="venta[products][<%= product.id %>][select]"
+                                   class="product-checkbox"
+                                   <%= 'disabled' if product.stock == 0 %>>
+                            <label for="select_<%= product.id %>">Seleccionar</label>
+                          </div>
 
-                  <div class="mt-2">
-                    <label>
-                      <input type="checkbox" name="venta[products][<%= product.id %>][select]">
-                      Seleccionar
-                    </label>
-
-                    <input type="number"
-                           name="venta[products][<%= product.id %>][cantidad]"
-                           class="form-control mt-2"
-                           placeholder="Cantidad"
-                           min="1">
+                          <input type="number"
+                                 name="venta[products][<%= product.id %>][cantidad]"
+                                 class="cantidad-input"
+                                 placeholder="Cantidad"
+                                 min="1"
+                                 max="<%= product.stock %>"
+                                 disabled
+                                 data-product-cantidad="<%= product.id %>">
+                        </div>
+                      </div>
+                    </div>
+                  <% end %>
+                <% else %>
+                  <div class="col-12">
+                    <div class="empty-products">
+                      <i class="fas fa-box-open"></i>
+                      <p>No hay productos disponibles</p>
+                    </div>
                   </div>
-                </div>
+                <% end %>
               </div>
-            <% end %>
+            </div>
           </div>
 
           <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-            <%= f.submit "Registrar Venta", class: "btn btn-success" %>
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+              <i class="fas fa-times"></i> Cancelar
+            </button>
+            <%= f.submit "Registrar Venta", class: "btn btn-success" do %>
+              <i class="fas fa-check"></i> Registrar Venta
+            <% end %>
           </div>
 
         <% end %>
@@ -508,6 +905,73 @@
     </div>
   </div>
 </div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    // Habilitar/deshabilitar campos de cantidad según checkbox
+    document.querySelectorAll('.product-checkbox').forEach(checkbox => {
+      checkbox.addEventListener('change', function() {
+        const productId = this.id.replace('select_', '');
+        const cantidadInput = document.querySelector(`input[data-product-cantidad="${productId}"]`);
+        const productCard = this.closest('.product-card');
+        
+        if (this.checked) {
+          cantidadInput.disabled = false;
+          cantidadInput.focus();
+          productCard.classList.add('selected');
+        } else {
+          cantidadInput.disabled = true;
+          cantidadInput.value = '';
+          productCard.classList.remove('selected');
+        }
+      });
+    });
+
+    // Validación del formulario
+    const formVenta = document.getElementById('form-venta-fisica');
+    if (formVenta) {
+      formVenta.addEventListener('submit', function(e) {
+        const clienteInput = document.querySelector('input[name="buy[cliente]"]');
+        
+        // Validar que el cliente no esté vacío
+        if (!clienteInput.value.trim()) {
+          e.preventDefault();
+          alert('Por favor, ingrese el nombre del cliente');
+          clienteInput.focus();
+          return false;
+        }
+
+        // Validar que al menos un producto esté seleccionado
+        const productosSeleccionados = document.querySelectorAll('.product-checkbox:checked');
+        
+        if (productosSeleccionados.length === 0) {
+          e.preventDefault();
+          alert('Por favor, seleccione al menos un producto');
+          return false;
+        }
+
+        // Validar que los productos seleccionados tengan cantidad
+        let cantidadValida = true;
+        productosSeleccionados.forEach(checkbox => {
+          const productId = checkbox.id.replace('select_', '');
+          const cantidadInput = document.querySelector(`input[data-product-cantidad="${productId}"]`);
+          
+          if (!cantidadInput.value || parseInt(cantidadInput.value) <= 0) {
+            cantidadValida = false;
+          }
+        });
+
+        if (!cantidadValida) {
+          e.preventDefault();
+          alert('Por favor, ingrese una cantidad válida para todos los productos seleccionados');
+          return false;
+        }
+
+        return true;
+      });
+    }
+  });
+</script>
 
 
   <footer>
