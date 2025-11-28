@@ -1,5 +1,15 @@
 /* === OPTIMIZACIÓN DEL SIDEBAR DE LOGIN === */
 
+/* === SPINNER ANIMATION (GLOBAL) === */
+@keyframes spin {
+  0% { 
+    transform: rotate(0deg); 
+  }
+  100% { 
+    transform: rotate(360deg); 
+  }
+}
+
 /* Overlay para el sidebar */
 #overlay {
   will-change: opacity;
@@ -235,6 +245,60 @@
   transform: scale(0.95);
 }
 
+/* === SHOW PASSWORD CHECKBOX === */
+.login-inner-content .form-check {
+  padding-left: 0;
+  margin-bottom: 15px;
+}
+
+.login-inner-content .form-check-input {
+  width: 18px;
+  height: 18px;
+  margin-top: 3px;
+  margin-right: 60%;
+  cursor: pointer;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  transition: all 0.2s ease;
+}
+
+.login-inner-content .form-check-input:checked {
+  background-color: #0066cc;
+  border-color: #0066cc;
+}
+
+.login-inner-content .form-check-input:hover {
+  border-color: #0066cc;
+}
+
+.login-inner-content .form-check-label {
+  margin-bottom: 0;
+  font-size: 14px;
+  color: #666;
+  cursor: pointer;
+  user-select: none;
+  padding-left: 4px;
+}
+
+/* Ocultar ojo nativo de Chrome/Firefox en password fields */
+.login-inner-content input[type="password"]::-webkit-outer-spin-button,
+.login-inner-content input[type="password"]::-webkit-inner-spin-button,
+.login-inner-content input[type="password"]::-webkit-textfield-decoration-container {
+  display: none !important;
+}
+
+/* Centrar checkbox abajo del input */
+.login-inner-content .form-check {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding-left: 0;
+  margin-top: 12px;
+  margin-bottom: 20px;
+  flex-direction: row;
+  gap: 8px;
+}
+
 /* Mejorar visibilidad de formularios */
 .login-inner-content form {
   display: flex;
@@ -248,21 +312,13 @@
 .login-inner-content input[type="submit"],
 .login-inner-content button {
   transition: all 0.2s ease;
+  position: relative;
 }
 
 .login-inner-content input[type="submit"],
 .login-inner-content button {
   cursor: pointer;
-}
-
-/* === SPINNER DE CARGA === */
-@keyframes spin {
-  from { 
-    transform: rotate(0deg); 
-  }
-  to { 
-    transform: rotate(360deg); 
-  }
+  position: relative;
 }
 
 .login-loading-spinner {
@@ -274,6 +330,13 @@
   z-index: 100;
 }
 
+.spinner-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+}
+
 .spinner {
   width: 50px;
   height: 50px;
@@ -281,6 +344,13 @@
   border-top: 4px solid #0066cc;
   border-radius: 50%;
   animation: spin 1s linear infinite;
+}
+
+.loading-text {
+  font-size: 16px;
+  color: #666;
+  font-weight: 500;
+  margin: 0;
 }
 
 /* Focus styles para accesibilidad */

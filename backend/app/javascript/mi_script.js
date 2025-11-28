@@ -255,6 +255,20 @@ window.addEventListener('DOMContentLoaded', () => {
         const action = form.action;
         const formData = new FormData(form);
         const innerContent = container.querySelector(".login-inner-content");
+        
+        // Agregar spinner de carga full-page
+        const loadingSpinner = document.createElement('div');
+        loadingSpinner.className = 'login-loading-spinner';
+        loadingSpinner.innerHTML = `
+          <div class="spinner-container">
+            <div class="spinner"></div>
+            <p class="loading-text">Iniciando sesión...</p>
+          </div>
+        `;
+        innerContent.innerHTML = '';
+        innerContent.appendChild(loadingSpinner);
+        
+        console.log('🔄 Spinner de carga mostrado');
 
         fetch(action, {
           method,
@@ -291,6 +305,14 @@ window.addEventListener('DOMContentLoaded', () => {
           }
 
           // HTML: re-renderizar dentro del mismo sidebar (muestra errores)
+          // Remover animación de carga del botón
+          if (submitButton) {
+            const originalText = submitButton.dataset.originalText || 'Entrar';
+            submitButton.textContent = originalText;
+            submitButton.classList.remove('button-loading');
+            submitButton.disabled = false;
+          }
+          
           // Con animación de fade para mostrar errores
           const newHtml = await res.text();
           const cleanHTML = newHtml.replace(/<\/?(html|body|head)[^>]*>/gi, "");
@@ -314,6 +336,14 @@ window.addEventListener('DOMContentLoaded', () => {
         })
         .catch(async (err) => {
           console.error('❌ Error en submit:', err);
+          
+          // Remover animación de carga del botón en caso de error
+          if (submitButton) {
+            const originalText = submitButton.dataset.originalText || 'Entrar';
+            submitButton.textContent = originalText;
+            submitButton.classList.remove('button-loading');
+            submitButton.disabled = false;
+          }
           
           await animateTransition(innerContent, {
             duration: 200,
@@ -466,4 +496,49 @@ window.addEventListener('DOMContentLoaded', () => {
         : '🌙 Modo oscuro';
     });
   }
+
+  // === LOGOUT BUTTON ANIMATION ===
+  // Manejador para botones de logout que incluyen animación de carga
+  document.addEventListener('submit', (e) => {
+    const form = e.target;
+    // Verificar si el formulario contiene un botón de logout
+    const logoutButton = form.querySelector('[class*="logout"]');
+    
+    if (logoutButton) {
+      console.log('✨ Animación de logout iniciada');
+      
+      // Crear overlay con spinner
+      const overlay = document.createElement('div');
+      overlay.style.cssText = `
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(255, 255, 255, 0.9);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 9999;
+      `;
+      
+      const spinnerDiv = document.createElement('div');
+      spinnerDiv.innerHTML = `
+        <div style="display: flex; flex-direction: column; align-items: center; gap: 20px;">
+          <div style="
+            width: 50px;
+            height: 50px;
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #0066cc;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+          "></div>
+          <p style="font-size: 16px; color: #666; font-weight: 500; margin: 0;">Cerrando sesión...</p>
+        </div>
+      `;
+      
+      overlay.appendChild(spinnerDiv);
+      document.body.appendChild(overlay);
+    }
+  });
 });
