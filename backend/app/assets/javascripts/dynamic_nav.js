@@ -398,9 +398,106 @@ document.addEventListener('DOMContentLoaded', function() {
       if (filterForm) {
         initializeAutoFilter(filterForm);
       }
+
+      // Inicializar paginación dinámica
+      initializePagination(container);
     } catch (error) {
       console.error('Error in initializeProductListeners:', error);
     }
+  }
+
+  // Función para inicializar paginación dinámica
+  function initializePagination(container) {
+    const paginationLinks = container.querySelectorAll('.pagination-link');
+    
+    paginationLinks.forEach(link => {
+      link.removeEventListener('click', handlePaginationClick);
+      link.addEventListener('click', handlePaginationClick);
+    });
+  }
+
+  // Manejador de click de paginación
+  async function handlePaginationClick(e) {
+    e.preventDefault();
+    e.stopPropagation();
+    
+    const page = this.dataset.page;
+    if (!page) return;
+
+    const formData = new FormData(document.getElementById('productos-filter-form'));
+    const params = new URLSearchParams(formData);
+    params.set('page', page);
+
+    // Agregar efecto de carga
+    const currentGrid = document.querySelector('.product-grid');
+    if (currentGrid) {
+      currentGrid.style.transition = 'opacity 0.2s ease';
+      currentGrid.style.opacity = '0.6';
+      currentGrid.style.pointerEvents = 'none';
+    }
+
+    try {
+      const response = await fetch(`/productos?${params.toString()}`, {
+        headers: {
+          'X-Requested-With': 'XMLHttpRequest',
+          'Accept': 'text/html'
+        }
+      });
+
+      if (response.ok) {
+        const html = await response.text();
+        
+        // Extraer la grid de productos
+        const parser = new DOMParser();
+        const doc = parser.parseFromString(html, 'text/html');
+        const newGrid = doc.querySelector('.product-grid');
+        const newPagination = doc.querySelector('#pagination-nav');
+        
+        if (newGrid && currentGrid) {
+          // Animar salida
+          currentGrid.style.opacity = '0';
+          
+          setTimeout(() => {
+            // Reemplazar contenido
+            currentGrid.innerHTML = newGrid.innerHTML;
+            
+            // Animar entrada
+            currentGrid.style.opacity = '0';
+            currentGrid.style.pointerEvents = 'auto';
+            
+            setTimeout(() => {
+              currentGrid.style.opacity = '1';
+            }, 10);
+            
+            // Reinicializar listeners
+            reinitializeScripts(currentGrid.parentElement);
+          }, 200);
+        }
+
+        // Actualizar paginación
+        if (newPagination) {
+          const paginationNav = document.getElementById('pagination-nav');
+          if (paginationNav) {
+            paginationNav.innerHTML = newPagination.innerHTML;
+            initializePagination(document);
+          }
+        }
+
+        // Scroll suave al inicio
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }
+    } catch (error) {
+      console.error('Error al cambiar página:', error);
+      showToast('Error al cambiar página', 'danger');
+      
+      // Restaurar
+      if (currentGrid) {
+        currentGrid.style.opacity = '1';
+        currentGrid.style.pointerEvents = 'auto';
+      }
+    }
+
+    return false;
   }
 
   // Función para agregar producto HTML a la página de favoritos en tiempo real
@@ -442,6 +539,8 @@ document.addEventListener('DOMContentLoaded', function() {
     // Esta función se mantiene por compatibilidad pero ahora se usa addProductHTMLToFavoritesPage
   };  // Función para auto-submit del formulario de filtros
   function initializeAutoFilter(form) {
+    let filterTimeout;
+    
     function debounce(fn, wait) {
       let t;
       return function (...args) {
@@ -450,17 +549,80 @@ document.addEventListener('DOMContentLoaded', function() {
       };
     }
 
+    // Función para enviar filtros por AJAX
+    async function submitFilterAjax() {
+      const formData = new FormData(form);
+      const params = new URLSearchParams(formData);
+      
+      // Agregar efecto de carga
+      const currentGrid = document.querySelector('.product-grid');
+      if (currentGrid) {
+        currentGrid.style.transition = 'opacity 0.2s ease';
+        currentGrid.style.opacity = '0.6';
+        currentGrid.style.pointerEvents = 'none';
+      }
+      
+      try {
+        const response = await fetch(`${form.action}?${params.toString()}`, {
+          headers: {
+            'X-Requested-With': 'XMLHttpRequest',
+            'Accept': 'text/html'
+          }
+        });
+
+        if (response.ok) {
+          const html = await response.text();
+          
+          // Extraer solo la grid de productos del HTML
+          const parser = new DOMParser();
+          const doc = parser.parseFromString(html, 'text/html');
+          const newGrid = doc.querySelector('.product-grid');
+          
+          if (newGrid && currentGrid) {
+            // Animar salida
+            currentGrid.style.opacity = '0';
+            
+            setTimeout(() => {
+              // Reemplazar contenido
+              currentGrid.innerHTML = newGrid.innerHTML;
+              
+              // Animar entrada
+              currentGrid.style.opacity = '0';
+              currentGrid.style.pointerEvents = 'auto';
+              
+              setTimeout(() => {
+                currentGrid.style.opacity = '1';
+              }, 10);
+              
+              // Reinicializar listeners en los nuevos productos
+              reinitializeScripts(currentGrid.parentElement);
+            }, 200);
+          }
+        }
+      } catch (error) {
+        console.error('Error al filtrar productos:', error);
+        showToast('Error al filtrar productos', 'danger');
+        
+        // Restaurar
+        if (currentGrid) {
+          currentGrid.style.opacity = '1';
+          currentGrid.style.pointerEvents = 'auto';
+        }
+      }
+    }
+
     const inputs = Array.from(form.querySelectorAll('select, input[type="text"], input[type="number"], input[type="search"]'));
 
     inputs.forEach((el) => {
       if (el.tagName.toLowerCase() === 'select' || el.type === 'number') {
         el.addEventListener('change', () => {
-          form.submit();
+          submitFilterAjax();
         });
       } else {
+        // Búsqueda más rápida: 300ms en lugar de 450ms
         el.addEventListener('input', debounce(() => {
-          form.submit();
-        }, 450));
+          submitFilterAjax();
+        }, 300));
       }
     });
   }

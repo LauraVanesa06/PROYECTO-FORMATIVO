@@ -120,12 +120,10 @@
   <!-- PAGINACIÓN -->
   <% if @pagy && @pagy.pages > 1 %>
     <nav aria-label="Page navigation" class="d-flex justify-content-center my-4">
-      <ul class="pagination">
+      <ul class="pagination" id="pagination-nav">
         <% if @pagy.prev %>
           <li class="page-item">
-            <%= link_to "← Anterior", 
-                        productos_path(params.to_unsafe_h.merge(page: @pagy.prev)), 
-                        class: "page-link" %>
+            <a href="#" class="page-link pagination-link" data-page="<%= @pagy.prev %>">← Anterior</a>
           </li>
         <% else %>
           <li class="page-item disabled">
@@ -141,9 +139,7 @@
               </li>
             <% else %>
               <li class="page-item">
-                <%= link_to item, 
-                            productos_path(params.to_unsafe_h.merge(page: item)), 
-                            class: "page-link" %>
+                <a href="#" class="page-link pagination-link" data-page="<%= item %>"><%= item %></a>
               </li>
             <% end %>
           <% elsif item == "gap" %>
@@ -155,9 +151,8 @@
 
         <% if @pagy.next %>
           <li class="page-item">
-            <%= link_to "Siguiente →", 
-                        productos_path(params.to_unsafe_h.merge(page: @pagy.next)), 
-                        class: "page-link" %>
+            <a href="#" class="page-link pagination-link" data-page="<%= @pagy.next %>">Siguiente →</a>
+          </li>
           </li>
         <% else %>
           <li class="page-item disabled">
