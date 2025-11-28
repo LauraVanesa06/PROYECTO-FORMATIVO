@@ -2044,6 +2044,62 @@ body.dark-mode a {
   z-index: 1500;
 }
 
+/* === ESTILOS OFFCANVAS DE FAVORITOS === */
+#favoritesOffcanvas .offcanvas-header {
+  border-bottom: 1px solid #e0e0e0;
+}
+
+#favoritesOffcanvas .offcanvas-body {
+  padding: 20px;
+}
+
+.favorite-item {
+  animation: slideInRight 0.3s ease !important;
+}
+
+@keyframes slideInRight {
+  from {
+    opacity: 0;
+    transform: translateX(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.btn-add-to-cart,
+.btn-remove-favorite {
+  transition: all 0.2s ease;
+}
+
+.btn-add-to-cart:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+
+.btn-remove-favorite:hover {
+  transform: scale(1.05);
+}
+
+#favorites-count {
+  animation: badgePop 0.3s ease;
+}
+
+@keyframes badgePop {
+  0% {
+    transform: scale(0.8);
+    opacity: 0;
+  }
+  50% {
+    transform: scale(1.1);
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
 /* Estilos para el botón de Wompi */
 #wompi-button-container {
   margin-top: 1rem;

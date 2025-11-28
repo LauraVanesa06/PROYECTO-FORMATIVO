@@ -9,12 +9,17 @@ class FavoritesController < ApplicationController
     product = Product.find(params[:product_id])
     
     # Permitir agregar a favoritos aunque no esté disponible
-    # (el usuario puede querer ser notificado cuando vuelva a estar disponible)
     favorite = current_user.favorites.find_or_initialize_by(product: product)
 
     if favorite.save
       respond_to do |format|
-        format.json { render json: { id: favorite.id, message: "Producto agregado a favoritos" } }
+        format.json do
+          render json: { 
+            id: favorite.id, 
+            message: "Producto agregado a favoritos",
+            product_id: product.id
+          }
+        end
         format.html { redirect_back fallback_location: root_path, notice: "Producto agregado a favoritos" }
       end
     else

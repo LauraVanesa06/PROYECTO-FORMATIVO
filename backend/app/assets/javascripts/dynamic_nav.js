@@ -289,6 +289,25 @@ document.addEventListener('DOMContentLoaded', function() {
           }
           newBtn.disabled = true;
 
+          // ACTUALIZAR DOM INMEDIATAMENTE (optimistic UI) - igual que carrito
+          if (method === 'POST') {
+            // Agregar a favoritos: cambiar estilo inmediatamente
+            newBtn.classList.remove('btn-outline-warning');
+            newBtn.classList.add('btn-warning');
+            if (icon) {
+              icon.classList.remove('fa-regular');
+              icon.classList.add('fa-solid');
+            }
+          } else {
+            // Remover de favoritos: cambiar estilo inmediatamente
+            newBtn.classList.add('btn-outline-warning');
+            newBtn.classList.remove('btn-warning');
+            if (icon) {
+              icon.classList.add('fa-regular');
+              icon.classList.remove('fa-solid');
+            }
+          }
+
           try {
             const csrfToken = document.querySelector("meta[name='csrf-token']");
             const response = await fetch(url, {
@@ -301,33 +320,68 @@ document.addEventListener('DOMContentLoaded', function() {
 
             if (response.ok) {
               const data = await response.json();
+              console.log('Favorite response:', data);
 
               if (method === 'POST') {
                 if (data.id) newBtn.dataset.url = `/favorites/${data.id}`;
                 newBtn.dataset.method = 'delete';
+                showToast('Agregado a favoritos', 'success');
+                
+                // Recargar offcanvas en background SIN ESPERAR (sin await)
+                if (typeof reloadFavoritesOffcanvas === 'function') {
+                  reloadFavoritesOffcanvas();
+                }
+                
+                // Sincronizar en otras ventanas/tabs
+                broadcastFavoriteAdded(productId);
+              } else {
+                newBtn.dataset.url = `/favorites?product_id=${productId}`;
+                newBtn.dataset.method = 'post';
+                showToast('Removido de favoritos', 'success');
+                
+                // Sincronizar en otras ventanas/tabs
+                broadcastFavoriteRemoved(productId);
+                
+                // Actualizar contador de favoritos
+                updateFavoritesCounter();
+              }
+            } else {
+              // Si hay error, revertir cambios
+              if (method === 'POST') {
+                newBtn.classList.remove('btn-warning');
+                newBtn.classList.add('btn-outline-warning');
+                if (icon) {
+                  icon.classList.add('fa-regular');
+                  icon.classList.remove('fa-solid');
+                }
+              } else {
                 newBtn.classList.remove('btn-outline-warning');
                 newBtn.classList.add('btn-warning');
                 if (icon) {
                   icon.classList.remove('fa-regular');
                   icon.classList.add('fa-solid');
                 }
-                showToast('Agregado a favoritos', 'success');
-              } else {
-                newBtn.dataset.url = `/favorites?product_id=${productId}`;
-                newBtn.dataset.method = 'post';
-                newBtn.classList.add('btn-outline-warning');
-                newBtn.classList.remove('btn-warning');
-                if (icon) {
-                  icon.classList.add('fa-regular');
-                  icon.classList.remove('fa-solid');
-                }
-                showToast('Removido de favoritos', 'success');
               }
-            } else {
               showToast('Error al actualizar favorito', 'danger');
             }
           } catch (error) {
             console.error('Error:', error);
+            // Revertir cambios si hay error
+            if (method === 'POST') {
+              newBtn.classList.remove('btn-warning');
+              newBtn.classList.add('btn-outline-warning');
+              if (icon) {
+                icon.classList.add('fa-regular');
+                icon.classList.remove('fa-solid');
+              }
+            } else {
+              newBtn.classList.remove('btn-outline-warning');
+              newBtn.classList.add('btn-warning');
+              if (icon) {
+                icon.classList.remove('fa-regular');
+                icon.classList.add('fa-solid');
+              }
+            }
             showToast('Error al actualizar favorito', 'danger');
           } finally {
             // Remover animación de carga
@@ -349,7 +403,44 @@ document.addEventListener('DOMContentLoaded', function() {
     }
   }
 
-  // Función para auto-submit del formulario de filtros
+  // Función para agregar producto HTML a la página de favoritos en tiempo real
+  window.addProductHTMLToFavoritesPage = function(productId, productHTML) {
+    // Buscar la página de favoritos
+    const productGrid = document.querySelector('.product-grid');
+    if (!productGrid) return; // Si no está en la página de favoritos, no hacer nada
+
+    // Verificar si el producto ya existe
+    const existingProduct = productGrid.querySelector(`[data-producto-id="${productId}"]`);
+    if (existingProduct) return; // Ya existe, no agregar
+
+    // Crear contenedor temporal para el HTML
+    const temp = document.createElement('div');
+    temp.innerHTML = productHTML;
+    const newCard = temp.firstElementChild;
+
+    if (newCard) {
+      newCard.style.opacity = '0';
+      newCard.style.transform = 'scale(0.8)';
+      
+      // Agregar a la grid
+      productGrid.appendChild(newCard);
+
+      // Animar entrada
+      setTimeout(() => {
+        newCard.style.transition = 'all 0.3s ease';
+        newCard.style.opacity = '1';
+        newCard.style.transform = 'scale(1)';
+      }, 10);
+
+      // Reinicializar listeners en el nuevo producto
+      initializeProductListeners(newCard);
+    }
+  };
+
+  // Función para agregar producto a la página de favoritos en tiempo real (legacy)
+  window.addProductToFavoritesPage = function(productId, productCard) {
+    // Esta función se mantiene por compatibilidad pero ahora se usa addProductHTMLToFavoritesPage
+  };  // Función para auto-submit del formulario de filtros
   function initializeAutoFilter(form) {
     function debounce(fn, wait) {
       let t;
@@ -460,4 +551,64 @@ document.addEventListener('DOMContentLoaded', function() {
   // Inicializar vista actual y listeners
   updateActiveNav();
   initializeProductListeners(document);
+
+  // Funciones de broadcast para sincronizar cambios en favoritos
+  window.broadcastFavoriteRemoved = function(productId) {
+    if (typeof BroadcastChannel !== 'undefined') {
+      const channel = new BroadcastChannel('favorites_update');
+      channel.postMessage({
+        type: 'favorite_removed',
+        productId: productId
+      });
+      channel.close();
+    }
+  };
+
+  window.broadcastFavoriteAdded = function(productId) {
+    if (typeof BroadcastChannel !== 'undefined') {
+      const channel = new BroadcastChannel('favorites_update');
+      channel.postMessage({
+        type: 'favorite_added',
+        productId: productId
+      });
+      channel.close();
+    }
+  };
+
+  window.updateFavoritesCounter = function() {
+    const favCountBadge = document.getElementById('favorites-count');
+    if (favCountBadge) {
+      const currentCount = parseInt(favCountBadge.textContent) || 0;
+      const newCount = Math.max(0, currentCount - 1);
+      favCountBadge.textContent = newCount;
+      if (newCount === 0) favCountBadge.style.display = 'none';
+    }
+  };
+
+  // Escuchar cambios de favoritos desde otras ventanas/tabs
+  if (typeof BroadcastChannel !== 'undefined') {
+    const channel = new BroadcastChannel('favorites_update');
+    channel.addEventListener('message', (event) => {
+      if (event.data.type === 'favorite_removed') {
+        // Actualizar icono de favorito en la vista actual
+        const productCard = document.querySelector(`[data-producto-id="${event.data.productId}"]`);
+        if (productCard) {
+          const favoriteBtn = productCard.querySelector('.favorite-btn');
+          if (favoriteBtn) {
+            const icon = favoriteBtn.querySelector('i');
+            if (icon) {
+              icon.classList.remove('fa-solid');
+              icon.classList.add('fa-regular');
+            }
+            favoriteBtn.classList.add('btn-outline-warning');
+            favoriteBtn.classList.remove('btn-warning');
+            favoriteBtn.dataset.method = 'post';
+            favoriteBtn.dataset.url = `/favorites?product_id=${event.data.productId}`;
+          }
+        }
+        // Actualizar contador
+        window.updateFavoritesCounter();
+      }
+    });
+  }
 });
