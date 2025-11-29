@@ -13,32 +13,38 @@ document.addEventListener('DOMContentLoaded', function() {
   let currentView = 'home';
   let isLoading = false;
 
-  // Inicializar categorías en home
-  function initializeCategories() {
-    const categoryLinks = document.querySelectorAll('.category-link');
-    categoryLinks.forEach(link => {
-      link.removeEventListener('click', handleCategoryClickEvent);
-      link.addEventListener('click', handleCategoryClickEvent);
-    });
-  }
-
-  // Manejador de click de categoría
-  async function handleCategoryClickEvent(e) {
-    e.preventDefault();
-    e.stopPropagation();
+  // Función para cargar productos de una categoría dinámicamente
+  window.loadCategoryProducts = async function(event, categoryId) {
+    event.preventDefault();
+    event.stopPropagation();
     
-    const categoryId = this.dataset.categoryId;
-    if (!categoryId) return;
-
-    // Navegar a productos con el filtro
-    const url = `/productos?category_id=${categoryId}`;
+    console.log('🔥 Cargando productos de categoría:', categoryId);
     
-    // Agregar efecto de carga
-    const currentContent = document.querySelector('#dynamic-content');
-    if (currentContent) {
-      currentContent.style.transition = 'opacity 0.3s ease';
-      currentContent.style.opacity = '0.6';
+    // Obtener el locale actual de la URL o del DOM
+    const pathParts = window.location.pathname.split('/').filter(p => p);
+    let locale = '';
+    
+    // Detectar si el primer segmento es un locale (es o en)
+    if (pathParts.length > 0 && (pathParts[0] === 'es' || pathParts[0] === 'en')) {
+      locale = pathParts[0];
     }
+    
+    // Construir URL
+    const url = locale ? `/${locale}/productos?category_id=${categoryId}` : `/productos?category_id=${categoryId}`;
+    
+    console.log('📍 Locale detectado:', locale || 'ninguno');
+    console.log('🚀 URL:', url);
+    
+    const currentContent = document.querySelector('#dynamic-content');
+    if (!currentContent) {
+      console.warn('⚠️ #dynamic-content no encontrado, navegando normalmente');
+      window.location.href = url;
+      return;
+    }
+
+    // Agregar efecto de carga
+    currentContent.style.transition = 'opacity 0.3s ease';
+    currentContent.style.opacity = '0.6';
 
     try {
       const response = await fetch(url, {
@@ -48,52 +54,69 @@ document.addEventListener('DOMContentLoaded', function() {
         }
       });
 
-      if (response.ok) {
-        const html = await response.text();
-        
-        // Usar la función loadView existente para cargar dinámicamente
-        const parser = new DOMParser();
-        const doc = parser.parseFromString(html, 'text/html');
-        const sourceContent = doc.querySelector('#dynamic-content');
-        
-        if (sourceContent && currentContent) {
-          // Animar salida
-          currentContent.style.opacity = '0';
-          
-          setTimeout(() => {
-            // Reemplazar contenido
-            currentContent.innerHTML = sourceContent.innerHTML;
-            
-            // Animar entrada
-            currentContent.style.opacity = '0';
-            
-            setTimeout(() => {
-              currentContent.style.opacity = '1';
-            }, 10);
-            
-            // Reinicializar scripts
-            reinitializeScripts(currentContent);
-          }, 200);
-        }
-
-        // Actualizar vista actual
-        currentView = 'productos';
-        updateActiveNav();
-
-        // Scroll suave al inicio
-        window.scrollTo({ top: 0, behavior: 'smooth' });
+      if (!response.ok) {
+        throw new Error(`HTTP ${response.status}`);
       }
-    } catch (error) {
-      console.error('Error al cargar categoría:', error);
-      showToast('Error al cargar categoría', 'danger');
+
+      const html = await response.text();
+      const parser = new DOMParser();
+      const doc = parser.parseFromString(html, 'text/html');
+      const sourceContent = doc.querySelector('#dynamic-content');
       
-      // Restaurar
-      if (currentContent) {
-        currentContent.style.opacity = '1';
+      if (!sourceContent) {
+        console.error('⚠️ #dynamic-content no encontrado en respuesta');
+        window.location.href = url;
+        return;
       }
-    }
 
-    return false;
+      // Animar transición
+      currentContent.style.opacity = '0';
+      
+      setTimeout(() => {
+        // Reemplazar contenido
+        currentContent.innerHTML = sourceContent.innerHTML;
+        
+        // Animar entrada
+        currentContent.style.opacity = '0';
+        setTimeout(() => {
+          currentContent.style.opacity = '1';
+        }, 10);
+        
+        // Reinicializar scripts (carrusel, listeners, etc)
+        reinitializeScripts(currentContent);
+      }, 300);
+
+      // Actualizar URL sin recargar
+      history.pushState({ view: 'productos', category_id: categoryId }, '', url);
+      
+      // Actualizar la vista actual para que la navegación se resalte correctamente
+      currentView = 'productos';
+      updateActiveNav();
+      
+      // Scroll suave al inicio
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      
+      console.log('✅ Productos cargados dinámicamente');
+    } catch (error) {
+      console.error('❌ Error al cargar categoría:', error);
+      // Fallback a navegación normal
+      window.location.href = url;
+    }
+  };
+
+  // Función simple para filtrar por categoría (ahora solo se usa como backup)
+  window.filterByCategory = function(event, categoryId) {
+    // Esta función ya no es necesaria porque usamos href directo en los links
+    console.log('⚠️ filterByCategory deprecated - usar loadCategoryProducts en lugar de onclick');
+  };
+
+  // Inicializar categorías en home (ahora solo logging)
+  function initializeCategories() {
+    const categoryLinks = document.querySelectorAll('.category-link');
+    console.log('✅ Categorías encontradas:', categoryLinks.length);
+    categoryLinks.forEach((link, idx) => {
+      console.log(`   - Link ${idx}: href="${link.href}"`);
+    });
   }
 
   // Inicializar en carga
@@ -273,6 +296,24 @@ document.addEventListener('DOMContentLoaded', function() {
     if (!container) return;
 
     try {
+      // Reinicializar category-links para cargar dinámicamente
+      const categoryLinks = container.querySelectorAll('.category-link');
+      if (categoryLinks.length > 0) {
+        console.log('🔄 Reinicializando', categoryLinks.length, 'category-links');
+        categoryLinks.forEach(link => {
+          // Remover onclick anterior si existe
+          link.onclick = null;
+          // Agregar nuevo onclick
+          const categoryId = link.getAttribute('data-category-id');
+          if (categoryId) {
+            link.onclick = function(e) {
+              window.loadCategoryProducts(e, categoryId);
+              return false;
+            };
+          }
+        });
+      }
+
       // Reinicializar carrusel de categorías si existe
       const carousel = container.querySelector('#category-carousel');
       if (carousel) {

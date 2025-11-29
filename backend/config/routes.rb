@@ -16,7 +16,6 @@ Rails.application.routes.draw do
   # Página principal
   root "home#index", as: :authenticated_root
   get 'home/index', to: 'home#index', as: :home_index
-  get 'productos', to: 'home#producto', as: :productos
   get 'restore-images', to: 'home#restore_images', as: :restore_images
   get 'favoritos', to: 'favorites#index', as: :favoritos
   get 'carrito', to: 'home#carrito', as: :carrito
@@ -56,6 +55,7 @@ Rails.application.routes.draw do
   # Traduccion
   scope "(:locale)", locale: /en|es/ do
     root "home#index"
+    get 'productos', to: 'home#producto', as: :productos
     resources :products do 
       collection do 
         patch :update_disponibilidad

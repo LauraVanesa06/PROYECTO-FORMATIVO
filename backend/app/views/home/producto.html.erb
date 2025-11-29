@@ -3,12 +3,13 @@
 
   <!-- FILTRO -->
   <div class="filtro-productos">
-    <%= form_with url: productos_path, method: :get, local: true, html: { id: 'productos-filter-form', data: { autosubmit: true } } do %>
+    <!-- Usar request.path para mantener la estructura de URL correcta con locale -->
+    <%= form_with url: request.path, method: :get, local: true, html: { id: 'productos-filter-form', data: { autosubmit: true } } do %>
       <div class="row align-items-center g-3">  
         <div class="col-md-3">
           <%= label_tag :category_id, t('productos.filtro.categoria') %>
           <%= select_tag :category_id,
-                        options_from_collection_for_select(@categories, :id, :nombre, params[:category_id]),
+                        options_from_collection_for_select(@categories, :id, :nombre, params[:category_id]&.to_i),
                         include_blank: t('productos.filtro.todas_categorias'),
                         class: "form-select" %>
         </div>
