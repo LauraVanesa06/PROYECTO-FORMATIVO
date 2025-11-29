@@ -6,7 +6,9 @@ class BuysController < ApplicationController
   def index
     # Base: todas las ventas con relaciones
     
+    @buys = Buy.new
     @buys = Buy.includes(:payment, :user).order(fecha: :desc)
+    
     @products = Product.all
 
     # Filtro por nombre de cliente (case-insensitive)
@@ -61,13 +63,23 @@ class BuysController < ApplicationController
 
   # POST /buys or /buys.json
   def create
+    
+    venta_fisica = params[:buy][:tipo] == "presencial"
+      
     @buy = Buy.new(
-      user: params[:user],
-      tipo: "fisica",
+      
+      user: venta_fisica ? nil : current_user,
+      tipo:venta_fisica ? "fisica" : "online",
       fecha: Time.current,
-      #total: params[:total]
-       metodo_pago: "Efectivo"   
+      total: params[:total],
+       metodo_pago:  venta_fisica ? "Efectivo" : "Wompi"
     )
+    if venta_fisica
+    
+      @buy.cliente_nombre = params[:buy][:cliente_nombre]
+      @buy.cliente_email = params[:buy][:cliente_email]
+    end
+
 
     productos_param = params[:venta][:product]
     total_compra = 0
@@ -76,6 +88,7 @@ class BuysController < ApplicationController
     if productos_param.present?
       productos_param.each do |id, data|
         next unless data["select"] == "on"
+
         product = Product.find(id)
         cantidad = data["cantidad"].to_i
 
@@ -95,11 +108,37 @@ class BuysController < ApplicationController
         product.update(stock: product.stock - cantidad)
       end
     end
+
+    if params[:codigo_producto].present?
+      Product.find_by(codigo_producto: params[:codigo_producto])
+
+    if product
+      cantidad = params[:cantidad].to_i
+
+      subtotal = product.precio * cantidad
+      total_compra += subtotal
+
+      @buy.buy_products.build(
+        product: product,
+        cantidad: cantidad,
+        precio_unitario: product.precio
+      )
+
+      product.update(stock: product.stock - cantidad)
+    else
+      flash[:alert] = "El producto '#{params[:product_name]}' no existe."
+    end
+  end
+
+
     @buy.total = total_compra
     if @buy.save
-      redirect_to @buy, notice: "Su compra fue realizada de manera correcta"
+      redirect_to buys_path, notice: "Su compra fue realizada de manera correcta"
     else
-      render :new
+      
+      @buys = Buy.includes(:payment, :user).order(created_at: :desc)
+    @products = Product.all
+      render :index
     end
           # Reducir stock
           #producto.stock -= cantidad

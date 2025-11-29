@@ -823,73 +823,26 @@
             <div class="row">
               <div class="col-md-6 mb-3">
                 <label>Cliente <span style="color: #dc3545;">*</span></label>
-                <%= f.text_field :cliente, name: "buy[cliente]", class: "form-control", required: true, placeholder: "Nombre completo del cliente" %>
+                <%= f.text_field :cliente, name: "buy[client_name]", class: "form-control", required: true, placeholder: "Nombre completo del cliente" %>
               </div>
 
               <div class="col-md-6 mb-3">
                 <label>Correo Electrónico</label>
-                <%= f.email_field :correo, name: "buy[correo]", class: "form-control", placeholder: "correo@ejemplo.com" %>
+                <%= f.email_field :correo, name: "buy[client_email]", class: "form-control", placeholder: "correo@ejemplo.com" %>
               </div>
             </div>
           </div>
+          
+          <div class="mb-3">
+  <label class="form-label">Código del producto</label>
+  <input type="text" class="form-control" name="product_code" placeholder="Ej: ABC123">
+</div>
 
-          <!-- CATÁLOGO DE PRODUCTOS -->
-          <div class="productos-section">
-            <h6>Catálogo de Productos</h6>
-            
-            <div class="productos-grid">
-              <div class="row">
-                <% if @products.present? %>
-                  <% @products.each do |product| %>
-                    <div class="col-lg-4 col-md-4 col-sm-6 mb-3">
-                      <div class="product-card" data-product-id="<%= product.id %>">
-                        <div class="product-image-container">
-                          <% if product.images.attached? %>
-                            <%= image_tag product.images.first, alt: product.nombre %>
-                          <% else %>
-                            <i class="fas fa-box" style="font-size: 48px; color: #dee2e6;"></i>
-                          <% end %>
-                        </div>
-                        
-                        <div class="product-name"><%= product.nombre %></div>
-                        
-                        <span class="product-stock <%= product.stock <= 5 ? 'low-stock' : '' %> <%= product.stock == 0 ? 'out-of-stock' : '' %>">
-                          <i class="fas fa-cubes"></i> Stock: <%= product.stock %>
-                        </span>
+<div class="mb-3">
+  <label class="form-label">Cantidad</label>
+  <input type="number" class="form-control" name="cantidad" min="1" value="1">
+</div>
 
-                        <div class="product-selection">
-                          <div class="checkbox-wrapper">
-                            <input type="checkbox" 
-                                   id="select_<%= product.id %>"
-                                   name="venta[products][<%= product.id %>][select]"
-                                   class="product-checkbox"
-                                   <%= 'disabled' if product.stock == 0 %>>
-                            <label for="select_<%= product.id %>">Seleccionar</label>
-                          </div>
-
-                          <input type="number"
-                                 name="venta[products][<%= product.id %>][cantidad]"
-                                 class="cantidad-input"
-                                 placeholder="Cantidad"
-                                 min="1"
-                                 max="<%= product.stock %>"
-                                 disabled
-                                 data-product-cantidad="<%= product.id %>">
-                        </div>
-                      </div>
-                    </div>
-                  <% end %>
-                <% else %>
-                  <div class="col-12">
-                    <div class="empty-products">
-                      <i class="fas fa-box-open"></i>
-                      <p>No hay productos disponibles</p>
-                    </div>
-                  </div>
-                <% end %>
-              </div>
-            </div>
-          </div>
 
           <div class="modal-footer">
             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
