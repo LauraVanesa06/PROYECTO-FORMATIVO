@@ -364,12 +364,15 @@ class _ProductCardState extends State<ProductCard> {
                         const BorderRadius.vertical(top: Radius.circular(12)),
                   ),
                   child: Center(
-                    child: (product.imagenUrl != null && product.imagenUrl!.isNotEmpty)
+                    child: (product.imagenUrl != null && 
+                            product.imagenUrl!.isNotEmpty && 
+                            product.imagenUrl != "" &&
+                            product.imagenUrl != "NO_IMAGE")
                         ? CachedNetworkImage(
                             imageUrl: product.imagenUrl!,
-                            cacheManager: CustomCacheManager.instance, // <-- caché personalizada
+                            cacheManager: CustomCacheManager.instance,
                             fit: BoxFit.contain,
-                            fadeInDuration: const Duration(milliseconds: 200), // animación rápida
+                            fadeInDuration: const Duration(milliseconds: 200),
                             fadeOutDuration: const Duration(milliseconds: 100),
                             placeholder: (context, url) => const SizedBox(
                               height: 60,
@@ -378,15 +381,19 @@ class _ProductCardState extends State<ProductCard> {
                                 child: CircularProgressIndicator(strokeWidth: 2),
                               ),
                             ),
-                            errorWidget: (context, url, error) => Icon(
-                              Icons.broken_image,
-                              size: 80,
-                              color: isDark ? Colors.grey.shade500 : Colors.grey,
-                            ),
+                            errorWidget: (context, url, error) {
+                              debugPrint('Error loading image: $url - $error');
+                              return Icon(
+                                Icons.broken_image,
+                                size: 80,
+                                color: isDark ? Colors.grey.shade500 : Colors.grey,
+                              );
+                            },
                           )
-                        : Image.asset(
-                            'assets/images/Default_not_img.png',
-                            fit: BoxFit.contain,
+                        : Icon(
+                            Icons.image_not_supported,
+                            size: 80,
+                            color: isDark ? Colors.grey.shade600 : Colors.grey.shade400,
                           ),
                   ),
                 ),
