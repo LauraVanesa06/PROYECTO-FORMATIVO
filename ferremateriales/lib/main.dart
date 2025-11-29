@@ -60,7 +60,7 @@ class MyApp extends StatelessWidget {
               Locale('es'),
               Locale('en'),
             ],
-            home: MainView(),
+            home: MainView(key: mainViewKey),
           );
         },
       ),

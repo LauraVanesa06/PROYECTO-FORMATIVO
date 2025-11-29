@@ -44,6 +44,23 @@ Rails.application.configure do
   # Set localhost to be used by links generated in mailer templates.
   config.action_mailer.default_url_options = { host: "localhost", port: 3000 }
 
+  # Set default URL options for Active Storage
+  # Use ngrok URL for Active Storage when available, otherwise localhost
+  storage_host = ENV['NGROK_URL'] || "localhost"
+  storage_port = ENV['NGROK_URL'] ? nil : 3000
+  
+  config.action_controller.default_url_options = { 
+    host: storage_host, 
+    port: storage_port,
+    protocol: ENV['NGROK_URL'] ? 'https' : 'http'
+  }.compact
+  
+  Rails.application.routes.default_url_options = { 
+    host: storage_host, 
+    port: storage_port,
+    protocol: ENV['NGROK_URL'] ? 'https' : 'http'
+  }.compact
+
   # Print deprecation notices to the Rails logger.
   config.active_support.deprecation = :log
 

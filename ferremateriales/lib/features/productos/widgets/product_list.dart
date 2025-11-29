@@ -53,7 +53,12 @@ class _ProductsListState extends State<ProductsList> {
 
         try {
           await precacheImage(
-            CachedNetworkImageProvider(product.imagenUrl!),
+            CachedNetworkImageProvider(
+              product.imagenUrl!,
+              headers: const {
+                'ngrok-skip-browser-warning': 'true',
+              },
+            ),
             context,
           );
         } catch (e) {

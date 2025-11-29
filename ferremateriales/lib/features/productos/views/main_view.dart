@@ -14,7 +14,9 @@ import 'profile_view.dart';
 final GlobalKey<_MainViewState> mainViewKey = GlobalKey<_MainViewState>();
 
 class MainView extends StatefulWidget {
-  MainView({Key? key}) : super(key: key ?? mainViewKey);
+  final int initialIndex;
+  
+  MainView({Key? key, this.initialIndex = 0}) : super(key: key);
 
   @override
   State<MainView> createState() => _MainViewState();
@@ -23,7 +25,7 @@ class MainView extends StatefulWidget {
 
 
 class _MainViewState extends State<MainView> {
-  int _selectedIndex = 0;
+  late int _selectedIndex;
 
   // Método público para cambiar de tab desde otros widgets
   void changeTab(int index) {
@@ -37,6 +39,7 @@ class _MainViewState extends State<MainView> {
   @override
   void initState() {
     super.initState();
+    _selectedIndex = widget.initialIndex;
     // Cargar cachés al iniciar (una sola petición HTTP para cada uno)
     _loadCaches();
   }
