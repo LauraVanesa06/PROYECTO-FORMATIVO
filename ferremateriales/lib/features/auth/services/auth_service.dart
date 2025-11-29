@@ -54,14 +54,31 @@ class AuthService {
 
           
         return data;
-      } else if (response.statusCode == 401) {
-        // Credenciales inválidas
+      } else if (response.statusCode == 401 || response.statusCode == 422) {
+        // Manejo mejorado de errores con códigos específicos
         final errorData = jsonDecode(response.body);
-        throw Exception(errorData['message'] ?? 'Correo o contraseña incorrectos');
-      } else if (response.statusCode == 422) {
-        // Error de validación
-        final errorData = jsonDecode(response.body);
-        throw Exception(errorData['message'] ?? 'Datos de inicio de sesión inválidos');
+        final errorCode = errorData['error_code'];
+        
+        // Mensajes específicos basados en el código de error del backend
+        String errorMessage;
+        switch (errorCode) {
+          case 'USER_NOT_FOUND':
+            errorMessage = 'No existe una cuenta con este correo electrónico';
+            break;
+          case 'INVALID_PASSWORD':
+            errorMessage = 'Contraseña incorrecta';
+            break;
+          case 'INVALID_EMAIL_FORMAT':
+            errorMessage = 'Formato de correo electrónico inválido';
+            break;
+          case 'MISSING_CREDENTIALS':
+            errorMessage = 'Debes ingresar correo y contraseña';
+            break;
+          default:
+            errorMessage = errorData['message'] ?? 'Error al iniciar sesión';
+        }
+        
+        throw Exception(errorMessage);
       } else {
         final errorData = jsonDecode(response.body);
         throw Exception(errorData['message'] ?? 'Error al iniciar sesión. Intenta nuevamente');
@@ -97,52 +114,55 @@ class AuthService {
       if (response.statusCode == 201) {
         final data = jsonDecode(response.body);
         await storage.write(key: 'auth_token', value: data['token']);
+        
+        // Guardar user_id y cart_id como en el login
+        if (data['user'] != null) {
+          await storage.write(
+            key: 'user_id',
+            value: data['user']['id'].toString(),
+          );
+          
+          // Manejo de cart_id
+          if (data['user']['cart_id'] != null) {
+            await storage.write(
+              key: 'cart_id',
+              value: data['user']['cart_id'].toString(),
+            );
+          } else if (data['user']['cart'] != null && data['user']['cart']['id'] != null) {
+            await storage.write(
+              key: 'cart_id',
+              value: data['user']['cart']['id'].toString(),
+            );
+          }
+        }
+        
         return data;
       } else if (response.statusCode == 422 || response.statusCode == 400) {
-        // Error de validación (email duplicado, contraseña débil, etc.)
-        try {
-          final errorData = jsonDecode(response.body);
-          print('Error 422/400 data: $errorData'); // Debug
-          
-          // Verificar diferentes formatos de respuesta del backend
-          String errorMessage = 'Error de validación en el registro';
-          
-          if (errorData['message'] != null) {
-            errorMessage = errorData['message'];
-            // Verificar si el mensaje indica email duplicado
-            String msgLower = errorMessage.toLowerCase();
-            if (msgLower.contains('email') && (msgLower.contains('taken') || 
-                msgLower.contains('exists') || msgLower.contains('duplicado') ||
-                msgLower.contains('already') || msgLower.contains('registrado'))) {
-              errorMessage = 'Este correo electrónico ya está registrado';
-            }
-          } else if (errorData['error'] != null) {
-            errorMessage = errorData['error'];
-          } else if (errorData['errors'] != null) {
-            // Si hay múltiples errores
-            if (errorData['errors'] is Map) {
-              final errors = errorData['errors'] as Map;
-              if (errors['email'] != null) {
-                String emailError = errors['email'].toString();
-                // Verificar si es error de email duplicado
-                if (emailError.toLowerCase().contains('taken') || 
-                    emailError.toLowerCase().contains('exists') ||
-                    emailError.toLowerCase().contains('already')) {
-                  errorMessage = 'Este correo electrónico ya está registrado';
-                } else {
-                  errorMessage = emailError;
-                }
-              } else {
-                errorMessage = errors.values.first.toString();
-              }
-            }
-          }
-          
-          throw Exception(errorMessage);
-        } catch (e) {
-          if (e is Exception) rethrow;
-          throw Exception('Error de validación en el registro');
+        // Manejo mejorado de errores con códigos específicos
+        final errorData = jsonDecode(response.body);
+        final errorCode = errorData['error_code'];
+        
+        // Mensajes específicos basados en el código de error del backend
+        String errorMessage;
+        switch (errorCode) {
+          case 'EMAIL_ALREADY_EXISTS':
+            errorMessage = 'Este correo electrónico ya está registrado';
+            break;
+          case 'PASSWORD_TOO_SHORT':
+            errorMessage = 'La contraseña debe tener al menos 6 caracteres';
+            break;
+          case 'NAME_TOO_SHORT':
+            errorMessage = 'El nombre debe tener al menos 2 caracteres';
+            break;
+          case 'MISSING_FIELDS':
+            errorMessage = 'Debes completar todos los campos';
+            break;
+          default:
+            // Si no hay error_code específico, usar el mensaje del backend
+            errorMessage = errorData['message'] ?? 'Error de validación en el registro';
         }
+        
+        throw Exception(errorMessage);
       } else if (response.statusCode == 409) {
         // Conflicto (usuario ya existe)
         throw Exception('Este correo electrónico ya está registrado');

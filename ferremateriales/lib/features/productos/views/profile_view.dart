@@ -32,8 +32,8 @@ class ProfileView extends StatelessWidget {
       listenWhen: (previous, current) =>
           previous.status != current.status && current.status == AuthStatus.loggedOut,
       listener: (context, state) {
-        Navigator.pushAndRemoveUntil(
-          context,
+        // Eliminar todo el historial de navegación para evitar volver atrás
+        Navigator.of(context).pushAndRemoveUntil(
           MaterialPageRoute(builder: (_) => const LoginView()),
           (route) => false,
         );
@@ -41,6 +41,7 @@ class ProfileView extends StatelessWidget {
       child: Scaffold(
         backgroundColor: isDark ? Colors.grey.shade900 : Colors.grey.shade50,
         appBar: AppBar(
+          automaticallyImplyLeading: false,
           backgroundColor: isDark ? Colors.grey.shade800 : Colors.white,
           elevation: 0,
           title: Text(

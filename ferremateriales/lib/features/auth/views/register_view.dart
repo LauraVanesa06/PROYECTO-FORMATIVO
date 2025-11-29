@@ -35,10 +35,14 @@ class _RegisterViewState extends State<RegisterView> {
               duration: Duration(seconds: 2),
             ),
           );
-          // Redirigir al MainView después del registro exitoso
-          Navigator.of(context).pushReplacement(
-            MaterialPageRoute(builder: (_) => MainView()),
-          );
+          // Pequeño delay para asegurar que el estado se actualice
+          Future.delayed(const Duration(milliseconds: 300), () {
+            if (context.mounted) {
+              Navigator.of(context).pushReplacement(
+                MaterialPageRoute(builder: (_) => MainView()),
+              );
+            }
+          });
         } else if (state.status == AuthStatus.failure) {
           print('🔴 Error en registro: ${state.error}'); // Debug
           
@@ -89,6 +93,18 @@ class _RegisterViewState extends State<RegisterView> {
       },
       child: Scaffold(
         backgroundColor: Colors.white,
+        appBar: AppBar(
+          backgroundColor: Colors.white,
+          elevation: 0,
+          leading: IconButton(
+            icon: const Icon(Icons.arrow_back, color: Color(0xFF222222)),
+            onPressed: () {
+              Navigator.of(context).pushReplacement(
+                MaterialPageRoute(builder: (_) => MainView()),
+              );
+            },
+          ),
+        ),
         body: SafeArea(
           child: Center(
             child: SingleChildScrollView(

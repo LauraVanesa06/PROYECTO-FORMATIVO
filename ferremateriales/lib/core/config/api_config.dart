@@ -8,7 +8,7 @@
 class ApiConfig {
   // 🔧 CAMBIA ESTA URL SEGÚN TU ENTORNO
   // 10.0.2.2 es la IP especial del emulador de Android que apunta al localhost de tu máquina
-  static const String baseUrl = 'https://interisland-uninferrably-leonie.ngrok-free.dev';
+  static const String baseUrl = 'https://whole-tahr-stunning.ngrok-free.app';
   
   // Headers comunes para todas las peticiones
   static Map<String, String> get headers => {

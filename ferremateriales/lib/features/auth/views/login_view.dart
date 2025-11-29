@@ -3,6 +3,7 @@ import 'package:ferremateriales/features/auth/bloc/auth_event.dart';
 import 'package:ferremateriales/features/auth/bloc/auth_state.dart';
 import 'package:ferremateriales/features/auth/views/register_view.dart';
 import 'package:ferremateriales/features/auth/widgets/login_form.dart';
+import 'package:ferremateriales/features/productos/views/main_view.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -15,7 +16,47 @@ class LoginView extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocConsumer<AuthBloc, AuthState>(
       listener: (context, state) {
-        if (state.status == AuthStatus.failure) {
+        if (state.status == AuthStatus.success) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Row(
+                children: [
+                  const Icon(Icons.check_circle, color: Colors.white),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: Text(
+                      'Inicio de sesión exitoso',
+                      style: GoogleFonts.inter(
+                        fontSize: 14,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+              backgroundColor: Colors.green.shade700,
+              behavior: SnackBarBehavior.floating,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(12),
+              ),
+              duration: const Duration(seconds: 2),
+              margin: const EdgeInsets.all(16),
+            ),
+          );
+          // Pequeño delay para asegurar que el estado se actualice
+          Future.delayed(const Duration(milliseconds: 300), () {
+            if (context.mounted) {
+              Navigator.of(context).pushReplacement(
+                MaterialPageRoute(builder: (_) => MainView()),
+              );
+            }
+          });
+        } else if (state.status == AuthStatus.guest) {
+          // Redirigir al MainView cuando continúa como invitado
+          Navigator.of(context).pushReplacement(
+            MaterialPageRoute(builder: (_) => MainView()),
+          );
+        } else if (state.status == AuthStatus.failure) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
               content: Row(
@@ -48,6 +89,18 @@ class LoginView extends StatelessWidget {
         return Scaffold(
           resizeToAvoidBottomInset: true,
           backgroundColor: Colors.white,
+          appBar: AppBar(
+            backgroundColor: Colors.white,
+            elevation: 0,
+            leading: IconButton(
+              icon: const Icon(Icons.arrow_back, color: Color(0xFF222222)),
+              onPressed: () {
+                Navigator.of(context).pushReplacement(
+                  MaterialPageRoute(builder: (_) => MainView()),
+                );
+              },
+            ),
+          ),
           body: Stack(
             children: [
               // Contenido principal

@@ -115,8 +115,13 @@ return Scaffold(
     
     return GestureDetector(
       onTap: () {
+        // No mostrar diálogo si está cargando o ya está autenticado
         if (authState.status == AuthStatus.guest && (index == 1 || index == 2)) {
           _showAuthDialogForSection(index);
+          return;
+        }
+        // Si no está autenticado y es una sección protegida, no navegar
+        if (authState.status != AuthStatus.success && authState.status != AuthStatus.guest && (index == 1 || index == 2)) {
           return;
         }
         setState(() => _selectedIndex = index);
@@ -142,8 +147,13 @@ return Scaffold(
   Widget _buildCartFAB(AuthState authState) {
     return GestureDetector(
       onTap: () {
+        // Solo mostrar diálogo si es invitado, no si está cargando
         if (authState.status == AuthStatus.guest) {
           _showAuthDialogForCart();
+          return;
+        }
+        // Si no está autenticado y no es invitado, no hacer nada
+        if (authState.status != AuthStatus.success) {
           return;
         }
         setState(() => _selectedIndex = 2);
@@ -229,18 +239,22 @@ return Scaffold(
                           Navigator.of(context).pop();
                         },
                         style: OutlinedButton.styleFrom(
-                          padding: const EdgeInsets.symmetric(vertical: 14),
+                          padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 4),
                           side: const BorderSide(color: Color(0xFF2e67a3)),
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(12),
                           ),
                         ),
-                        child: const Text(
-                          'Continuar como invitado',
-                          style: TextStyle(
-                            color: Color(0xFF2e67a3),
-                            fontSize: 14,
-                            fontWeight: FontWeight.w600,
+                        child: const FittedBox(
+                          fit: BoxFit.scaleDown,
+                          child: Text(
+                            'Continuar como invitado',
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                              color: Color(0xFF2e67a3),
+                              fontSize: 14,
+                              fontWeight: FontWeight.w600,
+                            ),
                           ),
                         ),
                       ),
@@ -345,18 +359,22 @@ return Scaffold(
                           Navigator.of(context).pop();
                         },
                         style: OutlinedButton.styleFrom(
-                          padding: const EdgeInsets.symmetric(vertical: 14),
+                          padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 4),
                           side: const BorderSide(color: Color(0xFF2e67a3)),
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(12),
                           ),
                         ),
-                        child: const Text(
-                          'Continuar como invitado',
-                          style: TextStyle(
-                            color: Color(0xFF2e67a3),
-                            fontSize: 14,
-                            fontWeight: FontWeight.w600,
+                        child: const FittedBox(
+                          fit: BoxFit.scaleDown,
+                          child: Text(
+                            'Continuar como invitado',
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                              color: Color(0xFF2e67a3),
+                              fontSize: 14,
+                              fontWeight: FontWeight.w600,
+                            ),
                           ),
                         ),
                       ),
