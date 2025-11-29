@@ -10,9 +10,7 @@ import 'features/productos/bloc/cart_bloc.dart';
 import 'features/productos/bloc/product_bloc.dart';
 import 'features/auth/bloc/auth_bloc.dart';
 import 'features/auth/bloc/auth_event.dart';
-import 'features/auth/bloc/auth_state.dart';
 import 'features/productos/cubit/theme_cubit.dart';
-import 'features/auth/views/login_view.dart';
 import 'features/productos/views/main_view.dart';
 import 'features/auth/services/auth_service.dart';
 
@@ -40,7 +38,7 @@ class MyApp extends StatelessWidget {
         BlocProvider(
           create: (_) => AuthBloc(
             AuthService(baseUrl: ApiConfig.baseUrl),
-          )..add(AuthStarted()),
+          )..add(ContinueAsGuest()),
         ),
         BlocProvider(create: (_) => CartBloc()),
         BlocProvider(create: (_) => ProductBloc()),
@@ -62,29 +60,7 @@ class MyApp extends StatelessWidget {
               Locale('es'),
               Locale('en'),
             ],
-            home: BlocListener<AuthBloc, AuthState>(
-              listener: (context, state) {
-                print('Main - Estado de auth: ${state.status}');
-              },
-              child: BlocBuilder<AuthBloc, AuthState>(
-                buildWhen: (previous, current) {
-                  // Reconstruir solo cuando el status cambia significativamente
-                  print('Main - buildWhen: ${previous.status} -> ${current.status}');
-                  return previous.status != current.status && 
-                         current.status != AuthStatus.loading;
-                },
-                builder: (context, authState) {
-                  print('Main - Construyendo con estado: ${authState.status}');
-                  
-                  if (authState.status == AuthStatus.success || 
-                      authState.status == AuthStatus.guest) {
-                    return MainView();
-                  }
-                  
-                  return const LoginView();
-                },
-              ),
-            ),
+            home: MainView(),
           );
         },
       ),
