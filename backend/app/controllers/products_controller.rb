@@ -1,5 +1,5 @@
 class ProductsController < ApplicationController
-  layout false
+  layout 'dashboard'
   before_action :set_product, only: %i[ show edit update destroy ]
   before_action :require_admin, except: [:show] # Proteger acciones de admin
 

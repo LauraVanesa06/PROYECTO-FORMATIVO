@@ -1,6 +1,6 @@
 class PedidosController < ApplicationController
   before_action :set_pedido, only: %i[ show edit update destroy ]
-  layout false
+  layout 'dashboard'
 
   # GET /pedidos or /pedidos.json
   def index

@@ -1,5 +1,5 @@
 .section-container{
-    height: 670px;
+    min-height: 670px;
     display: flex;
     flex-direction: row;
     margin: 0;

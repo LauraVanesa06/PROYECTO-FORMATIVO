@@ -1,6 +1,6 @@
 class BuysController < ApplicationController
   before_action :set_buy, only: %i[ show edit update destroy ]
-  layout false
+  layout 'dashboard'
 
   # GET /buys or /buys.json
   def index

@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title><%= content_for?(:title) ? yield(:title) : 'Dashboard Ferretería' %></title>
+  
+  <!-- Favicon -->
+  <%= favicon_link_tag 'favicon.png' %>
+  
+  <!-- Scripts externos -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chartjs-chart-radial-gauge@^0.3.0/dist/chartjs-chart-radial-gauge.min.js"></script>
+  
+  <!-- Estilos -->
+  <%= stylesheet_link_tag "dashboard", media: "all" %>
+  <%= stylesheet_link_tag "inventario", media: "all" %>
+  
+  <!-- Iconos y Fuentes -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Eczar:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@700&display=swap" rel="stylesheet">
+  
+  <!-- Scripts Rails -->
+  <%= javascript_include_tag "application", "data-turbo-track": "reload", defer: true %>
+  <%= javascript_importmap_tags %>
+  
+  <%= yield(:head) %>
+</head>
+
+<body>
+  <!-- HEADER -->
+  <header>
+    <div class="container-header">
+      <button class="hamburger" id="hamburger">&#9776;</button>
+      <div id="control">
+        <div class="panel"><%= image_tag "panel-control.png", class: "c-panel" %></div>
+        <p class="pricipal">Panel de Control</p>
+      </div>
+      <% if user_signed_in? %>
+        <%= link_to root_path, id: "cerrar", class: "logout2" do %>
+          <span><i class="fas fa-arrow-left"></i></span>
+        <% end %>
+      <% end %>
+    </div>
+  </header>
+
+  <!-- NAVIGATION -->
+  <nav class="nav-bg">
+    <div class="container-nav">
+      <ul class="menu" id="menu">
+        <li><a href="/dashboard" class="link-menu">Inicio</a></li>
+        <li><a href="/dashboard/productos" class="link-menu">Productos</a></li>
+        <li><a href="/dashboard/ventas" class="link-menu">Ventas</a></li>
+        <li><a href="/dashboard/pedidos" class="link-menu">Pedidos</a></li>
+        <li><a href="/dashboard/help" class="link-menu">Ayuda</a></li>
+      </ul>
+      <% if user_signed_in? %>
+        <%= link_to "Ir a Inicio", root_path, id: "cerrar", class: "logout" %>
+      <% end %>
+    </div>
+  </nav>
+
+  <!-- CONTENT -->
+  <div class="dashboard-content">
+    <%= yield %>
+  </div>
+
+  <!-- FOOTER -->
+  <footer>
+    &copy; 2025 Ferremateriales el Maestro - v3.8.5
+  </footer>
+
+  <!-- Scripts inline -->
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      const hamburger = document.getElementById('hamburger');
+      const menu = document.getElementById('menu');
+
+      if (hamburger && menu) {
+        hamburger.addEventListener('click', () => {
+          menu.classList.toggle('active');
+        });
+      }
+    });
+  </script>
+</body>
+</html>

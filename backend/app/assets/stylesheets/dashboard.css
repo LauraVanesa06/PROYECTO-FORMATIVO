@@ -12,7 +12,7 @@
     background-size: cover;
   }
 .fondo{
-  height: 670px;
+  min-height: 670px;
   display: flex;
   flex-direction: column;
   justify-content: space-around;
