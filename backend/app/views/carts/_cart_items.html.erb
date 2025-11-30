@@ -1,90 +1,68 @@
 <% if cart_items.any? %>
-  <div class="cart-items-list">
-    <% cart_items.each do |item| %>
-      <div style="width: 95%;" class="cart-item-card d-flex flex-row align-items-center position-relative mb-3 p-3 shadow-sm rounded-4 bg-white" id="<%= dom_id(item) %>" data-producto-id="<%= item.product.id %>">
-        <div class="cart-item-thumb me-3" id="div-foto">
-          <% if item.product.images.present? %>
-            <%= image_tag url_for(item.product.images.first), alt: item.product.nombre, class: "rounded-3 border" %>
-          <% else %>
-            <%= image_tag "ProductoNoDisponible.png", alt: t('productos.sin_imagen'), class: "img-fluid rounded-3 border" %>
-          <% end %>
-        </div>
-
-        <div class="cart-item-info flex-grow-1" style="width: 100%;">
-          <div class="d-flex justify-content-between align-items-center">
-            <strong class="fs-5 text-primary"><%= item.product.nombre %></strong>
-            <span class="cart-item-price fs-5 fw-bold text-success">
-              COP <%= number_with_precision(item.product.precio, delimiter: '.', separator: ',', precision: 2) %>
-            </span>
-          </div>
-          <div class="cart-item-desc text-muted mb-2" style="font-size: 14px;">
-            <%= truncate(item.product.descripcion, length: 60) %>
+  <div class="cart-wrapper d-flex flex-column" style="height: 100%;">
+    <div class="cart-items-list flex-grow-1 overflow-y-auto">
+      <% cart_items.each do |item| %>
+        <div style="width: 95%;" class="cart-item-card d-flex flex-row align-items-center position-relative mb-3 p-3 shadow-sm rounded-4 bg-white" id="<%= dom_id(item) %>" data-producto-id="<%= item.product.id %>">
+          <div class="cart-item-thumb me-3" id="div-foto">
+            <% if item.product.images.present? %>
+              <%= image_tag url_for(item.product.images.first), alt: item.product.nombre, class: "rounded-3 border" %>
+            <% else %>
+              <%= image_tag "ProductoNoDisponible.png", alt: t('productos.sin_imagen'), class: "img-fluid rounded-3 border" %>
+            <% end %>
           </div>
 
-          <div class="d-flex align-items-center gap-3 mt-2">
-            <div class="cart-item-qty">
-              <%= form_with(model: item, class: "cantidad-form d-inline-flex align-items-center", data: { item_id: item.id }) do |f| %>
-                <span class="me-1">Cantidad:</span>
-                <%= f.number_field :cantidad, min: 1, class: "form-control text-center cantidad-field", value: item.cantidad, style: "width: 60px; display: inline-block;", onkeypress: "return event.charCode >= 48 && event.charCode <= 57" %>
-              <% end %>
+          <div class="cart-item-info flex-grow-1" style="width: 100%;">
+            <div class="d-flex justify-content-between align-items-center">
+              <strong class="fs-5 text-primary"><%= item.product.nombre %></strong>
+              <span class="cart-item-price fs-5 fw-bold text-success">
+                COP <%= number_with_precision(item.product.precio, delimiter: '.', separator: ',', precision: 2) %>
+              </span>
+            </div>
+            <div class="cart-item-desc text-muted mb-2" style="font-size: 14px;">
+              <%= truncate(item.product.descripcion, length: 60) %>
             </div>
 
-            <span class="cart-item-subtotal fw-semibold text-secondary" style="font-size: 15px;">
-              Subtotal: COP <%= number_with_precision((item.product.precio || 0) * item.cantidad.to_i, delimiter: '.', separator: ',', precision: 2) %>
-            </span>
+            <div class="d-flex align-items-center gap-3 mt-2">
+              <div class="cart-item-qty">
+                <%= form_with(model: item, class: "cantidad-form d-inline-flex align-items-center", data: { item_id: item.id }) do |f| %>
+                  <span class="me-1">Cantidad:</span>
+                  <%= f.number_field :cantidad, min: 1, class: "form-control text-center cantidad-field", value: item.cantidad, style: "width: 60px; display: inline-block;", onkeypress: "return event.charCode >= 48 && event.charCode <= 57" %>
+                <% end %>
+              </div>
+
+              <span class="cart-item-subtotal fw-semibold text-secondary" style="font-size: 15px;">
+                Subtotal: COP <%= number_with_precision((item.product.precio || 0) * item.cantidad.to_i, delimiter: '.', separator: ',', precision: 2) %>
+              </span>
+            </div>
+          </div>
+
+          <div class="cart-item-actions ms-3">
+            <%= button_to cart_item_path(item),
+                          method: :delete,
+                          data: { turbo: false },
+                          remote: true,
+                          class: "btn btn-outline-danger btn-sm delete-item rounded-circle position-absolute",
+                          style: "top: 78px; right: 8px;",
+                          form: { "data-item-id": item.id } do %>
+              <i class="fa-solid fa-trash"></i>
+            <% end %>
           </div>
         </div>
-
-        <div class="cart-item-actions ms-3">
-          <%= button_to cart_item_path(item),
-                        method: :delete,
-                        data: { turbo: false },
-                        remote: true,
-                        class: "btn btn-outline-danger btn-sm delete-item rounded-circle position-absolute",
-                        style: "top: 78px; right: 8px;",
-                        form: { "data-item-id": item.id } do %>
-            <i class="fa-solid fa-trash"></i>
-          <% end %>
-        </div>
-      </div>
-    <% end %>
-  </div>
-
-  <div id="cart-summary" class="cart-summary card p-4 mt-4 shadow-sm border-0 rounded-4 bg-light">
-    <div class="d-flex justify-content-between align-items-center mb-3">
-      <h4 class="mb-0"><%= t("cart.total") %>:</h4>
-      <span class="fs-4 fw-bold text-success" id="cart-total">
-        COP <%= number_with_precision(cart_items.sum { |i| (i.product&.precio || 0) * (i.cantidad || 0) }, delimiter: '.', separator: ',', precision: 2) %>
-      </span>
+      <% end %>
     </div>
 
-    <%# 🔹 Mostrar botón según la vista %>
-    <% if controller_name == "carts" && action_name == "show" %>
-      <%# ✅ Botón Wompi (solo en vista principal del carrito) %>
-      <% if @amount_cents && @amount_cents > 0 && @signature.present? %>
-        <form>
-          <script
-            src="https://checkout.wompi.co/widget.js"
-            data-render="button"
-            data-public-key="<%= Rails.application.credentials.dig(:wompi, :public_key) %>"
-            data-currency="COP"
-            data-amount-in-cents="<%= @amount_cents %>"
-            data-reference="<%= @payment_reference %>"
-            data-signature:integrity="<%= @signature %>"
-            data-redirect-url="<%= cart_url %>">
-          </script>
-        </form>
-      <% else %>
-        <div class="alert alert-warning">
-          No es posible generar el botón de pago. Verifica la configuración.
+    <!-- Resumen sticky en la parte inferior -->
+    <div id="cart-summary" class="cart-summary card p-3 mt-3 shadow-lg border-0 rounded-4 bg-white" style="flex-shrink: 0; border-top: 2px solid #f0f0f0;">
+      <div class="d-flex justify-content-between align-items-center gap-3" style="flex-wrap: wrap;">
+        <!-- Total a la izquierda -->
+        <div style="flex-shrink: 0;">
+          <h5 class="mb-1" style="font-size: 13px; color: #666; margin: 0;"><%= t("cart.total") %>:</h5>
+          <span class="fs-5 fw-bold text-success" id="cart-total">
+            COP <%= number_with_precision(cart_items.sum { |i| (i.product&.precio || 0) * (i.cantidad.to_i || 0) }, delimiter: '.', separator: ',', precision: 2) %>
+          </span>
         </div>
-      <% end %>
-    <% else %>
-      <%# ✅ Solo botón “Ir al carrito” cuando se muestra como partial (sidebar) %>
-      <div class="mt-3 text-center">
-        <%= link_to 'Ir al carrito', cart_path(@cart), class: 'btn btn-success w-100 fw-semibold' %>
       </div>
-    <% end %>
+    </div>
   </div>
 
 <% else %>
@@ -99,22 +77,39 @@
 document.addEventListener('DOMContentLoaded', function() {
   const csrfToken = document.querySelector('meta[name="csrf-token"]').content;
 
-  function showNotification(message, type = 'success') {
-    const existing = document.querySelector('.custom-alert');
-    if (existing) existing.remove();
+  function showToast(message, type = 'success') {
+    const toastContainer = document.getElementById('toast-container') || (() => {
+      const container = document.createElement('div');
+      container.id = 'toast-container';
+      container.className = 'position-fixed bottom-0 end-0 p-3';
+      container.style.zIndex = '2000';
+      document.body.appendChild(container);
+      return container;
+    })();
 
-    const alert = document.createElement('div');
-    alert.className = `custom-alert alert-${type}`;
-    alert.textContent = message;
-    document.body.appendChild(alert);
-    setTimeout(() => alert.classList.add('show'), 50);
+    const toast = document.createElement('div');
+    const bg = type === 'success' ? 'bg-success' : (type === 'danger' ? 'bg-danger' : (type === 'info' ? 'bg-info' : `bg-${type}`));
+    const icon = type === 'success' ? 'fa-check-circle' : (type === 'danger' ? 'fa-trash-can' : (type === 'info' ? 'fa-trash-can' : 'fa-info-circle'));
+    const title = type === 'success' ? 'Éxito' : (type === 'danger' ? 'Eliminado' : (type === 'info' ? 'Eliminado' : 'Aviso'));
+    
+    toast.className = `toast fade show ${bg} text-white`;
+    toast.innerHTML = `
+      <div class="d-flex align-items-center px-3 py-2">
+        <i class="fa-solid ${icon} me-2" style="font-size: 16px;"></i>
+        <div class="flex-grow-1">
+          <strong style="display: block; font-size: 12px;">${title}</strong>
+          <small style="display: block; font-size: 12px;">${message}</small>
+        </div>
+      </div>`;
+    toastContainer.appendChild(toast);
+
     setTimeout(() => {
-      alert.classList.remove('show');
-      setTimeout(() => alert.remove(), 300);
-    }, 2500);
+      toast.classList.remove('show');
+      setTimeout(() => toast.remove(), 300);
+    }, 3000);
   }
 
-  // 🔹 Actualizar subtotal y total al cambiar cantidad
+  // 🔹 Actualizar subtotal y total al cambiar cantidad (en tiempo real en la UI)
   document.addEventListener('input', function(e) {
     const field = e.target.closest('.cantidad-field');
     if (!field) return;
@@ -136,28 +131,56 @@ document.addEventListener('DOMContentLoaded', function() {
     updateCartTotal();
   });
 
-  // 🔹 Enviar cambios al servidor
+  // 🔹 Enviar cambios al servidor cuando el usuario deja de escribir
   document.addEventListener('change', async function(e) {
     const field = e.target.closest('.cantidad-field');
     if (!field) return;
 
+    const cantidad = parseInt(field.value) || 1;
     const form = field.closest('form');
-    const cantidad = field.value;
+    const cartItem = field.closest('.cart-item-card');
+    const itemId = cartItem.id; // ID del cart_item
+
+    // Extraer el ID del elemento (ej: cart_item_1)
+    const cartItemId = itemId ? itemId.replace('cart_item_', '') : null;
+    
+    if (!cartItemId) {
+      showToast('Error: No se pudo identificar el item', 'danger');
+      return;
+    }
 
     try {
-      const response = await fetch(form.action, {
+      const response = await fetch(`/cart_items/${cartItemId}`, {
         method: 'PATCH',
         headers: {
           'Content-Type': 'application/json',
           'X-CSRF-Token': csrfToken
         },
-        body: JSON.stringify({ cart_item: { cantidad } })
+        body: JSON.stringify({ cart_item: { cantidad: cantidad } })
       });
-      if (response.ok) showNotification('Cantidad actualizada');
-    } catch {
-      showNotification('Error al actualizar cantidad', 'danger');
+      
+      if (response.ok) {
+        const data = await response.json();
+        // Actualizar el total general
+        updateCartTotal();
+      } else {
+        showToast('Error al actualizar cantidad', 'danger');
+        // Revertir el cambio
+        field.value = field.dataset.originalValue || 1;
+      }
+    } catch (error) {
+      showToast('Error de conexión', 'danger');
+      console.error('Error:', error);
     }
   });
+
+  // Guardar valor original antes de cambiar
+  document.addEventListener('focus', function(e) {
+    const field = e.target.closest('.cantidad-field');
+    if (field) {
+      field.dataset.originalValue = field.value;
+    }
+  }, true);
 
   // 🔹 Eliminar producto
   document.addEventListener('click', async function(e) {
@@ -182,12 +205,22 @@ document.addEventListener('DOMContentLoaded', function() {
           itemCard.remove();
           updateCartTotal();
           if (!document.querySelectorAll('.cart-item-card').length) {
-            document.querySelector('#cart-summary').innerHTML = `
-              <div class="alert alert-info text-center p-4 mt-4">
-                <i class="fa-solid fa-cart-arrow-down fa-2x mb-2"></i><br>
-                <span class="fs-5">Tu carrito está vacío</span>
-              </div>
+            // Reemplazar todo el contenido con el mensaje de carrito vacío
+            const cartItemsList = document.querySelector('.cart-items-list');
+            const cartSummary = document.querySelector('#cart-summary');
+            
+            if (cartItemsList) cartItemsList.remove();
+            if (cartSummary) cartSummary.remove();
+            
+            // Encontrar el padre del contenido y agregar el mensaje
+            const parent = document.querySelector('#cart-offcanvas-body') || document.body;
+            const emptyMessage = document.createElement('div');
+            emptyMessage.className = 'alert alert-info text-center p-4 mt-4';
+            emptyMessage.innerHTML = `
+              <i class="fa-solid fa-cart-arrow-down fa-2x mb-2"></i><br>
+              <span class="fs-5">Tu carrito está vacío</span>
             `;
+            parent.appendChild(emptyMessage);
           }
           if (data.count !== undefined) {
             const cartCount = document.getElementById('cart_count');
@@ -196,47 +229,68 @@ document.addEventListener('DOMContentLoaded', function() {
               cartCount.style.display = data.count == 0 ? 'none' : 'inline';
             }
           }
-          showNotification('🗑️ Producto eliminado del carrito', 'danger');
+          showToast('Producto eliminado del carrito', 'danger');
         }, 300);
       }
     } catch {
-      showNotification('Error al eliminar producto', 'danger');
+      showToast('Error al eliminar producto', 'danger');
     }
   });
 
-  // 🔹 Actualizar total general
+  // 🔹 Actualizar total general - calcula desde la UI
   function updateCartTotal() {
     let total = 0;
     document.querySelectorAll('.cart-item-card').forEach(card => {
-      const price = parsePrice(card.querySelector('.cart-item-price').textContent);
-      const cantidad = parseInt(card.querySelector('.cantidad-field').value) || 1;
+      const priceText = card.querySelector('.cart-item-price')?.textContent || '0';
+      const price = parsePrice(priceText);
+      const cantidadInput = card.querySelector('.cantidad-field');
+      const cantidad = cantidadInput ? parseInt(cantidadInput.value) || 1 : 1;
       total += price * cantidad;
     });
 
     const totalElement = document.getElementById('cart-total');
-    if (totalElement) totalElement.textContent = `COP ${formatPrice(total)}`;
-
-    if (window.location.pathname.includes('/cart')) updateWompiWidget(total);
+    if (totalElement) {
+      totalElement.textContent = `COP ${formatPrice(total)}`;
+    }
+    
+    // Actualizar Wompi con el nuevo total
+    updateWompiWidget(total);
   }
 
-  // ✅ Wompi se actualiza sin imprimir código
+  // ✅ Actualizar Wompi dinámicamente con el nuevo monto
   function updateWompiWidget(total) {
-    const container = document.getElementById('wompi-button-container');
-    if (!container) return;
+    const wompiContainer = document.getElementById('wompi-container');
+    if (!wompiContainer) return;
 
-    const script = document.createElement('script');
-    script.src = 'https://checkout.wompi.co/widget.js';
-    script.dataset.render = 'button';
-    script.dataset.publicKey = "<%= Rails.application.credentials.dig(:wompi, :public_key) %>";
-    script.dataset.currency = 'COP';
-    script.dataset.amountInCents = Math.round(total * 100);
-    script.dataset.reference = `ORDEN_${Date.now()}`;
-    script.dataset.redirectUrl = `${window.location.origin}/cart`;
-    script.dataset.customerData = 'true';
-    script.dataset.theme = 'dark';
-
-    container.innerHTML = '';
-    container.appendChild(script);
+    const amountInCents = Math.round(total * 100);
+    
+    // Encontrar el script de Wompi existente
+    const existingScript = wompiContainer.querySelector('script[src*="wompi"]');
+    
+    if (existingScript) {
+      // Actualizar el atributo data-amount-in-cents
+      existingScript.setAttribute('data-amount-in-cents', amountInCents);
+      
+      // Limpiar el contenedor y reinicializar Wompi
+      const buttonContainer = wompiContainer.querySelector('div');
+      if (buttonContainer) {
+        buttonContainer.innerHTML = '';
+      }
+      
+      // Crear un nuevo script para reinicializar el widget
+      const newScript = document.createElement('script');
+      newScript.src = 'https://checkout.wompi.co/widget.js';
+      newScript.setAttribute('data-render', 'button');
+      newScript.setAttribute('data-public-key', existingScript.getAttribute('data-public-key'));
+      newScript.setAttribute('data-currency', existingScript.getAttribute('data-currency'));
+      newScript.setAttribute('data-amount-in-cents', amountInCents);
+      newScript.setAttribute('data-reference', existingScript.getAttribute('data-reference'));
+      newScript.setAttribute('data-signature:integrity', existingScript.getAttribute('data-signature:integrity'));
+      newScript.setAttribute('data-redirect-url', existingScript.getAttribute('data-redirect-url'));
+      
+      wompiContainer.innerHTML = '';
+      wompiContainer.appendChild(newScript);
+    }
   }
 
   function formatPrice(amount) {
@@ -247,12 +301,24 @@ document.addEventListener('DOMContentLoaded', function() {
     return parseFloat(priceString.replace(/[^\d,]/g, '').replace(',', '.')) || 0;
   }
 
-  // 🔹 Click en tarjeta → producto_show
+  // 🔹 Click en tarjeta → producto_show (flujo dinámico)
   document.addEventListener("click", (e) => {
     const card = e.target.closest(".cart-item-card");
     if (!card || e.target.closest("button,input,i,form")) return;
     const productoId = card.dataset.productoId;
-    if (productoId) window.location = `/home/producto_show?id=${productoId}`;
+    if (productoId) {
+      // Cerrar offcanvas antes de navegar
+      const offcanvas = bootstrap.Offcanvas.getInstance(document.getElementById('cartOffcanvas'));
+      if (offcanvas) offcanvas.hide();
+      
+      // Cargar detalles dinámicamente
+      if (window.loadProductDetails) {
+        window.loadProductDetails(productoId);
+      } else {
+        // Fallback si la función no existe
+        window.location = `/home/producto_show?id=${productoId}`;
+      }
+    }
   });
 });
 </script>

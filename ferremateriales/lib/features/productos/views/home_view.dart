@@ -25,32 +25,23 @@ class _HomeViewState extends State<HomeView> {
   @override
   void initState() {
     super.initState();
+    print("=== HOME VIEW INIT STATE ===");
     _searchController = TextEditingController();
 
-    final productBloc = context.read<ProductBloc>();
-    
-    // Cargar destacados para mostrar
-    productBloc.add(CargarDestacados());
-    
-    // Cargar cachés locales y luego recargar productos para actualizar estado de favoritos
-    _loadCaches(productBloc);
-    
-    // Pre-cargar todos los productos en background para tenerlos en caché
-    Future.delayed(const Duration(milliseconds: 500), () {
-      if (mounted) {
-        productBloc.add(CargarTodosLosProductos());
-      }
-    });
+    // Primero cargar cachés, LUEGO cargar productos
+    _initializeData();
   }
 
-  Future<void> _loadCaches(ProductBloc productBloc) async {
+  Future<void> _initializeData() async {
+    final productBloc = context.read<ProductBloc>();
+    
+    // 1. Cargar cachés de favoritos y carrito PRIMERO
     await FavoritesService().loadFavoritesCache();
     await CartService().loadCartCache();
     
-    // Forzar actualización de la UI después de cargar cachés
-    if (mounted) {
-      setState(() {});
-    }
+    // 2. DESPUÉS cargar productos destacados (así ya tenemos los favoritos en cache)
+    print("Cargando destacados después de cache de favoritos...");
+    productBloc.add(CargarDestacados());
   }
 
   @override
@@ -62,8 +53,21 @@ class _HomeViewState extends State<HomeView> {
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    // 🔄 Recargar destacados cuando vuelves a HomeView desde AllProductsView
-    context.read<ProductBloc>().add(CargarDestacados());
+    // 🔄 Recargar destacados cuando vuelves desde otra vista
+    // Pero SOLO si ya pasó el initState
+    if (mounted) {
+      _reloadDataAfterNavigation();
+    }
+  }
+
+  Future<void> _reloadDataAfterNavigation() async {
+    // Recargar cache de favoritos por si cambió
+    await FavoritesService().loadFavoritesCache();
+    
+    // Recargar destacados con los favoritos actualizados
+    if (mounted) {
+      context.read<ProductBloc>().add(CargarDestacados());
+    }
   }
 
   @override
@@ -308,10 +312,9 @@ class _HomeViewState extends State<HomeView> {
                                       child: const AllProductsView(),
                                     ),
                                   ),
-                                ).then((_) {
-                                  // Al volver a Home, recargamos los destacados
-                                  context.read<ProductBloc>().add(CargarDestacados());
-                                });
+                                );
+                                // ❌ REMOVIDO: No recargar destacados al volver
+                                // Ya están en memoria y no necesitan recargarse
                               },
                               style: OutlinedButton.styleFrom(
                                 foregroundColor: isDark ? Colors.white : const Color(0xFF2e67a3),

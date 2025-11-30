@@ -11,8 +11,8 @@ import 'checkout_screen.dart';
 import '../services/service_wompi.dart'; 
 import 'package:universal_html/html.dart' as html;
 import 'package:flutter/foundation.dart';
+import 'package:ferremateriales/core/config/api_config.dart';
 import 'package:ferremateriales/features/auth/services/auth_service.dart';
-const String BASE_URL = "https://interisland-uninferrably-leonie.ngrok-free.dev";
 
 class CartView extends StatefulWidget {
   const CartView({super.key});
@@ -254,31 +254,41 @@ class _CartViewState extends State<CartView> {
                                     ),
                                   ],
                                 ),
-                                const SizedBox(height: 16),
 
                               SizedBox(
                                   width: double.infinity,
                                   height: 56,
                                   child: ElevatedButton(
                                     onPressed: () async {
+                                      print("=== BOTÓN PAGO PRESIONADO ===");
                                       try {
-                                        final cartId = await AuthService(baseUrl: BASE_URL).getCartId();
+                                        print("Obteniendo cart_id...");
+                                        final cartId = await AuthService(baseUrl: ApiConfig.baseUrl).getCartId(); 
 
+                                        print("Cart ID obtenido: $cartId");
+                                        
                                         if (cartId == null) {
-                                          print("No existe cart_id guardado");
+                                          print("ERROR: No existe cart_id guardado");
                                           return;
                                         }
 
+                                        print("Total a pagar: ${total.toInt()}");
+                                        print("Llamando a PaymentService.createPayment...");
+                                        
                                         final data = await PaymentService().createPayment(
                                           cartId: cartId,
                                           amount: total.toInt(),
                                         );
 
+                                        print("Respuesta del pago recibida: $data");
                                         final checkoutUrl = data["checkout_url"];
+                                        print("Checkout URL: $checkoutUrl");
 
                                         if (kIsWeb) {
+                                          print("Abriendo checkout en nueva ventana (web)");
                                           html.window.open(checkoutUrl, "_blank");
                                         } else {
+                                          print("Navegando a CheckoutScreen (mobile)");
                                           Navigator.push(
                                             context,
                                             MaterialPageRoute(
@@ -290,7 +300,8 @@ class _CartViewState extends State<CartView> {
                                           });
                                         }
                                       } catch (e) {
-                                        print("Error al procesar pago: $e");
+                                        print("❌ ERROR al procesar pago: $e");
+                                        print("Stack trace: ${StackTrace.current}");
                                       }
                                     },
                                     child: Text("Pagar"),

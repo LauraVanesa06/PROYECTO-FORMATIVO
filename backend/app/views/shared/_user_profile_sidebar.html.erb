@@ -1,0 +1,328 @@
+<div class="text-center mb-4">
+  <!-- Avatar del usuario -->
+  <div class="profile-user-icon mx-auto mb-3">
+    <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" fill="white" viewBox="0 0 16 16">
+      <path d="M8 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm2-3a2 2 0 1 1-4 0 2 2 0 0 1 4 0zm4 8c0 1-1 1-1 1H3s-1 0-1-1 1-4 6-4 6 3 6 4zm-1-.004c-.001-.246-.154-.986-.832-1.664C11.516 10.68 10.289 10 8 10c-2.29 0-3.516.68-4.168 1.332-.678.678-.83 1.418-.832 1.664h10z"/>
+    </svg>
+  </div>
+
+  <!-- Información del usuario -->
+  <div class="profile-user-info mb-3">
+    <p class="profile-user-name mb-1" style="font-weight: 600; color: #333;">
+      <%= current_user.name.present? ? current_user.name : current_user.email.split('@').first %>
+    </p>
+    <p class="profile-user-email" style="color: #999; font-size: 0.9rem;">
+      <%= current_user.email %>
+    </p>
+  </div>
+
+  <!-- Badge de admin si aplica -->
+  <% if current_user.admin? %>
+    <div class="profile-admin-badge" style="display: inline-block; background: #ffc107; color: #333; padding: 4px 12px; border-radius: 20px; font-size: 0.75rem; font-weight: 600; margin-bottom: 10px;">
+      👑 Administrador
+    </div>
+  <% end %>
+</div>
+
+<div class="profile-sidebar-body">
+  <!-- Opciones del perfil -->
+  <div class="profile-menu-options">
+    <!-- Editar perfil -->
+    <button id="editProfileBtn" class="profile-menu-item d-flex align-items-center justify-content-between" style="padding: 12px 16px; border-bottom: 1px solid #eee; cursor: pointer; display: flex; text-decoration: none; color: inherit; transition: all 0.2s ease; background: none; border: none; width: 100%; text-align: left;">
+      <div style="display: flex; align-items: center; gap: 12px;">
+        <i class="fas fa-user-gear" style="color: #007bff; font-size: 1.2rem; width: 24px; text-align: center;"></i>
+        <div>
+          <div style="font-weight: 500; color: #333;">Editar Perfil</div>
+          <div style="font-size: 0.85rem; color: #999;">Actualiza tu información</div>
+        </div>
+      </div>
+      <i class="fas fa-chevron-right" style="color: #ccc;"></i>
+    </button>
+
+    <!-- Dashboard (solo para admins) -->
+    <% if current_user.admin? %>
+      <a href="<%= dashboard_path %>" class="profile-menu-item admin-item d-flex align-items-center justify-content-between" style="padding: 12px 16px; border-bottom: 1px solid #eee; cursor: pointer; display: flex; text-decoration: none; color: inherit; transition: all 0.2s ease; background: rgba(255, 193, 7, 0.08);">
+        <div style="display: flex; align-items: center; gap: 12px;">
+          <i class="fas fa-sliders" style="color: #ffc107; font-size: 1.2rem; width: 24px; text-align: center;"></i>
+          <div>
+            <div style="font-weight: 500; color: #ffc107;">Dashboard</div>
+            <div style="font-size: 0.85rem; color: #ff9800;">Gestión del sistema</div>
+          </div>
+        </div>
+        <i class="fas fa-chevron-right" style="color: #ffc107;"></i>
+      </a>
+    <% end %>
+
+    <!-- Cerrar sesión -->
+    <%= button_to destroy_user_session_path, method: :delete, class: "profile-menu-item logout-item d-flex align-items-center justify-content-between", style: "padding: 12px 16px; cursor: pointer; display: flex !important; text-decoration: none; color: inherit; transition: all 0.2s ease; background: none; border: none; width: 100%; text-align: left;" do %>
+      <div style="display: flex; align-items: center; gap: 12px;">
+        <i class="fas fa-sign-out-alt" style="color: #dc3545; font-size: 1.2rem; width: 24px; text-align: center;"></i>
+        <div>
+          <div style="font-weight: 500; color: #dc3545;">Cerrar Sesión</div>
+          <div style="font-size: 0.85rem; color: #ff6b6b;">Salir de tu cuenta</div>
+        </div>
+      </div>
+      <i class="fas fa-chevron-right" style="color: #dc3545;"></i>
+    <% end %>
+  </div>
+</div>
+
+<style>
+  .profile-sidebar-content {
+    padding: 10px 0;
+  }
+
+  .profile-header {
+    padding: 20px 0;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+  }
+
+  .profile-name {
+    font-size: 16px;
+    font-weight: 600;
+    color: #333;
+    margin: 0;
+  }
+
+  .profile-email {
+    font-size: 13px;
+    margin: 0;
+  }
+
+  .profile-options {
+    padding: 10px 0;
+  }
+
+  .profile-option-btn {
+    color: #333;
+    text-decoration: none;
+    transition: all 0.2s ease;
+    cursor: pointer;
+  }
+
+  .profile-option-btn:hover {
+    background-color: #f5f5f5;
+  }
+
+  .profile-option-btn.admin-option {
+    background: linear-gradient(135deg, rgba(255, 193, 7, 0.1), rgba(255, 193, 7, 0.05));
+  }
+
+  .profile-option-btn.admin-option:hover {
+    background: linear-gradient(135deg, rgba(255, 193, 7, 0.2), rgba(255, 193, 7, 0.15));
+  }
+
+  .option-title {
+    font-size: 14px;
+    font-weight: 500;
+    color: #333;
+  }
+
+  .profile-option-btn .text-muted {
+    color: #999 !important;
+  }
+
+  .profile-option-btn:hover .text-muted {
+    color: #666 !important;
+  }
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  setupProfileSidebarListeners();
+});
+
+function setupProfileSidebarListeners() {
+  // Botón de editar perfil
+  const editProfileBtn = document.getElementById('editProfileBtn');
+  if (editProfileBtn) {
+    editProfileBtn.addEventListener('click', function(e) {
+      e.preventDefault();
+      loadEditProfileForm();
+    });
+  }
+
+  // Botón de cerrar sidebar
+  const closeSidebarBtn = document.getElementById('closeSidebar');
+  if (closeSidebarBtn) {
+    closeSidebarBtn.addEventListener('click', function() {
+      closeSidebar();
+    });
+  }
+}
+
+function loadEditProfileForm() {
+  // Obtener el contenedor del sidebar
+  const profileSidebar = document.getElementById('profileSidebar');
+  const body = profileSidebar.querySelector('.profile-sidebar-body');
+  
+  if (!body) return;
+  
+  // Mostrar spinner mientras carga
+  body.innerHTML = `
+    <div style="display: flex; justify-content: center; align-items: center; height: 300px;">
+      <div style="display: flex; flex-direction: column; align-items: center; gap: 20px;">
+        <div style="width: 50px; height: 50px; border: 4px solid #e0e0e0; border-top: 4px solid #007bff; border-radius: 50%; animation: spin 1s linear infinite;"></div>
+        <p style="color: #999; font-size: 14px;">Cargando formulario...</p>
+      </div>
+    </div>
+    <style>
+      @keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+      }
+    </style>
+  `;
+  
+  // Hacer fetch del formulario de edición
+  fetch('<%= edit_user_registration_path %>', {
+    headers: {
+      'X-Requested-With': 'XMLHttpRequest'
+    }
+  })
+  .then(response => {
+    if (!response.ok) throw new Error('Error loading form');
+    return response.text();
+  })
+  .then(html => {
+    // Reemplazar el contenido del body con el formulario
+    body.innerHTML = html;
+    
+    // Re-ejecutar los listeners
+    setTimeout(setupProfileSidebarListeners, 100);
+    
+    // Setup listeners específicos del formulario de edición
+    setupEditProfileFormListeners();
+  })
+  .catch(error => {
+    console.error('Error al cargar el formulario:', error);
+    showNotification('Error al cargar el formulario', 'error');
+  });
+}
+
+function setupEditProfileFormListeners() {
+  // Botón de volver
+  const backBtn = document.getElementById('backToProfile');
+  if (backBtn) {
+    backBtn.addEventListener('click', function(e) {
+      e.preventDefault();
+      loadProfileSidebar();
+    });
+  }
+
+  // Botón cancelar
+  const cancelBtn = document.getElementById('cancelEditProfile');
+  if (cancelBtn) {
+    cancelBtn.addEventListener('click', function(e) {
+      e.preventDefault();
+      loadProfileSidebar();
+    });
+  }
+
+  // Formulario de edición
+  const form = document.getElementById('editProfileFormElement');
+  if (form) {
+    form.addEventListener('submit', function(e) {
+      e.preventDefault();
+      
+      const formData = new FormData(form);
+      
+      // Mostrar spinner mientras guarda
+      const body = document.querySelector('.profile-sidebar-body');
+      const originalContent = body.innerHTML;
+      
+      body.innerHTML = `
+        <div style="display: flex; justify-content: center; align-items: center; height: 300px;">
+          <div style="display: flex; flex-direction: column; align-items: center; gap: 20px;">
+            <div style="width: 50px; height: 50px; border: 4px solid #e0e0e0; border-top: 4px solid #007bff; border-radius: 50%; animation: spin 1s linear infinite;"></div>
+            <p style="color: #999; font-size: 14px;">Guardando cambios...</p>
+          </div>
+        </div>
+        <style>
+          @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+          }
+        </style>
+      `;
+      
+      fetch(form.action, {
+        method: 'PUT',
+        body: formData,
+        headers: {
+          'X-Requested-With': 'XMLHttpRequest'
+        }
+      })
+      .then(response => {
+        if (response.ok) {
+          showNotification('Perfil actualizado correctamente', 'success');
+          setTimeout(loadProfileSidebar, 1500);
+        } else {
+          return response.text().then(html => {
+            body.innerHTML = html;
+            setupEditProfileFormListeners();
+          });
+        }
+      })
+      .catch(error => {
+        console.error('Error:', error);
+        body.innerHTML = originalContent;
+        setupEditProfileFormListeners();
+        showNotification('Error al actualizar el perfil', 'error');
+      });
+    });
+  }
+}
+
+function loadProfileSidebar() {
+  const profileSidebar = document.getElementById('profileSidebar');
+  const body = profileSidebar.querySelector('.profile-sidebar-body');
+  
+  if (!body) return;
+  
+  // Mostrar spinner mientras carga
+  body.innerHTML = `
+    <div style="display: flex; justify-content: center; align-items: center; height: 300px;">
+      <div style="display: flex; flex-direction: column; align-items: center; gap: 20px;">
+        <div style="width: 50px; height: 50px; border: 4px solid #e0e0e0; border-top: 4px solid #007bff; border-radius: 50%; animation: spin 1s linear infinite;"></div>
+        <p style="color: #999; font-size: 14px;">Cargando perfil...</p>
+      </div>
+    </div>
+    <style>
+      @keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+      }
+    </style>
+  `;
+  
+  // Hacer fetch del sidebar del perfil
+  fetch('<%= profile_sidebar_path %>', {
+    headers: {
+      'X-Requested-With': 'XMLHttpRequest'
+    }
+  })
+  .then(response => {
+    if (!response.ok) throw new Error('Error loading profile');
+    return response.text();
+  })
+  .then(html => {
+    body.innerHTML = html;
+    setupProfileSidebarListeners();
+  })
+  .catch(error => {
+    console.error('Error al cargar el perfil:', error);
+  });
+}
+
+function showNotification(message, type) {
+  const notification = document.createElement('div');
+  notification.className = `alert alert-${type === 'success' ? 'success' : 'danger'} position-fixed`;
+  notification.style.cssText = 'top: 20px; right: 20px; z-index: 10000; min-width: 300px;';
+  notification.textContent = message;
+  notification.setAttribute('role', 'alert');
+  document.body.appendChild(notification);
+  
+  setTimeout(() => notification.remove(), 3000);
+}
+</script>
