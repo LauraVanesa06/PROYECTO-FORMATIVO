@@ -63,7 +63,7 @@
   </nav>
 
   <!-- CONTENT -->
-  <div class="dashboard-content">
+  <div class="dashboard-content" id="dashboard-content">
     <%= yield %>
   </div>
 
@@ -85,5 +85,7 @@
       }
     });
   </script>
+
+  <%= javascript_include_tag 'dashboard_dynamic_nav' %>
 </body>
 </html>

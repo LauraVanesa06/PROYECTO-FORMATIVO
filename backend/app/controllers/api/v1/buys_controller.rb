@@ -34,31 +34,14 @@ class Api::V1::BuysController < ApplicationController
 
   def ventas_por_tipo
     begin
-      hoy     = Time.zone.today
-      semana  = hoy.beginning_of_week..hoy.end_of_week
-      mes     = hoy.beginning_of_month..hoy.end_of_month
-      anio    = hoy.beginning_of_year..hoy.end_of_year
+      # Contar ventas por tipo: Online (Wompy) vs Física
+      ventas_online = Buy.where(tipo: "Online").count
+      ventas_fisica = Buy.where(tipo: "Física").count
 
-      tipos = ["Minorista", "Mayorista", "Contratista/Empresa", "Online", "Física"]
-      datos = {
-        labels: ["Hoy", "Semana", "Mes", "Año"],
-        datasets: []
+      render json: {
+        etiquetas: ["Online (Wompy)", "Física"],
+        valores: [ventas_online, ventas_fisica]
       }
-
-      tipos.each do |tipo|
-        datos[:datasets] << {
-          label: tipo,
-          data: [
-            Buy.where(tipo: tipo, fecha: hoy.all_day).count,
-            Buy.where(tipo: tipo, fecha: semana).count,
-            Buy.where(tipo: tipo, fecha: mes).count,
-            Buy.where(tipo: tipo, fecha: anio).count
-          ],
-          backgroundColor: tipo_color(tipo)
-        }
-      end
-
-      render json: datos
     rescue => e
       Rails.logger.error("Error en ventas_por_tipo: #{e.message}")
       render json: { error: e.message }, status: 500

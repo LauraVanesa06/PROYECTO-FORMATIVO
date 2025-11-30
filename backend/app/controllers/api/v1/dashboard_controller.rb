@@ -164,9 +164,15 @@ class Api::V1::DashboardController < ApplicationController
         }
     end
     def ventas_mensuales
-        ventas = Purchasedetail.joins(:buy)
-            .group("strftime('%m', buys.fecha)")
-            .sum('preciounidad * cantidad')
+        # Obtener todas las compras con detalles
+        compras = Purchasedetail.joins(:buy).pluck('preciounidad * cantidad as total', 'buys.fecha')
+        
+        # Agrupar por mes usando Ruby
+        ventas_por_mes = {}
+        compras.each do |total, fecha|
+            mes = fecha.strftime('%m')
+            ventas_por_mes[mes] = (ventas_por_mes[mes] || 0) + total.to_f
+        end
 
         meses_es = {
             "01" => "Enero", "02" => "Febrero", "03" => "Marzo",
@@ -175,7 +181,7 @@ class Api::V1::DashboardController < ApplicationController
             "10" => "Octubre", "11" => "Noviembre", "12" => "Diciembre"
         }
 
-        datos_ordenados = ventas.sort.to_h
+        datos_ordenados = ventas_por_mes.sort.to_h
 
         render json: {
             labels: datos_ordenados.keys.map { |num| meses_es[num] },
