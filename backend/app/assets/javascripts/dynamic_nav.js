@@ -13,32 +13,38 @@ document.addEventListener('DOMContentLoaded', function() {
   let currentView = 'home';
   let isLoading = false;
 
-  // Inicializar categorías en home
-  function initializeCategories() {
-    const categoryLinks = document.querySelectorAll('.category-link');
-    categoryLinks.forEach(link => {
-      link.removeEventListener('click', handleCategoryClickEvent);
-      link.addEventListener('click', handleCategoryClickEvent);
-    });
-  }
-
-  // Manejador de click de categoría
-  async function handleCategoryClickEvent(e) {
-    e.preventDefault();
-    e.stopPropagation();
+  // Función para cargar productos de una categoría dinámicamente
+  window.loadCategoryProducts = async function(event, categoryId) {
+    event.preventDefault();
+    event.stopPropagation();
     
-    const categoryId = this.dataset.categoryId;
-    if (!categoryId) return;
-
-    // Navegar a productos con el filtro
-    const url = `/productos?category_id=${categoryId}`;
+    console.log('🔥 Cargando productos de categoría:', categoryId);
     
-    // Agregar efecto de carga
-    const currentContent = document.querySelector('#dynamic-content');
-    if (currentContent) {
-      currentContent.style.transition = 'opacity 0.3s ease';
-      currentContent.style.opacity = '0.6';
+    // Obtener el locale actual de la URL o del DOM
+    const pathParts = window.location.pathname.split('/').filter(p => p);
+    let locale = '';
+    
+    // Detectar si el primer segmento es un locale (es o en)
+    if (pathParts.length > 0 && (pathParts[0] === 'es' || pathParts[0] === 'en')) {
+      locale = pathParts[0];
     }
+    
+    // Construir URL
+    const url = locale ? `/${locale}/productos?category_id=${categoryId}` : `/productos?category_id=${categoryId}`;
+    
+    console.log('📍 Locale detectado:', locale || 'ninguno');
+    console.log('🚀 URL:', url);
+    
+    const currentContent = document.querySelector('#dynamic-content');
+    if (!currentContent) {
+      console.warn('⚠️ #dynamic-content no encontrado, navegando normalmente');
+      window.location.href = url;
+      return;
+    }
+
+    // Agregar efecto de carga
+    currentContent.style.transition = 'opacity 0.3s ease';
+    currentContent.style.opacity = '0.6';
 
     try {
       const response = await fetch(url, {
@@ -48,52 +54,69 @@ document.addEventListener('DOMContentLoaded', function() {
         }
       });
 
-      if (response.ok) {
-        const html = await response.text();
-        
-        // Usar la función loadView existente para cargar dinámicamente
-        const parser = new DOMParser();
-        const doc = parser.parseFromString(html, 'text/html');
-        const sourceContent = doc.querySelector('#dynamic-content');
-        
-        if (sourceContent && currentContent) {
-          // Animar salida
-          currentContent.style.opacity = '0';
-          
-          setTimeout(() => {
-            // Reemplazar contenido
-            currentContent.innerHTML = sourceContent.innerHTML;
-            
-            // Animar entrada
-            currentContent.style.opacity = '0';
-            
-            setTimeout(() => {
-              currentContent.style.opacity = '1';
-            }, 10);
-            
-            // Reinicializar scripts
-            reinitializeScripts(currentContent);
-          }, 200);
-        }
-
-        // Actualizar vista actual
-        currentView = 'productos';
-        updateActiveNav();
-
-        // Scroll suave al inicio
-        window.scrollTo({ top: 0, behavior: 'smooth' });
+      if (!response.ok) {
+        throw new Error(`HTTP ${response.status}`);
       }
-    } catch (error) {
-      console.error('Error al cargar categoría:', error);
-      showToast('Error al cargar categoría', 'danger');
+
+      const html = await response.text();
+      const parser = new DOMParser();
+      const doc = parser.parseFromString(html, 'text/html');
+      const sourceContent = doc.querySelector('#dynamic-content');
       
-      // Restaurar
-      if (currentContent) {
-        currentContent.style.opacity = '1';
+      if (!sourceContent) {
+        console.error('⚠️ #dynamic-content no encontrado en respuesta');
+        window.location.href = url;
+        return;
       }
-    }
 
-    return false;
+      // Animar transición
+      currentContent.style.opacity = '0';
+      
+      setTimeout(() => {
+        // Reemplazar contenido
+        currentContent.innerHTML = sourceContent.innerHTML;
+        
+        // Animar entrada
+        currentContent.style.opacity = '0';
+        setTimeout(() => {
+          currentContent.style.opacity = '1';
+        }, 10);
+        
+        // Reinicializar scripts (carrusel, listeners, etc)
+        reinitializeScripts(currentContent);
+      }, 300);
+
+      // Actualizar URL sin recargar
+      history.pushState({ view: 'productos', category_id: categoryId }, '', url);
+      
+      // Actualizar la vista actual para que la navegación se resalte correctamente
+      currentView = 'productos';
+      updateActiveNav();
+      
+      // Scroll suave al inicio
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      
+      console.log('✅ Productos cargados dinámicamente');
+    } catch (error) {
+      console.error('❌ Error al cargar categoría:', error);
+      // Fallback a navegación normal
+      window.location.href = url;
+    }
+  };
+
+  // Función simple para filtrar por categoría (ahora solo se usa como backup)
+  window.filterByCategory = function(event, categoryId) {
+    // Esta función ya no es necesaria porque usamos href directo en los links
+    console.log('⚠️ filterByCategory deprecated - usar loadCategoryProducts en lugar de onclick');
+  };
+
+  // Inicializar categorías en home (ahora solo logging)
+  function initializeCategories() {
+    const categoryLinks = document.querySelectorAll('.category-link');
+    console.log('✅ Categorías encontradas:', categoryLinks.length);
+    categoryLinks.forEach((link, idx) => {
+      console.log(`   - Link ${idx}: href="${link.href}"`);
+    });
   }
 
   // Inicializar en carga
@@ -273,6 +296,24 @@ document.addEventListener('DOMContentLoaded', function() {
     if (!container) return;
 
     try {
+      // Reinicializar category-links para cargar dinámicamente
+      const categoryLinks = container.querySelectorAll('.category-link');
+      if (categoryLinks.length > 0) {
+        console.log('🔄 Reinicializando', categoryLinks.length, 'category-links');
+        categoryLinks.forEach(link => {
+          // Remover onclick anterior si existe
+          link.onclick = null;
+          // Agregar nuevo onclick
+          const categoryId = link.getAttribute('data-category-id');
+          if (categoryId) {
+            link.onclick = function(e) {
+              window.loadCategoryProducts(e, categoryId);
+              return false;
+            };
+          }
+        });
+      }
+
       // Reinicializar carrusel de categorías si existe
       const carousel = container.querySelector('#category-carousel');
       if (carousel) {
@@ -394,7 +435,22 @@ document.addEventListener('DOMContentLoaded', function() {
               const data = await response.json();
               if (data.cart_html) {
                 const cartBody = document.querySelector('#cart-offcanvas-body');
-                if (cartBody) cartBody.innerHTML = data.cart_html;
+                if (cartBody) {
+                  cartBody.innerHTML = data.cart_html;
+                  
+                  // Actualizar Wompi con los datos que vinieron en la respuesta
+                  if (data.amount_cents && data.amount_cents > 0) {
+                    updateWompiWidgetWithData(
+                      data.amount_cents, 
+                      data.payment_reference,
+                      data.signature,
+                      data.public_key
+                    );
+                  }
+                  
+                  // Re-attachar event listeners a los nuevos elementos
+                  attachCartEventListeners();
+                }
               }
               const cartCount = document.querySelector('#cart-count');
               if (cartCount && data.count !== undefined) {
@@ -954,4 +1010,259 @@ document.addEventListener('DOMContentLoaded', function() {
       await loadView(event.state.view, event.state.view === 'home' ? '/' : `/${event.state.view}`);
     }
   });
+
+  // Función para crear y mostrar el overlay de carga
+  function showLoadingOverlay() {
+    let overlay = document.querySelector('.loading-overlay');
+    if (!overlay) {
+      overlay = document.createElement('div');
+      overlay.className = 'loading-overlay';
+      overlay.innerHTML = `
+        <div class="loading-spinner"></div>
+        <div class="loading-text">Cargando carrito...</div>
+      `;
+      document.body.appendChild(overlay);
+    } else {
+      overlay.classList.remove('fade-out');
+    }
+    return overlay;
+  }
+
+  // Función para ocultar el overlay de carga
+  function hideLoadingOverlay(overlay) {
+    if (overlay) {
+      overlay.classList.add('fade-out');
+      setTimeout(() => {
+        if (overlay.parentNode) {
+          overlay.remove();
+        }
+      }, 300);
+    }
+  }
+
+  // Función para cargar el carrito dinámicamente con animación
+  window.loadCartDynamic = async function() {
+    const overlay = showLoadingOverlay();
+    
+    try {
+      // Pequeño delay para que se vea la animación
+      await new Promise(resolve => setTimeout(resolve, 500));
+
+      const response = await fetch('/cart', {
+        method: 'GET',
+        headers: {
+          'X-Requested-With': 'XMLHttpRequest',
+          'Accept': 'text/html'
+        }
+      });
+
+      if (!response.ok) throw new Error('Error al cargar carrito');
+
+      const html = await response.text();
+      const parser = new DOMParser();
+      const doc = parser.parseFromString(html, 'text/html');
+      
+      // Buscar el contenido dinámico
+      let newContent = doc.querySelector('#dynamic-content');
+      if (!newContent) {
+        newContent = doc.querySelector('main');
+      }
+
+      const currentContent = document.querySelector('#dynamic-content');
+      if (currentContent && newContent) {
+        // Fade out del contenido actual
+        currentContent.style.transition = 'opacity 0.3s ease-out';
+        currentContent.style.opacity = '0';
+
+        // Esperar a que se fade out
+        await new Promise(resolve => setTimeout(resolve, 300));
+
+        // Reemplazar contenido
+        currentContent.innerHTML = newContent.innerHTML;
+        
+        // Fade in del nuevo contenido
+        currentContent.style.opacity = '1';
+        
+        // Cerrar offcanvas si está abierto
+        const cartOffcanvas = document.querySelector('#cartOffcanvas');
+        if (cartOffcanvas) {
+          const bsOffcanvas = bootstrap.Offcanvas.getInstance(cartOffcanvas);
+          if (bsOffcanvas) bsOffcanvas.hide();
+        }
+        
+        // Reinicializar scripts
+        if (typeof reinitializeScripts === 'function') {
+          reinitializeScripts(currentContent);
+        }
+        
+        // Reinicializar Wompi si existe - buscar el contenedor
+        const wompiContainer = currentContent.querySelector('#wompi-container');
+        if (wompiContainer) {
+          const wompiScript = wompiContainer.querySelector('script[src*="wompi"]');
+          if (wompiScript) {
+            // Crear nuevo script que será ejecutado por el navegador
+            const newWompiScript = document.createElement('script');
+            newWompiScript.src = 'https://checkout.wompi.co/widget.js';
+            
+            // Copiar todos los atributos data- del script original
+            Array.from(wompiScript.attributes).forEach(attr => {
+              if (attr.name.startsWith('data-') || attr.name === 'src') {
+                newWompiScript.setAttribute(attr.name, attr.value);
+              }
+            });
+            
+            // Limpiar el contenedor y agregar el nuevo script
+            wompiContainer.innerHTML = '';
+            wompiContainer.appendChild(newWompiScript);
+          }
+        }
+        
+        // Scroll a top con animación
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      } else {
+        throw new Error('No se encontró contenido dinámico');
+      }
+    } catch (error) {
+      console.error('Error al cargar carrito:', error);
+      // Si falla, navegar normalmente
+      window.location.href = '/cart';
+    } finally {
+      // Ocultar overlay después de un pequeño delay
+      await new Promise(resolve => setTimeout(resolve, 300));
+      hideLoadingOverlay(overlay);
+    }
+  };
+
+  // 🔹 Reinicializar el widget Wompi después de actualizar el carrito
+  window.reinitializeWompiWidget = function() {
+    const wompiContainer = document.getElementById('wompi-container');
+    if (!wompiContainer) return;
+
+    // Obtener el script existente
+    const existingScript = wompiContainer.querySelector('script[src*="wompi"]');
+    if (!existingScript) return;
+
+    // Crear un nuevo script con los mismos atributos
+    const newWompiScript = document.createElement('script');
+    newWompiScript.src = 'https://checkout.wompi.co/widget.js';
+    newWompiScript.setAttribute('data-render', 'button');
+    
+    // Copiar todos los data attributes del script anterior
+    Array.from(existingScript.attributes).forEach(attr => {
+      if (attr.name.startsWith('data-') || attr.name === 'src') {
+        newWompiScript.setAttribute(attr.name, attr.value);
+      }
+    });
+    
+    // Limpiar y agregar el nuevo script
+    wompiContainer.innerHTML = '';
+    wompiContainer.appendChild(newWompiScript);
+  };
+
+  // 🔹 Actualizar Wompi con datos específicos
+  window.updateWompiWidgetWithData = function(amountCents, paymentReference, signature, publicKey) {
+    const wompiContainer = document.getElementById('wompi-container');
+    if (!wompiContainer) return;
+
+    // Crear nuevo script con datos actualizados
+    const newWompiScript = document.createElement('script');
+    newWompiScript.src = 'https://checkout.wompi.co/widget.js';
+    newWompiScript.setAttribute('data-render', 'button');
+    newWompiScript.setAttribute('data-public-key', publicKey || 'pk_test_...');
+    newWompiScript.setAttribute('data-currency', 'COP');
+    newWompiScript.setAttribute('data-amount-in-cents', amountCents);
+    newWompiScript.setAttribute('data-reference', paymentReference);
+    newWompiScript.setAttribute('data-signature:integrity', signature);
+    newWompiScript.setAttribute('data-redirect-url', window.location.origin);
+
+    wompiContainer.innerHTML = '';
+    wompiContainer.appendChild(newWompiScript);
+  };
+
+  // 🔹 Obtener datos de pago del servidor y actualizar Wompi
+  window.fetchAndUpdateWompiData = async function() {
+    try {
+      const response = await fetch('/cart.json', {
+        headers: {
+          'X-Requested-With': 'XMLHttpRequest',
+          'Accept': 'application/json'
+        }
+      });
+
+      if (!response.ok) throw new Error('Error fetching cart data');
+
+      const data = await response.json();
+      
+      if (data.amount_cents && data.amount_cents > 0) {
+        updateWompiWidgetWithData(data.amount_cents, data.payment_reference);
+      }
+    } catch (error) {
+      console.error('Error updating Wompi widget:', error);
+    }
+  };
+
+  // 🔹 Re-attachar event listeners después de re-renderizar el carrito
+  window.attachCartEventListeners = function() {
+    // Los event listeners en _cart_items.html.erb se activan con DOMContentLoaded
+    // Pero como el contenido se actualiza dinámicamente, necesitamos re-attacharlos
+    const csrfToken = document.querySelector('meta[name="csrf-token"]').content;
+
+    // Event listeners para cambiar cantidad
+    document.querySelectorAll('.cantidad-field').forEach(field => {
+      field.removeEventListener('change', null); // Remover listeners anteriores
+      field.addEventListener('change', async function() {
+        const form = this.closest('form');
+        const cartItem = this.closest('.cart-item-card');
+        const cantidad = parseInt(this.value) || 1;
+        const cartItemId = cartItem.id.replace('cart_item_', '');
+
+        try {
+          const response = await fetch(`/cart_items/${cartItemId}`, {
+            method: 'PATCH',
+            headers: {
+              'Content-Type': 'application/json',
+              'X-CSRF-Token': csrfToken
+            },
+            body: JSON.stringify({ cart_item: { cantidad: cantidad } })
+          });
+          
+          if (response.ok) {
+            // Obtener datos actualizados del servidor
+            await fetchAndUpdateWompiData();
+          }
+        } catch (error) {
+          console.error('Error:', error);
+        }
+      });
+    });
+
+    // Event listeners para eliminar items
+    document.querySelectorAll('.delete-item').forEach(btn => {
+      btn.removeEventListener('click', null);
+      btn.addEventListener('click', async function(e) {
+        e.preventDefault();
+        const form = this.closest('form');
+        const itemCard = this.closest('.cart-item-card');
+
+        try {
+          const response = await fetch(form.action, {
+            method: 'DELETE',
+            headers: { 'X-CSRF-Token': csrfToken }
+          });
+          if (response.ok) {
+            itemCard.style.opacity = '0';
+            setTimeout(async () => {
+              itemCard.remove();
+              // Actualizar Wompi después de eliminar
+              await fetchAndUpdateWompiData();
+              showToast('Producto eliminado', 'danger');
+            }, 300);
+          }
+        } catch (error) {
+          console.error('Error:', error);
+        }
+      });
+    });
+  };
 });
+

@@ -104,12 +104,30 @@
       </footer>
     </main>
 
+    <!-- CONTENEDOR DE TOASTS (fuera de dynamic-content para no ser reemplazado) -->
+    <div id="toast-container" class="toast-container position-fixed bottom-0 end-0 p-3" style="z-index: 1100;"></div>
+
     <%= javascript_include_tag 'application2', "data-turbo-track": "reload" %>
     <%= javascript_include_tag 'mi_script', "data-turbo-track": "reload" %>
 
     <!-- Offcanvas del carrito -->
     <% unless current_page?(cart_path) %>
-      <div class="offcanvas offcanvas-end" tabindex="-1" id="cartOffcanvas">
+      <% 
+        # Calcular datos de pago para Wompi
+        cart_items = @cart&.cart_items&.includes(:product) || []
+        total_amount = cart_items.sum { |i| (i.product&.precio || 0) * i.cantidad.to_i }
+        amount_cents = (total_amount * 100).to_i
+        payment_reference = @cart.present? ? "cart_#{@cart.id}_#{Time.now.to_i}" : ""
+        signature = if @cart.present? && amount_cents > 0
+                      WompiService.new.signature_for(
+                        reference: payment_reference,
+                        amount_in_cents: amount_cents
+                      )
+                    else
+                      nil
+                    end
+      %>
+      <div class="offcanvas offcanvas-end" tabindex="-1" id="cartOffcanvas" data-bs-scroll="true">
         <div class="offcanvas-header" style="position: relative; padding-bottom: 0;">
           <div class="section-header" style="width: 100%;">
             <h2 class="titulo"><%= t("cart.title") %></h2>
@@ -118,9 +136,60 @@
           <button type="button" class="btn-close" data-bs-dismiss="offcanvas"></button>
         </div>
         <div class="offcanvas-body" id="cart-offcanvas-body">
-          <%= render partial: "carts/cart_items", locals: { cart_items: @cart&.cart_items || [] } %>
+          <%= render partial: "carts/cart_items", locals: { 
+            cart_items: cart_items,
+            amount_cents: nil,
+            payment_reference: nil,
+            signature: nil
+          } %>
+        </div>
+        <!-- Wompi permanente fuera del body que se reemplaza -->
+        <div class="offcanvas-footer" style="padding: 1rem; border-top: 1px solid #e0e0e0; background-color: white; max-height: 50vh; overflow-y: auto;">
+          <div id="wompi-container" style="width: 100%; margin: 0; padding: 0; max-height: 100%; overflow-y: auto;"></div>
         </div>
       </div>
+
+      <!-- Script para inicializar Wompi -->
+      <script>
+        document.addEventListener('DOMContentLoaded', function() {
+          function initWompi() {
+            const amountCents = <%= amount_cents %>;
+            const publicKey = '<%= Rails.application.credentials.dig(:wompi, :public_key) %>';
+            const paymentRef = 'cart_<%= @cart&.id %>_<%= Time.now.to_i %>';
+            const sig = '<%= signature %>';
+            
+            if (amountCents && amountCents > 0 && sig) {
+              window.updateWompiWidgetWithData(amountCents, paymentRef, sig, publicKey);
+            }
+          }
+
+          // Inicializar Wompi cuando se carga la página
+          initWompi();
+
+          // Re-inicializar cuando se cierra y abre el offcanvas
+          const cartOffcanvas = document.getElementById('cartOffcanvas');
+          if (cartOffcanvas) {
+            cartOffcanvas.addEventListener('show.bs.offcanvas', function() {
+              // Obtener datos actuales del servidor
+              fetch('/cart.json', {
+                headers: { 'Accept': 'application/json' }
+              })
+              .then(r => r.json())
+              .then(data => {
+                if (data.amount_cents && data.amount_cents > 0) {
+                  window.updateWompiWidgetWithData(
+                    data.amount_cents,
+                    data.payment_reference,
+                    data.signature,
+                    data.public_key
+                  );
+                }
+              })
+              .catch(err => console.error('Error loading Wompi data:', err));
+            });
+          }
+        });
+      </script>
     <% end %>
 
     <!-- Offcanvas de favoritos -->

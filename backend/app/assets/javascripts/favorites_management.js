@@ -178,8 +178,15 @@ document.addEventListener('DOMContentLoaded', function() {
     }
   }
 
-  // Función auxiliar para mostrar mensajes
+  // Función auxiliar para mostrar mensajes con icono
   function showMessage(message, type) {
+    // Usar el sistema de toast existente si está disponible
+    if (typeof window.showToast === 'function') {
+      window.showToast(message, type);
+      return;
+    }
+    
+    // Fallback a alerts tradicionales si no existe showToast
     const alertClass = type === 'success' ? 'alert-success' : 'alert-danger';
     const alertElement = document.createElement('div');
     alertElement.className = `alert ${alertClass} text-center position-fixed top-0 start-50 translate-middle-x mt-3 shadow`;

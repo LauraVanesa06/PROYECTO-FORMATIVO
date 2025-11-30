@@ -37,9 +37,14 @@
     <div class="category-carousel" id="category-carousel" role="list">
       <% @categories.each do |c| %>
         <div class="category-card" role="listitem">
-          <a href="#" class="category-link d-flex flex-column align-items-center" data-category-id="<%= c.id %>">
+          <!-- Link con onclick que previene recarga y carga dinámicamente -->
+          <a href="#" 
+             class="category-link d-flex flex-column align-items-center" 
+             data-category-id="<%= c.id %>"
+             onclick="loadCategoryProducts(event, <%= c.id %>)"
+             style="text-decoration: none; color: inherit;">
             <% if c.imagen&.attached? %>
-              <%= image_tag c.imagen.variant(resize_to_fill: [80, 80], saver: { quality: 70 }), class: "mb-2 rounded-circle", loading: "lazy" %>
+              <img src="<%= rails_blob_path(c.imagen.variant(resize_to_fill: [80, 80], saver: { quality: 70 }), disposition: 'inline') %>" class="mb-2 rounded-circle" loading="lazy" alt="<%= c.nombre %>">
             <% else %>
               <i class="fa-solid fa-tag fa-2x mb-2"></i>
             <% end %>
@@ -135,9 +140,6 @@
     </div>
   <% end %>
 </section>
-
-<!-- TOASTS -->
-<div id="toast-container" class="toast-container position-fixed bottom-0 end-0 p-3" style="z-index: 1055;"></div>
 
 <script>
   // Abre el sidebar de perfil como si el usuario presionara el botón del header
@@ -287,20 +289,22 @@
     const toastId = "toast-" + Date.now();
     toast.id = toastId;
 
-    const bg = type === "success" ? "bg-success" : (type === "danger" ? "bg-danger" : `bg-${type}`);
+    const bg = type === "success" ? "bg-success" : (type === "danger" ? "bg-danger" : (type === "info" ? "bg-info" : `bg-${type}`));
+    const icon = type === "success" ? "fa-check-circle" : (type === "danger" ? "fa-trash-can" : (type === "info" ? "fa-trash-can" : "fa-info-circle"));
+    const title = type === "success" ? "Éxito" : (type === "danger" ? "Eliminado" : (type === "info" ? "Eliminado" : "Aviso"));
 
     toast.className = `toast fade show ${bg} text-white`;
     toast.role = "alert";
     toast.ariaLive = "assertive";
     toast.ariaAtomic = "true";
-    toast.style = "z-index: 1055;";
     toast.innerHTML = `
-      <div class="toast-header ${bg} text-white">
-        <strong class="me-auto">${type === "success" ? "Éxito" : "Aviso"}</strong>
-        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="toast" aria-label="Close"></button>
-      </div>
-      <div class="toast-body">
-        ${message}
+      <div class="d-flex align-items-center ps-3 pe-2 py-2">
+        <i class="fa-solid ${icon} me-2" style="font-size: 18px;"></i>
+        <div class="flex-grow-1">
+          <strong style="display: block; font-size: 12px;">${title}</strong>
+          <small style="display: block; font-size: 12px;">${message}</small>
+        </div>
+        <button type="button" class="btn-close btn-close-white ms-2" data-bs-dismiss="toast" aria-label="Close" style="padding: 0; width: auto; height: auto;"></button>
       </div>
     `;
     toastContainer.appendChild(toast);
@@ -310,10 +314,16 @@
       if (toastElement && window.bootstrap?.Toast) {
         const bsToast = new bootstrap.Toast(toastElement);
         bsToast.hide();
-        toastElement.addEventListener("hidden.bs.toast", () => toastElement.remove());
+        toastElement.addEventListener("hidden.bs.toast", () => {
+          toastElement.remove();
+        }, { once: true });
       } else if (toastElement) {
         toastElement.classList.remove("show");
-        setTimeout(() => toastElement.remove(), 500);
+        setTimeout(() => {
+          if (toastElement.parentNode) {
+            toastElement.remove();
+          }
+        }, 500);
       }
     }, 3000);
   }
