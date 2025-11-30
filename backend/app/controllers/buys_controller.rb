@@ -5,7 +5,11 @@ class BuysController < ApplicationController
   # GET /buys or /buys.json
   def index
     # Base: todas las ventas con relaciones
+    
+    @buys = Buy.new
     @buys = Buy.includes(:payment, :user).order(fecha: :desc)
+    
+    @products = Product.all
 
     # Filtro por nombre de cliente (case-insensitive)
     if params[:customer].present?
@@ -59,39 +63,74 @@ class BuysController < ApplicationController
 
   # POST /buys or /buys.json
   def create
+    
+    venta_fisica = params[:buy][:tipo] == "presencial"
+      
     @buy = Buy.new(
-      buy_params
-      email: params[email]
-      tipo: "fisica",
-      fecha: Time.zone.now
-      )
-
-      productos_param = param[:ventas][:product]
-
-
-      if productos_param.present?
-        productos_param.each do |id, data|
-          next unless data["select"] == "on"
-        producto = Producto.find(id)
-      cantidad = data["cantidad"].to_i
-
-      # Crear el item
-        buy.items.build(
-        producto: producto,
-        cantidad: cantidad,
-        precio: producto.precio
-      )
-
-      # Reducir stock
-      producto.stock -= cantidad
-      producto.save
-
-    if @buy.save
-      redirect_to @buy, notice: "Compra creada."
-    else
-      render :new
+      
+      user: venta_fisica ? nil : current_user,
+      tipo:venta_fisica ? "fisica" : "online",
+      fecha: Time.current,
+      total: 0,
+       metodo_pago:  venta_fisica ? "Efectivo" : "Wompi"
+    )
+    
+    if venta_fisica
+    
+      @buy.client_nombre = params[:buy][:client_nombre]
+      @buy.client_email = params[:buy][:client_email]
     end
+
+    
+    productos = params[:productos] || []
+    if productos.empty?
+      flash[:alert] = "Debe agregar al menos un producto."
+      redirect_to buys_path and return
+    end
+
+    total_compra = 0
+
+    ActiveRecord::Base.transaction do
+    @buy.save!
+
+
+    productos.each do |item|
+      product = Product.find_by(id: item[:id])
+
+      if product.nil?
+        raise ActiveRecord::Rollback
+
+        flash[:alert] = "El producto con ID #{item[:id]} no existe."
+        redirect_to buys_path and return
+      end
+
+      cantidad = item[:cantidad].to_i
+
+      
+      Purchasedetail.create!(
+          buy_id: @buy.id,
+          product_id: product.id,
+          cantidad: cantidad,
+          preciounidad: product.precio
+      )
+
+      product.update!(stock: product.stock - cantidad)
+      total_compra += product.precio * cantidad
+
+      
+    end
+      @buy.update!(total: total_compra)
+
+  end 
+    if @buy.save
+      redirect_to buys_path, notice: "Su compra fue realizada de manera correcta"
+    else
+      flash[:alert] = "No se pudo guardar la compra"
+    redirect_to buys_path
+    end
+      
   end
+
 
   # PATCH/PUT /buys/1 or /buys/1.json
   def update
@@ -141,9 +180,9 @@ class BuysController < ApplicationController
     buy = Buy.create!(
       tipo: "Física",
       fecha: Time.current,
-      metodo_pago: "Efectivo",
-      cliente_nombre: params[:cliente_nombre],
-      cliente_email: params[:cliente_email],
+      method: "Efectivo",
+      client_nombre: params[:client_nombre],
+      client_email: params[:client_email],
       total: 0
     )
 

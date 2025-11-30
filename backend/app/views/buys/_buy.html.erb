@@ -1,31 +1,64 @@
 <div id="<%= dom_id(buy) %>" class="buy-card-formal">
   <div class="buy-main-info">
+
     <div class="buy-id-section">
       <span class="id-label">Venta</span>
       <span class="id-number"><%= buy.id %></span>
     </div>
-    
     <div class="buy-details-grid">
-      <div class="detail-row">
-        <span class="detail-label">Cliente:</span>
-        <span class="detail-value"><%= buy.user.name %></span>
-      </div>
-      <div class="detail-row">
-        <span class="detail-label">Fecha:</span>
-        <span class="detail-value"><%= buy.fecha.strftime("%d/%m/%Y") %></span>
-      </div>
-      <div class="detail-row">
-        <span class="detail-label">Tipo:</span>
-        <span class="detail-value <%= buy.payment_id.present? ? 'online-badge' : 'physical-badge' %>">
-          <%= buy.payment_id.present? ? "En línea" : "Física" %>
-        </span>
-      </div>
+      <% if buy.tipo == "fisica" %>
+      
+        <div class="buy-details-grid">
+         <span class="detail-label">Cliente:</span>
+          <span class="detail-value"><%= buy.client_name.presence || "Sin cliente" %></span>
+        </div>
+
+
+        <div class="detail-row">
+         <span class="detail-label">Correo:</span>
+          <span class="detail-value"><%= buy.client_email.presence || "sin-correo" %></span>
+        </div>
+
+        <div class="detail-row">
+          <span class="detail-label">Fecha:</span>
+          <span class="detail-value"><%= buy.fecha.strftime("%d/%m/%Y") %></span>
+        </div>
+
+        <div class="detail-row">
+          <span class="detail-label">Tipo:</span>
+          <span class="detail-value physical-badge">Física</span>
+        </div>
+
+
+
+
+      <% else %>
+
+        <div class="detail-row">
+          <span class="detail-label">Cliente:</span>
+          <span class="detail-value"><%= buy.user&.name || "Sin cliente" %></span>
+          
+        </div>
+        <div class="detail-row">
+          <span class="detail-label">Fecha:</span>
+          <span class="detail-value"><%= buy.fecha.strftime("%d/%m/%Y") %></span>
+        </div>
+        <div class="detail-row">
+          <span class="detail-label">Tipo:</span>
+          <span class="detail-value <%= buy.payment_id.present? ? 'online-badge' : 'physical-badge' %>">
+            <%= buy.payment_id.present? ? "En línea" : "Física" %>
+          </span>
+        </div>
+<% end %>
+
+      
     </div>
   </div>
 
   <div class="buy-actions-section">
     <div class="total-section">
       <span class="total-label">Total</span>
+
       <span class="total-value">
         <% if buy.total.present? %>
           $<%= number_with_precision(buy.total, precision: 2) %>
@@ -34,16 +67,21 @@
         <% end %>
       </span>
     </div>
+
     <button class="show-buy btn-view-formal"
-      data-buy-id="<%= buy.id %>"
-      data-nombre-cliente="<%= buy.user.name %>"
-      data-documento-cliente="<%= buy.user.email %>"
-      data-fecha-compra="<%= buy.fecha.strftime("%d/%m/%Y") %>"
-      data-tipo-compra="<%= buy.payment_id.present? ? 'En línea (Wompi)' : 'Física' %>"
-      data-metodo-compra="<%= buy.payment&.pay_method || 'Efectivo' %>"
-      data-total="<%= buy.total.present? ? number_with_precision(buy.total, precision: 2) : (buy.payment&.amount.present? ? number_with_precision(buy.payment.amount, precision: 2) : '0.00') %>">
-      Ver detalles
-    </button>
+  data-bs-toggle="modal" 
+  data-bs-target="#modalInfoCompra"
+  
+  data-buy-id="<%= buy.id %>"
+  data-client-name="<%= buy.client_name.presence || buy.user&.name || 'Sin cliente' %>"
+  data-client-email="<%= buy.client_email.presence || buy.user&.email || 'Sin correo' %>"
+  data-fecha-compra="<%= buy.fecha.strftime('%d/%m/%Y') %>"
+  data-metodo="<%= buy.metodo_pago.presence || buy.payment&.pay_method || 'Efectivo' %>"
+  data-total="<%= buy.total.present? ? number_with_precision(buy.total, precision: 2) : (buy.payment&.amount.present? ? number_with_precision(buy.payment.amount, precision: 2) : '0.00') %>"
+>
+  Ver detalles
+</button>
+
   </div>
 </div>
 
