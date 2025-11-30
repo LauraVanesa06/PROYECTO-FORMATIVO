@@ -508,9 +508,13 @@
   }
 
   .productos-grid {
-    max-height: 340px;
-    overflow-y: auto;
-    padding-right: 8px;
+    display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 20px;
+  max-height: 300px;
+  overflow-y: auto;
+  padding-right: 10px;
+
   }
 
   .productos-grid::-webkit-scrollbar {
@@ -697,17 +701,37 @@
 }
 
 .producto-card {
-  border: 1px solid #ccc;
-  border-radius: 8px;
-  padding: 10px;
+  background: #ffffff;
+  border-radius: 12px;
+  padding: 15px;
+  box-shadow: 0px 4px 10px rgba(0,0,0,0.1);
   text-align: center;
-  background: white;
+  transition: 0.2s;
+}
+
+.producto-card:hover {
+  transform: scale(1.03);
 }
 
 .producto-imagen {
-  width: 100%;
-  height: 100px;
+  width: 80px;
+  height: 80px;
   object-fit: contain;
+  margin-bottom: 10px;
+}
+.seleccionar-producto {
+  border-radius: 8px !important;
+}
+
+#tabla-seleccionados td, #tabla-seleccionados th {
+  vertical-align: middle;
+}
+
+
+#form-venta-fisica button[type="submit"] {
+  font-size: 18px;
+  padding: 12px;
+  border-radius: 10px;
 }
 
 .producto-nombre {
@@ -725,6 +749,69 @@
   color: green;
   font-weight: bold;
 }
+.modal-dialog {
+  margin-top: 30px;
+}
+
+.modal-body .mb-3 {
+  margin-bottom: 1.2rem !important;
+}
+
+.filtro-container {
+  display: flex;
+  gap: 20px;
+  justify-content: center;
+  margin-bottom: 25px;
+}
+
+.filtro-container div {
+  flex: 1;
+}
+
+.modal{
+  display: none;
+    position: fixed;
+    z-index: 9999;
+  
+    left: 0;
+    top: 0;
+    padding-left: 38%;
+     width: 100%; 
+ 
+    overflow: hidden;
+    background-color: rgba(0, 0, 0, 0.6);
+}
+
+#modalVentaFisica .modal-dialog {
+  margin-top: 20px !important;     /* Súbelo más si quieres */
+  transform: translateY(-20px);    /* Ajuste fino para subirlo visualmente */
+}
+
+/* Evitar que el modal quede demasiado ancho y recorte cosas */
+#modalVentaFisica .modal-dialog.modal-xl {
+  max-width: 90% !important;
+}
+
+/* Hacer que el contenido interno respire más */
+#modalVentaFisica .modal-body {
+  padding-top: 10px;
+  padding-bottom: 20px;
+}
+
+#modalVentaFisica input.form-control {
+  margin-bottom: 10px;
+}
+
+#modalVentaFisica .form-control {
+  padding: 7px 12px;
+  border-radius: 8px;
+}
+
+#modalVentaFisica .form-label {
+  font-weight: 600;
+}
+
+
 
 </style>
 
@@ -742,28 +829,31 @@
 
           <%= hidden_field_tag :authenticity_token, form_authenticity_token %>
 
-          <!-- Cliente -->
-          <div class="mb-3">
-            <label>Cliente</label>
-            <input type="text" name="buy[client_name]" class="form-control" required>
-          </div>
 
-          <div class="mb-3">
-            <label>Correo</label>
-            <input type="email" name="buy[client_email]" class="form-control">
-          </div>
+         <div class="row g-3 mb-4 align-items-end text-center">
 
-          <!-- FILTRO -->
-          <div class="d-flex justify-content-between mb-3">
-            <div>
-              <strong>Buscar producto:</strong>
-              <input type="text" id="filtroProducto" class="form-control" placeholder="Nombre o código">
-            </div>
-            <div>
-              <strong>Código:</strong>
-              <input type="text" id="codigoBusqueda" class="form-control" placeholder="Código exacto">
-            </div>
-          </div>
+  <div class="col-md-3">
+    <label class="form-label">Cliente</label>
+    <input type="text" name="buy[client_name]" class="form-control" required>
+  </div>
+
+  <div class="col-md-3">
+    <label class="form-label">Correo</label>
+    <input type="email" name="buy[client_email]" class="form-control">
+  </div>
+
+  <div class="col-md-3">
+    <label class="form-label">Buscar producto</label>
+    <input type="text" id="filtroProducto" class="form-control" placeholder="Nombre o código">
+  </div>
+
+  <div class="col-md-3">
+    <label class="form-label">Código</label>
+    <input type="text" id="codigoBusqueda" class="form-control" placeholder="Código exacto">
+  </div>
+
+</div>
+
 
           <!-- GRID DE PRODUCTOS -->
           <div class="productos-grid">

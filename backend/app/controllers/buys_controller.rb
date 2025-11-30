@@ -71,87 +71,65 @@ class BuysController < ApplicationController
       user: venta_fisica ? nil : current_user,
       tipo:venta_fisica ? "fisica" : "online",
       fecha: Time.current,
-      total: params[:total],
+      total: 0,
        metodo_pago:  venta_fisica ? "Efectivo" : "Wompi"
     )
     if venta_fisica
     
-      @buy.cliente_nombre = params[:buy][:cliente_nombre]
-      @buy.cliente_email = params[:buy][:cliente_email]
+      @buy.client_nombre = params[:buy][:client_nombre]
+      @buy.client_email = params[:buy][:client_email]
     end
 
+    
+  productos = params[:productos] || []
+  if productos.empty?
+    flash[:alert] = "Debe agregar al menos un producto."
+    redirect_to buys_path and return
+  end
 
-    productos_param = params[:venta][:product]
-    total_compra = 0
+  total_compra = 0
+
+  ActiveRecord::Base.transaction do
+    @buy.save!
 
 
-    if productos_param.present?
-      productos_param.each do |id, data|
-        next unless data["select"] == "on"
+  productos.each do |item|
+    product = Product.find_by(id: item[:id])
 
-        product = Product.find(id)
-        cantidad = data["cantidad"].to_i
+    if product.nil?
+              raise ActiveRecord::Rollback
 
-        subtotal = product.precio * cantidad
-        total_compra += subtotal
-
-          # Crear el item
-        @buy.buy_products.build(
-          product: product,
-          cantidad: cantidad,
-          precio_unitario: product.precio
-           # metodo_pago: "efectivo"
-          
-        )
-          
-
-        product.update(stock: product.stock - cantidad)
-      end
+      flash[:alert] = "El producto con ID #{item[:id]} no existe."
+      redirect_to buys_path and return
     end
 
-    if params[:codigo_producto].present?
-      Product.find_by(codigo_producto: params[:codigo_producto])
+    cantidad = item[:cantidad].to_i
 
-    if product
-      cantidad = params[:cantidad].to_i
-
-      subtotal = product.precio * cantidad
-      total_compra += subtotal
-
-      @buy.buy_products.build(
-        product: product,
+    
+ Purchasedetail.create!(
+        buy_id: @buy.id,
+        product_id: product.id,
         cantidad: cantidad,
-        precio_unitario: product.precio
+        preciounidad: product.precio
       )
 
-      product.update(stock: product.stock - cantidad)
-    else
-      flash[:alert] = "El producto '#{params[:product_name]}' no existe."
-    end
-  end
+        product.update!(stock: product.stock - cantidad)
+              total_compra += product.precio * cantidad
 
+      
+      end
+          @buy.update!(total: total_compra)
 
-    @buy.total = total_compra
-    if @buy.save
+    end 
+          if @buy.save
       redirect_to buys_path, notice: "Su compra fue realizada de manera correcta"
     else
-      
-      @buys = Buy.includes(:payment, :user).order(created_at: :desc)
-    @products = Product.all
-      render :index
+      flash[:alert] = "No se pudo guardar la compra"
+    redirect_to buys_path
     end
-          # Reducir stock
-          #producto.stock -= cantidad
-          #producto.save
+      
   end
 
-     # if @buy.save
-      #  redirect_to buys_path, notice: "Venta física registrada correctamente."
-     # else
-      #  redirect_to buys_path, alert: "Error al registrar la venta."
-     # end
-      
-  
 
   # PATCH/PUT /buys/1 or /buys/1.json
   def update
@@ -202,8 +180,8 @@ class BuysController < ApplicationController
       tipo: "Física",
       fecha: Time.current,
       method: "Efectivo",
-      cliente_nombre: params[:cliente_nombre],
-      cliente_email: params[:cliente_email],
+      client_nombre: params[:client_nombre],
+      client_email: params[:client_email],
       total: 0
     )
 
