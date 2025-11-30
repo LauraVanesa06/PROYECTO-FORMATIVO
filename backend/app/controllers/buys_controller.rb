@@ -74,6 +74,7 @@ class BuysController < ApplicationController
       total: 0,
        metodo_pago:  venta_fisica ? "Efectivo" : "Wompi"
     )
+    
     if venta_fisica
     
       @buy.client_nombre = params[:buy][:client_nombre]
@@ -81,47 +82,47 @@ class BuysController < ApplicationController
     end
 
     
-  productos = params[:productos] || []
-  if productos.empty?
-    flash[:alert] = "Debe agregar al menos un producto."
-    redirect_to buys_path and return
-  end
-
-  total_compra = 0
-
-  ActiveRecord::Base.transaction do
-    @buy.save!
-
-
-  productos.each do |item|
-    product = Product.find_by(id: item[:id])
-
-    if product.nil?
-              raise ActiveRecord::Rollback
-
-      flash[:alert] = "El producto con ID #{item[:id]} no existe."
+    productos = params[:productos] || []
+    if productos.empty?
+      flash[:alert] = "Debe agregar al menos un producto."
       redirect_to buys_path and return
     end
 
-    cantidad = item[:cantidad].to_i
+    total_compra = 0
 
-    
- Purchasedetail.create!(
-        buy_id: @buy.id,
-        product_id: product.id,
-        cantidad: cantidad,
-        preciounidad: product.precio
-      )
+    ActiveRecord::Base.transaction do
+    @buy.save!
 
-        product.update!(stock: product.stock - cantidad)
-              total_compra += product.precio * cantidad
+
+    productos.each do |item|
+      product = Product.find_by(id: item[:id])
+
+      if product.nil?
+        raise ActiveRecord::Rollback
+
+        flash[:alert] = "El producto con ID #{item[:id]} no existe."
+        redirect_to buys_path and return
+      end
+
+      cantidad = item[:cantidad].to_i
 
       
-      end
-          @buy.update!(total: total_compra)
+      Purchasedetail.create!(
+          buy_id: @buy.id,
+          product_id: product.id,
+          cantidad: cantidad,
+          preciounidad: product.precio
+      )
 
-    end 
-          if @buy.save
+      product.update!(stock: product.stock - cantidad)
+      total_compra += product.precio * cantidad
+
+      
+    end
+      @buy.update!(total: total_compra)
+
+  end 
+    if @buy.save
       redirect_to buys_path, notice: "Su compra fue realizada de manera correcta"
     else
       flash[:alert] = "No se pudo guardar la compra"
