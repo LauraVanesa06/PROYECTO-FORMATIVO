@@ -1,3 +1,7 @@
+<% content_for :head do %>
+  <%= stylesheet_link_tag "pedidos", media: "all" %>
+<% end %>
+
 <section class="section-container">
     <section class="sect-product">
       <div class="form-provv" id="supplier_form_container">  <!-- <--- id agregado -->
@@ -93,10 +97,6 @@
     </section>
     <%= link_to "Hacer Pedido", new_pedido_path, class:"btn-pedir" %>
   </section>
-
-  <footer>
-    &copy; 2025 Ferremateriales el Maestro - v3.8.5
-  </footer>
 
   <script>
     document.addEventListener("turbo:load", () => {
