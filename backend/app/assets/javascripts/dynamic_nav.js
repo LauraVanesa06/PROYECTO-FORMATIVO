@@ -995,4 +995,126 @@ document.addEventListener('DOMContentLoaded', function() {
       await loadView(event.state.view, event.state.view === 'home' ? '/' : `/${event.state.view}`);
     }
   });
+
+  // Función para crear y mostrar el overlay de carga
+  function showLoadingOverlay() {
+    let overlay = document.querySelector('.loading-overlay');
+    if (!overlay) {
+      overlay = document.createElement('div');
+      overlay.className = 'loading-overlay';
+      overlay.innerHTML = `
+        <div class="loading-spinner"></div>
+        <div class="loading-text">Cargando carrito...</div>
+      `;
+      document.body.appendChild(overlay);
+    } else {
+      overlay.classList.remove('fade-out');
+    }
+    return overlay;
+  }
+
+  // Función para ocultar el overlay de carga
+  function hideLoadingOverlay(overlay) {
+    if (overlay) {
+      overlay.classList.add('fade-out');
+      setTimeout(() => {
+        if (overlay.parentNode) {
+          overlay.remove();
+        }
+      }, 300);
+    }
+  }
+
+  // Función para cargar el carrito dinámicamente con animación
+  window.loadCartDynamic = async function() {
+    const overlay = showLoadingOverlay();
+    
+    try {
+      // Pequeño delay para que se vea la animación
+      await new Promise(resolve => setTimeout(resolve, 500));
+
+      const response = await fetch('/cart', {
+        method: 'GET',
+        headers: {
+          'X-Requested-With': 'XMLHttpRequest',
+          'Accept': 'text/html'
+        }
+      });
+
+      if (!response.ok) throw new Error('Error al cargar carrito');
+
+      const html = await response.text();
+      const parser = new DOMParser();
+      const doc = parser.parseFromString(html, 'text/html');
+      
+      // Buscar el contenido dinámico
+      let newContent = doc.querySelector('#dynamic-content');
+      if (!newContent) {
+        newContent = doc.querySelector('main');
+      }
+
+      const currentContent = document.querySelector('#dynamic-content');
+      if (currentContent && newContent) {
+        // Fade out del contenido actual
+        currentContent.style.transition = 'opacity 0.3s ease-out';
+        currentContent.style.opacity = '0';
+
+        // Esperar a que se fade out
+        await new Promise(resolve => setTimeout(resolve, 300));
+
+        // Reemplazar contenido
+        currentContent.innerHTML = newContent.innerHTML;
+        
+        // Fade in del nuevo contenido
+        currentContent.style.opacity = '1';
+        
+        // Cerrar offcanvas si está abierto
+        const cartOffcanvas = document.querySelector('#cartOffcanvas');
+        if (cartOffcanvas) {
+          const bsOffcanvas = bootstrap.Offcanvas.getInstance(cartOffcanvas);
+          if (bsOffcanvas) bsOffcanvas.hide();
+        }
+        
+        // Reinicializar scripts
+        if (typeof reinitializeScripts === 'function') {
+          reinitializeScripts(currentContent);
+        }
+        
+        // Reinicializar Wompi si existe - buscar el contenedor
+        const wompiContainer = currentContent.querySelector('#wompi-container');
+        if (wompiContainer) {
+          const wompiScript = wompiContainer.querySelector('script[src*="wompi"]');
+          if (wompiScript) {
+            // Crear nuevo script que será ejecutado por el navegador
+            const newWompiScript = document.createElement('script');
+            newWompiScript.src = 'https://checkout.wompi.co/widget.js';
+            
+            // Copiar todos los atributos data- del script original
+            Array.from(wompiScript.attributes).forEach(attr => {
+              if (attr.name.startsWith('data-') || attr.name === 'src') {
+                newWompiScript.setAttribute(attr.name, attr.value);
+              }
+            });
+            
+            // Limpiar el contenedor y agregar el nuevo script
+            wompiContainer.innerHTML = '';
+            wompiContainer.appendChild(newWompiScript);
+          }
+        }
+        
+        // Scroll a top con animación
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      } else {
+        throw new Error('No se encontró contenido dinámico');
+      }
+    } catch (error) {
+      console.error('Error al cargar carrito:', error);
+      // Si falla, navegar normalmente
+      window.location.href = '/cart';
+    } finally {
+      // Ocultar overlay después de un pequeño delay
+      await new Promise(resolve => setTimeout(resolve, 300));
+      hideLoadingOverlay(overlay);
+    }
+  };
 });

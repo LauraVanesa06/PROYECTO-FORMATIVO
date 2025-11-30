@@ -1,16 +1,18 @@
-<div class="container mt-5" style="margin:0; padding:0;">
-  <div class="section-header">
-    <h2 class="titulo"><%= t("cart.title") %></h2>
-    <center><hr class="linea-bonita"></center>
+<div id="dynamic-content">
+  <div class="container mt-5">
+    <div class="section-header">
+      <h2 class="titulo"><%= t("cart.title") %></h2>
+      <center><hr class="linea-bonita"></center>
+    </div>
+
+    <%= turbo_frame_tag "cart_items" do %>
+      <%= render partial: "carts/cart_items", locals: { cart_items: @cart_items } %>
+    <% end %>
+
+    <% total = @cart_items.sum { |item| item.product.precio * item.cantidad } %>
+
+   
   </div>
 
-  <%= turbo_frame_tag "cart_items" do %>
-    <%= render partial: "carts/cart_items", locals: { cart_items: @cart_items } %>
-  <% end %>
-
-  <% total = @cart_items.sum { |item| item.product.precio * item.cantidad } %>
-
- 
+  <script src="https://checkout.wompi.co/widget.js"></script>
 </div>
-
-<script src="https://checkout.wompi.co/widget.js"></script>

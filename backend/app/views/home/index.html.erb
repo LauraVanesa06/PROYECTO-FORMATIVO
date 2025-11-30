@@ -44,7 +44,7 @@
              onclick="loadCategoryProducts(event, <%= c.id %>)"
              style="text-decoration: none; color: inherit;">
             <% if c.imagen&.attached? %>
-              <%= image_tag c.imagen.variant(resize_to_fill: [80, 80], saver: { quality: 70 }), class: "mb-2 rounded-circle", loading: "lazy" %>
+              <img src="<%= rails_blob_path(c.imagen.variant(resize_to_fill: [80, 80], saver: { quality: 70 }), disposition: 'inline') %>" class="mb-2 rounded-circle" loading="lazy" alt="<%= c.nombre %>">
             <% else %>
               <i class="fa-solid fa-tag fa-2x mb-2"></i>
             <% end %>
