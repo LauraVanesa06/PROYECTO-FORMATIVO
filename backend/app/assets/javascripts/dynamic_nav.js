@@ -435,7 +435,22 @@ document.addEventListener('DOMContentLoaded', function() {
               const data = await response.json();
               if (data.cart_html) {
                 const cartBody = document.querySelector('#cart-offcanvas-body');
-                if (cartBody) cartBody.innerHTML = data.cart_html;
+                if (cartBody) {
+                  cartBody.innerHTML = data.cart_html;
+                  
+                  // Actualizar Wompi con los datos que vinieron en la respuesta
+                  if (data.amount_cents && data.amount_cents > 0) {
+                    updateWompiWidgetWithData(
+                      data.amount_cents, 
+                      data.payment_reference,
+                      data.signature,
+                      data.public_key
+                    );
+                  }
+                  
+                  // Re-attachar event listeners a los nuevos elementos
+                  attachCartEventListeners();
+                }
               }
               const cartCount = document.querySelector('#cart-count');
               if (cartCount && data.count !== undefined) {
@@ -1117,4 +1132,137 @@ document.addEventListener('DOMContentLoaded', function() {
       hideLoadingOverlay(overlay);
     }
   };
+
+  // 🔹 Reinicializar el widget Wompi después de actualizar el carrito
+  window.reinitializeWompiWidget = function() {
+    const wompiContainer = document.getElementById('wompi-container');
+    if (!wompiContainer) return;
+
+    // Obtener el script existente
+    const existingScript = wompiContainer.querySelector('script[src*="wompi"]');
+    if (!existingScript) return;
+
+    // Crear un nuevo script con los mismos atributos
+    const newWompiScript = document.createElement('script');
+    newWompiScript.src = 'https://checkout.wompi.co/widget.js';
+    newWompiScript.setAttribute('data-render', 'button');
+    
+    // Copiar todos los data attributes del script anterior
+    Array.from(existingScript.attributes).forEach(attr => {
+      if (attr.name.startsWith('data-') || attr.name === 'src') {
+        newWompiScript.setAttribute(attr.name, attr.value);
+      }
+    });
+    
+    // Limpiar y agregar el nuevo script
+    wompiContainer.innerHTML = '';
+    wompiContainer.appendChild(newWompiScript);
+  };
+
+  // 🔹 Actualizar Wompi con datos específicos
+  window.updateWompiWidgetWithData = function(amountCents, paymentReference, signature, publicKey) {
+    const wompiContainer = document.getElementById('wompi-container');
+    if (!wompiContainer) return;
+
+    // Crear nuevo script con datos actualizados
+    const newWompiScript = document.createElement('script');
+    newWompiScript.src = 'https://checkout.wompi.co/widget.js';
+    newWompiScript.setAttribute('data-render', 'button');
+    newWompiScript.setAttribute('data-public-key', publicKey || 'pk_test_...');
+    newWompiScript.setAttribute('data-currency', 'COP');
+    newWompiScript.setAttribute('data-amount-in-cents', amountCents);
+    newWompiScript.setAttribute('data-reference', paymentReference);
+    newWompiScript.setAttribute('data-signature:integrity', signature);
+    newWompiScript.setAttribute('data-redirect-url', window.location.origin);
+
+    wompiContainer.innerHTML = '';
+    wompiContainer.appendChild(newWompiScript);
+  };
+
+  // 🔹 Obtener datos de pago del servidor y actualizar Wompi
+  window.fetchAndUpdateWompiData = async function() {
+    try {
+      const response = await fetch('/cart.json', {
+        headers: {
+          'X-Requested-With': 'XMLHttpRequest',
+          'Accept': 'application/json'
+        }
+      });
+
+      if (!response.ok) throw new Error('Error fetching cart data');
+
+      const data = await response.json();
+      
+      if (data.amount_cents && data.amount_cents > 0) {
+        updateWompiWidgetWithData(data.amount_cents, data.payment_reference);
+      }
+    } catch (error) {
+      console.error('Error updating Wompi widget:', error);
+    }
+  };
+
+  // 🔹 Re-attachar event listeners después de re-renderizar el carrito
+  window.attachCartEventListeners = function() {
+    // Los event listeners en _cart_items.html.erb se activan con DOMContentLoaded
+    // Pero como el contenido se actualiza dinámicamente, necesitamos re-attacharlos
+    const csrfToken = document.querySelector('meta[name="csrf-token"]').content;
+
+    // Event listeners para cambiar cantidad
+    document.querySelectorAll('.cantidad-field').forEach(field => {
+      field.removeEventListener('change', null); // Remover listeners anteriores
+      field.addEventListener('change', async function() {
+        const form = this.closest('form');
+        const cartItem = this.closest('.cart-item-card');
+        const cantidad = parseInt(this.value) || 1;
+        const cartItemId = cartItem.id.replace('cart_item_', '');
+
+        try {
+          const response = await fetch(`/cart_items/${cartItemId}`, {
+            method: 'PATCH',
+            headers: {
+              'Content-Type': 'application/json',
+              'X-CSRF-Token': csrfToken
+            },
+            body: JSON.stringify({ cart_item: { cantidad: cantidad } })
+          });
+          
+          if (response.ok) {
+            // Obtener datos actualizados del servidor
+            await fetchAndUpdateWompiData();
+          }
+        } catch (error) {
+          console.error('Error:', error);
+        }
+      });
+    });
+
+    // Event listeners para eliminar items
+    document.querySelectorAll('.delete-item').forEach(btn => {
+      btn.removeEventListener('click', null);
+      btn.addEventListener('click', async function(e) {
+        e.preventDefault();
+        const form = this.closest('form');
+        const itemCard = this.closest('.cart-item-card');
+
+        try {
+          const response = await fetch(form.action, {
+            method: 'DELETE',
+            headers: { 'X-CSRF-Token': csrfToken }
+          });
+          if (response.ok) {
+            itemCard.style.opacity = '0';
+            setTimeout(async () => {
+              itemCard.remove();
+              // Actualizar Wompi después de eliminar
+              await fetchAndUpdateWompiData();
+              showToast('Producto eliminado', 'danger');
+            }, 300);
+          }
+        } catch (error) {
+          console.error('Error:', error);
+        }
+      });
+    });
+  };
 });
+

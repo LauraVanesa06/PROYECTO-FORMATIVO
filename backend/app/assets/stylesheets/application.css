@@ -23,9 +23,11 @@
 
 #cart-offcanvas-body{
   display: flex;
-    padding: 0;
-    flex-direction: column;
-    justify-content: space-between;
+  padding: 0;
+  flex-direction: column;
+  justify-content: space-between;
+  overflow-y: auto;
+  max-height: calc(100vh - 160px);
 }
 
 #cart-summary{

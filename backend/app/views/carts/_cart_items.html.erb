@@ -58,30 +58,8 @@
         <div style="flex-shrink: 0;">
           <h5 class="mb-1" style="font-size: 13px; color: #666; margin: 0;"><%= t("cart.total") %>:</h5>
           <span class="fs-5 fw-bold text-success" id="cart-total">
-            COP <%= number_with_precision(cart_items.sum { |i| (i.product&.precio || 0) * (i.cantidad || 0) }, delimiter: '.', separator: ',', precision: 2) %>
+            COP <%= number_with_precision(cart_items.sum { |i| (i.product&.precio || 0) * (i.cantidad.to_i || 0) }, delimiter: '.', separator: ',', precision: 2) %>
           </span>
-        </div>
-
-        <!-- Botón o formulario a la derecha -->
-        <div style="flex-grow: 1; min-width: 200px;">
-          <% if (@amount_cents && @amount_cents > 0 && @signature.present?) && (controller_name == "carts" && action_name == "show") %>
-            <%# ✅ Solo Wompi en la vista principal del carrito %>
-            <div id="wompi-container" style="width: 100%; margin: 0; padding: 0;">
-              <script
-                src="https://checkout.wompi.co/widget.js"
-                data-render="button"
-                data-public-key="<%= Rails.application.credentials.dig(:wompi, :public_key) %>"
-                data-currency="COP"
-                data-amount-in-cents="<%= @amount_cents %>"
-                data-reference="<%= @payment_reference %>"
-                data-signature:integrity="<%= @signature %>"
-                data-redirect-url="<%= cart_url %>">
-              </script>
-            </div>
-          <% else %>
-            <%# ✅ Botón "Ir al carrito" cuando se muestra como partial (sidebar) %>
-            <button onclick="loadCartDynamic()" class="btn btn-success w-100 fw-semibold" id="cart-go-btn">Ir al carrito</button>
-          <% end %>
         </div>
       </div>
     </div>
@@ -131,7 +109,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }, 3000);
   }
 
-  // 🔹 Actualizar subtotal y total al cambiar cantidad
+  // 🔹 Actualizar subtotal y total al cambiar cantidad (en tiempo real en la UI)
   document.addEventListener('input', function(e) {
     const field = e.target.closest('.cantidad-field');
     if (!field) return;
@@ -153,28 +131,56 @@ document.addEventListener('DOMContentLoaded', function() {
     updateCartTotal();
   });
 
-  // 🔹 Enviar cambios al servidor
+  // 🔹 Enviar cambios al servidor cuando el usuario deja de escribir
   document.addEventListener('change', async function(e) {
     const field = e.target.closest('.cantidad-field');
     if (!field) return;
 
+    const cantidad = parseInt(field.value) || 1;
     const form = field.closest('form');
-    const cantidad = field.value;
+    const cartItem = field.closest('.cart-item-card');
+    const itemId = cartItem.id; // ID del cart_item
+
+    // Extraer el ID del elemento (ej: cart_item_1)
+    const cartItemId = itemId ? itemId.replace('cart_item_', '') : null;
+    
+    if (!cartItemId) {
+      showToast('Error: No se pudo identificar el item', 'danger');
+      return;
+    }
 
     try {
-      const response = await fetch(form.action, {
+      const response = await fetch(`/cart_items/${cartItemId}`, {
         method: 'PATCH',
         headers: {
           'Content-Type': 'application/json',
           'X-CSRF-Token': csrfToken
         },
-        body: JSON.stringify({ cart_item: { cantidad } })
+        body: JSON.stringify({ cart_item: { cantidad: cantidad } })
       });
-      if (response.ok) showToast('Cantidad actualizada', 'success');
-    } catch {
-      showToast('Error al actualizar cantidad', 'danger');
+      
+      if (response.ok) {
+        const data = await response.json();
+        // Actualizar el total general
+        updateCartTotal();
+      } else {
+        showToast('Error al actualizar cantidad', 'danger');
+        // Revertir el cambio
+        field.value = field.dataset.originalValue || 1;
+      }
+    } catch (error) {
+      showToast('Error de conexión', 'danger');
+      console.error('Error:', error);
     }
   });
+
+  // Guardar valor original antes de cambiar
+  document.addEventListener('focus', function(e) {
+    const field = e.target.closest('.cantidad-field');
+    if (field) {
+      field.dataset.originalValue = field.value;
+    }
+  }, true);
 
   // 🔹 Eliminar producto
   document.addEventListener('click', async function(e) {
@@ -231,39 +237,60 @@ document.addEventListener('DOMContentLoaded', function() {
     }
   });
 
-  // 🔹 Actualizar total general
+  // 🔹 Actualizar total general - calcula desde la UI
   function updateCartTotal() {
     let total = 0;
     document.querySelectorAll('.cart-item-card').forEach(card => {
-      const price = parsePrice(card.querySelector('.cart-item-price').textContent);
-      const cantidad = parseInt(card.querySelector('.cantidad-field').value) || 1;
+      const priceText = card.querySelector('.cart-item-price')?.textContent || '0';
+      const price = parsePrice(priceText);
+      const cantidadInput = card.querySelector('.cantidad-field');
+      const cantidad = cantidadInput ? parseInt(cantidadInput.value) || 1 : 1;
       total += price * cantidad;
     });
 
     const totalElement = document.getElementById('cart-total');
-    if (totalElement) totalElement.textContent = `COP ${formatPrice(total)}`;
-
-    if (window.location.pathname.includes('/cart')) updateWompiWidget(total);
+    if (totalElement) {
+      totalElement.textContent = `COP ${formatPrice(total)}`;
+    }
+    
+    // Actualizar Wompi con el nuevo total
+    updateWompiWidget(total);
   }
 
-  // ✅ Wompi se actualiza sin imprimir código
+  // ✅ Actualizar Wompi dinámicamente con el nuevo monto
   function updateWompiWidget(total) {
-    const container = document.getElementById('wompi-button-container');
-    if (!container) return;
+    const wompiContainer = document.getElementById('wompi-container');
+    if (!wompiContainer) return;
 
-    const script = document.createElement('script');
-    script.src = 'https://checkout.wompi.co/widget.js';
-    script.dataset.render = 'button';
-    script.dataset.publicKey = "<%= Rails.application.credentials.dig(:wompi, :public_key) %>";
-    script.dataset.currency = 'COP';
-    script.dataset.amountInCents = Math.round(total * 100);
-    script.dataset.reference = `ORDEN_${Date.now()}`;
-    script.dataset.redirectUrl = `${window.location.origin}/cart`;
-    script.dataset.customerData = 'true';
-    script.dataset.theme = 'dark';
-
-    container.innerHTML = '';
-    container.appendChild(script);
+    const amountInCents = Math.round(total * 100);
+    
+    // Encontrar el script de Wompi existente
+    const existingScript = wompiContainer.querySelector('script[src*="wompi"]');
+    
+    if (existingScript) {
+      // Actualizar el atributo data-amount-in-cents
+      existingScript.setAttribute('data-amount-in-cents', amountInCents);
+      
+      // Limpiar el contenedor y reinicializar Wompi
+      const buttonContainer = wompiContainer.querySelector('div');
+      if (buttonContainer) {
+        buttonContainer.innerHTML = '';
+      }
+      
+      // Crear un nuevo script para reinicializar el widget
+      const newScript = document.createElement('script');
+      newScript.src = 'https://checkout.wompi.co/widget.js';
+      newScript.setAttribute('data-render', 'button');
+      newScript.setAttribute('data-public-key', existingScript.getAttribute('data-public-key'));
+      newScript.setAttribute('data-currency', existingScript.getAttribute('data-currency'));
+      newScript.setAttribute('data-amount-in-cents', amountInCents);
+      newScript.setAttribute('data-reference', existingScript.getAttribute('data-reference'));
+      newScript.setAttribute('data-signature:integrity', existingScript.getAttribute('data-signature:integrity'));
+      newScript.setAttribute('data-redirect-url', existingScript.getAttribute('data-redirect-url'));
+      
+      wompiContainer.innerHTML = '';
+      wompiContainer.appendChild(newScript);
+    }
   }
 
   function formatPrice(amount) {
@@ -274,12 +301,24 @@ document.addEventListener('DOMContentLoaded', function() {
     return parseFloat(priceString.replace(/[^\d,]/g, '').replace(',', '.')) || 0;
   }
 
-  // 🔹 Click en tarjeta → producto_show
+  // 🔹 Click en tarjeta → producto_show (flujo dinámico)
   document.addEventListener("click", (e) => {
     const card = e.target.closest(".cart-item-card");
     if (!card || e.target.closest("button,input,i,form")) return;
     const productoId = card.dataset.productoId;
-    if (productoId) window.location = `/home/producto_show?id=${productoId}`;
+    if (productoId) {
+      // Cerrar offcanvas antes de navegar
+      const offcanvas = bootstrap.Offcanvas.getInstance(document.getElementById('cartOffcanvas'));
+      if (offcanvas) offcanvas.hide();
+      
+      // Cargar detalles dinámicamente
+      if (window.loadProductDetails) {
+        window.loadProductDetails(productoId);
+      } else {
+        // Fallback si la función no existe
+        window.location = `/home/producto_show?id=${productoId}`;
+      }
+    }
   });
 });
 </script>
