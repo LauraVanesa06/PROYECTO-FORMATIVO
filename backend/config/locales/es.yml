@@ -80,6 +80,10 @@ es:
     login: "Iniciar sesión"
     register: "Registrarse"
 
+  # Menú
+  menu:
+    dashboard: "Ir al Dashboard"
+
   # App
   app:
     name: "Ferremateriales el Maestro"

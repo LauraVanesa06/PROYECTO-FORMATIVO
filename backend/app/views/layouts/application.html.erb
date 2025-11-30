@@ -14,11 +14,16 @@
 
     <%= stylesheet_link_tag :abootstrap, "data-turbo-track": "reload" %>
     <%= stylesheet_link_tag :application, "data-turbo-track": "reload" %>
+    <%= stylesheet_link_tag "login_sidebar_optimized", "data-turbo-track": "reload" %>
+    <%= stylesheet_link_tag "dynamic_nav", "data-turbo-track": "reload" %>
     <%= javascript_importmap_tags %>
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="<%= asset_path 'dynamic_nav.js' %>"></script>
+    <script src="<%= asset_path 'favorites_offcanvas.js' %>"></script>
+    <script src="<%= asset_path 'favorites_management.js' %>"></script>
     
   </head>
 
@@ -27,9 +32,9 @@
       <!-- HEADER -->
       <header class="container-header"> 
         <nav class="main-nav d-flex gap-3">
-          <%= link_to t("nav.home"), authenticated_root_path, id:"nav-home", class: "text-white fw-bold" %>
-          <%= link_to t("nav.products"), productos_path, class: "text-white fw-bold" %>
-          <%= link_to t("nav.contacts"), contactos_path, class: "text-white fw-bold" %>
+          <%= link_to t("nav.home"), authenticated_root_path, id:"nav-home", class: "text-white fw-bold nav-home" %>
+          <%= link_to t("nav.products"), productos_path, class: "text-white fw-bold nav-products" %>
+          <%= link_to t("nav.contacts"), contactos_path, class: "text-white fw-bold nav-contacts" %>
         </nav>
 
         <!-- Iconos -->
@@ -44,8 +49,28 @@
             </ul>
           </div>
 
-          <%= link_to favoritos_path, class: "text-white1" do %>
-            <i class="fa-solid fa-star"></i>
+          <% if user_signed_in? %>
+            <%= link_to "#",
+                        class: "text-white1 position-relative",
+                        data: { bs_toggle: "offcanvas", bs_target: "#favoritesOffcanvas" } do %>
+              <i class="fa-solid fa-star"></i>
+              <% favorites_count = current_user&.favorites&.count || 0 %>
+              <% if favorites_count > 0 %>
+                <span id="favorites-count" class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                  <%= favorites_count %>
+                  <span class="visually-hidden">productos favoritos</span>
+                </span>
+              <% else %>
+                <span id="favorites-count" class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" style="display: none;">
+                  0
+                  <span class="visually-hidden">productos favoritos</span>
+                </span>
+              <% end %>
+            <% end %>
+          <% else %>
+            <button id="layoutFavoritesBtn" class="btn btn-link text-white1 p-0">
+              <i class="fa-solid fa-star"></i>
+            </button>
           <% end %>
 
           <% unless current_page?(cart_path) %>
@@ -54,17 +79,10 @@
                         data: { bs_toggle: "offcanvas", bs_target: "#cartOffcanvas" } do %>
               <i class="fa-solid fa-cart-shopping"></i>
               <% cart_count = @cart&.cart_items&.sum(:cantidad) || 0 %>
-              <% if cart_count > 0 %>
-                <span id="cart-count" class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
-                  <%= cart_count %>
-                  <span class="visually-hidden">productos en carrito</span>
-                </span>
-              <% else %>
-                <span id="cart-count" class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" style="display: none;">
-                  0
-                  <span class="visually-hidden">productos en carrito</span>
-                </span>
-              <% end %>
+              <span id="cart-count" class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" style="<%= 'display: none;' if cart_count == 0 %>">
+                <%= cart_count %>
+                <span class="visually-hidden">productos en carrito</span>
+              </span>
             <% end %>
           <% end %>
 
@@ -76,7 +94,9 @@
       </header>
 
       <!-- CONTENIDO PRINCIPAL -->
-      <%= yield %>
+      <div id="dynamic-content">
+        <%= yield %>
+      </div>
 
       <!-- FOOTER -->
       <footer id="footer" class="bg-dark text-white text-center p-3 mt-auto">
@@ -84,12 +104,30 @@
       </footer>
     </main>
 
+    <!-- CONTENEDOR DE TOASTS (fuera de dynamic-content para no ser reemplazado) -->
+    <div id="toast-container" class="toast-container position-fixed bottom-0 end-0 p-3" style="z-index: 1100;"></div>
+
     <%= javascript_include_tag 'application2', "data-turbo-track": "reload" %>
     <%= javascript_include_tag 'mi_script', "data-turbo-track": "reload" %>
 
     <!-- Offcanvas del carrito -->
     <% unless current_page?(cart_path) %>
-      <div class="offcanvas offcanvas-end" tabindex="-1" id="cartOffcanvas">
+      <% 
+        # Calcular datos de pago para Wompi
+        cart_items = @cart&.cart_items&.includes(:product) || []
+        total_amount = cart_items.sum { |i| (i.product&.precio || 0) * i.cantidad.to_i }
+        amount_cents = (total_amount * 100).to_i
+        payment_reference = @cart.present? ? "cart_#{@cart.id}_#{Time.now.to_i}" : ""
+        signature = if @cart.present? && amount_cents > 0
+                      WompiService.new.signature_for(
+                        reference: payment_reference,
+                        amount_in_cents: amount_cents
+                      )
+                    else
+                      nil
+                    end
+      %>
+      <div class="offcanvas offcanvas-end" tabindex="-1" id="cartOffcanvas" data-bs-scroll="true">
         <div class="offcanvas-header" style="position: relative; padding-bottom: 0;">
           <div class="section-header" style="width: 100%;">
             <h2 class="titulo"><%= t("cart.title") %></h2>
@@ -98,7 +136,74 @@
           <button type="button" class="btn-close" data-bs-dismiss="offcanvas"></button>
         </div>
         <div class="offcanvas-body" id="cart-offcanvas-body">
-          <%= render partial: "carts/cart_items", locals: { cart_items: @cart&.cart_items || [] } %>
+          <%= render partial: "carts/cart_items", locals: { 
+            cart_items: cart_items,
+            amount_cents: nil,
+            payment_reference: nil,
+            signature: nil
+          } %>
+        </div>
+        <!-- Wompi permanente fuera del body que se reemplaza -->
+        <div class="offcanvas-footer" style="padding: 1rem; border-top: 1px solid #e0e0e0; background-color: white; max-height: 50vh; overflow-y: auto;">
+          <div id="wompi-container" style="width: 100%; margin: 0; padding: 0; max-height: 100%; overflow-y: auto;"></div>
+        </div>
+      </div>
+
+      <!-- Script para inicializar Wompi -->
+      <script>
+        document.addEventListener('DOMContentLoaded', function() {
+          function initWompi() {
+            const amountCents = <%= amount_cents %>;
+            const publicKey = '<%= Rails.application.credentials.dig(:wompi, :public_key) %>';
+            const paymentRef = 'cart_<%= @cart&.id %>_<%= Time.now.to_i %>';
+            const sig = '<%= signature %>';
+            
+            if (amountCents && amountCents > 0 && sig) {
+              window.updateWompiWidgetWithData(amountCents, paymentRef, sig, publicKey);
+            }
+          }
+
+          // Inicializar Wompi cuando se carga la página
+          initWompi();
+
+          // Re-inicializar cuando se cierra y abre el offcanvas
+          const cartOffcanvas = document.getElementById('cartOffcanvas');
+          if (cartOffcanvas) {
+            cartOffcanvas.addEventListener('show.bs.offcanvas', function() {
+              // Obtener datos actuales del servidor
+              fetch('/cart.json', {
+                headers: { 'Accept': 'application/json' }
+              })
+              .then(r => r.json())
+              .then(data => {
+                if (data.amount_cents && data.amount_cents > 0) {
+                  window.updateWompiWidgetWithData(
+                    data.amount_cents,
+                    data.payment_reference,
+                    data.signature,
+                    data.public_key
+                  );
+                }
+              })
+              .catch(err => console.error('Error loading Wompi data:', err));
+            });
+          }
+        });
+      </script>
+    <% end %>
+
+    <!-- Offcanvas de favoritos -->
+    <% if user_signed_in? %>
+      <div class="offcanvas offcanvas-end" tabindex="-1" id="favoritesOffcanvas">
+        <div class="offcanvas-header" style="position: relative; padding-bottom: 0;">
+          <div class="section-header" style="width: 100%;">
+            <h2 class="titulo"><i class="fa-solid fa-heart"></i> <%= t("favorites.title") %></h2>
+            <center><hr class="linea-bonita"></center>
+          </div>
+          <button type="button" class="btn-close" data-bs-dismiss="offcanvas"></button>
+        </div>
+        <div class="offcanvas-body" id="favorites-offcanvas-body">
+          <%= render partial: "favorites/favorites_list", locals: { favorites: current_user&.favorites || [] } %>
         </div>
       </div>
     <% end %>
@@ -110,53 +215,21 @@
         <button id="closeSidebar" class="btn-close-profile">✕</button>
       </div>
 
-      <div class="text-center mb-4">
-        <% if user_signed_in? %>
-          <!-- Icono de usuario circular como en login -->
-          <div class="profile-user-icon mx-auto mb-3">
-            <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" fill="white" viewBox="0 0 16 16">
-              <path d="M8 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm2-3a2 2 0 1 1-4 0 2 2 0 0 1 4 0zm4 8c0 1-1 1-1 1H3s-1 0-1-1 1-4 6-4 6 3 6 4zm-1-.004c-.001-.246-.154-.986-.832-1.664C11.516 10.68 10.289 10 8 10c-2.29 0-3.516.68-4.168 1.332-.678.678-.83 1.418-.832 1.664h10z"/>
-            </svg>
-          </div>
-          <label for="avatar-upload" class="btn btn-change-photo">Cambiar foto</label>
-          <input type="file" id="avatar-upload" style="display:none">
-        <% else %>
-          <div class="profile-user-icon mx-auto mb-3">
-            <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" fill="white" viewBox="0 0 16 16">
-              <path d="M8 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm2-3a2 2 0 1 1-4 0 2 2 0 0 1 4 0zm4 8c0 1-1 1-1 1H3s-1 0-1-1 1-4 6-4 6 3 6 4zm-1-.004c-.001-.246-.154-.986-.832-1.664C11.516 10.68 10.289 10 8 10c-2.29 0-3.516.68-4.168 1.332-.678.678-.83 1.418-.832 1.664h10z"/>
-            </svg>
-          </div>
-        <% end %>
-      </div>
-
       <div class="profile-sidebar-body">
         <% if user_signed_in? %>
-          <div class="profile-welcome-text text-center mb-3">
-            <p class="profile-greeting mb-2">
-              Bienvenido, <%= current_user.name.present? ? current_user.name : current_user.email.split('@').first %> 👋
-            </p>
-            <p class="profile-email text-muted mb-0"><%= current_user.email %></p>
-          </div>
-          <p class="profile-info-text text-center">Aquí pronto podrás editar tu perfil.</p>
+          <%= render 'shared/user_profile_sidebar' %>
         <% else %>
           <div class="text-center">
+            <div class="profile-user-icon mx-auto mb-3">
+              <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" fill="white" viewBox="0 0 16 16">
+                <path d="M8 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm2-3a2 2 0 1 1-4 0 2 2 0 0 1 4 0zm4 8c0 1-1 1-1 1H3s-1 0-1-1 1-4 6-4 6 3 6 4zm-1-.004c-.001-.246-.154-.986-.832-1.664C11.516 10.68 10.289 10 8 10c-2.29 0-3.516.68-4.168 1.332-.678.678-.83 1.418-.832 1.664h10z"/>
+              </svg>
+            </div>
             <p class="profile-info-text">Inicia sesión para acceder a tu perfil.</p>
             <%= link_to "Ir al login", new_user_session_path, class: "btn btn-primary w-100 login-btn-submit" %>
           </div>
         <% end %>
-
       </div>
-
-      <% if user_signed_in? %>
-        <div class="profile-actions mt-4">
-          <button id="darkModeToggle" class="btn btn-profile-action w-100 mb-2">
-            <span class="me-2">🌙</span> Modo oscuro
-          </button>
-          <%= button_to t("user.logout"), destroy_user_session_path,
-                        method: :delete,
-                        class: "btn btn-profile-logout w-100" %>
-        </div>
-      <% end %>
     </div>
 
     <!-- Fondo borroso -->
@@ -309,6 +382,18 @@
     <script>
       // Indica al frontend si hay sesión activa
       window.isLoggedIn = <%= user_signed_in? %>;
+
+      // Botón de favorito en el layout para usuarios NO logueados
+      document.addEventListener('DOMContentLoaded', function() {
+        const layoutFavoritesBtn = document.getElementById('layoutFavoritesBtn');
+        if (layoutFavoritesBtn) {
+          layoutFavoritesBtn.addEventListener('click', function(e) {
+            e.preventDefault();
+            // Simplemente abre el sidebar de login
+            openProfileSidebar();
+          });
+        }
+      });
     </script>
   </body>
 </html>

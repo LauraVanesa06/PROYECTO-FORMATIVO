@@ -37,14 +37,19 @@
     <div class="category-carousel" id="category-carousel" role="list">
       <% @categories.each do |c| %>
         <div class="category-card" role="listitem">
-          <%= link_to productos_path(category_id: c.id), class: "category-link d-flex flex-column align-items-center" do %>
+          <!-- Link con onclick que previene recarga y carga dinámicamente -->
+          <a href="#" 
+             class="category-link d-flex flex-column align-items-center" 
+             data-category-id="<%= c.id %>"
+             onclick="loadCategoryProducts(event, <%= c.id %>)"
+             style="text-decoration: none; color: inherit;">
             <% if c.imagen&.attached? %>
-              <%= image_tag c.imagen.variant(resize_to_fill: [80, 80], saver: { quality: 70 }), class: "mb-2 rounded-circle", loading: "lazy" %>
+              <img src="<%= rails_blob_path(c.imagen.variant(resize_to_fill: [80, 80], saver: { quality: 70 }), disposition: 'inline') %>" class="mb-2 rounded-circle" loading="lazy" alt="<%= c.nombre %>">
             <% else %>
               <i class="fa-solid fa-tag fa-2x mb-2"></i>
             <% end %>
             <span><%= c.nombre %></span>
-          <% end %>
+          </a>
         </div>
       <% end %>
     </div>
@@ -83,80 +88,7 @@
       <% @productos.each do |producto| %>
         <%# Solo mostrar si está disponible %>
         <% if producto.disponible %>
-          <div class="product-card" data-producto-id="<%= producto.id %>" style="cursor:pointer;">
-            
-            <!-- Imagen -->
-            <div class="product-thumb">
-              <% if producto.images.attached? %>
-                <%= image_tag(
-                    url_for(producto.images.first.variant(resize_to_limit: [300, 300])),
-                    alt: producto.nombre,
-                    class: "img-fluid",
-                    loading: "lazy",
-                    decoding: "async",
-                    onerror: "this.src='/assets/ProductoNoDisponible.png';"
-                  ) %>
-              <% else %>
-                <%= image_tag("martillo-dewalt.png", 
-                    alt: producto.nombre, 
-                    class: "img-fluid",
-                    loading: "lazy",
-                    decoding: "async"
-                  ) %>
-              <% end %>
-            </div>
-
-            <!-- Detalles -->
-            <div class="product-body">
-              <div class="info-product">
-                <h3 class="product-name"><%= producto.nombre %></h3>
-                <p class="product-desc"><%= truncate(producto.descripcion, length: 80) %></p>
-              </div>
-
-              <div class="product-meta">
-                <span class="price"><%= producto.precio_cop %></span>
-
-                <div class="d-flex flex-wrap gap-2 mt-2">
-                  <!-- Botón comprar -->
-                  <button 
-                    class="btn btn-sm btn-outline-primary d-flex align-items-center justify-content-center add-to-cart-btn" 
-                    data-url="<%= cart_items_path(product_id: producto.id) %>" 
-                    type="button">
-                    <i class="fa-solid fa-cart-plus"></i>
-                  </button>
-
-
-                  <!-- Botón favoritos con lógica AJAX -->
-                  <% if current_user %>
-                    <% favorite = current_user.favorites.find_by(product_id: producto.id) %>
-                    <% if favorite %>
-                      <button 
-                        id="favorite-btn"
-                        class="btn btn-sm btn-warning d-flex align-items-center gap-1 favorite-btn"
-                        data-url="<%= favorite_path(favorite) %>"
-                        data-method="delete"
-                        data-product-id="<%= producto.id %>">
-                        <i class="fa-solid fa-star"></i>
-                      </button>
-                    <% else %>
-                      <button 
-                        id="favorite-btn"
-                        class="btn btn-sm btn-outline-warning d-flex align-items-center gap-1 favorite-btn"
-                        data-url="<%= favorites_path(product_id: producto.id) %>"
-                        data-method="post"
-                        data-product-id="<%= producto.id %>">
-                        <i class="fa-regular fa-star"></i>
-                      </button>
-                    <% end %>
-                  <% else %>
-                    <button id="favorite-btn" class="btn btn-sm btn-outline-warning d-flex align-items-center gap-1" disabled>
-                      <i class="fa-regular fa-star"></i>
-                    </button>
-                  <% end %>
-                </div>
-              </div>
-            </div>
-          </div>
+          <%= render 'product_card', producto: producto %>
         <% end %>
       <% end %>
     </div>
@@ -209,9 +141,6 @@
   <% end %>
 </section>
 
-<!-- TOASTS -->
-<div id="toast-container" class="toast-container position-fixed bottom-0 end-0 p-3" style="z-index: 1055;"></div>
-
 <script>
   // Abre el sidebar de perfil como si el usuario presionara el botón del header
   function openProfileSidebar() {
@@ -230,11 +159,18 @@
       e.stopPropagation();
       const btn = e.target.closest(".add-to-cart-btn");
       const url = btn.dataset.url;
+      const icon = btn.querySelector("i");
 
       if (!window.isLoggedIn) {
         openProfileSidebar();
         return;
       }
+
+      // Agregar animación de carga solo al icono
+      if (icon) {
+        icon.classList.add("icon-loading");
+      }
+      btn.disabled = true;
 
       try {
         const response = await fetch(url, {
@@ -270,6 +206,12 @@
       } catch (error) {
         console.error("Error en la petición:", error);
         showToast("Error de conexión al agregar al carrito", "danger");
+      } finally {
+        // Remover animación de carga del icono
+        if (icon) {
+          icon.classList.remove("icon-loading");
+        }
+        btn.disabled = false;
       }
       return;
     }
@@ -283,53 +225,61 @@
       const url = btn.dataset.url;
       const method = (btn.dataset.method || "post").toUpperCase();
       const productId = btn.dataset.productId;
+      const icon = btn.querySelector("i");
 
-      if (!window.isLoggedIn) {
-        openProfileSidebar();
-        return;
+      // Agregar animación de carga al icono
+      if (icon) {
+        icon.classList.add("icon-loading");
       }
+      btn.disabled = true;
 
-      const response = await fetch(url, {
-        method: method,
-        headers: {
-          "X-CSRF-Token": document.querySelector("meta[name='csrf-token']").content,
-          "Accept": "application/json"
-        }
-      });
+      try {
+        const response = await fetch(url, {
+          method: method,
+          headers: {
+            "X-CSRF-Token": document.querySelector("meta[name='csrf-token']").content,
+            "Accept": "application/json"
+          }
+        });
 
-      if (response.ok) {
         const data = await response.json();
-        const icon = btn.querySelector("i");
 
-        if (method === "POST") {
-          // creado -> pasar a delete con /favorites/:id
-          if (data.id) btn.dataset.url = `/favorites/${data.id}`;
-          btn.dataset.method = "delete";
-          btn.classList.remove("btn-outline-warning");
-          btn.classList.add("btn-warning");
-          if (icon) { icon.classList.remove("fa-regular"); icon.classList.add("fa-solid"); }
-          showToast("Producto agregado a favoritos", "success");
+        // Si no está autenticado, abrir el sidebar de login
+        if (!response.ok && response.status === 401 && data.show_login_sidebar) {
+          openProfileSidebar();
+        } else if (response.ok) {
+          if (method === "POST") {
+            // creado -> pasar a delete con /favorites/:id
+            if (data.id) btn.dataset.url = `/favorites/${data.id}`;
+            btn.dataset.method = "delete";
+            btn.classList.remove("btn-outline-warning");
+            btn.classList.add("btn-warning");
+            if (icon) { icon.classList.remove("fa-regular"); icon.classList.add("fa-solid"); }
+            showToast("Producto agregado a favoritos", "success");
+          } else {
+            // eliminado -> volver a post con /favorites?product_id=...
+            btn.dataset.url = `/favorites?product_id=${productId}`;
+            btn.dataset.method = "post";
+            btn.classList.add("btn-outline-warning");
+            btn.classList.remove("btn-warning");
+            if (icon) { icon.classList.add("fa-regular"); icon.classList.remove("fa-solid"); }
+            showToast("Producto eliminado de favoritos", "success");
+          }
         } else {
-          // eliminado -> volver a post con /favorites?product_id=...
-          btn.dataset.url = `/favorites?product_id=${productId}`;
-          btn.dataset.method = "post";
-          btn.classList.add("btn-outline-warning");
-          btn.classList.remove("btn-warning");
-          if (icon) { icon.classList.add("fa-regular"); icon.classList.remove("fa-solid"); }
-          showToast("Producto eliminado de favoritos", "success");
+          const errorMessage = data.error || "Error al actualizar favorito";
+          showToast(errorMessage, "danger");
         }
-      } else {
-        showToast("Error al actualizar favorito", "danger");
+      } catch (error) {
+        console.error("Error en la petición:", error);
+        showToast("Error de conexión al actualizar favorito", "danger");
+      } finally {
+        // Remover animación de carga
+        if (icon) {
+          icon.classList.remove("icon-loading");
+        }
+        btn.disabled = false;
       }
       return;
-    }
-
-    // NAVEGACIÓN A DETALLE (evitar cuando el click proviene de botones/iconos)
-    const card = e.target.closest(".product-card");
-    if (card) {
-      if (e.target.closest("button") || e.target.closest(".favorite-btn") || e.target.closest("i")) return;
-      const productId = card.dataset.productoId;
-      window.location.href = `/home/producto_show?id=${productId}`;
     }
   });
 
@@ -339,20 +289,22 @@
     const toastId = "toast-" + Date.now();
     toast.id = toastId;
 
-    const bg = type === "success" ? "bg-success" : (type === "danger" ? "bg-danger" : `bg-${type}`);
+    const bg = type === "success" ? "bg-success" : (type === "danger" ? "bg-danger" : (type === "info" ? "bg-info" : `bg-${type}`));
+    const icon = type === "success" ? "fa-check-circle" : (type === "danger" ? "fa-trash-can" : (type === "info" ? "fa-trash-can" : "fa-info-circle"));
+    const title = type === "success" ? "Éxito" : (type === "danger" ? "Eliminado" : (type === "info" ? "Eliminado" : "Aviso"));
 
     toast.className = `toast fade show ${bg} text-white`;
     toast.role = "alert";
     toast.ariaLive = "assertive";
     toast.ariaAtomic = "true";
-    toast.style = "z-index: 1055;";
     toast.innerHTML = `
-      <div class="toast-header ${bg} text-white">
-        <strong class="me-auto">${type === "success" ? "Éxito" : "Aviso"}</strong>
-        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="toast" aria-label="Close"></button>
-      </div>
-      <div class="toast-body">
-        ${message}
+      <div class="d-flex align-items-center ps-3 pe-2 py-2">
+        <i class="fa-solid ${icon} me-2" style="font-size: 18px;"></i>
+        <div class="flex-grow-1">
+          <strong style="display: block; font-size: 12px;">${title}</strong>
+          <small style="display: block; font-size: 12px;">${message}</small>
+        </div>
+        <button type="button" class="btn-close btn-close-white ms-2" data-bs-dismiss="toast" aria-label="Close" style="padding: 0; width: auto; height: auto;"></button>
       </div>
     `;
     toastContainer.appendChild(toast);
@@ -362,10 +314,16 @@
       if (toastElement && window.bootstrap?.Toast) {
         const bsToast = new bootstrap.Toast(toastElement);
         bsToast.hide();
-        toastElement.addEventListener("hidden.bs.toast", () => toastElement.remove());
+        toastElement.addEventListener("hidden.bs.toast", () => {
+          toastElement.remove();
+        }, { once: true });
       } else if (toastElement) {
         toastElement.classList.remove("show");
-        setTimeout(() => toastElement.remove(), 500);
+        setTimeout(() => {
+          if (toastElement.parentNode) {
+            toastElement.remove();
+          }
+        }, 500);
       }
     }, 3000);
   }
@@ -375,7 +333,7 @@
     card.addEventListener("click", (e) => {
       if (e.target.closest("button") || e.target.closest("i")) return;
       const productId = card.dataset.productoId;
-      window.location.href = `/home/producto_show?id=${productId}`;
+      loadProductDetails(productId);
     });
   });
 </script>

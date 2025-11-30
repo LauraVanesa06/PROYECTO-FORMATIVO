@@ -65,12 +65,9 @@ class ApplicationController < ActionController::Base
   end
 
   def after_sign_in_path_for(resource)
-    case resource.role
-    when "admin"
-      dashboard_path
-    else
-      authenticated_root_path
-    end
+    # Siempre redirigir a home, sin importar el rol
+    # Los admins pueden acceder al dashboard desde su perfil si lo desean
+    authenticated_root_path
   end
   layout :layout_by_resource
 

@@ -10,12 +10,12 @@ Rails.application.routes.draw do
     get '/acceso', to: 'usuarios/sessions#new', as: :custom_login
     get '/registro', to: 'usuarios/registrations#new', as: :custom_signup
     get '/olvide-contrasena', to: 'usuarios/passwords#new', as: :custom_new_password
+    get '/profile-sidebar', to: 'usuarios/registrations#profile_sidebar', as: :profile_sidebar
   end
 
   # Página principal
   root "home#index", as: :authenticated_root
   get 'home/index', to: 'home#index', as: :home_index
-  get 'productos', to: 'home#producto', as: :productos
   get 'restore-images', to: 'home#restore_images', as: :restore_images
   get 'favoritos', to: 'favorites#index', as: :favoritos
   get 'carrito', to: 'home#carrito', as: :carrito
@@ -55,6 +55,7 @@ Rails.application.routes.draw do
   # Traduccion
   scope "(:locale)", locale: /en|es/ do
     root "home#index"
+    get 'productos', to: 'home#producto', as: :productos
     resources :products do 
       collection do 
         patch :update_disponibilidad

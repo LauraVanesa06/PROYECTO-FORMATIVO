@@ -61,7 +61,9 @@ ActiveRecord::Schema[8.0].define(version: 2025_11_29_023616) do
     t.string "metodo_pago"
     t.bigint "payment_id"
     t.decimal "total", precision: 12, scale: 2
-    t.bigint "user_id", null: false
+    t.bigint "user_id"
+    t.string "client_name"
+    t.string "client_email"
     t.index ["payment_id"], name: "index_buys_on_payment_id"
     t.index ["user_id"], name: "index_buys_on_user_id"
   end

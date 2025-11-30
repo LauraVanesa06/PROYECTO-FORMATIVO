@@ -3,12 +3,13 @@
 
   <!-- FILTRO -->
   <div class="filtro-productos">
-    <%= form_with url: productos_path, method: :get, local: true, html: { id: 'productos-filter-form', data: { autosubmit: true } } do %>
+    <!-- Usar request.path para mantener la estructura de URL correcta con locale -->
+    <%= form_with url: request.path, method: :get, local: true, html: { id: 'productos-filter-form', data: { autosubmit: true } } do %>
       <div class="row align-items-center g-3">  
         <div class="col-md-3">
           <%= label_tag :category_id, t('productos.filtro.categoria') %>
           <%= select_tag :category_id,
-                        options_from_collection_for_select(@categories, :id, :nombre, params[:category_id]),
+                        options_from_collection_for_select(@categories, :id, :nombre, params[:category_id]&.to_i),
                         include_blank: t('productos.filtro.todas_categorias'),
                         class: "form-select" %>
         </div>
@@ -120,12 +121,10 @@
   <!-- PAGINACIÓN -->
   <% if @pagy && @pagy.pages > 1 %>
     <nav aria-label="Page navigation" class="d-flex justify-content-center my-4">
-      <ul class="pagination">
+      <ul class="pagination" id="pagination-nav">
         <% if @pagy.prev %>
           <li class="page-item">
-            <%= link_to "← Anterior", 
-                        productos_path(params.to_unsafe_h.merge(page: @pagy.prev)), 
-                        class: "page-link" %>
+            <a href="#" class="page-link pagination-link" data-page="<%= @pagy.prev %>">← Anterior</a>
           </li>
         <% else %>
           <li class="page-item disabled">
@@ -141,9 +140,7 @@
               </li>
             <% else %>
               <li class="page-item">
-                <%= link_to item, 
-                            productos_path(params.to_unsafe_h.merge(page: item)), 
-                            class: "page-link" %>
+                <a href="#" class="page-link pagination-link" data-page="<%= item %>"><%= item %></a>
               </li>
             <% end %>
           <% elsif item == "gap" %>
@@ -155,9 +152,8 @@
 
         <% if @pagy.next %>
           <li class="page-item">
-            <%= link_to "Siguiente →", 
-                        productos_path(params.to_unsafe_h.merge(page: @pagy.next)), 
-                        class: "page-link" %>
+            <a href="#" class="page-link pagination-link" data-page="<%= @pagy.next %>">Siguiente →</a>
+          </li>
           </li>
         <% else %>
           <li class="page-item disabled">
@@ -168,12 +164,6 @@
     </nav>
   <% end %>
 </section>
-
-<!-- TOAST container -->
-<div id="toast-container" 
-     class="toast-container position-fixed bottom-0 end-0 p-3"
-     style="z-index: 1055;">
-</div>
 
 <script>
   // NUEVO: abre el sidebar de perfil
@@ -291,37 +281,61 @@
       return;
     }
 
-    // Click en la tarjeta → ir a producto_show (excepto botones internos)
+    // Click en la tarjeta → ir a producto_show dinámicamente (excepto botones internos)
     const card = e.target.closest(".product-card");
     if (!card) return;
     if (e.target.closest("button") || e.target.closest("i")) return;
     const productoId = card.dataset.productoId;
-    window.location = `/home/producto_show?id=${productoId}`;
+    
+    // Cargar dinámicamente en lugar de recargar
+    loadProductDetails(productoId);
   });
 
   // Función toast reutilizable
   function showToast(message, type) {
+    const toastContainer = document.querySelector("#toast-container");
+    if (!toastContainer) return;
+    
     const toast = document.createElement("div");
+    const toastId = "toast-" + Date.now();
+    toast.id = toastId;
+    
     let bg = "text-bg-primary";
     if (type === "success") bg = "text-bg-success";
     if (type === "warning") bg = "text-bg-warning";
     if (type === "danger") bg = "text-bg-danger";
+    if (type === "info") bg = "text-bg-info";
+
+    const icon = type === "success" ? "fa-check-circle" : (type === "danger" ? "fa-trash-can" : (type === "warning" ? "fa-star" : (type === "info" ? "fa-trash-can" : "fa-info-circle")));
+    const title = type === "success" ? "Éxito" : (type === "danger" ? "Eliminado" : (type === "warning" ? "Favorito" : (type === "info" ? "Eliminado" : "Aviso")));
 
     toast.className = `toast align-items-center ${bg} border-0 show mb-2 shadow`;
     toast.setAttribute("role", "alert");
-    toast.style.minWidth = "250px";
+    toast.setAttribute("aria-live", "assertive");
+    toast.setAttribute("aria-atomic", "true");
     toast.innerHTML = `
-      <div class="d-flex">
-        <div class="toast-body text-center w-100">${message}</div>
-        <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
+      <div class="d-flex align-items-center w-100 px-2 py-2">
+        <i class="fa-solid ${icon} me-2" style="font-size: 16px;"></i>
+        <div class="flex-grow-1">
+          <strong style="display: block; font-size: 12px;">${title}</strong>
+          <small style="display: block; font-size: 12px;">${message}</small>
+        </div>
+        <button type="button" class="btn-close btn-close-white ms-2" data-bs-dismiss="toast" style="padding: 0; width: auto; height: auto;"></button>
       </div>`;
 
-    document.querySelector("#toast-container").appendChild(toast);
+    toastContainer.appendChild(toast);
 
     setTimeout(() => {
-      toast.classList.remove("show");
-      toast.classList.add("fade");
-      setTimeout(() => toast.remove(), 500);
+      const toastElement = document.getElementById(toastId);
+      if (toastElement) {
+        toastElement.classList.remove("show");
+        toastElement.classList.add("fade");
+        setTimeout(() => {
+          if (toastElement.parentNode) {
+            toastElement.remove();
+          }
+        }, 500);
+      }
     }, 3000);
   }
 

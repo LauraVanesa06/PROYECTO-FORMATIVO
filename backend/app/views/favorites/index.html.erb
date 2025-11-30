@@ -47,25 +47,28 @@
               <div class="d-flex flex-wrap gap-2 mt-2">
                 <% if favorite.product.disponible %>
                   <!-- Botón comprar -->
-                  <%= button_to cart_items_path(product_id: favorite.product.id), 
-                                method: :post, 
-                                class: "btn btn-sm btn-outline-primary d-flex align-items-center justify-content-center add-to-cart" do %>
+                  <button 
+                    class="btn btn-sm btn-outline-primary d-flex align-items-center justify-content-center add-to-cart-btn" 
+                    data-url="<%= cart_items_path(product_id: favorite.product.id) %>" 
+                    type="button"
+                    style="width: 38px; height: 36px; min-width: 38px; padding: 0;">
                     <i class="fa-solid fa-cart-plus"></i>
-                  <% end %>
+                  </button>
                 <% else %>
                   <!-- Botón deshabilitado si no está disponible -->
-                  <button class="btn btn-sm btn-secondary d-flex align-items-center justify-content-center" disabled>
+                  <button class="btn btn-sm btn-secondary d-flex align-items-center justify-content-center" disabled style="width: 38px; height: 36px; min-width: 38px; padding: 0;">
                     <i class="fa-solid fa-cart-plus"></i>
                   </button>
                 <% end %>
 
                 <!-- Botón quitar de favoritos -->
-                <%= button_to favorite_path(favorite), 
-                              method: :delete, 
-                              class: "btn btn-sm btn-warning d-flex align-items-center gap-1 remove-favorite",
-                              data: { confirm: "¿Eliminar de favoritos?" } do %>
+                <button 
+                  class="btn btn-sm btn-warning d-flex align-items-center gap-1 favorite-btn" 
+                  data-url="<%= favorite_path(favorite) %>"
+                  data-method="delete"
+                  data-product-id="<%= favorite.product.id %>">
                   <i class="fa-solid fa-star"></i>
-                <% end %>
+                </button>
               </div>
             </div>
           </div>
@@ -195,7 +198,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 
-  // Click en la tarjeta → ir a producto_show (solo si está disponible)
+  // Click en la tarjeta → ir a producto_show dinámicamente (solo si está disponible)
   document.addEventListener("click", (e) => {
     const card = e.target.closest(".product-card");
     if (!card) return;
@@ -203,16 +206,21 @@ document.addEventListener('DOMContentLoaded', () => {
     // Ignorar clicks en botones, iconos o formularios
     if (e.target.closest("button") || e.target.closest("i") || e.target.closest("form")) return;
     
-    // NUEVA VALIDACIÓN: No permitir clic si el producto no está disponible
+    // Validación: No permitir clic si el producto no está disponible
     if (card.classList.contains('product-no-disponible')) {
       e.preventDefault();
       showNotification('⚠️ Este producto no está disponible actualmente', 'warning');
       return;
     }
     
-    // Redirigir a la ruta personalizada de producto_show
+    // Cargar dinámicamente
     const productoId = card.dataset.productoId;
-    window.location = `/home/producto_show?id=${productoId}`;
+    if (typeof loadProductDetails === 'function') {
+      loadProductDetails(productoId);
+    } else {
+      // Fallback a navegación normal si no está disponible la función
+      window.location = `/home/producto_show?id=${productoId}`;
+    }
   });
 });
 </script>

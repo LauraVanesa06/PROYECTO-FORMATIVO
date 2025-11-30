@@ -1,0 +1,90 @@
+<% resource_name = :user %>
+
+<div id="editProfileForm" class="edit-profile-content">
+  <!-- Botón para volver atrás -->
+  <button id="backToProfile" class="btn btn-sm btn-link mb-3" style="padding: 0; text-decoration: none; color: #007bff;">
+    <i class="fas fa-arrow-left" style="margin-right: 5px;"></i> Volver
+  </button>
+
+  <h6 style="font-weight: 600; color: #333; margin-bottom: 20px;">Editar Perfil</h6>
+
+  <%= form_for(resource, as: resource_name, url: registration_path(resource_name), html: { method: :put, class: "edit-profile-form", id: "editProfileFormElement" }) do |f| %>
+    <%= render "devise/shared/error_messages", resource: resource %>
+
+    <!-- Email -->
+    <div class="mb-3">
+      <%= f.label :email, "Correo Electrónico", class: "form-label" %>
+      <%= f.email_field :email, placeholder: "Correo", autocomplete: "email", class: "form-control form-control-sm" %>
+    </div>
+
+    <% if devise_mapping.confirmable? && resource.pending_reconfirmation? %>
+      <div class="alert alert-info alert-sm" role="alert">
+        Esperando confirmación de: <%= resource.unconfirmed_email %>
+      </div>
+    <% end %>
+
+    <!-- Nueva contraseña -->
+    <div class="mb-3">
+      <%= f.label :password, "Nueva Contraseña", class: "form-label" %>
+      <%= f.password_field :password, placeholder: "Dejar en blanco si no deseas cambiar", autocomplete: "new-password", class: "form-control form-control-sm" %>
+    </div>
+
+    <!-- Confirmar contraseña -->
+    <div class="mb-3">
+      <%= f.label :password_confirmation, "Confirmar Contraseña", class: "form-label" %>
+      <%= f.password_field :password_confirmation, placeholder: "Confirmar contraseña", autocomplete: "new-password", class: "form-control form-control-sm" %>
+    </div>
+
+    <!-- Contraseña actual -->
+    <div class="mb-3">
+      <%= f.label :current_password, "Contraseña Actual", class: "form-label" %>
+      <%= f.password_field :current_password, placeholder: "Requerido para cambios", autocomplete: "current-password", class: "form-control form-control-sm" %>
+      <small class="form-text text-muted">Necesitamos tu contraseña actual para confirmar los cambios</small>
+    </div>
+
+    <!-- Botones de acción -->
+    <div class="d-flex gap-2 mt-4">
+      <%= f.submit "Guardar Cambios", class: "btn btn-primary btn-sm flex-grow-1" %>
+      <button type="button" id="cancelEditProfile" class="btn btn-secondary btn-sm">Cancelar</button>
+    </div>
+  <% end %>
+</div>
+
+<style>
+  #editProfileForm {
+    max-height: calc(100vh - 200px);
+    overflow-y: auto;
+    padding: 0;
+  }
+
+  #editProfileForm .form-control-sm {
+    height: auto;
+    padding: 0.4rem 0.6rem;
+    font-size: 0.875rem;
+  }
+
+  #editProfileForm .form-label {
+    margin-bottom: 0.5rem;
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: #555;
+  }
+
+  #editProfileForm .btn-sm {
+    font-size: 0.875rem;
+    padding: 0.4rem 0.8rem;
+  }
+
+  #editProfileForm .alert-sm {
+    padding: 0.5rem 0.75rem;
+    font-size: 0.875rem;
+    margin-bottom: 1rem;
+  }
+
+  #editProfileForm .form-text {
+    display: block;
+    margin-top: 0.25rem;
+    font-size: 0.75rem;
+  }
+</style>
+

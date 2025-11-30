@@ -1,0 +1,47 @@
+<% if user_signed_in? && current_user.admin? %>
+  <div class="admin-dashboard-button-wrapper">
+    <%= link_to dashboard_path, class: "btn btn-warning w-100 d-flex align-items-center justify-content-center gap-2 admin-dashboard-btn" do %>
+      <i class="fa-solid fa-sliders"></i>
+      <span><%= t('menu.dashboard') %></span>
+    <% end %>
+  </div>
+<% end %>
+
+<style>
+  .admin-dashboard-button-wrapper {
+    padding: 15px;
+    margin-top: 20px;
+    border-top: 1px solid rgba(0, 0, 0, 0.08);
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.05), rgba(0, 0, 0, 0.02));
+    border-radius: 8px;
+  }
+
+  .admin-dashboard-btn {
+    background: linear-gradient(135deg, #ffc107, #ffb300) !important;
+    border: none !important;
+    color: #000 !important;
+    font-weight: 600;
+    transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+    font-size: 14px;
+    padding: 10px 20px !important;
+    border-radius: 6px;
+    box-shadow: 0 2px 8px rgba(255, 193, 7, 0.2);
+  }
+
+  .admin-dashboard-btn:hover {
+    background: linear-gradient(135deg, #ffb300, #ffa500) !important;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(255, 193, 7, 0.4);
+    color: #000 !important;
+    text-decoration: none;
+  }
+
+  .admin-dashboard-btn:active {
+    transform: translateY(0);
+    box-shadow: 0 2px 4px rgba(255, 193, 7, 0.3);
+  }
+
+  .admin-dashboard-btn i {
+    font-size: 16px;
+  }
+</style>
