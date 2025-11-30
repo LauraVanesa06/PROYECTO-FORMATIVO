@@ -443,64 +443,7 @@
 </script>
 
 <style>
-  #modalVentaFisica .modal-dialog {
-    max-height: 95vh;
-    margin: 1rem auto;
-    display: flex;
-    align-items: center;
-  }
-
-  #modalVentaFisica .modal-content {
-    border-radius: 12px;
-    border: 1px solid #dee2e6;
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-    overflow: hidden;
-    display: flex;
-    flex-direction: column;
-    max-height: 655px;
-  }
-
-  #modalVentaFisica .modal-header {
-    background: white;
-    color: #2c3e50;
-    padding: 16px 24px;
-    border-bottom: 1px solid #dee2e6;
-    flex-shrink: 0;
-    width: 110%;
-    height: 40px;
-    display: flex;
-    justify-content: center;
-  }
-
-  #modalVentaFisica .modal-title {
-    font-size: 18px;
-    font-weight: 600;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    color: #2c3e50;
-    padding-top: 6px;
-  }
-
-  #modalVentaFisica .modal-title::before {
-    content: "🛒";
-    font-size: 22px;
-  }
-
-  #modalVentaFisica .btn-close {
-    opacity: 0.6;
-  }
-
-  #modalVentaFisica .btn-close:hover {
-    opacity: 1;
-  }
-
-  #modalVentaFisica .modal-body {
-    padding: 9px 20px;
-    background: #ffffff;
-    flex: 1;
-    width: 110%;
-  }
+  
 
   .cliente-section {
     background: #e7ebee;
@@ -548,13 +491,7 @@
     box-shadow: 0 0 0 0.2rem rgba(108, 117, 125, 0.1);
   }
 
-  .productos-section {
-    background: white;
-    /* padding: 16px; */
-    /* padding-top: 5px; */
-    /* border-radius: 10px; */
-    border: 1px solid white;
-  }
+ 
 
   .productos-section h6 {
     color: #495057;
@@ -722,52 +659,6 @@
     cursor: not-allowed;
   }
 
-  #modalVentaFisica {
-    padding: 0;
-  }
-
-  #modalVentaFisica .modal-footer {
-    background: #f8f9fa;
-    border-top: 1px solid #dee2e6;
-    padding: 12px 24px;
-    display: flex;
-    justify-content: center;
-    gap: 12px;
-    padding-bottom: 0px;
-    flex-shrink: 0;
-  }
-
-  #modalVentaFisica .btn {
-    padding: 8px 20px;
-    font-weight: 500;
-    border-radius: 6px;
-    font-size: 14px;
-    transition: all 0.2s ease;
-    border: none;
-  }
-
-  #modalVentaFisica .btn-secondary {
-    background: #6c757d;
-    color: white;
-  }
-
-  #modalVentaFisica .btn-secondary:hover {
-    background: #5a6268;
-    transform: translateY(-1px);
-    box-shadow: 0 2px 8px rgba(108, 117, 125, 0.3);
-  }
-
-  #modalVentaFisica .btn-success {
-    background: #28a745;
-    color: white;
-  }
-
-  #modalVentaFisica .btn-success:hover {
-    background: #218838;
-    transform: translateY(-1px);
-    box-shadow: 0 2px 8px rgba(40, 167, 69, 0.3);
-  }
-
   .empty-products {
     text-align: center;
     padding: 60px 20px;
@@ -781,14 +672,8 @@
   }
 
   @media (max-width: 768px) {
-    #modalVentaFisica .modal-dialog {
-      margin: 0.5rem;
-      max-height: 98vh;
-    }
-
-    #modalVentaFisica .modal-body {
-      padding: 12px 16px;
-    }
+   
+  
 
     .productos-grid {
       max-height: 250px;
@@ -803,128 +688,279 @@
       padding: 12px;
     }
   }
+  .productos-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  gap: 15px;
+  max-height: 400px;
+  overflow-y: auto;
+}
+
+.producto-card {
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  padding: 10px;
+  text-align: center;
+  background: white;
+}
+
+.producto-imagen {
+  width: 100%;
+  height: 100px;
+  object-fit: contain;
+}
+
+.producto-nombre {
+  font-size: 14px;
+  font-weight: bold;
+}
+
+.producto-codigo {
+  font-size: 12px;
+  color: #555;
+}
+
+.producto-stock {
+  font-size: 12px;
+  color: green;
+  font-weight: bold;
+}
+
 </style>
 
-<div class="modal fade" id="modalVentaFisica" tabindex="-1">
+<div class="modal fade" id="modalVentaFisica" tabindex="-1" aria-labelledby="modalLabelVentaFisica" aria-hidden="true">
   <div class="modal-dialog modal-xl">
     <div class="modal-content">
-      
+
       <div class="modal-header">
-        <h5 class="modal-title">Registrar Venta Física</h5>
+        <h5 class="modal-title" id="modalLabelVentaFisica">Registrar Venta Física</h5>
         <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
       </div>
 
       <div class="modal-body">
-        <%= form_with url: buys_path, method: :post, local: true, id: "form-venta-fisica" do |f| %>
+        <form id="form-venta-fisica" action="/buys" method="post">
 
-          <!-- DATOS DEL CLIENTE -->
-          <div class="cliente-section">
-            <h6>Información del Cliente</h6>
-            <div class="row">
-              <div class="col-md-6 mb-3">
-                <label>Cliente <span style="color: #dc3545;">*</span></label>
-                <%= f.text_field :cliente, name: "buy[client_name]", class: "form-control", required: true, placeholder: "Nombre completo del cliente" %>
-              </div>
+          <%= hidden_field_tag :authenticity_token, form_authenticity_token %>
 
-              <div class="col-md-6 mb-3">
-                <label>Correo Electrónico</label>
-                <%= f.email_field :correo, name: "buy[client_email]", class: "form-control", placeholder: "correo@ejemplo.com" %>
-              </div>
+          <!-- Cliente -->
+          <div class="mb-3">
+            <label>Cliente</label>
+            <input type="text" name="buy[client_name]" class="form-control" required>
+          </div>
+
+          <div class="mb-3">
+            <label>Correo</label>
+            <input type="email" name="buy[client_email]" class="form-control">
+          </div>
+
+          <!-- FILTRO -->
+          <div class="d-flex justify-content-between mb-3">
+            <div>
+              <strong>Buscar producto:</strong>
+              <input type="text" id="filtroProducto" class="form-control" placeholder="Nombre o código">
+            </div>
+            <div>
+              <strong>Código:</strong>
+              <input type="text" id="codigoBusqueda" class="form-control" placeholder="Código exacto">
             </div>
           </div>
-          
-          <div class="mb-3">
-  <label class="form-label">Código del producto</label>
-  <input type="text" class="form-control" name="product_code" placeholder="Ej: ABC123">
-</div>
 
-<div class="mb-3">
-  <label class="form-label">Cantidad</label>
-  <input type="number" class="form-control" name="cantidad" min="1" value="1">
-</div>
+          <!-- GRID DE PRODUCTOS -->
+          <div class="productos-grid">
+            <% @products.each do |p| %>
+              <div class="producto-card" data-nombre="<%= p.nombre.downcase %>" data-codigo="<%= p.codigo_producto.downcase %>">
 
+        <img src="<%= url_for(p.images.first) if p.images.attached? %>" class="producto-imagen">
 
-          <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
-              <i class="fas fa-times"></i> Cancelar
-            </button>
-            <%= f.submit "Registrar Venta", class: "btn btn-success" do %>
-              <i class="fas fa-check"></i> Registrar Venta
+                <h6 class="producto-nombre"><%= p.nombre %></h6>
+                <p class="producto-codigo"><%= p.codigo_producto %></p>
+                <p class="producto-stock">Stock: <%= p.stock %></p>
+
+                <button type="button"
+                        class="btn btn-primary btn-sm seleccionar-producto"
+                        data-product-id="<%= p.id %>"
+                        data-product-name="<%= p.nombre %>"
+                        data-product-price="<%= p.precio %>"
+                        data-product-code="<%= p.codigo_producto %>">
+                  Seleccionar
+                </button>
+
+              </div>
             <% end %>
           </div>
 
-        <% end %>
+          <hr>
+
+          <!-- PRODUCTOS SELECCIONADOS -->
+          <h5>Productos seleccionados</h5>
+          <table class="table" id="tabla-seleccionados">
+            <thead>
+              <tr>
+                <th>Producto</th>
+                <th>Cantidad</th>
+                <th>Precio</th>
+                <th>Subtotal</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody></tbody>
+          </table>
+
+          <h4>Total: $ <span id="total-venta">0</span></h4>
+
+          <button type="submit" class="btn btn-success w-100 mt-3">Registrar Venta</button>
+
+        </form>
       </div>
 
     </div>
   </div>
 </div>
 
+
 <script>
-  document.addEventListener('DOMContentLoaded', function() {
-    // Habilitar/deshabilitar campos de cantidad según checkbox
-    document.querySelectorAll('.product-checkbox').forEach(checkbox => {
-      checkbox.addEventListener('change', function() {
-        const productId = this.id.replace('select_', '');
-        const cantidadInput = document.querySelector(`input[data-product-cantidad="${productId}"]`);
-        const productCard = this.closest('.product-card');
-        
-        if (this.checked) {
-          cantidadInput.disabled = false;
-          cantidadInput.focus();
-          productCard.classList.add('selected');
+document.addEventListener("DOMContentLoaded", function() {
+
+  // SOLO PARA MODAL DE DETALLES
+  document.querySelectorAll(".show-buy").forEach(btn => {
+    btn.addEventListener("click", async function(e) {
+
+      const buyId = btn.dataset.buyId;
+
+      // Datos básicos
+      const tipo = (btn.dataset.tipo || '').toString();
+      const metodo = btn.dataset.metodo || 'Efectivo';
+
+      let nombre = btn.dataset.clientName || btn.dataset.userName || 'Sin cliente';
+      let email  = btn.dataset.clientEmail || btn.dataset.userEmail || 'Sin correo';
+
+      // Llenar modal
+      document.querySelector(".modal-nombre-cliente").textContent = nombre;
+      document.querySelector(".modal-documento-cliente").textContent = email;
+      document.querySelector(".modal-metodo-compra").textContent = metodo;
+      document.querySelector(".modal-fecha-compra").textContent = btn.dataset.fechaCompra || "";
+
+      // Cargar productos
+      const lista = document.getElementById("modal-productos-lista");
+      const precioTotalEl = document.querySelector(".modal-precio-producto");
+      lista.innerHTML = '<p style="text-align:center;padding:18px;color:#6b7280">Cargando productos...</p>';
+
+      try {
+        const resp = await fetch(`/buys/${buyId}/productos`);
+        const productos = await resp.json();
+
+        if (!productos.length) {
+          lista.innerHTML = '<p style="text-align:center;padding:20px;color:#7f8c8d">No hay productos en esta venta</p>';
+          precioTotalEl.textContent = 'COP 0,00';
         } else {
-          cantidadInput.disabled = true;
-          cantidadInput.value = '';
-          productCard.classList.remove('selected');
+          lista.innerHTML = productos.map(p => `
+            <div class="product-compact" style="display:flex;gap:12px;padding:10px;border-bottom:1px solid #e5e7eb">
+              <div style="width:50px;height:50px">
+                ${p.imagen ? `<img src="${p.imagen}" style="width:100%;height:100%;object-fit:cover;border-radius:6px">`
+                  : '<i class="fas fa-box" style="font-size:20px;color:#2563eb"></i>'}
+              </div>
+              <div style="flex:1">
+                <div style="font-weight:600">${p.nombre}</div>
+                <div style="font-size:12px;color:#6b7280">${p.cantidad} × ${p.precio_unitario}</div>
+              </div>
+              <div style="font-weight:700;color:#1e3a8a">${p.subtotal}</div>
+            </div>
+          `).join('');
+
+          const total = productos.reduce((acc, p) => {
+            const num = p.subtotal.replace(/[^\d,.-]/g,'').replace(/\./g,'').replace(',','.');
+            return acc + parseFloat(num || 0);
+          }, 0);
+
+          precioTotalEl.textContent = `COP ${total.toLocaleString('es-CO', {minimumFractionDigits:2})}`;
         }
-      });
+
+      } catch (err) {
+        lista.innerHTML = '<p style="color:red;text-align:center;padding:20px">Error al cargar productos</p>';
+        precioTotalEl.textContent = 'COP 0,00';
+      }
+
     });
+  });
 
-    // Validación del formulario
-    const formVenta = document.getElementById('form-venta-fisica');
-    if (formVenta) {
-      formVenta.addEventListener('submit', function(e) {
-        const clienteInput = document.querySelector('input[name="buy[cliente]"]');
-        
-        // Validar que el cliente no esté vacío
-        if (!clienteInput.value.trim()) {
-          e.preventDefault();
-          alert('Por favor, ingrese el nombre del cliente');
-          clienteInput.focus();
-          return false;
-        }
+});
+</script>
 
-        // Validar que al menos un producto esté seleccionado
-        const productosSeleccionados = document.querySelectorAll('.product-checkbox:checked');
-        
-        if (productosSeleccionados.length === 0) {
-          e.preventDefault();
-          alert('Por favor, seleccione al menos un producto');
-          return false;
-        }
 
-        // Validar que los productos seleccionados tengan cantidad
-        let cantidadValida = true;
-        productosSeleccionados.forEach(checkbox => {
-          const productId = checkbox.id.replace('select_', '');
-          const cantidadInput = document.querySelector(`input[data-product-cantidad="${productId}"]`);
-          
-          if (!cantidadInput.value || parseInt(cantidadInput.value) <= 0) {
-            cantidadValida = false;
-          }
-        });
+<script>
+document.addEventListener("DOMContentLoaded", function(){
 
-        if (!cantidadValida) {
-          e.preventDefault();
-          alert('Por favor, ingrese una cantidad válida para todos los productos seleccionados');
-          return false;
-        }
+  // FILTRAR POR NOMBRE O CÓDIGO
+  document.getElementById("filtroProducto").addEventListener("keyup", function(){
+    let valor = this.value.toLowerCase();
+    document.querySelectorAll(".producto-card").forEach(card => {
+      let nombre = card.dataset.nombre;
+      let codigo = card.dataset.codigo;
+      card.style.display = (nombre.includes(valor) || codigo.includes(valor)) ? "block" : "none";
+    });
+  });
 
-        return true;
-      });
+  // FILTRAR POR CÓDIGO EXACTO
+  document.getElementById("codigoBusqueda").addEventListener("keyup", function(){
+    let valor = this.value.toLowerCase();
+    document.querySelectorAll(".producto-card").forEach(card => {
+      card.style.display = card.dataset.codigo.startsWith(valor) ? "block" : "none";
+    });
+  });
+
+  // SELECCIONAR PRODUCTO
+  document.querySelectorAll(".seleccionar-producto").forEach(btn => {
+    btn.addEventListener("click", function(){
+
+      const id = this.dataset.productId;
+      const nombre = this.dataset.productName;
+      const precio = parseFloat(this.dataset.productPrice);
+
+      let tabla = document.querySelector("#tabla-seleccionados tbody");
+
+      // Agregar fila
+      tabla.insertAdjacentHTML("beforeend", `
+        <tr data-price="${precio}">
+          <td>${nombre} <input type="hidden" name="productos[][id]" value="${id}"></td>
+          <td>
+            <input type="number" class="form-control cantidad" name="productos[][cantidad]" value="1" min="1">
+          </td>
+          <td>${precio}</td>
+          <td class="subtotal">${precio}</td>
+          <td><button type="button" class="btn btn-danger btn-sm eliminar">X</button></td>
+        </tr>
+      `);
+
+      actualizarTotal();
+    });
+  });
+
+  // CAMBIAR CANTIDAD
+  document.addEventListener("input", function(e){
+    if(e.target.classList.contains("cantidad")){
+      let fila = e.target.closest("tr");
+      let precio = parseFloat(fila.dataset.price);
+      let cantidad = parseInt(e.target.value);
+      fila.querySelector(".subtotal").innerText = precio * cantidad;
+      actualizarTotal();
     }
   });
+
+  // ELIMINAR PRODUCTO
+  document.addEventListener("click", function(e){
+    if(e.target.classList.contains("eliminar")){
+      e.target.closest("tr").remove();
+      actualizarTotal();
+    }
+  });
+
+  function actualizarTotal(){
+    let total = 0;
+    document.querySelectorAll(".subtotal").forEach(s => total += parseFloat(s.innerText));
+    document.getElementById("total-venta").innerText = total;
+  }
+
+});
 </script>
 
 

@@ -67,16 +67,21 @@
         <% end %>
       </span>
     </div>
+
     <button class="show-buy btn-view-formal"
-      data-buy-id="<%= buy.id %>"
-      data-nombre-cliente="<%= buy.user&.name || "Sin cliente" %>"
-      data-documento-cliente="<%= buy.user&.email || 'sin-correo' %>"
-      data-fecha-compra="<%= buy.fecha.strftime("%d/%m/%Y") %>"
-      data-tipo-compra="<%= buy.payment_id.present? ? 'En línea (Wompi)' : 'Física' %>"
-      data-metodo-compra="<%= buy.payment&.pay_method || 'Efectivo' %>"
-      data-total="<%= buy.total.present? ? number_with_precision(buy.total, precision: 2) : (buy.payment&.amount.present? ? number_with_precision(buy.payment.amount, precision: 2) : '0.00') %>">
-      Ver detalles
-    </button>
+  data-bs-toggle="modal" 
+  data-bs-target="#modalInfoCompra"
+  
+  data-buy-id="<%= buy.id %>"
+  data-client-name="<%= buy.client_name.presence || buy.user&.name || 'Sin cliente' %>"
+  data-client-email="<%= buy.client_email.presence || buy.user&.email || 'Sin correo' %>"
+  data-fecha-compra="<%= buy.fecha.strftime('%d/%m/%Y') %>"
+  data-metodo="<%= buy.metodo_pago.presence || buy.payment&.pay_method || 'Efectivo' %>"
+  data-total="<%= buy.total.present? ? number_with_precision(buy.total, precision: 2) : (buy.payment&.amount.present? ? number_with_precision(buy.payment.amount, precision: 2) : '0.00') %>"
+>
+  Ver detalles
+</button>
+
   </div>
 </div>
 
