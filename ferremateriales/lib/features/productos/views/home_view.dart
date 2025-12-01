@@ -1,6 +1,6 @@
 import 'package:ferremateriales/features/productos/services/favorites_service.dart';
 import 'package:ferremateriales/features/productos/services/cart_service.dart';
-import 'package:flutter/foundation.dart'; 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:carousel_slider/carousel_slider.dart';
@@ -18,10 +18,11 @@ class HomeView extends StatefulWidget {
   State<HomeView> createState() => _HomeViewState();
 }
 
-class _HomeViewState extends State<HomeView> with AutomaticKeepAliveClientMixin {
+class _HomeViewState extends State<HomeView>
+    with AutomaticKeepAliveClientMixin {
   @override
   bool get wantKeepAlive => true; // Mantener el estado vivo
-  
+
   bool _isSearching = false;
   bool _dataLoaded = false; // Flag para evitar recargas múltiples
   late TextEditingController _searchController;
@@ -41,11 +42,18 @@ class _HomeViewState extends State<HomeView> with AutomaticKeepAliveClientMixin 
 
   Future<void> _initializeData() async {
     final productBloc = context.read<ProductBloc>();
-    
+
+    // Verificar si los productos ya fueron cargados (por ejemplo, en el splash)
+    if (productBloc.state is ProductDestacadosSuccess ||
+        productBloc.state is ProductLoadSuccess) {
+      print("Productos ya cargados, saltando inicialización");
+      return;
+    }
+
     // 1. Cargar cachés de favoritos y carrito PRIMERO
     await FavoritesService().loadFavoritesCache();
     await CartService().loadCartCache();
-    
+
     // 2. DESPUÉS cargar productos destacados (así ya tenemos los favoritos en cache)
     print("Cargando destacados después de cache de favoritos...");
     productBloc.add(CargarDestacados());
@@ -70,41 +78,93 @@ class _HomeViewState extends State<HomeView> with AutomaticKeepAliveClientMixin 
     ];
 
     final categories = [
-      {'icon': Icons.construction, 'label': 'Herramientas', 'display': l10n.tools, 'id': 1},
-      {'icon': Icons.handyman, 'label': 'Tornillería y Fijaciones', 'display': l10n.hardware, 'id': 2},
-      {'icon': Icons.plumbing, 'label': 'Plomería', 'display': l10n.plumbing, 'id': 3},
-      {'icon': Icons.flash_on, 'label': 'Electricidad', 'display': l10n.electricity, 'id': 4},
-      {'icon': Icons.business, 'label': 'Construcción y Materiales', 'display': l10n.construction, 'id': 5},
-      {'icon': Icons.format_paint, 'label': 'Pintura y Acabados', 'display': l10n.paint, 'id': 6},
-      {'icon': Icons.home_repair_service, 'label': 'Ferretería para el hogar', 'display': l10n.homeHardware, 'id': 7},
-      {'icon': Icons.cleaning_services, 'label': 'Limpieza y Mantenimiento', 'display': l10n.cleaning, 'id': 8},
-      {'icon': Icons.sticky_note_2, 'label': 'Adhesivos y Selladores', 'display': l10n.adhesives, 'id': 9},
-      {'icon': Icons.grass, 'label': 'Jardinería', 'display': l10n.gardening, 'id': 10},
+      {
+        'icon': Icons.construction,
+        'label': 'Herramientas',
+        'display': l10n.tools,
+        'id': 1,
+      },
+      {
+        'icon': Icons.handyman,
+        'label': 'Tornillería y Fijaciones',
+        'display': l10n.hardware,
+        'id': 2,
+      },
+      {
+        'icon': Icons.plumbing,
+        'label': 'Plomería',
+        'display': l10n.plumbing,
+        'id': 3,
+      },
+      {
+        'icon': Icons.flash_on,
+        'label': 'Electricidad',
+        'display': l10n.electricity,
+        'id': 4,
+      },
+      {
+        'icon': Icons.business,
+        'label': 'Construcción y Materiales',
+        'display': l10n.construction,
+        'id': 5,
+      },
+      {
+        'icon': Icons.format_paint,
+        'label': 'Pintura y Acabados',
+        'display': l10n.paint,
+        'id': 6,
+      },
+      {
+        'icon': Icons.home_repair_service,
+        'label': 'Ferretería para el hogar',
+        'display': l10n.homeHardware,
+        'id': 7,
+      },
+      {
+        'icon': Icons.cleaning_services,
+        'label': 'Limpieza y Mantenimiento',
+        'display': l10n.cleaning,
+        'id': 8,
+      },
+      {
+        'icon': Icons.sticky_note_2,
+        'label': 'Adhesivos y Selladores',
+        'display': l10n.adhesives,
+        'id': 9,
+      },
+      {
+        'icon': Icons.grass,
+        'label': 'Jardinería',
+        'display': l10n.gardening,
+        'id': 10,
+      },
     ];
 
-    final categoryItems = categories.map((category) {
-      return _HoverCategoryButton(
-        icon: category['icon'] as IconData,
-        label: category['display'] as String,
-        onTap: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (_) => BlocProvider.value(
-                value: context.read<ProductBloc>(),
-                child: CategoryProductsView(
-                  categoryName: category['label'] as String,
-                  categoryId: category['id'] as int,
-                  displayName: category['display'] as String,
+    final categoryItems =
+        categories.map((category) {
+          return _HoverCategoryButton(
+            icon: category['icon'] as IconData,
+            label: category['display'] as String,
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder:
+                      (_) => BlocProvider.value(
+                        value: context.read<ProductBloc>(),
+                        child: CategoryProductsView(
+                          categoryName: category['label'] as String,
+                          categoryId: category['id'] as int,
+                          displayName: category['display'] as String,
+                        ),
+                      ),
                 ),
-              ),
-            ),
-          ).then((_) {
-            context.read<ProductBloc>().add(CargarDestacados());
-          });
-        },
-      );
-    }).toList();
+              ).then((_) {
+                context.read<ProductBloc>().add(CargarDestacados());
+              });
+            },
+          );
+        }).toList();
 
     return Scaffold(
       backgroundColor: isDark ? Colors.grey.shade900 : Colors.grey.shade50,
@@ -114,21 +174,24 @@ class _HomeViewState extends State<HomeView> with AutomaticKeepAliveClientMixin 
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-
               // 🔹 Barra de búsqueda
               Container(
-                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 16,
+                  vertical: 16,
+                ),
                 decoration: BoxDecoration(
                   color: isDark ? Colors.grey.shade800 : Colors.white,
-                  boxShadow: isDark
-                      ? []
-                      : [
-                          BoxShadow(
-                            color: Colors.black.withOpacity(0.05),
-                            blurRadius: 10,
-                            offset: const Offset(0, 2),
-                          ),
-                        ],
+                  boxShadow:
+                      isDark
+                          ? []
+                          : [
+                            BoxShadow(
+                              color: Colors.black.withOpacity(0.05),
+                              blurRadius: 10,
+                              offset: const Offset(0, 2),
+                            ),
+                          ],
                 ),
                 child: Row(
                   children: [
@@ -136,14 +199,17 @@ class _HomeViewState extends State<HomeView> with AutomaticKeepAliveClientMixin 
                       child: TextField(
                         controller: _searchController,
                         style: TextStyle(
-                          color: isDark ? Colors.white : const Color(0xFF222222),
+                          color:
+                              isDark ? Colors.white : const Color(0xFF222222),
                         ),
                         onTap: () {
                           if (!_isSearching) {
                             setState(() {
                               _isSearching = true;
                             });
-                            context.read<ProductBloc>().add(CargarTodosLosProductos());
+                            context.read<ProductBloc>().add(
+                              CargarTodosLosProductos(),
+                            );
                           }
                         },
                         onChanged: (value) {
@@ -159,46 +225,73 @@ class _HomeViewState extends State<HomeView> with AutomaticKeepAliveClientMixin 
                         decoration: InputDecoration(
                           hintText: 'Buscar productos...',
                           hintStyle: TextStyle(
-                            color: isDark ? Colors.grey.shade400 : Colors.grey.shade500,
+                            color:
+                                isDark
+                                    ? Colors.grey.shade400
+                                    : Colors.grey.shade500,
                           ),
                           prefixIcon: Icon(
                             Icons.search,
-                            color: isDark ? Colors.grey.shade400 : const Color(0xFF2e67a3),
+                            color:
+                                isDark
+                                    ? Colors.grey.shade400
+                                    : const Color(0xFF2e67a3),
                           ),
-                          suffixIcon: _isSearching
-                              ? IconButton(
-                                  icon: Icon(
-                                    Icons.close,
-                                    color: isDark ? Colors.grey.shade400 : const Color(0xFF2e67a3),
-                                  ),
-                                  onPressed: () {
-                                    setState(() {
-                                      _isSearching = false;
-                                      _searchController.clear();
-                                    });
-                                    context.read<ProductBloc>().add(CargarDestacados());
-                                  },
-                                )
-                              : null,
+                          suffixIcon:
+                              _isSearching
+                                  ? IconButton(
+                                    icon: Icon(
+                                      Icons.close,
+                                      color:
+                                          isDark
+                                              ? Colors.grey.shade400
+                                              : const Color(0xFF2e67a3),
+                                    ),
+                                    onPressed: () {
+                                      setState(() {
+                                        _isSearching = false;
+                                        _searchController.clear();
+                                      });
+                                      context.read<ProductBloc>().add(
+                                        CargarDestacados(),
+                                      );
+                                    },
+                                  )
+                                  : null,
                           filled: true,
-                          fillColor: isDark ? Colors.grey.shade800 : Colors.grey.shade100,
+                          fillColor:
+                              isDark
+                                  ? Colors.grey.shade800
+                                  : Colors.grey.shade100,
                           border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(24),
                             borderSide: BorderSide(
-                              color: isDark ? Colors.grey.shade700 : Colors.grey.shade300,
+                              color:
+                                  isDark
+                                      ? Colors.grey.shade700
+                                      : Colors.grey.shade300,
                             ),
                           ),
                           enabledBorder: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(24),
                             borderSide: BorderSide(
-                              color: isDark ? Colors.grey.shade700 : Colors.grey.shade300,
+                              color:
+                                  isDark
+                                      ? Colors.grey.shade700
+                                      : Colors.grey.shade300,
                             ),
                           ),
                           focusedBorder: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(24),
-                            borderSide: const BorderSide(color: Color(0xFF2e67a3), width: 2),
+                            borderSide: const BorderSide(
+                              color: Color(0xFF2e67a3),
+                              width: 2,
+                            ),
                           ),
-                          contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                          contentPadding: const EdgeInsets.symmetric(
+                            horizontal: 16,
+                            vertical: 12,
+                          ),
                         ),
                       ),
                     ),
@@ -210,40 +303,50 @@ class _HomeViewState extends State<HomeView> with AutomaticKeepAliveClientMixin 
 
               // Carrusel banners (solo cuando no está buscando)
               if (!_isSearching) ...[
-              CarouselSlider(
-                options: CarouselOptions(height: 140, autoPlay: true, enlargeCenterPage: true),
-                items: bannerImages.map((path) {
-                  return ClipRRect(
-                    borderRadius: BorderRadius.circular(12),
-                    child: Image.asset(path, fit: BoxFit.cover, width: double.infinity),
-                  );
-                }).toList(),
-              ),
-
-              const SizedBox(height: 28),
-
-              // Carrusel categorías
-              CarouselSlider(
-                options: CarouselOptions(
-                  height: 110,
-                  viewportFraction: 0.33,
-                  autoPlay: true,
-                  enlargeCenterPage: true,
+                CarouselSlider(
+                  options: CarouselOptions(
+                    height: 140,
+                    autoPlay: true,
+                    enlargeCenterPage: true,
+                  ),
+                  items:
+                      bannerImages.map((path) {
+                        return ClipRRect(
+                          borderRadius: BorderRadius.circular(12),
+                          child: Image.asset(
+                            path,
+                            fit: BoxFit.cover,
+                            width: double.infinity,
+                          ),
+                        );
+                      }).toList(),
                 ),
-                items: categoryItems,
-              ),
 
-              const SizedBox(height: 32),
+                const SizedBox(height: 28),
+
+                // Carrusel categorías
+                CarouselSlider(
+                  options: CarouselOptions(
+                    height: 110,
+                    viewportFraction: 0.33,
+                    autoPlay: true,
+                    enlargeCenterPage: true,
+                  ),
+                  items: categoryItems,
+                ),
+
+                const SizedBox(height: 32),
               ],
 
               // Título dinámico
 
               // Título dinámico
-
               Padding(
                 padding: const EdgeInsets.only(left: 16),
                 child: Text(
-                  _isSearching ? 'Resultados de búsqueda' : l10n.featuredProducts,
+                  _isSearching
+                      ? 'Resultados de búsqueda'
+                      : l10n.featuredProducts,
                   style: TextStyle(
                     fontSize: 22,
                     fontWeight: FontWeight.bold,
@@ -253,7 +356,7 @@ class _HomeViewState extends State<HomeView> with AutomaticKeepAliveClientMixin 
               ),
 
               const SizedBox(height: 6),
-              
+
               // Productos destacados o resultados de búsqueda
               BlocBuilder<ProductBloc, ProductState>(
                 builder: (context, state) {
@@ -270,7 +373,10 @@ class _HomeViewState extends State<HomeView> with AutomaticKeepAliveClientMixin 
                           child: Text(
                             'No se encontraron productos',
                             style: TextStyle(
-                              color: isDark ? Colors.grey.shade400 : Colors.grey.shade600,
+                              color:
+                                  isDark
+                                      ? Colors.grey.shade400
+                                      : Colors.grey.shade600,
                               fontSize: 16,
                             ),
                           ),
@@ -292,7 +398,10 @@ class _HomeViewState extends State<HomeView> with AutomaticKeepAliveClientMixin 
                           child: Text(
                             'No hay productos destacados aún',
                             style: TextStyle(
-                              color: isDark ? Colors.grey.shade400 : Colors.grey.shade600,
+                              color:
+                                  isDark
+                                      ? Colors.grey.shade400
+                                      : Colors.grey.shade600,
                               fontSize: 16,
                             ),
                           ),
@@ -322,17 +431,22 @@ class _HomeViewState extends State<HomeView> with AutomaticKeepAliveClientMixin 
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (_) => BlocProvider.value(
-                              value: context.read<ProductBloc>(),
-                              child: const AllProductsView(),
-                            ),
+                            builder:
+                                (_) => BlocProvider.value(
+                                  value: context.read<ProductBloc>(),
+                                  child: const AllProductsView(),
+                                ),
                           ),
                         );
                       },
                       style: OutlinedButton.styleFrom(
-                        foregroundColor: isDark ? Colors.white : const Color(0xFF2e67a3),
+                        foregroundColor:
+                            isDark ? Colors.white : const Color(0xFF2e67a3),
                         side: BorderSide(
-                          color: isDark ? Colors.grey.shade600 : const Color(0xFF2e67a3),
+                          color:
+                              isDark
+                                  ? Colors.grey.shade600
+                                  : const Color(0xFF2e67a3),
                           width: 2,
                         ),
                         shape: RoundedRectangleBorder(
@@ -347,13 +461,17 @@ class _HomeViewState extends State<HomeView> with AutomaticKeepAliveClientMixin 
                             style: TextStyle(
                               fontSize: 16,
                               fontWeight: FontWeight.w600,
-                              color: isDark ? Colors.white : const Color(0xFF2e67a3),
+                              color:
+                                  isDark
+                                      ? Colors.white
+                                      : const Color(0xFF2e67a3),
                             ),
                           ),
                           const SizedBox(width: 8),
                           Icon(
                             Icons.arrow_forward,
-                            color: isDark ? Colors.white : const Color(0xFF2e67a3),
+                            color:
+                                isDark ? Colors.white : const Color(0xFF2e67a3),
                           ),
                         ],
                       ),
@@ -402,14 +520,18 @@ class _HoverCategoryButtonState extends State<_HoverCategoryButton> {
           children: [
             CircleAvatar(
               radius: 28,
-              backgroundColor: _isHovered
-                  ? const Color(0xFF2e67a3).withOpacity(0.2)
-                  : (isDark ? Colors.grey.shade800 : Colors.grey.shade200),
+              backgroundColor:
+                  _isHovered
+                      ? const Color(0xFF2e67a3).withOpacity(0.2)
+                      : (isDark ? Colors.grey.shade800 : Colors.grey.shade200),
               child: Icon(
                 widget.icon,
-                color: _isHovered
-                    ? const Color(0xFF2e67a3)
-                    : (isDark ? Colors.blue.shade300 : const Color(0xFF2e67a3)),
+                color:
+                    _isHovered
+                        ? const Color(0xFF2e67a3)
+                        : (isDark
+                            ? Colors.blue.shade300
+                            : const Color(0xFF2e67a3)),
                 size: 22,
               ),
             ),
@@ -419,9 +541,10 @@ class _HoverCategoryButtonState extends State<_HoverCategoryButton> {
               textAlign: TextAlign.center,
               style: TextStyle(
                 fontSize: 12,
-                color: _isHovered
-                    ? const Color(0xFF2e67a3)
-                    : (isDark ? Colors.grey.shade300 : Colors.black87),
+                color:
+                    _isHovered
+                        ? const Color(0xFF2e67a3)
+                        : (isDark ? Colors.grey.shade300 : Colors.black87),
               ),
             ),
           ],

@@ -88,6 +88,7 @@ flutter:
   assets:
     - assets/images/Default_not_img.png
     - assets/images/logo.jpg
+    - assets/images/favicon.png
     - assets/images/degrade.png
     - assets/json/ferre.json
     - assets/images/oferta.jpg
