@@ -19,19 +19,21 @@ class HomeView extends StatefulWidget {
 }
 
 class _HomeViewState extends State<HomeView>
-    with AutomaticKeepAliveClientMixin {
+    with AutomaticKeepAliveClientMixin, WidgetsBindingObserver {
   @override
   bool get wantKeepAlive => true; // Mantener el estado vivo
 
   bool _isSearching = false;
   bool _dataLoaded = false; // Flag para evitar recargas múltiples
   late TextEditingController _searchController;
+  bool _shouldRestoreDestacados = false; // Flag para restaurar destacados
 
   @override
   void initState() {
     super.initState();
     print("=== HOME VIEW INIT STATE ===");
     _searchController = TextEditingController();
+    WidgetsBinding.instance.addObserver(this);
 
     // Solo cargar una vez cuando se monta el widget
     if (!_dataLoaded) {
@@ -40,29 +42,51 @@ class _HomeViewState extends State<HomeView>
     }
   }
 
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    // Detectar cuando la app vuelve al foreground después de una navegación
+    if (state == AppLifecycleState.resumed && _shouldRestoreDestacados && mounted) {
+      _shouldRestoreDestacados = false;
+      // Restaurar destacados desde cache sin forzar recarga
+      context.read<ProductBloc>().add(const CargarDestacados(forceRefresh: false));
+    }
+  }
+
   Future<void> _initializeData() async {
     final productBloc = context.read<ProductBloc>();
 
-    // Verificar si los productos ya fueron cargados (por ejemplo, en el splash)
-    if (productBloc.state is ProductDestacadosSuccess ||
-        productBloc.state is ProductLoadSuccess) {
-      print("Productos ya cargados, saltando inicialización");
+    // Verificar si los destacados ya fueron cargados (por ejemplo, en el splash)
+    if (productBloc.state is ProductDestacadosSuccess) {
+      print("✅ Destacados ya cargados desde splash, saltando inicialización");
       return;
     }
 
-    // 1. Cargar cachés de favoritos y carrito PRIMERO
+    // Si llegamos aquí, es porque no hay destacados cargados (caso extraño)
+    // Solo cargar cachés sin disparar eventos del BLoC
+    print("⚠️ Destacados no encontrados, solo cargando cachés...");
     await FavoritesService().loadFavoritesCache();
     await CartService().loadCartCache();
-
-    // 2. DESPUÉS cargar productos destacados (así ya tenemos los favoritos en cache)
-    print("Cargando destacados después de cache de favoritos...");
-    productBloc.add(CargarDestacados());
+    
+    // Si realmente no hay destacados, cargarlos desde cache
+    if (productBloc.state is! ProductDestacadosSuccess) {
+      print("📦 Cargando destacados desde cache...");
+      productBloc.add(const CargarDestacados(forceRefresh: false));
+    }
   }
 
   @override
   void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
     _searchController.dispose();
     super.dispose();
+  }
+
+  Future<void> _refreshHome() async {
+    // Recargar destacados forzando refresh desde el servidor
+    context.read<ProductBloc>().add(const CargarDestacados(forceRefresh: true));
+    
+    // Esperar un poco para que se complete
+    await Future.delayed(const Duration(milliseconds: 800));
   }
 
   @override
@@ -146,6 +170,9 @@ class _HomeViewState extends State<HomeView>
             icon: category['icon'] as IconData,
             label: category['display'] as String,
             onTap: () {
+              // Marcar que necesitamos restaurar destacados al regresar
+              _shouldRestoreDestacados = true;
+              
               Navigator.push(
                 context,
                 MaterialPageRoute(
@@ -160,7 +187,11 @@ class _HomeViewState extends State<HomeView>
                       ),
                 ),
               ).then((_) {
-                context.read<ProductBloc>().add(CargarDestacados());
+                // Restaurar destacados al regresar
+                if (mounted && !_isSearching) {
+                  context.read<ProductBloc>().add(const CargarDestacados(forceRefresh: false));
+                }
+                _shouldRestoreDestacados = false;
               });
             },
           );
@@ -169,15 +200,18 @@ class _HomeViewState extends State<HomeView>
     return Scaffold(
       backgroundColor: isDark ? Colors.grey.shade900 : Colors.grey.shade50,
       body: SafeArea(
-        child: LayoutBuilder(
-          builder: (context, constraints) {
-            // Determinar si es pantalla pequeña
-            final isSmallScreen = constraints.maxWidth < 600;
-            final horizontalPadding = isSmallScreen ? 16.0 : 32.0;
+        child: RefreshIndicator(
+          onRefresh: _refreshHome,
+          color: Colors.orange.shade700,
+          child: LayoutBuilder(
+            builder: (context, constraints) {
+              // Determinar si es pantalla pequeña
+              final isSmallScreen = constraints.maxWidth < 600;
+              final horizontalPadding = isSmallScreen ? 16.0 : 32.0;
 
-            return SingleChildScrollView(
-              padding: const EdgeInsets.only(bottom: 80),
-              child: Column(
+              return SingleChildScrollView(
+                padding: const EdgeInsets.only(bottom: 80),
+                child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   // 🔹 Barra de búsqueda
@@ -260,8 +294,9 @@ class _HomeViewState extends State<HomeView>
                                             _isSearching = false;
                                             _searchController.clear();
                                           });
+                                          // Regresar a destacados desde caché (no recargar)
                                           context.read<ProductBloc>().add(
-                                            CargarDestacados(),
+                                            const CargarDestacados(forceRefresh: false),
                                           );
                                         },
                                       )
@@ -436,6 +471,9 @@ class _HomeViewState extends State<HomeView>
                         height: 50,
                         child: OutlinedButton(
                           onPressed: () {
+                            // Marcar que necesitamos restaurar destacados
+                            _shouldRestoreDestacados = true;
+                            
                             Navigator.push(
                               context,
                               MaterialPageRoute(
@@ -445,7 +483,13 @@ class _HomeViewState extends State<HomeView>
                                       child: const AllProductsView(),
                                     ),
                               ),
-                            );
+                            ).then((_) {
+                              // Restaurar destacados al regresar
+                              if (mounted && !_isSearching) {
+                                context.read<ProductBloc>().add(const CargarDestacados(forceRefresh: false));
+                              }
+                              _shouldRestoreDestacados = false;
+                            });
                           },
                           style: OutlinedButton.styleFrom(
                             foregroundColor:
@@ -493,6 +537,7 @@ class _HomeViewState extends State<HomeView>
               ),
             );
           },
+        ),
         ),
       ),
     );

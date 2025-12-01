@@ -6,6 +6,7 @@ import 'package:ferremateriales/features/productos/model/product_model.dart';
 import 'package:ferremateriales/features/productos/services/favorites_service.dart';
 import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
+import 'package:shared_preferences/shared_preferences.dart';
 
 part 'product_event.dart';
 part 'product_state.dart';
@@ -23,6 +24,38 @@ class ProductBloc extends Bloc<ProductEvent, ProductState> {
     on<ProductBuscarPorNombre>(_onBuscarProductoPorNombre);
     on<ProductFilterByCategory>(_onFilterByCategory);
     on<ToggleFavorite>(_onToggleFavorite);
+    
+    // Cargar destacados desde cache persistente al iniciar
+    _loadDestacadosFromCache();
+  }
+
+  // Cargar destacados desde SharedPreferences
+  Future<void> _loadDestacadosFromCache() async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      final cachedData = prefs.getString('destacados_cache');
+      
+      if (cachedData != null) {
+        final List<dynamic> decoded = jsonDecode(cachedData);
+        _destacados = decoded.map((item) => ProductModel.fromJson(item)).toList();
+        _destacados = _markFavorites(_destacados);
+        print("💾 Cache de destacados cargado: ${_destacados.length} productos");
+      }
+    } catch (e) {
+      print("⚠️ Error cargando cache de destacados: $e");
+    }
+  }
+
+  // Guardar destacados en SharedPreferences
+  Future<void> _saveDestacadosToCache(List<ProductModel> productos) async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      final jsonData = jsonEncode(productos.map((p) => p.toJson()).toList());
+      await prefs.setString('destacados_cache', jsonData);
+      print("💾 Destacados guardados en cache: ${productos.length} productos");
+    } catch (e) {
+      print("⚠️ Error guardando cache de destacados: $e");
+    }
   }
 
   // Helper para marcar productos como favoritos
@@ -43,17 +76,25 @@ class ProductBloc extends Bloc<ProductEvent, ProductState> {
   ) async {
     print("=== CARGAR DESTACADOS INICIADO ===");
 
-    // 🔹 Si ya tenemos destacados en caché, emitirlos inmediatamente
+    // 🔹 Si ya tenemos destacados en caché, emitirlos INMEDIATAMENTE
     if (_destacados.isNotEmpty) {
-      print("✅ Usando caché de destacados (${_destacados.length} productos)");
+      print("✅ Emitiendo destacados desde cache (${_destacados.length} productos)");
       emit(ProductDestacadosSuccess(_destacados));
-      return;
+      
+      // Si NO es refresh forzado, terminar aquí (usar solo cache)
+      if (!event.forceRefresh) {
+        print("💾 Usando solo cache, sin petición HTTP");
+        return;
+      }
+      
+      // Si ES refresh forzado, continuar para actualizar en background
+      print("🔄 Actualizando destacados en background...");
+    } else {
+      // No hay cache, mostrar loading
+      emit(ProductLoadInProgress());
     }
 
-    // 🔹 IMPORTANTE: Siempre hacer la petición al backend para obtener los más vendidos
-    // No usar _productosCache porque el backend retorna específicamente los más vendidos
-    emit(ProductLoadInProgress());
-
+    // 🔹 Hacer petición al backend
     try {
       final url = Uri.parse(ApiConfig.productsUrl);
       print("URL destacados (más vendidos): $url");
@@ -68,6 +109,13 @@ class ProductBloc extends Bloc<ProductEvent, ProductState> {
         if (response.body.trim().startsWith('<!DOCTYPE') ||
             response.body.trim().startsWith('<html')) {
           print("❌ ERROR: El servidor respondió con HTML en lugar de JSON");
+          
+          // Si hay cache, mantenerlo y no mostrar error
+          if (_destacados.isNotEmpty) {
+            print("💾 Manteniendo cache antiguo");
+            return;
+          }
+          
           emit(
             const ProductLoadFailure(
               "Error: Servidor respondió con HTML. Verifica la URL de ngrok y que el backend esté corriendo.",
@@ -91,6 +139,9 @@ class ProductBloc extends Bloc<ProductEvent, ProductState> {
 
           // Marcar favoritos
           _destacados = _markFavorites(_destacados);
+          
+          // Guardar en cache persistente
+          await _saveDestacadosToCache(_destacados);
 
           print(
             "✅ Destacados cargados: ${_destacados.length} productos más vendidos",
@@ -300,21 +351,26 @@ class ProductBloc extends Bloc<ProductEvent, ProductState> {
     ToggleFavorite event,
     Emitter<ProductState> emit,
   ) async {
-    if (state is! ProductLoadSuccess && state is! ProductDestacadosSuccess)
-      return;
-
-    // Actualizar el servicio de favoritos
+    // Actualizar el servicio de favoritos primero
     _favoritesService.toggleFavoriteCache(event.productId);
 
-    // Actualiza todos y destacados usando _markFavorites
+    // Actualizar todos los cachés con el nuevo estado de favoritos
     _productosCache = _markFavorites(_productosCache);
     _destacados = _markFavorites(_destacados);
+    
+    // Actualizar cada categoría en caché
+    _productosPorCategoria = _productosPorCategoria.map(
+      (key, value) => MapEntry(key, _markFavorites(value)),
+    );
 
-    // Reemitir según estado actual
+    // Reemitir según el estado actual sin recargar
     if (state is ProductDestacadosSuccess) {
       emit(ProductDestacadosSuccess(_destacados));
-    } else {
-      emit(ProductLoadSuccess(_productosCache));
+    } else if (state is ProductLoadSuccess) {
+      final currentProducts = (state as ProductLoadSuccess).productos;
+      // Re-marcar los productos actuales mostrados
+      final updatedProducts = _markFavorites(currentProducts);
+      emit(ProductLoadSuccess(updatedProducts));
     }
   }
 }

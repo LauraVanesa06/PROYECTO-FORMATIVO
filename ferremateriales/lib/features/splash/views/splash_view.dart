@@ -60,58 +60,70 @@ class _SplashViewState extends State<SplashView>
 
       if (!mounted) return;
 
-      // 2. Cargar TODOS los productos, destacados (más vendidos) y categorías en paralelo
       final productBloc = context.read<ProductBloc>();
       final categoryBloc = context.read<CategoryBloc>();
 
-      // Cargar productos completos, destacados (más vendidos) y categorías simultáneamente
-      productBloc.add(CargarTodosLosProductos());
-      productBloc.add(
-        CargarDestacados(),
-      ); // Obtiene los más vendidos del backend
-      categoryBloc.add(LoadCategories());
-
-      // 3. Esperar a que los productos terminen de cargar (máximo 8 segundos)
-      print("Esperando a que los productos y destacados se carguen...");
+      // 2. PRIMERO: Cargar destacados (más vendidos)
+      print("🔥 Cargando destacados...");
+      productBloc.add(const CargarDestacados(forceRefresh: true));
+      
+      // Esperar a que los destacados se carguen
       int attempts = 0;
-      bool productsLoaded = false;
       bool featuredLoaded = false;
-
-      while (attempts < 40 && (!productsLoaded || !featuredLoaded)) {
-        // 40 intentos * 200ms = 8 segundos máximo
+      
+      while (attempts < 25 && !featuredLoaded) {
         await Future.delayed(const Duration(milliseconds: 200));
-
         if (!mounted) return;
 
         final currentState = productBloc.state;
-
-        if (currentState is ProductLoadSuccess) {
-          productsLoaded = true;
-          print("✅ Todos los productos cargados");
-        } else if (currentState is ProductDestacadosSuccess) {
+        if (currentState is ProductDestacadosSuccess) {
           featuredLoaded = true;
-          print("✅ Productos destacados (más vendidos) cargados");
+          print("✅ Destacados cargados (${currentState.destacados.length} productos)");
         } else if (currentState is ProductLoadFailure) {
-          print("⚠️ Error cargando productos en el splash");
+          print("⚠️ Error cargando destacados");
           break;
         }
-
-        // Si ambos están cargados, salir del loop
-        if (productsLoaded && featuredLoaded) {
-          print("✅ Todos los datos cargados exitosamente");
-          break;
-        }
-
         attempts++;
       }
 
-      // 4. Esperar solo 1 segundo adicional para la animación
-      await Future.delayed(const Duration(milliseconds: 1000));
+      // 3. SEGUNDO: Cargar todos los productos y categorías
+      print("📦 Cargando todos los productos...");
+      productBloc.add(CargarTodosLosProductos());
+      categoryBloc.add(LoadCategories());
 
-      // 5. Esperar a que la animación termine
-      await _animationController.forward();
+      // Esperar a que todos los productos se carguen
+      attempts = 0;
+      bool allProductsLoaded = false;
+      
+      while (attempts < 30 && !allProductsLoaded) {
+        await Future.delayed(const Duration(milliseconds: 200));
+        if (!mounted) return;
 
-      // Navegar a la pantalla principal
+        final currentState = productBloc.state;
+        if (currentState is ProductLoadSuccess) {
+          allProductsLoaded = true;
+          print("✅ Todos los productos cargados (${currentState.productos.length} productos)");
+        } else if (currentState is ProductLoadFailure) {
+          print("⚠️ Error cargando todos los productos");
+          break;
+        }
+        attempts++;
+      }
+
+      // 4. Esperar un poco para la animación
+      await Future.delayed(const Duration(milliseconds: 800));
+
+      // 5. Asegurar que el estado final sea ProductDestacadosSuccess antes de navegar
+      // Esto evita que home_view recargue los destacados
+      if (mounted) {
+        print("🔄 Re-emitiendo destacados para home_view...");
+        productBloc.add(const CargarDestacados(forceRefresh: false));
+        
+        // Esperar a que se emita el estado
+        await Future.delayed(const Duration(milliseconds: 50));
+      }
+
+      // 6. Navegar a la pantalla principal
       if (mounted) {
         Navigator.of(context).pushReplacement(
           PageRouteBuilder(
@@ -149,80 +161,60 @@ class _SplashViewState extends State<SplashView>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
-      body: SafeArea(
-        child: AnimatedBuilder(
-          animation: _animationController,
-          builder: (context, child) {
-            return FadeTransition(
-              opacity: _fadeAnimation,
-              child: Center(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    const Spacer(flex: 2),
-                    // Logo con animación de escala
-                    ScaleTransition(
-                      scale: _scaleAnimation,
-                      child: Container(
-                        width: 150,
-                        height: 150,
-                        padding: const EdgeInsets.all(20),
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(30),
-                          color: Colors.white,
-                          boxShadow: [
-                            BoxShadow(
-                              color: Colors.orange.withOpacity(0.1),
-                              blurRadius: 30,
-                              spreadRadius: 10,
-                            ),
-                          ],
-                        ),
-                        child: ClipRRect(
-                          borderRadius: BorderRadius.circular(20),
+      backgroundColor: Colors.black,
+      body: Container(
+        decoration: const BoxDecoration(
+          color: Colors.black,
+        ),
+        child: SafeArea(
+          child: AnimatedBuilder(
+            animation: _animationController,
+            builder: (context, child) {
+              return FadeTransition(
+                opacity: _fadeAnimation,
+                child: Center(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      const Spacer(flex: 2),
+                      // Logo con animación de escala
+                      ScaleTransition(
+                        scale: _scaleAnimation,
+                        child: Container(
+                          width: 200,
+                          height: 200,
                           child: Image.asset(
                             'assets/images/favicon.png',
                             fit: BoxFit.contain,
                             errorBuilder: (context, error, stackTrace) {
                               return Icon(
                                 Icons.store,
-                                size: 80,
+                                size: 150,
                                 color: Colors.orange.shade700,
                               );
                             },
                           ),
                         ),
                       ),
-                    ),
-                    const Spacer(flex: 1),
-                    // Indicador de carga con animación
-                    SizedBox(
-                      width: 50,
-                      height: 50,
-                      child: CircularProgressIndicator(
-                        strokeWidth: 4,
-                        valueColor: AlwaysStoppedAnimation<Color>(
-                          Colors.orange.shade700,
+                      const SizedBox(height: 60),
+                      // Indicador de carga con animación
+                      SizedBox(
+                        width: 45,
+                        height: 45,
+                        child: CircularProgressIndicator(
+                          strokeWidth: 3.5,
+                          valueColor: AlwaysStoppedAnimation<Color>(
+                            Colors.orange.shade600,
+                          ),
                         ),
                       ),
-                    ),
-                    const SizedBox(height: 16),
-                    // Texto de carga
-                    Text(
-                      'Cargando productos...',
-                      style: TextStyle(
-                        fontSize: 14,
-                        color: Colors.grey.shade600,
-                        fontWeight: FontWeight.w500,
-                      ),
-                    ),
-                    const Spacer(flex: 2),
-                  ],
+                      const Spacer(flex: 2),
+                    ],
+                  ),
                 ),
-              ),
-            );
-          },
+              );
+            },
+          ),
         ),
       ),
     );
