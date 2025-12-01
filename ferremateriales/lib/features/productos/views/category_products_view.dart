@@ -2,6 +2,7 @@ import 'package:ferremateriales/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../bloc/product_bloc.dart';
+import '../model/product_model.dart';
 import '../widgets/product_list.dart';
 import '../widgets/loading_shimmer.dart'; // Import the shimmer widget
 
@@ -24,6 +25,8 @@ class CategoryProductsView extends StatefulWidget {
 class _CategoryProductsViewState extends State<CategoryProductsView> with AutomaticKeepAliveClientMixin {
   @override
   bool get wantKeepAlive => true; // Mantener el estado vivo
+  
+  String _sortOption = 'none'; // Opción de ordenamiento
   
   @override
   void initState() {
@@ -110,17 +113,160 @@ class _CategoryProductsViewState extends State<CategoryProductsView> with Automa
                   children: [
                     Padding(
                       padding: const EdgeInsets.all(8.0),
-                      child: Text(
-                        '${l10n.productsin} ${widget.displayName}',
-                        style: TextStyle(
-                          fontSize: 18,
-                          fontWeight: FontWeight.bold,
-                          color: isDark ? Colors.white : const Color(0xFF222222),
-                        ),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Expanded(
+                            child: Text(
+                              '${l10n.productsin} ${widget.displayName}',
+                              style: TextStyle(
+                                fontSize: 18,
+                                fontWeight: FontWeight.bold,
+                                color: isDark ? Colors.white : const Color(0xFF222222),
+                              ),
+                            ),
+                          ),
+                          // Botón de filtro
+                          Container(
+                            decoration: BoxDecoration(
+                              color: _sortOption != 'none' 
+                                  ? const Color(0xFF2e67a3) 
+                                  : (isDark ? Colors.grey.shade800 : Colors.white),
+                              borderRadius: BorderRadius.circular(16),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.black.withOpacity(0.05),
+                                  blurRadius: 10,
+                                  offset: const Offset(0, 2),
+                                ),
+                              ],
+                            ),
+                            child: PopupMenuButton<String>(
+                              onSelected: (value) {
+                                setState(() {
+                                  _sortOption = value;
+                                });
+                              },
+                              icon: Icon(
+                                Icons.filter_list_rounded,
+                                color: _sortOption != 'none'
+                                    ? Colors.white
+                                    : (isDark ? Colors.grey.shade400 : const Color(0xFF2e67a3)),
+                                size: 24,
+                              ),
+                              color: isDark ? Colors.grey.shade800 : Colors.white,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(12),
+                              ),
+                              itemBuilder: (context) => [
+                                PopupMenuItem(
+                                  value: 'none',
+                                  child: Row(
+                                    children: [
+                                      Icon(
+                                        _sortOption == 'none' ? Icons.check_circle : Icons.circle_outlined,
+                                        color: _sortOption == 'none' ? const Color(0xFF2e67a3) : Colors.grey,
+                                        size: 20,
+                                      ),
+                                      const SizedBox(width: 12),
+                                      Text(
+                                        'Sin ordenar',
+                                        style: TextStyle(
+                                          color: isDark ? Colors.white : Colors.black87,
+                                          fontWeight: _sortOption == 'none' ? FontWeight.bold : FontWeight.normal,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                PopupMenuItem(
+                                  value: 'name_asc',
+                                  child: Row(
+                                    children: [
+                                      Icon(
+                                        _sortOption == 'name_asc' ? Icons.check_circle : Icons.circle_outlined,
+                                        color: _sortOption == 'name_asc' ? const Color(0xFF2e67a3) : Colors.grey,
+                                        size: 20,
+                                      ),
+                                      const SizedBox(width: 12),
+                                      Text(
+                                        'Nombre A-Z',
+                                        style: TextStyle(
+                                          color: isDark ? Colors.white : Colors.black87,
+                                          fontWeight: _sortOption == 'name_asc' ? FontWeight.bold : FontWeight.normal,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                PopupMenuItem(
+                                  value: 'name_desc',
+                                  child: Row(
+                                    children: [
+                                      Icon(
+                                        _sortOption == 'name_desc' ? Icons.check_circle : Icons.circle_outlined,
+                                        color: _sortOption == 'name_desc' ? const Color(0xFF2e67a3) : Colors.grey,
+                                        size: 20,
+                                      ),
+                                      const SizedBox(width: 12),
+                                      Text(
+                                        'Nombre Z-A',
+                                        style: TextStyle(
+                                          color: isDark ? Colors.white : Colors.black87,
+                                          fontWeight: _sortOption == 'name_desc' ? FontWeight.bold : FontWeight.normal,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                PopupMenuItem(
+                                  value: 'price_asc',
+                                  child: Row(
+                                    children: [
+                                      Icon(
+                                        _sortOption == 'price_asc' ? Icons.check_circle : Icons.circle_outlined,
+                                        color: _sortOption == 'price_asc' ? const Color(0xFF2e67a3) : Colors.grey,
+                                        size: 20,
+                                      ),
+                                      const SizedBox(width: 12),
+                                      Text(
+                                        'Precio: Menor a Mayor',
+                                        style: TextStyle(
+                                          color: isDark ? Colors.white : Colors.black87,
+                                          fontWeight: _sortOption == 'price_asc' ? FontWeight.bold : FontWeight.normal,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                PopupMenuItem(
+                                  value: 'price_desc',
+                                  child: Row(
+                                    children: [
+                                      Icon(
+                                        _sortOption == 'price_desc' ? Icons.check_circle : Icons.circle_outlined,
+                                        color: _sortOption == 'price_desc' ? const Color(0xFF2e67a3) : Colors.grey,
+                                        size: 20,
+                                      ),
+                                      const SizedBox(width: 12),
+                                      Text(
+                                        'Precio: Mayor a Menor',
+                                        style: TextStyle(
+                                          color: isDark ? Colors.white : Colors.black87,
+                                          fontWeight: _sortOption == 'price_desc' ? FontWeight.bold : FontWeight.normal,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
                       ),
                     ),
                     const SizedBox(height: 12),
-                    ProductsList(products: state.productos),
+                    ProductsList(products: _sortProducts(state.productos)),
                   ],
                 ),
               );
@@ -135,5 +281,31 @@ class _CategoryProductsViewState extends State<CategoryProductsView> with Automa
         ),
       ),
     );
+  }
+  
+  // Método para ordenar productos según el filtro seleccionado
+  List<ProductModel> _sortProducts(List<ProductModel> products) {
+    if (_sortOption == 'none') {
+      return products;
+    }
+    
+    final sorted = List<ProductModel>.from(products);
+    
+    switch (_sortOption) {
+      case 'name_asc':
+        sorted.sort((a, b) => (a.nombre ?? '').compareTo(b.nombre ?? ''));
+        break;
+      case 'name_desc':
+        sorted.sort((a, b) => (b.nombre ?? '').compareTo(a.nombre ?? ''));
+        break;
+      case 'price_asc':
+        sorted.sort((a, b) => (a.precio ?? 0).compareTo(b.precio ?? 0));
+        break;
+      case 'price_desc':
+        sorted.sort((a, b) => (b.precio ?? 0).compareTo(a.precio ?? 0));
+        break;
+    }
+    
+    return sorted;
   }
 }
