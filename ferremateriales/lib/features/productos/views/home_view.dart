@@ -253,6 +253,8 @@ class _HomeViewState extends State<HomeView> with AutomaticKeepAliveClientMixin 
               ),
 
               const SizedBox(height: 6),
+              
+              // Productos destacados o resultados de búsqueda
               BlocBuilder<ProductBloc, ProductState>(
                 builder: (context, state) {
                   if (state is ProductLoadInProgress) {
@@ -278,65 +280,25 @@ class _HomeViewState extends State<HomeView> with AutomaticKeepAliveClientMixin 
                     return ProductsList(products: state.productos);
                   }
 
-                  // 🔹 Modo normal: mostrar solo destacados
+                  // 🔹 Modo normal: mostrar todos los destacados que vengan del backend
                   if (!_isSearching && state is ProductDestacadosSuccess) {
-                    final destacados = state.destacados.take(8).toList();
-                    return Column(
-                      children: [
-                        ProductsList(products: destacados),
-                        const SizedBox(height: 8),
-                        Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 16),
-                          child: SizedBox(
-                            width: double.infinity,
-                            height: 50,
-                            child: OutlinedButton(
-                              onPressed: () {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (_) => BlocProvider.value(
-                                      value: context.read<ProductBloc>(),
-                                      child: const AllProductsView(),
-                                    ),
-                                  ),
-                                );
-                                // ❌ REMOVIDO: No recargar destacados al volver
-                                // Ya están en memoria y no necesitan recargarse
-                              },
-                              style: OutlinedButton.styleFrom(
-                                foregroundColor: isDark ? Colors.white : const Color(0xFF2e67a3),
-                                side: BorderSide(
-                                  color: isDark ? Colors.grey.shade600 : const Color(0xFF2e67a3),
-                                  width: 2,
-                                ),
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(12),
-                                ),
-                              ),
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Text(
-                                    'Ver todos los productos',
-                                    style: TextStyle(
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.w600,
-                                      color: isDark ? Colors.white : const Color(0xFF2e67a3),
-                                    ),
-                                  ),
-                                  const SizedBox(width: 8),
-                                  Icon(
-                                    Icons.arrow_forward,
-                                    color: isDark ? Colors.white : const Color(0xFF2e67a3),
-                                  ),
-                                ],
-                              ),
+                    final destacados = state.destacados;
+                    if (destacados.isNotEmpty) {
+                      return ProductsList(products: destacados);
+                    } else {
+                      return Center(
+                        child: Padding(
+                          padding: const EdgeInsets.all(32),
+                          child: Text(
+                            'No hay productos destacados aún',
+                            style: TextStyle(
+                              color: isDark ? Colors.grey.shade400 : Colors.grey.shade600,
+                              fontSize: 16,
                             ),
                           ),
                         ),
-                      ],
-                    );
+                      );
+                    }
                   }
 
                   if (state is ProductLoadFailure) {
@@ -346,6 +308,59 @@ class _HomeViewState extends State<HomeView> with AutomaticKeepAliveClientMixin 
                   return const ProductShimmer();
                 },
               ),
+
+              // Botón "Ver todos" siempre visible (fuera del BlocBuilder)
+              if (!_isSearching) ...[
+                const SizedBox(height: 8),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16),
+                  child: SizedBox(
+                    width: double.infinity,
+                    height: 50,
+                    child: OutlinedButton(
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (_) => BlocProvider.value(
+                              value: context.read<ProductBloc>(),
+                              child: const AllProductsView(),
+                            ),
+                          ),
+                        );
+                      },
+                      style: OutlinedButton.styleFrom(
+                        foregroundColor: isDark ? Colors.white : const Color(0xFF2e67a3),
+                        side: BorderSide(
+                          color: isDark ? Colors.grey.shade600 : const Color(0xFF2e67a3),
+                          width: 2,
+                        ),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                      ),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text(
+                            'Ver todos los productos',
+                            style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.w600,
+                              color: isDark ? Colors.white : const Color(0xFF2e67a3),
+                            ),
+                          ),
+                          const SizedBox(width: 8),
+                          Icon(
+                            Icons.arrow_forward,
+                            color: isDark ? Colors.white : const Color(0xFF2e67a3),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+              ],
             ],
           ),
         ),
