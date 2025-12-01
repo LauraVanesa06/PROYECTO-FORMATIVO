@@ -90,286 +90,309 @@ class _CategoryProductsViewState extends State<CategoryProductsView>
         ),
       ),
       body: SafeArea(
-        child: BlocBuilder<ProductBloc, ProductState>(
-          buildWhen: (previous, current) {
-            // Solo rebuilder si cambia el estado relevante para esta categoría
-            if (current is ProductLoadSuccess &&
-                previous is ProductLoadSuccess) {
-              return current.productos != previous.productos;
-            }
-            return true;
-          },
-          builder: (context, state) {
-            if (state is ProductLoadInProgress) {
-              return const Padding(
-                padding: EdgeInsets.all(8.0),
-                child: LoadingShimmer(isGrid: true), // 👈 Use the new shimmer
-              );
-            } else if (state is ProductLoadSuccess) {
-              if (state.productos.isEmpty) {
-                return Center(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Icon(
-                        Icons.inventory_2_outlined,
-                        size: 100,
-                        color:
-                            isDark
-                                ? Colors.grey.shade600
-                                : Colors.grey.shade300,
-                      ),
-                      const SizedBox(height: 16),
-                      Text(
-                        l10n.donthaveproductcategory,
-                        style: TextStyle(
-                          fontSize: 18,
-                          color:
-                              isDark
-                                  ? Colors.grey.shade400
-                                  : Colors.grey.shade600,
-                        ),
-                      ),
-                    ],
-                  ),
-                );
-              }
+        child: LayoutBuilder(
+          builder: (context, constraints) {
+            // Determinar si es pantalla pequeña
+            final isSmallScreen = constraints.maxWidth < 600;
+            final horizontalPadding = isSmallScreen ? 12.0 : 24.0;
 
-              return SingleChildScrollView(
-                padding: const EdgeInsets.all(12.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            return BlocBuilder<ProductBloc, ProductState>(
+              buildWhen: (previous, current) {
+                // Solo rebuilder si cambia el estado relevante para esta categoría
+                if (current is ProductLoadSuccess &&
+                    previous is ProductLoadSuccess) {
+                  return current.productos != previous.productos;
+                }
+                return true;
+              },
+              builder: (context, state) {
+                if (state is ProductLoadInProgress) {
+                  return const Padding(
+                    padding: EdgeInsets.all(8.0),
+                    child: LoadingShimmer(
+                      isGrid: true,
+                    ), // 👈 Use the new shimmer
+                  );
+                } else if (state is ProductLoadSuccess) {
+                  if (state.productos.isEmpty) {
+                    return Center(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          Expanded(
-                            child: Text(
-                              '${l10n.productsin} ${widget.displayName}',
-                              style: TextStyle(
-                                fontSize: 18,
-                                fontWeight: FontWeight.bold,
-                                color:
-                                    isDark
-                                        ? Colors.white
-                                        : const Color(0xFF222222),
-                              ),
-                            ),
+                          Icon(
+                            Icons.inventory_2_outlined,
+                            size: 100,
+                            color:
+                                isDark
+                                    ? Colors.grey.shade600
+                                    : Colors.grey.shade300,
                           ),
-                          // Botón de filtro
-                          Container(
-                            decoration: BoxDecoration(
+                          const SizedBox(height: 16),
+                          Text(
+                            l10n.donthaveproductcategory,
+                            style: TextStyle(
+                              fontSize: 18,
                               color:
-                                  _sortOption != 'none'
-                                      ? const Color(0xFF2e67a3)
-                                      : (isDark
-                                          ? Colors.grey.shade800
-                                          : Colors.white),
-                              borderRadius: BorderRadius.circular(16),
-                              boxShadow: [
-                                BoxShadow(
-                                  color: Colors.black.withOpacity(0.05),
-                                  blurRadius: 10,
-                                  offset: const Offset(0, 2),
-                                ),
-                              ],
-                            ),
-                            child: PopupMenuButton<String>(
-                              onSelected: (value) {
-                                setState(() {
-                                  _sortOption = value;
-                                });
-                              },
-                              icon: Icon(
-                                Icons.filter_list_rounded,
-                                color:
-                                    _sortOption != 'none'
-                                        ? Colors.white
-                                        : (isDark
-                                            ? Colors.grey.shade400
-                                            : const Color(0xFF2e67a3)),
-                                size: 24,
-                              ),
-                              color:
-                                  isDark ? Colors.grey.shade800 : Colors.white,
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(12),
-                              ),
-                              itemBuilder:
-                                  (context) => [
-                                    PopupMenuItem(
-                                      value: 'none',
-                                      child: Row(
-                                        children: [
-                                          Icon(
-                                            _sortOption == 'none'
-                                                ? Icons.check_circle
-                                                : Icons.circle_outlined,
-                                            color:
-                                                _sortOption == 'none'
-                                                    ? const Color(0xFF2e67a3)
-                                                    : Colors.grey,
-                                            size: 20,
-                                          ),
-                                          const SizedBox(width: 12),
-                                          Text(
-                                            'Sin ordenar',
-                                            style: TextStyle(
-                                              color:
-                                                  isDark
-                                                      ? Colors.white
-                                                      : Colors.black87,
-                                              fontWeight:
-                                                  _sortOption == 'none'
-                                                      ? FontWeight.bold
-                                                      : FontWeight.normal,
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                    PopupMenuItem(
-                                      value: 'name_asc',
-                                      child: Row(
-                                        children: [
-                                          Icon(
-                                            _sortOption == 'name_asc'
-                                                ? Icons.check_circle
-                                                : Icons.circle_outlined,
-                                            color:
-                                                _sortOption == 'name_asc'
-                                                    ? const Color(0xFF2e67a3)
-                                                    : Colors.grey,
-                                            size: 20,
-                                          ),
-                                          const SizedBox(width: 12),
-                                          Text(
-                                            'Nombre A-Z',
-                                            style: TextStyle(
-                                              color:
-                                                  isDark
-                                                      ? Colors.white
-                                                      : Colors.black87,
-                                              fontWeight:
-                                                  _sortOption == 'name_asc'
-                                                      ? FontWeight.bold
-                                                      : FontWeight.normal,
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                    PopupMenuItem(
-                                      value: 'name_desc',
-                                      child: Row(
-                                        children: [
-                                          Icon(
-                                            _sortOption == 'name_desc'
-                                                ? Icons.check_circle
-                                                : Icons.circle_outlined,
-                                            color:
-                                                _sortOption == 'name_desc'
-                                                    ? const Color(0xFF2e67a3)
-                                                    : Colors.grey,
-                                            size: 20,
-                                          ),
-                                          const SizedBox(width: 12),
-                                          Text(
-                                            'Nombre Z-A',
-                                            style: TextStyle(
-                                              color:
-                                                  isDark
-                                                      ? Colors.white
-                                                      : Colors.black87,
-                                              fontWeight:
-                                                  _sortOption == 'name_desc'
-                                                      ? FontWeight.bold
-                                                      : FontWeight.normal,
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                    PopupMenuItem(
-                                      value: 'price_asc',
-                                      child: Row(
-                                        children: [
-                                          Icon(
-                                            _sortOption == 'price_asc'
-                                                ? Icons.check_circle
-                                                : Icons.circle_outlined,
-                                            color:
-                                                _sortOption == 'price_asc'
-                                                    ? const Color(0xFF2e67a3)
-                                                    : Colors.grey,
-                                            size: 20,
-                                          ),
-                                          const SizedBox(width: 12),
-                                          Text(
-                                            'Precio: Menor a Mayor',
-                                            style: TextStyle(
-                                              color:
-                                                  isDark
-                                                      ? Colors.white
-                                                      : Colors.black87,
-                                              fontWeight:
-                                                  _sortOption == 'price_asc'
-                                                      ? FontWeight.bold
-                                                      : FontWeight.normal,
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                    PopupMenuItem(
-                                      value: 'price_desc',
-                                      child: Row(
-                                        children: [
-                                          Icon(
-                                            _sortOption == 'price_desc'
-                                                ? Icons.check_circle
-                                                : Icons.circle_outlined,
-                                            color:
-                                                _sortOption == 'price_desc'
-                                                    ? const Color(0xFF2e67a3)
-                                                    : Colors.grey,
-                                            size: 20,
-                                          ),
-                                          const SizedBox(width: 12),
-                                          Text(
-                                            'Precio: Mayor a Menor',
-                                            style: TextStyle(
-                                              color:
-                                                  isDark
-                                                      ? Colors.white
-                                                      : Colors.black87,
-                                              fontWeight:
-                                                  _sortOption == 'price_desc'
-                                                      ? FontWeight.bold
-                                                      : FontWeight.normal,
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                  ],
+                                  isDark
+                                      ? Colors.grey.shade400
+                                      : Colors.grey.shade600,
                             ),
                           ),
                         ],
                       ),
+                    );
+                  }
+
+                  return SingleChildScrollView(
+                    padding: EdgeInsets.all(horizontalPadding),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Expanded(
+                                child: Text(
+                                  '${l10n.productsin} ${widget.displayName}',
+                                  style: TextStyle(
+                                    fontSize: 18,
+                                    fontWeight: FontWeight.bold,
+                                    color:
+                                        isDark
+                                            ? Colors.white
+                                            : const Color(0xFF222222),
+                                  ),
+                                ),
+                              ),
+                              // Botón de filtro
+                              Container(
+                                decoration: BoxDecoration(
+                                  color:
+                                      _sortOption != 'none'
+                                          ? const Color(0xFF2e67a3)
+                                          : (isDark
+                                              ? Colors.grey.shade800
+                                              : Colors.white),
+                                  borderRadius: BorderRadius.circular(16),
+                                  boxShadow: [
+                                    BoxShadow(
+                                      color: Colors.black.withOpacity(0.05),
+                                      blurRadius: 10,
+                                      offset: const Offset(0, 2),
+                                    ),
+                                  ],
+                                ),
+                                child: PopupMenuButton<String>(
+                                  onSelected: (value) {
+                                    setState(() {
+                                      _sortOption = value;
+                                    });
+                                  },
+                                  icon: Icon(
+                                    Icons.filter_list_rounded,
+                                    color:
+                                        _sortOption != 'none'
+                                            ? Colors.white
+                                            : (isDark
+                                                ? Colors.grey.shade400
+                                                : const Color(0xFF2e67a3)),
+                                    size: 24,
+                                  ),
+                                  color:
+                                      isDark
+                                          ? Colors.grey.shade800
+                                          : Colors.white,
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(12),
+                                  ),
+                                  itemBuilder:
+                                      (context) => [
+                                        PopupMenuItem(
+                                          value: 'none',
+                                          child: Row(
+                                            children: [
+                                              Icon(
+                                                _sortOption == 'none'
+                                                    ? Icons.check_circle
+                                                    : Icons.circle_outlined,
+                                                color:
+                                                    _sortOption == 'none'
+                                                        ? const Color(
+                                                          0xFF2e67a3,
+                                                        )
+                                                        : Colors.grey,
+                                                size: 20,
+                                              ),
+                                              const SizedBox(width: 12),
+                                              Text(
+                                                'Sin ordenar',
+                                                style: TextStyle(
+                                                  color:
+                                                      isDark
+                                                          ? Colors.white
+                                                          : Colors.black87,
+                                                  fontWeight:
+                                                      _sortOption == 'none'
+                                                          ? FontWeight.bold
+                                                          : FontWeight.normal,
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                        PopupMenuItem(
+                                          value: 'name_asc',
+                                          child: Row(
+                                            children: [
+                                              Icon(
+                                                _sortOption == 'name_asc'
+                                                    ? Icons.check_circle
+                                                    : Icons.circle_outlined,
+                                                color:
+                                                    _sortOption == 'name_asc'
+                                                        ? const Color(
+                                                          0xFF2e67a3,
+                                                        )
+                                                        : Colors.grey,
+                                                size: 20,
+                                              ),
+                                              const SizedBox(width: 12),
+                                              Text(
+                                                'Nombre A-Z',
+                                                style: TextStyle(
+                                                  color:
+                                                      isDark
+                                                          ? Colors.white
+                                                          : Colors.black87,
+                                                  fontWeight:
+                                                      _sortOption == 'name_asc'
+                                                          ? FontWeight.bold
+                                                          : FontWeight.normal,
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                        PopupMenuItem(
+                                          value: 'name_desc',
+                                          child: Row(
+                                            children: [
+                                              Icon(
+                                                _sortOption == 'name_desc'
+                                                    ? Icons.check_circle
+                                                    : Icons.circle_outlined,
+                                                color:
+                                                    _sortOption == 'name_desc'
+                                                        ? const Color(
+                                                          0xFF2e67a3,
+                                                        )
+                                                        : Colors.grey,
+                                                size: 20,
+                                              ),
+                                              const SizedBox(width: 12),
+                                              Text(
+                                                'Nombre Z-A',
+                                                style: TextStyle(
+                                                  color:
+                                                      isDark
+                                                          ? Colors.white
+                                                          : Colors.black87,
+                                                  fontWeight:
+                                                      _sortOption == 'name_desc'
+                                                          ? FontWeight.bold
+                                                          : FontWeight.normal,
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                        PopupMenuItem(
+                                          value: 'price_asc',
+                                          child: Row(
+                                            children: [
+                                              Icon(
+                                                _sortOption == 'price_asc'
+                                                    ? Icons.check_circle
+                                                    : Icons.circle_outlined,
+                                                color:
+                                                    _sortOption == 'price_asc'
+                                                        ? const Color(
+                                                          0xFF2e67a3,
+                                                        )
+                                                        : Colors.grey,
+                                                size: 20,
+                                              ),
+                                              const SizedBox(width: 12),
+                                              Text(
+                                                'Precio: Menor a Mayor',
+                                                style: TextStyle(
+                                                  color:
+                                                      isDark
+                                                          ? Colors.white
+                                                          : Colors.black87,
+                                                  fontWeight:
+                                                      _sortOption == 'price_asc'
+                                                          ? FontWeight.bold
+                                                          : FontWeight.normal,
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                        PopupMenuItem(
+                                          value: 'price_desc',
+                                          child: Row(
+                                            children: [
+                                              Icon(
+                                                _sortOption == 'price_desc'
+                                                    ? Icons.check_circle
+                                                    : Icons.circle_outlined,
+                                                color:
+                                                    _sortOption == 'price_desc'
+                                                        ? const Color(
+                                                          0xFF2e67a3,
+                                                        )
+                                                        : Colors.grey,
+                                                size: 20,
+                                              ),
+                                              const SizedBox(width: 12),
+                                              Text(
+                                                'Precio: Mayor a Menor',
+                                                style: TextStyle(
+                                                  color:
+                                                      isDark
+                                                          ? Colors.white
+                                                          : Colors.black87,
+                                                  fontWeight:
+                                                      _sortOption ==
+                                                              'price_desc'
+                                                          ? FontWeight.bold
+                                                          : FontWeight.normal,
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      ],
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        const SizedBox(height: 12),
+                        ProductsList(products: _sortProducts(state.productos)),
+                      ],
                     ),
-                    const SizedBox(height: 12),
-                    ProductsList(products: _sortProducts(state.productos)),
-                  ],
-                ),
-              );
-            } else if (state is ProductLoadFailure) {
-              return Center(child: Text(l10n.errorLoadingProducts));
-            } else {
-              return const SizedBox.shrink();
-            }
+                  );
+                } else if (state is ProductLoadFailure) {
+                  return Center(child: Text(l10n.errorLoadingProducts));
+                } else {
+                  return const SizedBox.shrink();
+                }
+              },
+            );
           },
         ),
       ),

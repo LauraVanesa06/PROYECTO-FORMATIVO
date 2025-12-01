@@ -66,7 +66,7 @@ class _NewPasswordViewState extends State<NewPasswordView> {
               margin: const EdgeInsets.all(16),
             ),
           );
-          
+
           // Navegar al login
           Future.delayed(const Duration(seconds: 2), () {
             Navigator.pushAndRemoveUntil(
@@ -110,7 +110,10 @@ class _NewPasswordViewState extends State<NewPasswordView> {
         body: SafeArea(
           child: Center(
             child: SingleChildScrollView(
-              padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 32.0),
+              padding: const EdgeInsets.symmetric(
+                horizontal: 24.0,
+                vertical: 32.0,
+              ),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
@@ -194,18 +197,32 @@ class _NewPasswordViewState extends State<NewPasswordView> {
                               filled: true,
                               fillColor: Colors.transparent,
                               border: const UnderlineInputBorder(
-                                borderSide: BorderSide(color: Color(0xFFDDDDDD), width: 2),
+                                borderSide: BorderSide(
+                                  color: Color(0xFFDDDDDD),
+                                  width: 2,
+                                ),
                               ),
                               enabledBorder: const UnderlineInputBorder(
-                                borderSide: BorderSide(color: Color(0xFFDDDDDD), width: 2),
+                                borderSide: BorderSide(
+                                  color: Color(0xFFDDDDDD),
+                                  width: 2,
+                                ),
                               ),
                               focusedBorder: const UnderlineInputBorder(
-                                borderSide: BorderSide(color: Color(0xFF2e67a3), width: 2),
+                                borderSide: BorderSide(
+                                  color: Color(0xFF2e67a3),
+                                  width: 2,
+                                ),
                               ),
-                              contentPadding: const EdgeInsets.symmetric(vertical: 12, horizontal: 0),
+                              contentPadding: const EdgeInsets.symmetric(
+                                vertical: 12,
+                                horizontal: 0,
+                              ),
                               suffixIcon: IconButton(
                                 icon: Icon(
-                                  _obscurePassword ? Icons.visibility_off : Icons.visibility,
+                                  _obscurePassword
+                                      ? Icons.visibility_off
+                                      : Icons.visibility,
                                   color: Colors.grey.shade400,
                                 ),
                                 onPressed: () {
@@ -234,11 +251,13 @@ class _NewPasswordViewState extends State<NewPasswordView> {
                               return null;
                             },
                             onChanged: (value) {
-                              setState(() {}); // Actualizar la UI para mostrar los requisitos
+                              setState(
+                                () {},
+                              ); // Actualizar la UI para mostrar los requisitos
                             },
                           ),
                           const SizedBox(height: 16),
-                          
+
                           // Requisitos de la contraseña
                           Container(
                             padding: const EdgeInsets.all(16),
@@ -266,22 +285,28 @@ class _NewPasswordViewState extends State<NewPasswordView> {
                                 const SizedBox(height: 6),
                                 _buildPasswordRequirement(
                                   'Al menos una letra mayúscula',
-                                  _passwordController.text.contains(RegExp(r'[A-Z]')),
+                                  _passwordController.text.contains(
+                                    RegExp(r'[A-Z]'),
+                                  ),
                                 ),
                                 const SizedBox(height: 6),
                                 _buildPasswordRequirement(
                                   'Al menos una letra minúscula',
-                                  _passwordController.text.contains(RegExp(r'[a-z]')),
+                                  _passwordController.text.contains(
+                                    RegExp(r'[a-z]'),
+                                  ),
                                 ),
                                 const SizedBox(height: 6),
                                 _buildPasswordRequirement(
                                   'Al menos un número',
-                                  _passwordController.text.contains(RegExp(r'[0-9]')),
+                                  _passwordController.text.contains(
+                                    RegExp(r'[0-9]'),
+                                  ),
                                 ),
                               ],
                             ),
                           ),
-                          
+
                           const SizedBox(height: 24),
                           // Campo de confirmar contraseña
                           TextFormField(
@@ -300,23 +325,38 @@ class _NewPasswordViewState extends State<NewPasswordView> {
                               filled: true,
                               fillColor: Colors.transparent,
                               border: const UnderlineInputBorder(
-                                borderSide: BorderSide(color: Color(0xFFDDDDDD), width: 2),
+                                borderSide: BorderSide(
+                                  color: Color(0xFFDDDDDD),
+                                  width: 2,
+                                ),
                               ),
                               enabledBorder: const UnderlineInputBorder(
-                                borderSide: BorderSide(color: Color(0xFFDDDDDD), width: 2),
+                                borderSide: BorderSide(
+                                  color: Color(0xFFDDDDDD),
+                                  width: 2,
+                                ),
                               ),
                               focusedBorder: const UnderlineInputBorder(
-                                borderSide: BorderSide(color: Color(0xFF2e67a3), width: 2),
+                                borderSide: BorderSide(
+                                  color: Color(0xFF2e67a3),
+                                  width: 2,
+                                ),
                               ),
-                              contentPadding: const EdgeInsets.symmetric(vertical: 12, horizontal: 0),
+                              contentPadding: const EdgeInsets.symmetric(
+                                vertical: 12,
+                                horizontal: 0,
+                              ),
                               suffixIcon: IconButton(
                                 icon: Icon(
-                                  _obscureConfirmPassword ? Icons.visibility_off : Icons.visibility,
+                                  _obscureConfirmPassword
+                                      ? Icons.visibility_off
+                                      : Icons.visibility,
                                   color: Colors.grey.shade400,
                                 ),
                                 onPressed: () {
                                   setState(() {
-                                    _obscureConfirmPassword = !_obscureConfirmPassword;
+                                    _obscureConfirmPassword =
+                                        !_obscureConfirmPassword;
                                   });
                                 },
                               ),
@@ -355,7 +395,9 @@ class _NewPasswordViewState extends State<NewPasswordView> {
                                   borderRadius: BorderRadius.circular(30),
                                 ),
                                 elevation: 2,
-                                shadowColor: const Color(0xFF2e67a3).withOpacity(0.3),
+                                shadowColor: const Color(
+                                  0xFF2e67a3,
+                                ).withOpacity(0.3),
                               ),
                               child: Text(
                                 'Cambiar contraseña',

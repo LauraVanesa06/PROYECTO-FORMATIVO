@@ -91,4 +91,3 @@ class ChangePasswordFromAccountRequested extends AuthEvent {
 
 // Continuar como invitado
 class ContinueAsGuest extends AuthEvent {}
-

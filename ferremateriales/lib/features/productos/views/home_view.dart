@@ -169,318 +169,330 @@ class _HomeViewState extends State<HomeView>
     return Scaffold(
       backgroundColor: isDark ? Colors.grey.shade900 : Colors.grey.shade50,
       body: SafeArea(
-        child: SingleChildScrollView(
-          padding: const EdgeInsets.only(bottom: 80),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              // 🔹 Barra de búsqueda
-              Container(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 16,
-                  vertical: 16,
-                ),
-                decoration: BoxDecoration(
-                  color: isDark ? Colors.grey.shade800 : Colors.white,
-                  boxShadow:
-                      isDark
-                          ? []
-                          : [
-                            BoxShadow(
-                              color: Colors.black.withOpacity(0.05),
-                              blurRadius: 10,
-                              offset: const Offset(0, 2),
+        child: LayoutBuilder(
+          builder: (context, constraints) {
+            // Determinar si es pantalla pequeña
+            final isSmallScreen = constraints.maxWidth < 600;
+            final horizontalPadding = isSmallScreen ? 16.0 : 32.0;
+
+            return SingleChildScrollView(
+              padding: const EdgeInsets.only(bottom: 80),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  // 🔹 Barra de búsqueda
+                  Container(
+                    padding: EdgeInsets.symmetric(
+                      horizontal: horizontalPadding,
+                      vertical: 16,
+                    ),
+                    decoration: BoxDecoration(
+                      color: isDark ? Colors.grey.shade800 : Colors.white,
+                      boxShadow:
+                          isDark
+                              ? []
+                              : [
+                                BoxShadow(
+                                  color: Colors.black.withOpacity(0.05),
+                                  blurRadius: 10,
+                                  offset: const Offset(0, 2),
+                                ),
+                              ],
+                    ),
+                    child: Row(
+                      children: [
+                        Expanded(
+                          child: TextField(
+                            controller: _searchController,
+                            style: TextStyle(
+                              color:
+                                  isDark
+                                      ? Colors.white
+                                      : const Color(0xFF222222),
                             ),
-                          ],
-                ),
-                child: Row(
-                  children: [
-                    Expanded(
-                      child: TextField(
-                        controller: _searchController,
-                        style: TextStyle(
-                          color:
-                              isDark ? Colors.white : const Color(0xFF222222),
+                            onTap: () {
+                              if (!_isSearching) {
+                                setState(() {
+                                  _isSearching = true;
+                                });
+                                context.read<ProductBloc>().add(
+                                  CargarTodosLosProductos(),
+                                );
+                              }
+                            },
+                            onChanged: (value) {
+                              if (_isSearching) {
+                                final bloc = context.read<ProductBloc>();
+                                if (value.isEmpty) {
+                                  bloc.add(CargarTodosLosProductos());
+                                } else {
+                                  bloc.add(ProductBuscarPorNombre(value));
+                                }
+                              }
+                            },
+                            decoration: InputDecoration(
+                              hintText: 'Buscar productos...',
+                              hintStyle: TextStyle(
+                                color:
+                                    isDark
+                                        ? Colors.grey.shade400
+                                        : Colors.grey.shade500,
+                              ),
+                              prefixIcon: Icon(
+                                Icons.search,
+                                color:
+                                    isDark
+                                        ? Colors.grey.shade400
+                                        : const Color(0xFF2e67a3),
+                              ),
+                              suffixIcon:
+                                  _isSearching
+                                      ? IconButton(
+                                        icon: Icon(
+                                          Icons.close,
+                                          color:
+                                              isDark
+                                                  ? Colors.grey.shade400
+                                                  : const Color(0xFF2e67a3),
+                                        ),
+                                        onPressed: () {
+                                          setState(() {
+                                            _isSearching = false;
+                                            _searchController.clear();
+                                          });
+                                          context.read<ProductBloc>().add(
+                                            CargarDestacados(),
+                                          );
+                                        },
+                                      )
+                                      : null,
+                              filled: true,
+                              fillColor:
+                                  isDark
+                                      ? Colors.grey.shade800
+                                      : Colors.grey.shade100,
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(24),
+                                borderSide: BorderSide(
+                                  color:
+                                      isDark
+                                          ? Colors.grey.shade700
+                                          : Colors.grey.shade300,
+                                ),
+                              ),
+                              enabledBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(24),
+                                borderSide: BorderSide(
+                                  color:
+                                      isDark
+                                          ? Colors.grey.shade700
+                                          : Colors.grey.shade300,
+                                ),
+                              ),
+                              focusedBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(24),
+                                borderSide: const BorderSide(
+                                  color: Color(0xFF2e67a3),
+                                  width: 2,
+                                ),
+                              ),
+                              contentPadding: const EdgeInsets.symmetric(
+                                horizontal: 16,
+                                vertical: 12,
+                              ),
+                            ),
+                          ),
                         ),
-                        onTap: () {
-                          if (!_isSearching) {
-                            setState(() {
-                              _isSearching = true;
-                            });
-                            context.read<ProductBloc>().add(
-                              CargarTodosLosProductos(),
+                      ],
+                    ),
+                  ),
+
+                  const SizedBox(height: 24),
+
+                  // Carrusel banners (solo cuando no está buscando)
+                  if (!_isSearching) ...[
+                    CarouselSlider(
+                      options: CarouselOptions(
+                        height: 140,
+                        autoPlay: true,
+                        enlargeCenterPage: true,
+                      ),
+                      items:
+                          bannerImages.map((path) {
+                            return ClipRRect(
+                              borderRadius: BorderRadius.circular(12),
+                              child: Image.asset(
+                                path,
+                                fit: BoxFit.cover,
+                                width: double.infinity,
+                              ),
                             );
-                          }
-                        },
-                        onChanged: (value) {
-                          if (_isSearching) {
-                            final bloc = context.read<ProductBloc>();
-                            if (value.isEmpty) {
-                              bloc.add(CargarTodosLosProductos());
-                            } else {
-                              bloc.add(ProductBuscarPorNombre(value));
-                            }
-                          }
-                        },
-                        decoration: InputDecoration(
-                          hintText: 'Buscar productos...',
-                          hintStyle: TextStyle(
-                            color:
-                                isDark
-                                    ? Colors.grey.shade400
-                                    : Colors.grey.shade500,
-                          ),
-                          prefixIcon: Icon(
-                            Icons.search,
-                            color:
-                                isDark
-                                    ? Colors.grey.shade400
-                                    : const Color(0xFF2e67a3),
-                          ),
-                          suffixIcon:
-                              _isSearching
-                                  ? IconButton(
-                                    icon: Icon(
-                                      Icons.close,
-                                      color:
-                                          isDark
-                                              ? Colors.grey.shade400
-                                              : const Color(0xFF2e67a3),
+                          }).toList(),
+                    ),
+
+                    const SizedBox(height: 28),
+
+                    // Carrusel categorías
+                    CarouselSlider(
+                      options: CarouselOptions(
+                        height: 110,
+                        viewportFraction: 0.33,
+                        autoPlay: true,
+                        enlargeCenterPage: true,
+                      ),
+                      items: categoryItems,
+                    ),
+
+                    const SizedBox(height: 32),
+                  ],
+
+                  // Título dinámico
+
+                  // Título dinámico
+                  Padding(
+                    padding: const EdgeInsets.only(left: 16),
+                    child: Text(
+                      _isSearching
+                          ? 'Resultados de búsqueda'
+                          : l10n.featuredProducts,
+                      style: TextStyle(
+                        fontSize: 22,
+                        fontWeight: FontWeight.bold,
+                        color: isDark ? Colors.white : const Color(0xFF222222),
+                      ),
+                    ),
+                  ),
+
+                  const SizedBox(height: 6),
+
+                  // Productos destacados o resultados de búsqueda
+                  BlocBuilder<ProductBloc, ProductState>(
+                    builder: (context, state) {
+                      if (state is ProductLoadInProgress) {
+                        return const ProductShimmer();
+                      }
+
+                      // 🔹 Modo búsqueda: mostrar todos los productos o filtrados
+                      if (_isSearching && state is ProductLoadSuccess) {
+                        if (state.productos.isEmpty) {
+                          return Center(
+                            child: Padding(
+                              padding: const EdgeInsets.all(32),
+                              child: Text(
+                                'No se encontraron productos',
+                                style: TextStyle(
+                                  color:
+                                      isDark
+                                          ? Colors.grey.shade400
+                                          : Colors.grey.shade600,
+                                  fontSize: 16,
+                                ),
+                              ),
+                            ),
+                          );
+                        }
+                        return ProductsList(products: state.productos);
+                      }
+
+                      // 🔹 Modo normal: mostrar todos los destacados que vengan del backend
+                      if (!_isSearching && state is ProductDestacadosSuccess) {
+                        final destacados = state.destacados;
+                        if (destacados.isNotEmpty) {
+                          return ProductsList(products: destacados);
+                        } else {
+                          return Center(
+                            child: Padding(
+                              padding: const EdgeInsets.all(32),
+                              child: Text(
+                                'No hay productos destacados aún',
+                                style: TextStyle(
+                                  color:
+                                      isDark
+                                          ? Colors.grey.shade400
+                                          : Colors.grey.shade600,
+                                  fontSize: 16,
+                                ),
+                              ),
+                            ),
+                          );
+                        }
+                      }
+
+                      if (state is ProductLoadFailure) {
+                        return Center(child: Text(l10n.errorLoadingProducts));
+                      }
+
+                      return const ProductShimmer();
+                    },
+                  ),
+
+                  // Botón "Ver todos" siempre visible (fuera del BlocBuilder)
+                  if (!_isSearching) ...[
+                    const SizedBox(height: 8),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 16),
+                      child: SizedBox(
+                        width: double.infinity,
+                        height: 50,
+                        child: OutlinedButton(
+                          onPressed: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder:
+                                    (_) => BlocProvider.value(
+                                      value: context.read<ProductBloc>(),
+                                      child: const AllProductsView(),
                                     ),
-                                    onPressed: () {
-                                      setState(() {
-                                        _isSearching = false;
-                                        _searchController.clear();
-                                      });
-                                      context.read<ProductBloc>().add(
-                                        CargarDestacados(),
-                                      );
-                                    },
-                                  )
-                                  : null,
-                          filled: true,
-                          fillColor:
-                              isDark
-                                  ? Colors.grey.shade800
-                                  : Colors.grey.shade100,
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(24),
-                            borderSide: BorderSide(
+                              ),
+                            );
+                          },
+                          style: OutlinedButton.styleFrom(
+                            foregroundColor:
+                                isDark ? Colors.white : const Color(0xFF2e67a3),
+                            side: BorderSide(
                               color:
                                   isDark
-                                      ? Colors.grey.shade700
-                                      : Colors.grey.shade300,
-                            ),
-                          ),
-                          enabledBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(24),
-                            borderSide: BorderSide(
-                              color:
-                                  isDark
-                                      ? Colors.grey.shade700
-                                      : Colors.grey.shade300,
-                            ),
-                          ),
-                          focusedBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(24),
-                            borderSide: const BorderSide(
-                              color: Color(0xFF2e67a3),
+                                      ? Colors.grey.shade600
+                                      : const Color(0xFF2e67a3),
                               width: 2,
                             ),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(12),
+                            ),
                           ),
-                          contentPadding: const EdgeInsets.symmetric(
-                            horizontal: 16,
-                            vertical: 12,
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Text(
+                                'Ver todos los productos',
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w600,
+                                  color:
+                                      isDark
+                                          ? Colors.white
+                                          : const Color(0xFF2e67a3),
+                                ),
+                              ),
+                              const SizedBox(width: 8),
+                              Icon(
+                                Icons.arrow_forward,
+                                color:
+                                    isDark
+                                        ? Colors.white
+                                        : const Color(0xFF2e67a3),
+                              ),
+                            ],
                           ),
                         ),
                       ),
                     ),
                   ],
-                ),
+                ],
               ),
-
-              const SizedBox(height: 24),
-
-              // Carrusel banners (solo cuando no está buscando)
-              if (!_isSearching) ...[
-                CarouselSlider(
-                  options: CarouselOptions(
-                    height: 140,
-                    autoPlay: true,
-                    enlargeCenterPage: true,
-                  ),
-                  items:
-                      bannerImages.map((path) {
-                        return ClipRRect(
-                          borderRadius: BorderRadius.circular(12),
-                          child: Image.asset(
-                            path,
-                            fit: BoxFit.cover,
-                            width: double.infinity,
-                          ),
-                        );
-                      }).toList(),
-                ),
-
-                const SizedBox(height: 28),
-
-                // Carrusel categorías
-                CarouselSlider(
-                  options: CarouselOptions(
-                    height: 110,
-                    viewportFraction: 0.33,
-                    autoPlay: true,
-                    enlargeCenterPage: true,
-                  ),
-                  items: categoryItems,
-                ),
-
-                const SizedBox(height: 32),
-              ],
-
-              // Título dinámico
-
-              // Título dinámico
-              Padding(
-                padding: const EdgeInsets.only(left: 16),
-                child: Text(
-                  _isSearching
-                      ? 'Resultados de búsqueda'
-                      : l10n.featuredProducts,
-                  style: TextStyle(
-                    fontSize: 22,
-                    fontWeight: FontWeight.bold,
-                    color: isDark ? Colors.white : const Color(0xFF222222),
-                  ),
-                ),
-              ),
-
-              const SizedBox(height: 6),
-
-              // Productos destacados o resultados de búsqueda
-              BlocBuilder<ProductBloc, ProductState>(
-                builder: (context, state) {
-                  if (state is ProductLoadInProgress) {
-                    return const ProductShimmer();
-                  }
-
-                  // 🔹 Modo búsqueda: mostrar todos los productos o filtrados
-                  if (_isSearching && state is ProductLoadSuccess) {
-                    if (state.productos.isEmpty) {
-                      return Center(
-                        child: Padding(
-                          padding: const EdgeInsets.all(32),
-                          child: Text(
-                            'No se encontraron productos',
-                            style: TextStyle(
-                              color:
-                                  isDark
-                                      ? Colors.grey.shade400
-                                      : Colors.grey.shade600,
-                              fontSize: 16,
-                            ),
-                          ),
-                        ),
-                      );
-                    }
-                    return ProductsList(products: state.productos);
-                  }
-
-                  // 🔹 Modo normal: mostrar todos los destacados que vengan del backend
-                  if (!_isSearching && state is ProductDestacadosSuccess) {
-                    final destacados = state.destacados;
-                    if (destacados.isNotEmpty) {
-                      return ProductsList(products: destacados);
-                    } else {
-                      return Center(
-                        child: Padding(
-                          padding: const EdgeInsets.all(32),
-                          child: Text(
-                            'No hay productos destacados aún',
-                            style: TextStyle(
-                              color:
-                                  isDark
-                                      ? Colors.grey.shade400
-                                      : Colors.grey.shade600,
-                              fontSize: 16,
-                            ),
-                          ),
-                        ),
-                      );
-                    }
-                  }
-
-                  if (state is ProductLoadFailure) {
-                    return Center(child: Text(l10n.errorLoadingProducts));
-                  }
-
-                  return const ProductShimmer();
-                },
-              ),
-
-              // Botón "Ver todos" siempre visible (fuera del BlocBuilder)
-              if (!_isSearching) ...[
-                const SizedBox(height: 8),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16),
-                  child: SizedBox(
-                    width: double.infinity,
-                    height: 50,
-                    child: OutlinedButton(
-                      onPressed: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder:
-                                (_) => BlocProvider.value(
-                                  value: context.read<ProductBloc>(),
-                                  child: const AllProductsView(),
-                                ),
-                          ),
-                        );
-                      },
-                      style: OutlinedButton.styleFrom(
-                        foregroundColor:
-                            isDark ? Colors.white : const Color(0xFF2e67a3),
-                        side: BorderSide(
-                          color:
-                              isDark
-                                  ? Colors.grey.shade600
-                                  : const Color(0xFF2e67a3),
-                          width: 2,
-                        ),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                      ),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Text(
-                            'Ver todos los productos',
-                            style: TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.w600,
-                              color:
-                                  isDark
-                                      ? Colors.white
-                                      : const Color(0xFF2e67a3),
-                            ),
-                          ),
-                          const SizedBox(width: 8),
-                          Icon(
-                            Icons.arrow_forward,
-                            color:
-                                isDark ? Colors.white : const Color(0xFF2e67a3),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                ),
-              ],
-            ],
-          ),
+            );
+          },
         ),
       ),
     );

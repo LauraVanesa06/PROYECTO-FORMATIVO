@@ -5,23 +5,20 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 class AuthService {
   final String baseUrl;
   final storage = const FlutterSecureStorage();
-  
+
   AuthService({required this.baseUrl});
 
   Future<Map<String, dynamic>> login(String email, String password) async {
     try {
       print('Calling login API with email: $email');
-      
+
       final response = await http.post(
         Uri.parse('$baseUrl/api/v1/auth/login'),
         headers: {
           'Content-Type': 'application/json',
-          'Accept': 'application/json'
+          'Accept': 'application/json',
         },
-        body: jsonEncode({
-          'email': email,
-          'password': password
-        }),
+        body: jsonEncode({'email': email, 'password': password}),
       );
 
       print('Response status: ${response.statusCode}');
@@ -32,19 +29,19 @@ class AuthService {
         await storage.write(key: 'auth_token', value: data['token']);
 
         await storage.write(
-          key: 'user_id', 
+          key: 'user_id',
           value: data['user']['id'].toString(),
         );
 
-      // Manejo de cart_id correctamente
+        // Manejo de cart_id correctamente
         if (data['user'] != null) {
           if (data['user']['cart_id'] != null) {
             await storage.write(
               key: 'cart_id',
               value: data['user']['cart_id'].toString(),
             );
-
-          } else if (data['user']['cart'] != null && data['user']['cart']['id'] != null) {
+          } else if (data['user']['cart'] != null &&
+              data['user']['cart']['id'] != null) {
             await storage.write(
               key: 'cart_id',
               value: data['user']['cart']['id'].toString(),
@@ -52,13 +49,13 @@ class AuthService {
           }
         }
 
-          
         return data;
       } else if (response.statusCode == 401 || response.statusCode == 422) {
         // Manejo mejorado de errores con códigos específicos
         final errorData = jsonDecode(response.body);
         final errorCode = errorData['error_code'];
-        
+        final message = errorData['message'] ?? '';
+
         // Mensajes específicos basados en el código de error del backend
         String errorMessage;
         switch (errorCode) {
@@ -75,13 +72,23 @@ class AuthService {
             errorMessage = 'Debes ingresar correo y contraseña';
             break;
           default:
-            errorMessage = errorData['message'] ?? 'Error al iniciar sesión';
+            // Buscar palabras clave en el mensaje para dar respuesta más específica
+            if (message.toLowerCase().contains('invalid') ||
+                message.toLowerCase().contains('credencial')) {
+              errorMessage =
+                  'Credenciales inválidas. Verifica tu correo y contraseña';
+            } else {
+              errorMessage =
+                  message.isNotEmpty ? message : 'Error al iniciar sesión';
+            }
         }
-        
+
         throw Exception(errorMessage);
       } else {
         final errorData = jsonDecode(response.body);
-        throw Exception(errorData['message'] ?? 'Error al iniciar sesión. Intenta nuevamente');
+        throw Exception(
+          errorData['message'] ?? 'Error al iniciar sesión. Intenta nuevamente',
+        );
       }
     } catch (e) {
       print('Error in login: $e');
@@ -89,23 +96,21 @@ class AuthService {
     }
   }
 
-
-
-  Future<Map<String, dynamic>> register(String name, String email, String password) async {
+  Future<Map<String, dynamic>> register(
+    String name,
+    String email,
+    String password,
+  ) async {
     try {
       print('Registering user with email: $email'); // Debug
-      
+
       final response = await http.post(
         Uri.parse('$baseUrl/api/v1/auth/register'),
         headers: {
           'Content-Type': 'application/json',
           'Accept': 'application/json',
         },
-        body: jsonEncode({
-          'name': name,
-          'email': email,
-          'password': password,
-        }),
+        body: jsonEncode({'name': name, 'email': email, 'password': password}),
       );
 
       print('Register response status: ${response.statusCode}'); // Debug
@@ -114,39 +119,42 @@ class AuthService {
       if (response.statusCode == 201) {
         final data = jsonDecode(response.body);
         await storage.write(key: 'auth_token', value: data['token']);
-        
+
         // Guardar user_id y cart_id como en el login
         if (data['user'] != null) {
           await storage.write(
             key: 'user_id',
             value: data['user']['id'].toString(),
           );
-          
+
           // Manejo de cart_id
           if (data['user']['cart_id'] != null) {
             await storage.write(
               key: 'cart_id',
               value: data['user']['cart_id'].toString(),
             );
-          } else if (data['user']['cart'] != null && data['user']['cart']['id'] != null) {
+          } else if (data['user']['cart'] != null &&
+              data['user']['cart']['id'] != null) {
             await storage.write(
               key: 'cart_id',
               value: data['user']['cart']['id'].toString(),
             );
           }
         }
-        
+
         return data;
       } else if (response.statusCode == 422 || response.statusCode == 400) {
         // Manejo mejorado de errores con códigos específicos
         final errorData = jsonDecode(response.body);
         final errorCode = errorData['error_code'];
-        
+        final message = errorData['message'] ?? '';
+        final errors = errorData['errors'];
+
         // Mensajes específicos basados en el código de error del backend
         String errorMessage;
         switch (errorCode) {
           case 'EMAIL_ALREADY_EXISTS':
-            errorMessage = 'Este correo electrónico ya está registrado';
+            errorMessage = 'Correo electrónico ya está en uso';
             break;
           case 'PASSWORD_TOO_SHORT':
             errorMessage = 'La contraseña debe tener al menos 6 caracteres';
@@ -158,10 +166,29 @@ class AuthService {
             errorMessage = 'Debes completar todos los campos';
             break;
           default:
-            // Si no hay error_code específico, usar el mensaje del backend
-            errorMessage = errorData['message'] ?? 'Error de validación en el registro';
+            // Buscar palabras clave en el mensaje o en errors
+            if (errors != null && errors is List && errors.isNotEmpty) {
+              final firstError = errors[0].toString().toLowerCase();
+              if (firstError.contains('correo') ||
+                  firstError.contains('email') ||
+                  firstError.contains('uso')) {
+                errorMessage = 'Correo electrónico ya está en uso';
+              } else {
+                errorMessage = errors[0].toString();
+              }
+            } else if (message.toLowerCase().contains('email') &&
+                (message.toLowerCase().contains('taken') ||
+                    message.toLowerCase().contains('uso') ||
+                    message.toLowerCase().contains('registrado'))) {
+              errorMessage = 'Correo electrónico ya está en uso';
+            } else {
+              errorMessage =
+                  message.isNotEmpty
+                      ? message
+                      : 'Error de validación en el registro';
+            }
         }
-        
+
         throw Exception(errorMessage);
       } else if (response.statusCode == 409) {
         // Conflicto (usuario ya existe)
@@ -169,7 +196,11 @@ class AuthService {
       } else {
         try {
           final errorData = jsonDecode(response.body);
-          throw Exception(errorData['message'] ?? errorData['error'] ?? 'Error al registrar usuario. Intenta nuevamente');
+          throw Exception(
+            errorData['message'] ??
+                errorData['error'] ??
+                'Error al registrar usuario. Intenta nuevamente',
+          );
         } catch (e) {
           if (e is Exception) rethrow;
           throw Exception('Error al registrar usuario. Intenta nuevamente');
@@ -181,11 +212,11 @@ class AuthService {
     }
   }
 
-  Future<void> saveCartId(int id) async{
+  Future<void> saveCartId(int id) async {
     await storage.write(key: 'cart_id', value: id.toString());
   }
 
-  Future<int?> getCartId() async{
+  Future<int?> getCartId() async {
     final value = await storage.read(key: 'cart_id');
     return value != null ? int.tryParse(value) : null;
   }
@@ -222,7 +253,6 @@ class AuthService {
     }
   }
 
-
   Future<void> logout() async {
     await storage.delete(key: 'auth_token');
   }
@@ -231,7 +261,7 @@ class AuthService {
   Future<Map<String, dynamic>> requestPasswordReset(String email) async {
     try {
       print('Requesting password reset for email: $email');
-      
+
       final response = await http.post(
         Uri.parse('$baseUrl/users/password'),
         headers: {
@@ -239,9 +269,7 @@ class AuthService {
           'Accept': 'application/json',
         },
         body: jsonEncode({
-          'user': {
-            'email': email,
-          }
+          'user': {'email': email},
         }),
       );
 
@@ -253,7 +281,9 @@ class AuthService {
         final data = jsonDecode(response.body);
         return {
           'success': true,
-          'message': data['message'] ?? 'Instrucciones de recuperación enviadas a tu correo',
+          'message':
+              data['message'] ??
+              'Instrucciones de recuperación enviadas a tu correo',
           'reset_token': data['reset_token'], // Token para validar
         };
       } else if (response.statusCode == 404) {
@@ -294,13 +324,13 @@ class AuthService {
   }) async {
     try {
       final token = await storage.read(key: 'auth_token');
-      
+
       if (token == null) {
         throw Exception('No estás autenticado');
       }
 
       print('Updating user with name: $nombre, email: $email');
-      
+
       final response = await http.put(
         Uri.parse('$baseUrl/api/v1/auth/update'),
         headers: {
@@ -308,10 +338,7 @@ class AuthService {
           'Accept': 'application/json',
           'Authorization': 'Bearer $token',
         },
-        body: jsonEncode({
-          'name': nombre,
-          'email': email,
-        }),
+        body: jsonEncode({'name': nombre, 'email': email}),
       );
 
       print('Update user response status: ${response.statusCode}');
@@ -325,7 +352,9 @@ class AuthService {
         throw Exception(errorData['message'] ?? 'Error de validación');
       } else {
         final errorData = jsonDecode(response.body);
-        throw Exception(errorData['message'] ?? 'Error al actualizar información');
+        throw Exception(
+          errorData['message'] ?? 'Error al actualizar información',
+        );
       }
     } catch (e) {
       print('Error in updateUser: $e');
@@ -341,7 +370,7 @@ class AuthService {
   }) async {
     try {
       print('Changing password for email: $email with code: $recoveryCode');
-      
+
       final response = await http.put(
         Uri.parse('$baseUrl/users/password'),
         headers: {
@@ -354,7 +383,7 @@ class AuthService {
             'recovery_code': recoveryCode,
             'password': newPassword,
             'password_confirmation': newPassword,
-          }
+          },
         }),
       );
 
@@ -369,7 +398,11 @@ class AuthService {
         };
       } else if (response.statusCode == 400 || response.statusCode == 422) {
         final errorData = jsonDecode(response.body);
-        throw Exception(errorData['error'] ?? errorData['message'] ?? 'Código inválido o expirado');
+        throw Exception(
+          errorData['error'] ??
+              errorData['message'] ??
+              'Código inválido o expirado',
+        );
       } else if (response.statusCode == 404) {
         throw Exception('Usuario no encontrado');
       } else {
@@ -388,13 +421,13 @@ class AuthService {
   }) async {
     try {
       final token = await storage.read(key: 'auth_token');
-      
+
       if (token == null) {
         throw Exception('No estás autenticado');
       }
 
       print('Changing password from account');
-      
+
       final response = await http.put(
         Uri.parse('$baseUrl/api/v1/auth/change-password'),
         headers: {
@@ -422,10 +455,15 @@ class AuthService {
         throw Exception(errorData['message'] ?? 'Contraseña actual incorrecta');
       } else if (response.statusCode == 422) {
         final errorData = jsonDecode(response.body);
-        throw Exception(errorData['message'] ?? 'La nueva contraseña no cumple los requisitos');
+        throw Exception(
+          errorData['message'] ??
+              'La nueva contraseña no cumple los requisitos',
+        );
       } else {
         final errorData = jsonDecode(response.body);
-        throw Exception(errorData['message'] ?? 'Error al cambiar la contraseña');
+        throw Exception(
+          errorData['message'] ?? 'Error al cambiar la contraseña',
+        );
       }
     } catch (e) {
       print('Error in changePassword: $e');
@@ -433,4 +471,3 @@ class AuthService {
     }
   }
 }
-

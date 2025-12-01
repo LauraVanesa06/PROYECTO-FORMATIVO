@@ -12,10 +12,7 @@ import '../../auth/views/login_view.dart';
 class ProductPreviewView extends StatefulWidget {
   final ProductModel product;
 
-  const ProductPreviewView({
-    super.key,
-    required this.product,
-  });
+  const ProductPreviewView({super.key, required this.product});
 
   @override
   State<ProductPreviewView> createState() => _ProductPreviewViewState();
@@ -24,9 +21,12 @@ class ProductPreviewView extends StatefulWidget {
 class _ProductPreviewViewState extends State<ProductPreviewView> {
   int quantity = 1;
 
-  Future<void> _showAuthDialog(BuildContext context, {required String action}) async {
+  Future<void> _showAuthDialog(
+    BuildContext context, {
+    required String action,
+  }) async {
     final isDark = Theme.of(context).brightness == Brightness.dark;
-    
+
     return showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -73,20 +73,25 @@ class _ProductPreviewViewState extends State<ProductPreviewView> {
                 decoration: BoxDecoration(
                   color: Colors.orange.withOpacity(0.1),
                   borderRadius: BorderRadius.circular(12),
-                  border: Border.all(
-                    color: Colors.orange.withOpacity(0.3),
-                  ),
+                  border: Border.all(color: Colors.orange.withOpacity(0.3)),
                 ),
                 child: Row(
                   children: [
-                    const Icon(Icons.info_outline, color: Colors.orange, size: 20),
+                    const Icon(
+                      Icons.info_outline,
+                      color: Colors.orange,
+                      size: 20,
+                    ),
                     const SizedBox(width: 8),
                     Expanded(
                       child: Text(
                         'Como invitado no podrás guardar favoritos ni realizar compras',
                         style: TextStyle(
                           fontSize: 13,
-                          color: isDark ? Colors.orange.shade200 : Colors.orange.shade800,
+                          color:
+                              isDark
+                                  ? Colors.orange.shade200
+                                  : Colors.orange.shade800,
                         ),
                       ),
                     ),
@@ -126,7 +131,10 @@ class _ProductPreviewViewState extends State<ProductPreviewView> {
               ),
               style: ElevatedButton.styleFrom(
                 backgroundColor: const Color(0xFF2e67a3),
-                padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 20,
+                  vertical: 12,
+                ),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(12),
                 ),
@@ -146,7 +154,8 @@ class _ProductPreviewViewState extends State<ProductPreviewView> {
     return Scaffold(
       backgroundColor: isDark ? Colors.grey.shade900 : Colors.white,
       appBar: AppBar(
-        backgroundColor: isDark ? Colors.grey.shade800 : const Color(0xFF2e67a3),
+        backgroundColor:
+            isDark ? Colors.grey.shade800 : const Color(0xFF2e67a3),
         elevation: 0,
         leading: IconButton(
           icon: const Icon(Icons.arrow_back, color: Colors.white),
@@ -154,10 +163,7 @@ class _ProductPreviewViewState extends State<ProductPreviewView> {
         ),
         title: const Text(
           'Detalle del Producto',
-          style: TextStyle(
-            color: Colors.white,
-            fontWeight: FontWeight.bold,
-          ),
+          style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
         ),
         actions: [
           // Mostrar solo un icono estático si el producto está en favoritos.
@@ -189,7 +195,7 @@ class _ProductPreviewViewState extends State<ProductPreviewView> {
           children: [
             // Imagen del producto
             _buildImageSection(size),
-            
+
             // Información del producto
             Padding(
               padding: const EdgeInsets.all(16.0),
@@ -206,7 +212,7 @@ class _ProductPreviewViewState extends State<ProductPreviewView> {
                     ),
                   ),
                   const SizedBox(height: 8),
-                  
+
                   // Precio
                   Text(
                     PriceFormatter.format(widget.product.precio),
@@ -244,7 +250,8 @@ class _ProductPreviewViewState extends State<ProductPreviewView> {
                     style: TextStyle(
                       fontSize: 15,
                       height: 1.5,
-                      color: isDark ? Colors.grey.shade300 : Colors.grey.shade700,
+                      color:
+                          isDark ? Colors.grey.shade300 : Colors.grey.shade700,
                     ),
                   ),
                   const SizedBox(height: 24),
@@ -260,7 +267,7 @@ class _ProductPreviewViewState extends State<ProductPreviewView> {
                   ),
                   const SizedBox(height: 12),
                   _buildQuantitySelector(isDark),
-                  
+
                   const SizedBox(height: 100),
                 ],
               ),
@@ -276,30 +283,30 @@ class _ProductPreviewViewState extends State<ProductPreviewView> {
     return Container(
       height: size.height * 0.4,
       width: double.infinity,
-      decoration: BoxDecoration(
-        color: Colors.grey.shade100,
-      ),
-      child: widget.product.imagenUrl != null && widget.product.imagenUrl!.isNotEmpty
-          ? Image.network(
-              widget.product.imagenUrl!,
-              fit: BoxFit.contain,
-              errorBuilder: (context, error, stackTrace) {
-                return const Center(
-                  child: Icon(
-                    Icons.image_not_supported,
-                    size: 80,
-                    color: Colors.grey,
-                  ),
-                );
-              },
-            )
-          : const Center(
-              child: Icon(
-                Icons.image_not_supported,
-                size: 80,
-                color: Colors.grey,
+      decoration: BoxDecoration(color: Colors.grey.shade100),
+      child:
+          widget.product.imagenUrl != null &&
+                  widget.product.imagenUrl!.isNotEmpty
+              ? Image.network(
+                widget.product.imagenUrl!,
+                fit: BoxFit.contain,
+                errorBuilder: (context, error, stackTrace) {
+                  return const Center(
+                    child: Icon(
+                      Icons.image_not_supported,
+                      size: 80,
+                      color: Colors.grey,
+                    ),
+                  );
+                },
+              )
+              : const Center(
+                child: Icon(
+                  Icons.image_not_supported,
+                  size: 80,
+                  color: Colors.grey,
+                ),
               ),
-            ),
     );
   }
 
@@ -340,9 +347,7 @@ class _ProductPreviewViewState extends State<ProductPreviewView> {
         children: [
           IconButton(
             icon: const Icon(Icons.remove),
-            onPressed: quantity > 1
-                ? () => setState(() => quantity--)
-                : null,
+            onPressed: quantity > 1 ? () => setState(() => quantity--) : null,
             color: const Color(0xFF2e67a3),
           ),
           Container(
@@ -358,9 +363,10 @@ class _ProductPreviewViewState extends State<ProductPreviewView> {
           ),
           IconButton(
             icon: const Icon(Icons.add),
-            onPressed: quantity < (widget.product.stock ?? 0)
-                ? () => setState(() => quantity++)
-                : null,
+            onPressed:
+                quantity < (widget.product.stock ?? 0)
+                    ? () => setState(() => quantity++)
+                    : null,
             color: const Color(0xFF2e67a3),
           ),
         ],
@@ -370,7 +376,7 @@ class _ProductPreviewViewState extends State<ProductPreviewView> {
 
   Widget _buildBottomBar(BuildContext context, bool isDark) {
     final totalPrice = (widget.product.precio ?? 0.0) * quantity;
-    
+
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
@@ -395,10 +401,7 @@ class _ProductPreviewViewState extends State<ProductPreviewView> {
                 children: [
                   const Text(
                     'Total',
-                    style: TextStyle(
-                      fontSize: 12,
-                      color: Colors.grey,
-                    ),
+                    style: TextStyle(fontSize: 12, color: Colors.grey),
                   ),
                   Text(
                     PriceFormatter.format(totalPrice),
@@ -412,50 +415,70 @@ class _ProductPreviewViewState extends State<ProductPreviewView> {
               ),
             ),
             const SizedBox(width: 16),
-            
+
             // Botón agregar al carrito
             Expanded(
               flex: 3,
               child: BlocBuilder<AuthBloc, AuthState>(
                 builder: (context, authState) {
                   return ElevatedButton.icon(
-                    onPressed: (widget.product.stock ?? 0) > 0
-                        ? () {
-                            // Verificar si el usuario es invitado
-                            if (authState.status == AuthStatus.guest) {
-                              _showAuthDialog(context, action: 'agregar productos al carrito');
-                              return;
-                            }
-                            
-                            // Crear el mapa para el carrito
-                            final productMap = {
-                              'id': widget.product.id,
-                              'name': widget.product.nombre ?? 'Sin nombre',
-                              'price': widget.product.precio ?? 0.0,
-                              'imageUrl': widget.product.imagenUrl ?? '',
-                              'quantity': quantity,
-                              'stock': widget.product.stock ?? 0,
-                            };
-                            
-                            context.read<CartBloc>().add(AddToCart(productMap));
-                            
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(
-                                content: Text('$quantity x ${widget.product.nombre} agregado al carrito'),
-                                duration: const Duration(seconds: 3),
-                                backgroundColor: Colors.green,
-                                action: SnackBarAction(
-                                  label: 'Ver carrito',
-                                  textColor: Colors.white,
-                                  onPressed: () {
-                                    // Cerrar la vista actual y pasar señal para ir al carrito
-                                    Navigator.pop(context, true); // true = ir al carrito
-                                  },
+                    onPressed:
+                        (widget.product.stock ?? 0) > 0
+                            ? () {
+                              // Verificar si el usuario es invitado
+                              if (authState.status == AuthStatus.guest) {
+                                _showAuthDialog(
+                                  context,
+                                  action: 'agregar productos al carrito',
+                                );
+                                return;
+                              }
+
+                              // Crear el mapa para el carrito
+                              final productMap = {
+                                'id': widget.product.id,
+                                'name': widget.product.nombre ?? 'Sin nombre',
+                                'price': widget.product.precio ?? 0.0,
+                                'imageUrl': widget.product.imagenUrl ?? '',
+                                'quantity': quantity,
+                                'stock': widget.product.stock ?? 0,
+                              };
+
+                              context.read<CartBloc>().add(
+                                AddToCart(productMap),
+                              );
+
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                  content: Row(
+                                    children: [
+                                      const Icon(
+                                        Icons.check_circle,
+                                        color: Colors.white,
+                                      ),
+                                      const SizedBox(width: 12),
+                                      Expanded(
+                                        child: Text(
+                                          '$quantity x ${widget.product.nombre} agregado al carrito',
+                                          style: const TextStyle(
+                                            fontSize: 14,
+                                            fontWeight: FontWeight.w500,
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                  backgroundColor: Colors.green.shade700,
+                                  behavior: SnackBarBehavior.floating,
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(12),
+                                  ),
+                                  duration: const Duration(seconds: 3),
+                                  margin: const EdgeInsets.all(16),
                                 ),
-                              ),
-                            );
-                          }
-                        : null,
+                              );
+                            }
+                            : null,
                     icon: const Icon(Icons.shopping_cart, color: Colors.white),
                     label: const Text(
                       'Agregar al carrito',

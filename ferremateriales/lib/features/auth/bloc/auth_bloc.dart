@@ -13,11 +13,13 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         final user = await _authService.getCurrentUser();
 
         if (user != null && user['email'] != null) {
-          emit(state.copyWith(
-            status: AuthStatus.success,
-            nombre: user['name'],
-            email: user['email'],
-          ));
+          emit(
+            state.copyWith(
+              status: AuthStatus.success,
+              nombre: user['name'],
+              email: user['email'],
+            ),
+          );
           print('✅ Sesión activa detectada');
         } else {
           emit(const AuthState(status: AuthStatus.loggedOut));
@@ -29,7 +31,6 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       }
     });
 
-
     // Iniciar sesión
     on<LoginSubmitted>((event, emit) async {
       emit(state.copyWith(status: AuthStatus.loading));
@@ -39,11 +40,13 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         print('Respuesta login: $response'); // Debug
 
         if (response['token'] != null) {
-          emit(state.copyWith(
-            status: AuthStatus.success,
-            email: response['user']['email'],
-            nombre: response['user']['name'],
-          ));
+          emit(
+            state.copyWith(
+              status: AuthStatus.success,
+              email: response['user']['email'],
+              nombre: response['user']['name'],
+            ),
+          );
           print('Login exitoso'); // Debug
         } else {
           throw Exception('Token no encontrado');
@@ -55,10 +58,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         if (e.toString().contains('Exception:')) {
           errorMessage = e.toString().replaceAll('Exception:', '').trim();
         }
-        emit(state.copyWith(
-          status: AuthStatus.failure,
-          error: errorMessage,
-        ));
+        emit(state.copyWith(status: AuthStatus.failure, error: errorMessage));
       }
     });
 
@@ -71,11 +71,13 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
           event.email,
           event.password,
         );
-        emit(state.copyWith(
-          status: AuthStatus.success,
-          nombre: response['user']['name'],
-          email: response['user']['email'],
-        ));
+        emit(
+          state.copyWith(
+            status: AuthStatus.success,
+            nombre: response['user']['name'],
+            email: response['user']['email'],
+          ),
+        );
       } catch (e) {
         print('🔴 Register error en bloc: $e'); // Debug
         // Extraer el mensaje de error específico
@@ -86,10 +88,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
           errorMessage = e.toString();
         }
         print('🔴 Error message extraído: $errorMessage'); // Debug
-        emit(state.copyWith(
-          status: AuthStatus.failure,
-          error: errorMessage,
-        ));
+        emit(state.copyWith(status: AuthStatus.failure, error: errorMessage));
       }
     });
 
@@ -98,13 +97,10 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       await _authService.logout();
       emit(const AuthState(status: AuthStatus.loggedOut));
       print('👤 Continuar como invitado');
-      emit(state.copyWith(
-        status: AuthStatus.guest,
-        nombre: 'Invitado',
-        email: '',
-      ));
+      emit(
+        state.copyWith(status: AuthStatus.guest, nombre: 'Invitado', email: ''),
+      );
     });
-
 
     // Cerrar sesión
     on<LogoutRequested>((event, emit) async {
@@ -117,16 +113,20 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       emit(state.copyWith(status: AuthStatus.loading));
       try {
         final response = await _authService.requestPasswordReset(event.email);
-        emit(state.copyWith(
-          status: AuthStatus.resetPasswordSent,
-          resetMessage: response['message'],
-          resetToken: response['reset_token'], // Guardar el token
-        ));
+        emit(
+          state.copyWith(
+            status: AuthStatus.resetPasswordSent,
+            resetMessage: response['message'],
+            resetToken: response['reset_token'], // Guardar el token
+          ),
+        );
       } catch (e) {
-        emit(state.copyWith(
-          status: AuthStatus.resetPasswordError,
-          error: e.toString().replaceAll('Exception: ', ''),
-        ));
+        emit(
+          state.copyWith(
+            status: AuthStatus.resetPasswordError,
+            error: e.toString().replaceAll('Exception: ', ''),
+          ),
+        );
       }
     });
 
@@ -138,16 +138,20 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
           nombre: event.nombre,
           email: event.email,
         );
-        emit(state.copyWith(
-          status: AuthStatus.success,
-          nombre: response['user']['name'],
-          email: response['user']['email'],
-        ));
+        emit(
+          state.copyWith(
+            status: AuthStatus.success,
+            nombre: response['user']['name'],
+            email: response['user']['email'],
+          ),
+        );
       } catch (e) {
-        emit(state.copyWith(
-          status: AuthStatus.failure,
-          error: e.toString().replaceAll('Exception: ', ''),
-        ));
+        emit(
+          state.copyWith(
+            status: AuthStatus.failure,
+            error: e.toString().replaceAll('Exception: ', ''),
+          ),
+        );
       }
     });
 
@@ -160,14 +164,14 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
           recoveryCode: event.recoveryCode,
           newPassword: event.newPassword,
         );
-        emit(state.copyWith(
-          status: AuthStatus.success,
-        ));
+        emit(state.copyWith(status: AuthStatus.success));
       } catch (e) {
-        emit(state.copyWith(
-          status: AuthStatus.failure,
-          error: e.toString().replaceAll('Exception: ', ''),
-        ));
+        emit(
+          state.copyWith(
+            status: AuthStatus.failure,
+            error: e.toString().replaceAll('Exception: ', ''),
+          ),
+        );
       }
     });
 
@@ -179,16 +183,15 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
           currentPassword: event.currentPassword,
           newPassword: event.newPassword,
         );
-        emit(state.copyWith(
-          status: AuthStatus.success,
-        ));
+        emit(state.copyWith(status: AuthStatus.success));
       } catch (e) {
-        emit(state.copyWith(
-          status: AuthStatus.failure,
-          error: e.toString().replaceAll('Exception: ', ''),
-        ));
+        emit(
+          state.copyWith(
+            status: AuthStatus.failure,
+            error: e.toString().replaceAll('Exception: ', ''),
+          ),
+        );
       }
     });
   }
 }
-

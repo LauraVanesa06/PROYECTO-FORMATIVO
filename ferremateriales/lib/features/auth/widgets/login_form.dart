@@ -19,8 +19,7 @@ class _LoginFormState extends State<LoginForm> {
   bool _obscurePassword = true;
 
   @override
-  void initState() {
-  }
+  void initState() {}
 
   @override
   Widget build(BuildContext context) {
@@ -53,7 +52,10 @@ class _LoginFormState extends State<LoginForm> {
               focusedBorder: const UnderlineInputBorder(
                 borderSide: BorderSide(color: Color(0xFF2e67a3), width: 2),
               ),
-              contentPadding: const EdgeInsets.symmetric(vertical: 12, horizontal: 0),
+              contentPadding: const EdgeInsets.symmetric(
+                vertical: 12,
+                horizontal: 0,
+              ),
             ),
             keyboardType: TextInputType.emailAddress,
             onChanged: (value) => _username = value,
@@ -86,7 +88,10 @@ class _LoginFormState extends State<LoginForm> {
               focusedBorder: const UnderlineInputBorder(
                 borderSide: BorderSide(color: Color(0xFF2e67a3), width: 2),
               ),
-              contentPadding: const EdgeInsets.symmetric(vertical: 12, horizontal: 0),
+              contentPadding: const EdgeInsets.symmetric(
+                vertical: 12,
+                horizontal: 0,
+              ),
               suffixIcon: IconButton(
                 icon: Icon(
                   _obscurePassword ? Icons.visibility_off : Icons.visibility,
@@ -101,8 +106,11 @@ class _LoginFormState extends State<LoginForm> {
               ),
             ),
             onChanged: (value) => _password = value,
-            validator: (value) =>
-                value == null || value.isEmpty ? 'Este campo es requerido' : null,
+            validator:
+                (value) =>
+                    value == null || value.isEmpty
+                        ? 'Este campo es requerido'
+                        : null,
           ),
           const SizedBox(height: 16),
 
@@ -143,11 +151,8 @@ class _LoginFormState extends State<LoginForm> {
               onPressed: () async {
                 if (_formKey.currentState!.validate()) {
                   context.read<AuthBloc>().add(
-                        LoginSubmitted(
-                          email: _username,
-                          password: _password,
-                        ),
-                      );
+                    LoginSubmitted(email: _username, password: _password),
+                  );
                 }
               },
               style: ElevatedButton.styleFrom(

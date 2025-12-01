@@ -27,7 +27,7 @@ class _ResetPasswordViewState extends State<ResetPasswordView> {
           setState(() {
             _codeSent = true;
           });
-          
+
           // Mostrar mensaje de éxito
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
@@ -37,7 +37,8 @@ class _ResetPasswordViewState extends State<ResetPasswordView> {
                   const SizedBox(width: 12),
                   Expanded(
                     child: Text(
-                      state.resetMessage ?? 'Código de verificación enviado a tu correo',
+                      state.resetMessage ??
+                          'Código de verificación enviado a tu correo',
                       style: GoogleFonts.inter(
                         fontSize: 14,
                         fontWeight: FontWeight.w500,
@@ -88,398 +89,526 @@ class _ResetPasswordViewState extends State<ResetPasswordView> {
       child: BlocBuilder<AuthBloc, AuthState>(
         builder: (context, state) {
           final isLoading = state.status == AuthStatus.loading || _isVerifying;
-          
+
           return Scaffold(
             backgroundColor: Colors.white,
             body: SafeArea(
               child: Center(
                 child: SingleChildScrollView(
-                  padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 32.0),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 24.0,
+                    vertical: 32.0,
+                  ),
                   child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
                       // Logo circular simple
                       Container(
                         width: 80,
                         height: 80,
                         decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      color: const Color(0xFF2e67a3),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.black.withOpacity(0.1),
-                          blurRadius: 15,
-                          offset: const Offset(0, 5),
-                        ),
-                      ],
-                    ),
-                    child: const Icon(
-                      Icons.lock_reset,
-                      color: Colors.white,
-                      size: 40,
-                    ),
-                  ),
-                  const SizedBox(height: 24),
-                  Text(
-                    'Recuperar contraseña',
-                    style: GoogleFonts.inter(
-                      fontSize: 28,
-                      fontWeight: FontWeight.w600,
-                      color: Color(0xFF222222),
-                    ),
-                    textAlign: TextAlign.center,
-                  ),
-                  const SizedBox(height: 12),
-                  Text(
-                    'Ingresa tu correo para recibir instrucciones',
-                    style: GoogleFonts.inter(
-                      fontSize: 14,
-                      fontWeight: FontWeight.w400,
-                      color: Colors.grey.shade600,
-                    ),
-                    textAlign: TextAlign.center,
-                  ),
-                  const SizedBox(height: 40),
-                  // Contenedor del formulario
-                  Container(
-                    constraints: const BoxConstraints(maxWidth: 400),
-                    padding: const EdgeInsets.all(32),
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(24),
-                      border: Border.all(color: Colors.grey.shade200, width: 1),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.black.withOpacity(0.05),
-                          blurRadius: 10,
-                          offset: const Offset(0, 2),
-                        ),
-                      ],
-                    ),
-                    child: Form(
-                      key: _formKey,
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          // Campo de email
-                          TextFormField(
-                            style: GoogleFonts.inter(
-                              color: const Color(0xFF222222),
-                              fontSize: 15,
-                            ),
-                            decoration: InputDecoration(
-                              hintText: 'Correo electrónico',
-                              hintStyle: GoogleFonts.inter(
-                                color: Colors.grey.shade500,
-                                fontSize: 15,
-                              ),
-                              filled: true,
-                              fillColor: Colors.transparent,
-                              border: const UnderlineInputBorder(
-                                borderSide: BorderSide(color: Color(0xFFDDDDDD), width: 2),
-                              ),
-                              enabledBorder: const UnderlineInputBorder(
-                                borderSide: BorderSide(color: Color(0xFFDDDDDD), width: 2),
-                              ),
-                              focusedBorder: const UnderlineInputBorder(
-                                borderSide: BorderSide(color: Color(0xFF2e67a3), width: 2),
-                              ),
-                              contentPadding: const EdgeInsets.symmetric(vertical: 12, horizontal: 0),
-                            ),
-                            keyboardType: TextInputType.emailAddress,
-                            onChanged: (value) => _email = value,
-                            validator: (value) {
-                              if (value == null || value.isEmpty) {
-                                return 'Este campo es requerido';
-                              }
-                              final emailRegex =
-                                  RegExp(r"^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$");
-                              if (!emailRegex.hasMatch(value)) {
-                                return 'Ingresa un correo válido';
-                              }
-                              return null;
-                            },
-                          ),
-                          
-                          // Campo de código de verificación (solo visible después de enviar)
-                          if (_codeSent) ...[
-                            const SizedBox(height: 24),
-                            Text(
-                              'Código de verificación',
-                              style: GoogleFonts.inter(
-                                fontSize: 13,
-                                fontWeight: FontWeight.w500,
-                                color: Color(0xFF2e67a3),
-                              ),
-                            ),
-                            const SizedBox(height: 8),
-                            TextFormField(
-                              style: GoogleFonts.inter(
-                                color: const Color(0xFF222222),
-                                fontSize: 20,
-                                letterSpacing: 8,
-                                fontWeight: FontWeight.bold,
-                              ),
-                              decoration: InputDecoration(
-                                hintText: '000000',
-                                hintStyle: GoogleFonts.inter(
-                                  color: Colors.grey.shade300,
-                                  fontSize: 20,
-                                  letterSpacing: 8,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                                filled: true,
-                                fillColor: Colors.grey.shade50,
-                                border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(12),
-                                  borderSide: BorderSide(color: Colors.grey.shade300, width: 2),
-                                ),
-                                enabledBorder: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(12),
-                                  borderSide: BorderSide(color: Colors.grey.shade300, width: 2),
-                                ),
-                                focusedBorder: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(12),
-                                  borderSide: const BorderSide(color: Color(0xFF2e67a3), width: 2),
-                                ),
-                                contentPadding: const EdgeInsets.symmetric(vertical: 16, horizontal: 20),
-                                suffixIcon: Icon(
-                                  Icons.pin,
-                                  color: Colors.grey.shade400,
-                                ),
-                              ),
-                              textAlign: TextAlign.center,
-                              keyboardType: TextInputType.number,
-                              maxLength: 6,
-                              onChanged: (value) => _verificationCode = value,
-                              validator: (value) {
-                                if (value == null || value.isEmpty) {
-                                  return 'Ingresa el código de verificación';
-                                }
-                                if (value.length != 6) {
-                                  return 'El código debe tener 6 dígitos';
-                                }
-                                if (!RegExp(r'^\d+$').hasMatch(value)) {
-                                  return 'Solo se permiten números';
-                                }
-                                return null;
-                              },
+                          shape: BoxShape.circle,
+                          color: const Color(0xFF2e67a3),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.black.withOpacity(0.1),
+                              blurRadius: 15,
+                              offset: const Offset(0, 5),
                             ),
                           ],
-                          
-                          const SizedBox(height: 32),
-                          // Botón de enviar
-                          SizedBox(
-                            width: double.infinity,
-                            height: 50,
-                            child: ElevatedButton(
-                              onPressed: isLoading ? null : () async {
-                                if (_formKey.currentState!.validate()) {
-                                  if (!_codeSent) {
-                                    // Primera vez: enviar código
-                                    context.read<AuthBloc>().add(
-                                      ResetPasswordRequested(email: _email),
-                                    );
-                                  } else {
-                                    // Segunda vez: verificar código
-                                    setState(() {
-                                      _isVerifying = true;
-                                    });
-                                    
-                                    // Simular un pequeño delay para mostrar el loading
-                                    await Future.delayed(const Duration(milliseconds: 500));
-                                    
-                                    final authState = context.read<AuthBloc>().state;
-                                    final storedToken = authState.resetToken;
-                                    
-                                    if (storedToken == null) {
-                                      setState(() {
-                                        _isVerifying = false;
-                                      });
-                                      ScaffoldMessenger.of(context).showSnackBar(
-                                        SnackBar(
-                                          content: Row(
-                                            children: [
-                                              const Icon(Icons.error_outline, color: Colors.white),
-                                              const SizedBox(width: 12),
-                                              Expanded(
-                                                child: Text(
-                                                  'Error: No se encontró el token de verificación',
-                                                  style: GoogleFonts.inter(
-                                                    fontSize: 14,
-                                                    fontWeight: FontWeight.w500,
-                                                  ),
-                                                ),
-                                              ),
-                                            ],
-                                          ),
-                                          backgroundColor: Colors.red.shade700,
-                                          behavior: SnackBarBehavior.floating,
-                                          shape: RoundedRectangleBorder(
-                                            borderRadius: BorderRadius.circular(12),
-                                          ),
-                                          duration: const Duration(seconds: 4),
-                                          margin: const EdgeInsets.all(16),
-                                        ),
-                                      );
-                                      return;
-                                    }
-                                    
-                                    // Verificar si el código ingresado coincide con el token
-                                    if (_verificationCode == storedToken) {
-                                      // Código correcto - Mostrar mensaje de éxito
-                                      ScaffoldMessenger.of(context).showSnackBar(
-                                        SnackBar(
-                                          content: Row(
-                                            children: [
-                                              const Icon(Icons.check_circle, color: Colors.white),
-                                              const SizedBox(width: 12),
-                                              Expanded(
-                                                child: Text(
-                                                  '¡Código verificado correctamente!',
-                                                  style: GoogleFonts.inter(
-                                                    fontSize: 14,
-                                                    fontWeight: FontWeight.w500,
-                                                  ),
-                                                ),
-                                              ),
-                                            ],
-                                          ),
-                                          backgroundColor: Colors.green.shade600,
-                                          behavior: SnackBarBehavior.floating,
-                                          shape: RoundedRectangleBorder(
-                                            borderRadius: BorderRadius.circular(12),
-                                          ),
-                                          duration: const Duration(seconds: 2),
-                                          margin: const EdgeInsets.all(16),
-                                        ),
-                                      );
-                                      
-                                      // Esperar a que se muestre el mensaje antes de navegar
-                                      await Future.delayed(const Duration(milliseconds: 1500));
-                                      
-                                      setState(() {
-                                        _isVerifying = false;
-                                      });
-                                      
-                                      // Navegar a la pantalla de nueva contraseña
-                                      Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                          builder: (context) => NewPasswordView(
-                                            email: _email,
-                                            recoveryCode: _verificationCode,
-                                          ),
-                                        ),
-                                      );
-                                    } else {
-                                      // Código incorrecto
-                                      setState(() {
-                                        _isVerifying = false;
-                                      });
-                                      
-                                      ScaffoldMessenger.of(context).showSnackBar(
-                                        SnackBar(
-                                          content: Row(
-                                            children: [
-                                              const Icon(Icons.error_outline, color: Colors.white),
-                                              const SizedBox(width: 12),
-                                              Expanded(
-                                                child: Text(
-                                                  'Código incorrecto. Por favor, verifica el código enviado a tu correo.',
-                                                  style: GoogleFonts.inter(
-                                                    fontSize: 14,
-                                                    fontWeight: FontWeight.w500,
-                                                  ),
-                                                ),
-                                              ),
-                                            ],
-                                          ),
-                                          backgroundColor: Colors.red.shade700,
-                                          behavior: SnackBarBehavior.floating,
-                                          shape: RoundedRectangleBorder(
-                                            borderRadius: BorderRadius.circular(12),
-                                          ),
-                                          duration: const Duration(seconds: 4),
-                                          margin: const EdgeInsets.all(16),
-                                        ),
-                                      );
-                                    }
-                                  }
-                                }
-                              },
-                              style: ElevatedButton.styleFrom(
-                                backgroundColor: isLoading ? Colors.grey.shade400 : const Color(0xFF2e67a3),
-                                foregroundColor: Colors.white,
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(30),
+                        ),
+                        child: const Icon(
+                          Icons.lock_reset,
+                          color: Colors.white,
+                          size: 40,
+                        ),
+                      ),
+                      const SizedBox(height: 24),
+                      Text(
+                        'Recuperar contraseña',
+                        style: GoogleFonts.inter(
+                          fontSize: 28,
+                          fontWeight: FontWeight.w600,
+                          color: Color(0xFF222222),
+                        ),
+                        textAlign: TextAlign.center,
+                      ),
+                      const SizedBox(height: 12),
+                      Text(
+                        'Ingresa tu correo para recibir instrucciones',
+                        style: GoogleFonts.inter(
+                          fontSize: 14,
+                          fontWeight: FontWeight.w400,
+                          color: Colors.grey.shade600,
+                        ),
+                        textAlign: TextAlign.center,
+                      ),
+                      const SizedBox(height: 40),
+                      // Contenedor del formulario
+                      Container(
+                        constraints: const BoxConstraints(maxWidth: 400),
+                        padding: const EdgeInsets.all(32),
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(24),
+                          border: Border.all(
+                            color: Colors.grey.shade200,
+                            width: 1,
+                          ),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.black.withOpacity(0.05),
+                              blurRadius: 10,
+                              offset: const Offset(0, 2),
+                            ),
+                          ],
+                        ),
+                        child: Form(
+                          key: _formKey,
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              // Campo de email
+                              TextFormField(
+                                style: GoogleFonts.inter(
+                                  color: const Color(0xFF222222),
+                                  fontSize: 15,
                                 ),
-                                elevation: 2,
-                                shadowColor: const Color(0xFF2e67a3).withOpacity(0.3),
+                                decoration: InputDecoration(
+                                  hintText: 'Correo electrónico',
+                                  hintStyle: GoogleFonts.inter(
+                                    color: Colors.grey.shade500,
+                                    fontSize: 15,
+                                  ),
+                                  filled: true,
+                                  fillColor: Colors.transparent,
+                                  border: const UnderlineInputBorder(
+                                    borderSide: BorderSide(
+                                      color: Color(0xFFDDDDDD),
+                                      width: 2,
+                                    ),
+                                  ),
+                                  enabledBorder: const UnderlineInputBorder(
+                                    borderSide: BorderSide(
+                                      color: Color(0xFFDDDDDD),
+                                      width: 2,
+                                    ),
+                                  ),
+                                  focusedBorder: const UnderlineInputBorder(
+                                    borderSide: BorderSide(
+                                      color: Color(0xFF2e67a3),
+                                      width: 2,
+                                    ),
+                                  ),
+                                  contentPadding: const EdgeInsets.symmetric(
+                                    vertical: 12,
+                                    horizontal: 0,
+                                  ),
+                                ),
+                                keyboardType: TextInputType.emailAddress,
+                                onChanged: (value) => _email = value,
+                                validator: (value) {
+                                  if (value == null || value.isEmpty) {
+                                    return 'Este campo es requerido';
+                                  }
+                                  final emailRegex = RegExp(
+                                    r"^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$",
+                                  );
+                                  if (!emailRegex.hasMatch(value)) {
+                                    return 'Ingresa un correo válido';
+                                  }
+                                  return null;
+                                },
                               ),
-                              child: isLoading
-                                  ? Row(
-                                      mainAxisAlignment: MainAxisAlignment.center,
-                                      children: [
-                                        const SizedBox(
-                                          width: 20,
-                                          height: 20,
-                                          child: CircularProgressIndicator(
-                                            strokeWidth: 2,
-                                            valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
-                                          ),
-                                        ),
-                                        const SizedBox(width: 12),
-                                        Text(
-                                          _codeSent ? 'Verificando...' : 'Enviando...',
-                                          style: GoogleFonts.inter(
-                                            fontSize: 16,
-                                            fontWeight: FontWeight.w600,
-                                            letterSpacing: 0.5,
-                                          ),
-                                        ),
-                                      ],
-                                    )
-                                  : Text(
-                                      _codeSent ? 'Verificar código' : 'Enviar instrucciones',
-                                      style: GoogleFonts.inter(
-                                        fontSize: 16,
-                                        fontWeight: FontWeight.w600,
-                                        letterSpacing: 0.5,
+
+                              // Campo de código de verificación (solo visible después de enviar)
+                              if (_codeSent) ...[
+                                const SizedBox(height: 24),
+                                Text(
+                                  'Código de verificación',
+                                  style: GoogleFonts.inter(
+                                    fontSize: 13,
+                                    fontWeight: FontWeight.w500,
+                                    color: Color(0xFF2e67a3),
+                                  ),
+                                ),
+                                const SizedBox(height: 8),
+                                TextFormField(
+                                  style: GoogleFonts.inter(
+                                    color: const Color(0xFF222222),
+                                    fontSize: 20,
+                                    letterSpacing: 8,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                  decoration: InputDecoration(
+                                    hintText: '000000',
+                                    hintStyle: GoogleFonts.inter(
+                                      color: Colors.grey.shade300,
+                                      fontSize: 20,
+                                      letterSpacing: 8,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                    filled: true,
+                                    fillColor: Colors.grey.shade50,
+                                    border: OutlineInputBorder(
+                                      borderRadius: BorderRadius.circular(12),
+                                      borderSide: BorderSide(
+                                        color: Colors.grey.shade300,
+                                        width: 2,
                                       ),
                                     ),
-                            ),
-                          ),
-                          const SizedBox(height: 20),
-                          // Link para volver
-                          Center(
-                            child: TextButton(
-                              onPressed: () {
-                                Navigator.pop(context);
-                              },
-                              child: const Text(
-                                'Volver al inicio de sesión',
-                                style: TextStyle(
-                                  color: Color(0xFF2e67a3),
-                                  fontWeight: FontWeight.w600,
-                                  fontSize: 14,
+                                    enabledBorder: OutlineInputBorder(
+                                      borderRadius: BorderRadius.circular(12),
+                                      borderSide: BorderSide(
+                                        color: Colors.grey.shade300,
+                                        width: 2,
+                                      ),
+                                    ),
+                                    focusedBorder: OutlineInputBorder(
+                                      borderRadius: BorderRadius.circular(12),
+                                      borderSide: const BorderSide(
+                                        color: Color(0xFF2e67a3),
+                                        width: 2,
+                                      ),
+                                    ),
+                                    contentPadding: const EdgeInsets.symmetric(
+                                      vertical: 16,
+                                      horizontal: 20,
+                                    ),
+                                    suffixIcon: Icon(
+                                      Icons.pin,
+                                      color: Colors.grey.shade400,
+                                    ),
+                                  ),
+                                  textAlign: TextAlign.center,
+                                  keyboardType: TextInputType.number,
+                                  maxLength: 6,
+                                  onChanged:
+                                      (value) => _verificationCode = value,
+                                  validator: (value) {
+                                    if (value == null || value.isEmpty) {
+                                      return 'Ingresa el código de verificación';
+                                    }
+                                    if (value.length != 6) {
+                                      return 'El código debe tener 6 dígitos';
+                                    }
+                                    if (!RegExp(r'^\d+$').hasMatch(value)) {
+                                      return 'Solo se permiten números';
+                                    }
+                                    return null;
+                                  },
+                                ),
+                              ],
+
+                              const SizedBox(height: 32),
+                              // Botón de enviar
+                              SizedBox(
+                                width: double.infinity,
+                                height: 50,
+                                child: ElevatedButton(
+                                  onPressed:
+                                      isLoading
+                                          ? null
+                                          : () async {
+                                            if (_formKey.currentState!
+                                                .validate()) {
+                                              if (!_codeSent) {
+                                                // Primera vez: enviar código
+                                                context.read<AuthBloc>().add(
+                                                  ResetPasswordRequested(
+                                                    email: _email,
+                                                  ),
+                                                );
+                                              } else {
+                                                // Segunda vez: verificar código
+                                                setState(() {
+                                                  _isVerifying = true;
+                                                });
+
+                                                // Simular un pequeño delay para mostrar el loading
+                                                await Future.delayed(
+                                                  const Duration(
+                                                    milliseconds: 500,
+                                                  ),
+                                                );
+
+                                                final authState =
+                                                    context
+                                                        .read<AuthBloc>()
+                                                        .state;
+                                                final storedToken =
+                                                    authState.resetToken;
+
+                                                if (storedToken == null) {
+                                                  setState(() {
+                                                    _isVerifying = false;
+                                                  });
+                                                  ScaffoldMessenger.of(
+                                                    context,
+                                                  ).showSnackBar(
+                                                    SnackBar(
+                                                      content: Row(
+                                                        children: [
+                                                          const Icon(
+                                                            Icons.error_outline,
+                                                            color: Colors.white,
+                                                          ),
+                                                          const SizedBox(
+                                                            width: 12,
+                                                          ),
+                                                          Expanded(
+                                                            child: Text(
+                                                              'Error: No se encontró el token de verificación',
+                                                              style: GoogleFonts.inter(
+                                                                fontSize: 14,
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .w500,
+                                                              ),
+                                                            ),
+                                                          ),
+                                                        ],
+                                                      ),
+                                                      backgroundColor:
+                                                          Colors.red.shade700,
+                                                      behavior:
+                                                          SnackBarBehavior
+                                                              .floating,
+                                                      shape: RoundedRectangleBorder(
+                                                        borderRadius:
+                                                            BorderRadius.circular(
+                                                              12,
+                                                            ),
+                                                      ),
+                                                      duration: const Duration(
+                                                        seconds: 4,
+                                                      ),
+                                                      margin:
+                                                          const EdgeInsets.all(
+                                                            16,
+                                                          ),
+                                                    ),
+                                                  );
+                                                  return;
+                                                }
+
+                                                // Verificar si el código ingresado coincide con el token
+                                                if (_verificationCode ==
+                                                    storedToken) {
+                                                  // Código correcto - Mostrar mensaje de éxito
+                                                  ScaffoldMessenger.of(
+                                                    context,
+                                                  ).showSnackBar(
+                                                    SnackBar(
+                                                      content: Row(
+                                                        children: [
+                                                          const Icon(
+                                                            Icons.check_circle,
+                                                            color: Colors.white,
+                                                          ),
+                                                          const SizedBox(
+                                                            width: 12,
+                                                          ),
+                                                          Expanded(
+                                                            child: Text(
+                                                              '¡Código verificado correctamente!',
+                                                              style: GoogleFonts.inter(
+                                                                fontSize: 14,
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .w500,
+                                                              ),
+                                                            ),
+                                                          ),
+                                                        ],
+                                                      ),
+                                                      backgroundColor:
+                                                          Colors.green.shade600,
+                                                      behavior:
+                                                          SnackBarBehavior
+                                                              .floating,
+                                                      shape: RoundedRectangleBorder(
+                                                        borderRadius:
+                                                            BorderRadius.circular(
+                                                              12,
+                                                            ),
+                                                      ),
+                                                      duration: const Duration(
+                                                        seconds: 2,
+                                                      ),
+                                                      margin:
+                                                          const EdgeInsets.all(
+                                                            16,
+                                                          ),
+                                                    ),
+                                                  );
+
+                                                  // Esperar a que se muestre el mensaje antes de navegar
+                                                  await Future.delayed(
+                                                    const Duration(
+                                                      milliseconds: 1500,
+                                                    ),
+                                                  );
+
+                                                  setState(() {
+                                                    _isVerifying = false;
+                                                  });
+
+                                                  // Navegar a la pantalla de nueva contraseña
+                                                  Navigator.push(
+                                                    context,
+                                                    MaterialPageRoute(
+                                                      builder:
+                                                          (
+                                                            context,
+                                                          ) => NewPasswordView(
+                                                            email: _email,
+                                                            recoveryCode:
+                                                                _verificationCode,
+                                                          ),
+                                                    ),
+                                                  );
+                                                } else {
+                                                  // Código incorrecto
+                                                  setState(() {
+                                                    _isVerifying = false;
+                                                  });
+
+                                                  ScaffoldMessenger.of(
+                                                    context,
+                                                  ).showSnackBar(
+                                                    SnackBar(
+                                                      content: Row(
+                                                        children: [
+                                                          const Icon(
+                                                            Icons.error_outline,
+                                                            color: Colors.white,
+                                                          ),
+                                                          const SizedBox(
+                                                            width: 12,
+                                                          ),
+                                                          Expanded(
+                                                            child: Text(
+                                                              'Código incorrecto. Por favor, verifica el código enviado a tu correo.',
+                                                              style: GoogleFonts.inter(
+                                                                fontSize: 14,
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .w500,
+                                                              ),
+                                                            ),
+                                                          ),
+                                                        ],
+                                                      ),
+                                                      backgroundColor:
+                                                          Colors.red.shade700,
+                                                      behavior:
+                                                          SnackBarBehavior
+                                                              .floating,
+                                                      shape: RoundedRectangleBorder(
+                                                        borderRadius:
+                                                            BorderRadius.circular(
+                                                              12,
+                                                            ),
+                                                      ),
+                                                      duration: const Duration(
+                                                        seconds: 4,
+                                                      ),
+                                                      margin:
+                                                          const EdgeInsets.all(
+                                                            16,
+                                                          ),
+                                                    ),
+                                                  );
+                                                }
+                                              }
+                                            }
+                                          },
+                                  style: ElevatedButton.styleFrom(
+                                    backgroundColor:
+                                        isLoading
+                                            ? Colors.grey.shade400
+                                            : const Color(0xFF2e67a3),
+                                    foregroundColor: Colors.white,
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(30),
+                                    ),
+                                    elevation: 2,
+                                    shadowColor: const Color(
+                                      0xFF2e67a3,
+                                    ).withOpacity(0.3),
+                                  ),
+                                  child:
+                                      isLoading
+                                          ? Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.center,
+                                            children: [
+                                              const SizedBox(
+                                                width: 20,
+                                                height: 20,
+                                                child: CircularProgressIndicator(
+                                                  strokeWidth: 2,
+                                                  valueColor:
+                                                      AlwaysStoppedAnimation<
+                                                        Color
+                                                      >(Colors.white),
+                                                ),
+                                              ),
+                                              const SizedBox(width: 12),
+                                              Text(
+                                                _codeSent
+                                                    ? 'Verificando...'
+                                                    : 'Enviando...',
+                                                style: GoogleFonts.inter(
+                                                  fontSize: 16,
+                                                  fontWeight: FontWeight.w600,
+                                                  letterSpacing: 0.5,
+                                                ),
+                                              ),
+                                            ],
+                                          )
+                                          : Text(
+                                            _codeSent
+                                                ? 'Verificar código'
+                                                : 'Enviar instrucciones',
+                                            style: GoogleFonts.inter(
+                                              fontSize: 16,
+                                              fontWeight: FontWeight.w600,
+                                              letterSpacing: 0.5,
+                                            ),
+                                          ),
                                 ),
                               ),
-                            ),
+                              const SizedBox(height: 20),
+                              // Link para volver
+                              Center(
+                                child: TextButton(
+                                  onPressed: () {
+                                    Navigator.pop(context);
+                                  },
+                                  child: const Text(
+                                    'Volver al inicio de sesión',
+                                    style: TextStyle(
+                                      color: Color(0xFF2e67a3),
+                                      fontWeight: FontWeight.w600,
+                                      fontSize: 14,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ],
                           ),
-                        ],
+                        ),
                       ),
-                    ),
+                    ],
                   ),
-                ],
+                ),
               ),
             ),
-          ),
-        ),
           );
         },
       ),
     );
   }
 }
-
