@@ -25,7 +25,7 @@ android {
         applicationId = "com.example.ferremateriales"
 
         // 🔥 Forzar minSdkVersion 23
-        minSdk = 23
+        minSdk = flutter.minSdkVersion
 
         targetSdk = flutter.targetSdkVersion
         versionCode = flutter.versionCode

@@ -11,13 +11,14 @@ class Api::V1::ProductsController < ApplicationController
       # 🔎 Filtrar por categoría
       products = Product.where(category_id: category_param)
     else
-      # 🏆 Top 8 productos más comprados
+    # 🏆 Top 10 productos más comprados (destacados) - máximo 10, solo los que tienen compras
       products = Product
         .left_joins(:purchasedetails)
         .group('products.id')
         .select('products.*, COALESCE(SUM(purchasedetails.cantidad), 0) AS total_comprados')
+        .having('COALESCE(SUM(purchasedetails.cantidad), 0) > 0')
         .order('total_comprados DESC')
-        .limit(8)
+        .limit(10)
     end
 
     render json: products.map { |product| product_json(product) }

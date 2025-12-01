@@ -17,41 +17,9 @@ class _LoginFormState extends State<LoginForm> {
   String _username = "";
   String _password = "";
   bool _obscurePassword = true;
-  bool _rememberMe = false;
 
   @override
-  void initState() {
-    super.initState();
-    _loadSavedCredentials();
-  }
-
-  Future<void> _loadSavedCredentials() async {
-    final prefs = await SharedPreferences.getInstance();
-    final savedEmail = prefs.getString('saved_email');
-    final savedPassword = prefs.getString('saved_password');
-    final rememberMe = prefs.getBool('remember_me') ?? false;
-
-    if (rememberMe && savedEmail != null && savedPassword != null) {
-      setState(() {
-        _username = savedEmail;
-        _password = savedPassword;
-        _rememberMe = true;
-      });
-    }
-  }
-
-  Future<void> _saveCredentials() async {
-    final prefs = await SharedPreferences.getInstance();
-    if (_rememberMe) {
-      await prefs.setString('saved_email', _username);
-      await prefs.setString('saved_password', _password);
-      await prefs.setBool('remember_me', true);
-    } else {
-      await prefs.remove('saved_email');
-      await prefs.remove('saved_password');
-      await prefs.setBool('remember_me', false);
-    }
-  }
+  void initState() {}
 
   @override
   Widget build(BuildContext context) {
@@ -84,7 +52,10 @@ class _LoginFormState extends State<LoginForm> {
               focusedBorder: const UnderlineInputBorder(
                 borderSide: BorderSide(color: Color(0xFF2e67a3), width: 2),
               ),
-              contentPadding: const EdgeInsets.symmetric(vertical: 12, horizontal: 0),
+              contentPadding: const EdgeInsets.symmetric(
+                vertical: 12,
+                horizontal: 0,
+              ),
             ),
             keyboardType: TextInputType.emailAddress,
             onChanged: (value) => _username = value,
@@ -117,7 +88,10 @@ class _LoginFormState extends State<LoginForm> {
               focusedBorder: const UnderlineInputBorder(
                 borderSide: BorderSide(color: Color(0xFF2e67a3), width: 2),
               ),
-              contentPadding: const EdgeInsets.symmetric(vertical: 12, horizontal: 0),
+              contentPadding: const EdgeInsets.symmetric(
+                vertical: 12,
+                horizontal: 0,
+              ),
               suffixIcon: IconButton(
                 icon: Icon(
                   _obscurePassword ? Icons.visibility_off : Icons.visibility,
@@ -132,41 +106,18 @@ class _LoginFormState extends State<LoginForm> {
               ),
             ),
             onChanged: (value) => _password = value,
-            validator: (value) =>
-                value == null || value.isEmpty ? 'Este campo es requerido' : null,
+            validator:
+                (value) =>
+                    value == null || value.isEmpty
+                        ? 'Este campo es requerido'
+                        : null,
           ),
           const SizedBox(height: 16),
 
-          // Recordarme y Olvidaste tu contraseña
+          // Olvidaste tu contraseña
           Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            mainAxisAlignment: MainAxisAlignment.end,
             children: [
-              Row(
-                children: [
-                  SizedBox(
-                    height: 20,
-                    width: 20,
-                    child: Checkbox(
-                      value: _rememberMe,
-                      onChanged: (value) {
-                        setState(() {
-                          _rememberMe = value ?? false;
-                        });
-                      },
-                      activeColor: const Color(0xFF2e67a3),
-                      side: BorderSide(color: Colors.grey.shade400),
-                    ),
-                  ),
-                  const SizedBox(width: 8),
-                  Text(
-                    'Recordarme',
-                    style: GoogleFonts.inter(
-                      color: Colors.grey.shade700,
-                      fontSize: 14,
-                    ),
-                  ),
-                ],
-              ),
               TextButton(
                 onPressed: () {
                   Navigator.push(
@@ -199,13 +150,9 @@ class _LoginFormState extends State<LoginForm> {
             child: ElevatedButton(
               onPressed: () async {
                 if (_formKey.currentState!.validate()) {
-                  await _saveCredentials();
                   context.read<AuthBloc>().add(
-                        LoginSubmitted(
-                          email: _username,
-                          password: _password,
-                        ),
-                      );
+                    LoginSubmitted(email: _username, password: _password),
+                  );
                 }
               },
               style: ElevatedButton.styleFrom(

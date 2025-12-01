@@ -1,14 +1,15 @@
-import 'package:ferremateriales/features/productos/models/cart_item_model.dart';
-import 'package:ferremateriales/features/productos/services/cart_service.dart';
+import 'package:ferremateriales/core/utils/price_formatter.dart';
+
 import 'package:ferremateriales/features/productos/widgets/loading_shimmer.dart';
 import 'package:ferremateriales/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../bloc/cart_bloc.dart';
+import '../bloc/cart_event.dart';
 import '../bloc/cart_state.dart';
 import 'checkout_screen.dart';
-import '../services/service_wompi.dart'; 
+import '../services/service_wompi.dart';
 import 'package:universal_html/html.dart' as html;
 import 'package:flutter/foundation.dart';
 import 'package:ferremateriales/core/config/api_config.dart';
@@ -19,55 +20,39 @@ class CartView extends StatefulWidget {
 
   @override
   _CartViewState createState() => _CartViewState();
-  
 }
 
-class _CartViewState extends State<CartView> {
-  final CartService _cartService = CartService();
-  bool _isLoading = true;
-  List<CartItemModel> _cartItems = [];
+class _CartViewState extends State<CartView>
+    with AutomaticKeepAliveClientMixin {
+  @override
+  bool get wantKeepAlive => true;
 
-  
+  @override
   void initState() {
     super.initState();
-     
-    // Cargar desde caché inmediatamente si está disponible
-    if (_cartService.isCacheLoaded) {
-    
-        _cartItems = _cartService.cartCache;
-        _isLoading = false;
-    
-    }
-    // Recargar desde API en background
-    _loadCartItems();
+    // Cargar el carrito al iniciar
+    context.read<CartBloc>().add(LoadCart());
   }
 
-  Future<void> _loadCartItems() async {
-    try {
-      final items = await _cartService.getCartItems();
-      setState(() {
-        _cartItems = items;
-        _isLoading = false;
-      });
-    } catch (e) {
-      print('Error: $e');
-      setState(() => _isLoading = false);
-    }
+  Future<void> _refreshCart() async {
+    context.read<CartBloc>().add(LoadCart());
+    // Esperar un poco para que se complete la recarga
+    await Future.delayed(const Duration(milliseconds: 500));
   }
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     final l10n = AppLocalizations.of(context)!;
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
-    final total = _cartItems.fold<double>(
-      0,
-      (sum, item) => sum + ((item.product.precio ?? 0) * item.quantity),
-    );
-
     return BlocBuilder<CartBloc, CartState>(
       builder: (context, state) {
-        return Scaffold(
+        final cartItems = state.items;
+        final isLoading = state.isLoading;
+        final total = state.total;
+
+                        return Scaffold(
           backgroundColor: isDark ? Colors.grey.shade900 : Colors.grey.shade50,
           appBar: AppBar(
             backgroundColor: isDark ? Colors.grey.shade800 : Colors.white,
@@ -88,73 +73,102 @@ class _CartViewState extends State<CartView> {
               onPressed: () => Navigator.pop(context),
             ),
           ),
-
-          body: _isLoading
+          body: isLoading
               ? const LoadingShimmer(isGrid: false)
-              : _cartItems.isEmpty
-                  ? Center(
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Icon(
-                            Icons.shopping_cart_outlined,
-                            size: 100,
-                            color: isDark ? Colors.grey.shade600 : Colors.grey.shade300,
-                          ),
-                          const SizedBox(height: 16),
-                          Text(
-                            l10n.emptyCart,
-                            style: TextStyle(
-                              fontSize: 18,
-                              color: isDark ? Colors.grey.shade400 : Colors.grey.shade600,
+              : RefreshIndicator(
+                  onRefresh: _refreshCart,
+                  color: Colors.orange.shade700,
+                  child: cartItems.isEmpty
+                      ? ListView(
+                          children: [
+                            SizedBox(height: MediaQuery.of(context).size.height * 0.3),
+                            Center(
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Icon(
+                                    Icons.shopping_cart_outlined,
+                                    size: 100,
+                                    color: isDark
+                                        ? Colors.grey.shade600
+                                        : Colors.grey.shade300,
+                                  ),
+                                  const SizedBox(height: 16),
+                                  Text(
+                                    l10n.emptyCart,
+                                    style: TextStyle(
+                                      fontSize: 18,
+                                      color: isDark
+                                          ? Colors.grey.shade400
+                                          : Colors.grey.shade600,
+                                    ),
+                                  ),
+                                ],
+                              ),
                             ),
-                          ),
-                        ],
-                      ),
-                    )
-                  : Column(
-                      children: [
-                        Expanded(
-                          child: ListView.builder(
-                            padding: const EdgeInsets.all(16),
-                            itemCount: _cartItems.length,
-                            itemBuilder: (context, index) {
-                              final item = _cartItems[index];
-                              final product = item.product;
+                          ],
+                        )
+                      : Column(
+                          children: [
+                            Expanded(
+                              child: ListView.builder(
+                                padding: const EdgeInsets.all(16),
+                                itemCount: cartItems.length,
+                                itemBuilder: (context, index) {
+                                  final item = cartItems[index];
+                                  final product = item.product;
 
                               return Container(
                                 margin: const EdgeInsets.only(bottom: 16),
                                 decoration: BoxDecoration(
-                                  color: isDark ? Colors.grey.shade800 : Colors.white,
+                                  color:
+                                      isDark
+                                          ? Colors.grey.shade800
+                                          : Colors.white,
                                   borderRadius: BorderRadius.circular(16),
                                   border: Border.all(
-                                    color: isDark ? Colors.grey.shade700 : Colors.grey.shade200,
+                                    color:
+                                        isDark
+                                            ? Colors.grey.shade700
+                                            : Colors.grey.shade200,
                                   ),
                                 ),
                                 child: Padding(
                                   padding: const EdgeInsets.all(12),
                                   child: Row(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
                                     children: [
                                       Container(
                                         width: 80,
                                         height: 80,
                                         decoration: BoxDecoration(
-                                          color: isDark ? Colors.grey.shade700 : Colors.grey.shade100,
-                                          borderRadius: BorderRadius.circular(12),
+                                          color:
+                                              isDark
+                                                  ? Colors.grey.shade700
+                                                  : Colors.grey.shade100,
+                                          borderRadius: BorderRadius.circular(
+                                            12,
+                                          ),
                                         ),
                                         child: ClipRRect(
-                                          borderRadius: BorderRadius.circular(12),
-                                          child: (product.imagenUrl != null && product.imagenUrl!.isNotEmpty)
-                                              ? Image.network(
-                                                  product.imagenUrl!,
-                                                  fit: BoxFit.cover,
-                                                )
-                                              : Icon(
-                                                  Icons.shopping_bag_outlined,
-                                                  color: Colors.grey.shade400,
-                                                  size: 40,
-                                                ),
+                                          borderRadius: BorderRadius.circular(
+                                            12,
+                                          ),
+                                          child:
+                                              (product.imagenUrl != null &&
+                                                      product
+                                                          .imagenUrl!
+                                                          .isNotEmpty)
+                                                  ? Image.network(
+                                                    product.imagenUrl!,
+                                                    fit: BoxFit.cover,
+                                                  )
+                                                  : Icon(
+                                                    Icons.shopping_bag_outlined,
+                                                    color: Colors.grey.shade400,
+                                                    size: 40,
+                                                  ),
                                         ),
                                       ),
 
@@ -162,23 +176,38 @@ class _CartViewState extends State<CartView> {
 
                                       Expanded(
                                         child: Column(
-                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
                                           children: [
                                             Text(
-                                              product.nombre ?? 'Producto sin nombre',
+                                              product.nombre ??
+                                                  'Producto sin nombre',
                                               style: TextStyle(
                                                 fontSize: 16,
                                                 fontWeight: FontWeight.bold,
-                                                color: isDark ? Colors.blue.shade300 : const Color(0xFF2e67a3),
+                                                color:
+                                                    isDark
+                                                        ? Colors.blue.shade300
+                                                        : const Color(
+                                                          0xFF2e67a3,
+                                                        ),
                                               ),
                                             ),
                                             const SizedBox(height: 8),
                                             Text(
-                                              "COP ${(product.precio ?? 0) * item.quantity}",
+                                              PriceFormatter.formatWithCurrency(
+                                                (product.precio ?? 0) *
+                                                    item.quantity,
+                                              ),
                                               style: TextStyle(
                                                 fontSize: 16,
                                                 fontWeight: FontWeight.bold,
-                                                color: isDark ? Colors.blue.shade300 : const Color(0xFF2e67a3),
+                                                color:
+                                                    isDark
+                                                        ? Colors.blue.shade300
+                                                        : const Color(
+                                                          0xFF2e67a3,
+                                                        ),
                                               ),
                                             ),
                                             const SizedBox(height: 12),
@@ -186,19 +215,40 @@ class _CartViewState extends State<CartView> {
                                             Row(
                                               children: [
                                                 IconButton(
-                                                  icon: const Icon(Icons.remove, size: 18),
-                                                  onPressed: () async {
-                                                    await _cartService.decreaseQuantity(item.id);
-                                                    _loadCartItems();
+                                                  icon: const Icon(
+                                                    Icons.remove,
+                                                    size: 18,
+                                                  ),
+                                                  onPressed: () {
+                                                    context
+                                                        .read<CartBloc>()
+                                                        .add(
+                                                          DecreaseQuantity(
+                                                            item.id,
+                                                          ),
+                                                        );
                                                   },
                                                 ),
-                                                Text("${item.quantity}",
-                                                    style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+                                                Text(
+                                                  "${item.quantity}",
+                                                  style: const TextStyle(
+                                                    fontSize: 16,
+                                                    fontWeight: FontWeight.bold,
+                                                  ),
+                                                ),
                                                 IconButton(
-                                                  icon: const Icon(Icons.add, size: 18),
-                                                  onPressed: () async {
-                                                    await _cartService.increaseQuantity(item.id);
-                                                    _loadCartItems();
+                                                  icon: const Icon(
+                                                    Icons.add,
+                                                    size: 18,
+                                                  ),
+                                                  onPressed: () {
+                                                    context
+                                                        .read<CartBloc>()
+                                                        .add(
+                                                          IncreaseQuantity(
+                                                            item.id,
+                                                          ),
+                                                        );
                                                   },
                                                 ),
                                               ],
@@ -208,10 +258,14 @@ class _CartViewState extends State<CartView> {
                                       ),
 
                                       IconButton(
-                                        icon: const Icon(Icons.delete_outline, color: Colors.red),
-                                        onPressed: () async {
-                                          await _cartService.removeItem(item.id);
-                                          _loadCartItems();
+                                        icon: const Icon(
+                                          Icons.delete_outline,
+                                          color: Colors.red,
+                                        ),
+                                        onPressed: () {
+                                          context.read<CartBloc>().add(
+                                                RemoveFromCart(item.id),
+                                              );
                                         },
                                       ),
                                     ],
@@ -235,88 +289,144 @@ class _CartViewState extends State<CartView> {
                             child: Column(
                               children: [
                                 Row(
-                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
                                   children: [
                                     Text(
                                       "Total general:",
                                       style: TextStyle(
                                         fontSize: 16,
-                                        color: isDark ? Colors.grey.shade400 : Colors.grey.shade600,
+                                        color:
+                                            isDark
+                                                ? Colors.grey.shade400
+                                                : Colors.grey.shade600,
                                       ),
                                     ),
                                     Text(
-                                      "COP ${total.toStringAsFixed(0)}",
+                                      PriceFormatter.formatWithCurrency(total),
                                       style: TextStyle(
                                         fontSize: 22,
                                         fontWeight: FontWeight.bold,
-                                        color: isDark ? Colors.blue.shade300 : const Color(0xFF2e67a3),
+                                        color:
+                                            isDark
+                                                ? Colors.blue.shade300
+                                                : const Color(0xFF2e67a3),
                                       ),
                                     ),
                                   ],
                                 ),
-
-                              SizedBox(
+                                const SizedBox(height: 16),
+                                SizedBox(
                                   width: double.infinity,
                                   height: 56,
                                   child: ElevatedButton(
                                     onPressed: () async {
                                       print("=== BOTÓN PAGO PRESIONADO ===");
                                       try {
+                                        // Recargar el carrito desde el servidor antes de pagar
+                                        // para asegurar que el total sea correcto
+                                        print("Recargando carrito desde servidor...");
+                                        context.read<CartBloc>().add(LoadCart());
+                                        
+                                        // Esperar a que se recargue
+                                        await Future.delayed(const Duration(milliseconds: 500));
+                                        
+                                        // Obtener el estado actualizado
+                                        final currentState = context.read<CartBloc>().state;
+                                        
                                         print("Obteniendo cart_id...");
-                                        final cartId = await AuthService(baseUrl: ApiConfig.baseUrl).getCartId(); 
+                                        final cartId =
+                                            await AuthService(
+                                              baseUrl: ApiConfig.baseUrl,
+                                            ).getCartId();
 
                                         print("Cart ID obtenido: $cartId");
-                                        
+
                                         if (cartId == null) {
-                                          print("ERROR: No existe cart_id guardado");
+                                          print(
+                                            "ERROR: No existe cart_id guardado",
+                                          );
                                           return;
                                         }
 
-                                        print("Total a pagar: ${total.toInt()}");
-                                        print("Llamando a PaymentService.createPayment...");
-                                        
-                                        final data = await PaymentService().createPayment(
-                                          cartId: cartId,
-                                          amount: total.toInt(),
+                                        print(
+                                          "Total a pagar: ${currentState.total.toInt()}",
+                                        );
+                                        print(
+                                          "Llamando a PaymentService.createPayment...",
                                         );
 
-                                        print("Respuesta del pago recibida: $data");
-                                        final checkoutUrl = data["checkout_url"];
+                                        final data = await PaymentService()
+                                            .createPayment(
+                                              cartId: cartId,
+                                              amount: currentState.total.toInt(),
+                                            );
+
+                                        print(
+                                          "Respuesta del pago recibida: $data",
+                                        );
+                                        final checkoutUrl =
+                                            data["checkout_url"];
                                         print("Checkout URL: $checkoutUrl");
 
                                         if (kIsWeb) {
-                                          print("Abriendo checkout en nueva ventana (web)");
-                                          html.window.open(checkoutUrl, "_blank");
+                                          print(
+                                            "Abriendo checkout en nueva ventana (web)",
+                                          );
+                                          html.window.open(
+                                            checkoutUrl,
+                                            "_blank",
+                                          );
                                         } else {
-                                          print("Navegando a CheckoutScreen (mobile)");
+                                          print(
+                                            "Navegando a CheckoutScreen (mobile)",
+                                          );
                                           Navigator.push(
                                             context,
                                             MaterialPageRoute(
-                                              builder: (_) => CheckoutScreen(checkoutUrl: checkoutUrl),
+                                              builder:
+                                                  (_) => CheckoutScreen(
+                                                    checkoutUrl: checkoutUrl,
+                                                  ),
                                             ),
-                                          ).then((_) {
-                                            _loadCartItems();
-
-                                          });
-                                        }
-                                      } catch (e) {
+                                            ).then((_) {
+                                              // Recargar el carrito después de regresar del checkout
+                                              context.read<CartBloc>().add(LoadCart());
+                                            });
+                                          }
+                                        } catch (e) {
                                         print("❌ ERROR al procesar pago: $e");
-                                        print("Stack trace: ${StackTrace.current}");
+                                        print(
+                                          "Stack trace: ${StackTrace.current}",
+                                        );
                                       }
                                     },
-                                    child: Text("Pagar"),
+                                    style: ElevatedButton.styleFrom(
+                                      backgroundColor: const Color(0xFF2e67a3),
+                                      padding: const EdgeInsets.symmetric(vertical: 16),
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(12),
+                                      ),
+                                    ),
+                                    child: const Text(
+                                      "Pagar",
+                                      style: TextStyle(
+                                        fontSize: 18,
+                                        fontWeight: FontWeight.bold,
+                                        color: Colors.white,
+                                      ),
+                                    ),
                                   ),
-                                )
- 
-                              
+                                ),
                               ],
                             ),
                           ),
                         ),
                       ],
                     ),
-        );
-      },
-    );
+                ),
+          );
+        },
+      );
   }
 }

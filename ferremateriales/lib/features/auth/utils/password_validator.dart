@@ -1,15 +1,51 @@
 class PasswordValidator {
   // Lista de contraseñas comunes y comprometidas
   static const List<String> commonPasswords = [
-    '123456', 'password', '12345678', 'qwerty', '123456789',
-    '12345', '1234', '111111', '1234567', 'dragon',
-    '123123', 'baseball', 'iloveyou', 'trustno1', '1234567890',
-    'sunshine', 'master', 'welcome', 'shadow', 'ashley',
-    'football', 'jesus', 'michael', 'ninja', 'mustang',
-    'password1', 'admin', 'letmein', 'monkey', 'abc123',
-    '654321', 'superman', 'qazwsx', 'princess', 'azerty',
-    'hello', 'charlie', 'donald', 'password123', 'qwerty123',
-    'admin123', 'root', 'pass', 'test', 'guest',
+    '123456',
+    'password',
+    '12345678',
+    'qwerty',
+    '123456789',
+    '12345',
+    '1234',
+    '111111',
+    '1234567',
+    'dragon',
+    '123123',
+    'baseball',
+    'iloveyou',
+    'trustno1',
+    '1234567890',
+    'sunshine',
+    'master',
+    'welcome',
+    'shadow',
+    'ashley',
+    'football',
+    'jesus',
+    'michael',
+    'ninja',
+    'mustang',
+    'password1',
+    'admin',
+    'letmein',
+    'monkey',
+    'abc123',
+    '654321',
+    'superman',
+    'qazwsx',
+    'princess',
+    'azerty',
+    'hello',
+    'charlie',
+    'donald',
+    'password123',
+    'qwerty123',
+    'admin123',
+    'root',
+    'pass',
+    'test',
+    'guest',
   ];
 
   /// Valida si la contraseña es segura
@@ -18,7 +54,7 @@ class PasswordValidator {
       return 'La contraseña es requerida';
     }
 
-    // Verificar longitud mínima
+    // Verificar longitud mínima (cambiado a 8 caracteres)
     if (password.length < 8) {
       return 'La contraseña debe tener al menos 8 caracteres';
     }
@@ -43,10 +79,7 @@ class PasswordValidator {
       return 'La contraseña debe contener al menos un número';
     }
 
-    // Verificar que tenga al menos un carácter especial
-    if (!password.contains(RegExp(r'[!@#$%^&*(),.?":{}|<>]'))) {
-      return 'La contraseña debe contener al menos un carácter especial (!@#\$%^&*(),.?":{}|<>)';
-    }
+    // ❌ REMOVIDO: Ya no se requiere carácter especial
 
     return null; // Contraseña válida
   }

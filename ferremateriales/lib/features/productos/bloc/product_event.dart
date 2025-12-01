@@ -8,7 +8,13 @@ sealed class ProductEvent extends Equatable {
 }
 
 // SOLO HOME
-final class CargarDestacados extends ProductEvent {}
+final class CargarDestacados extends ProductEvent {
+  final bool forceRefresh;
+  const CargarDestacados({this.forceRefresh = false});
+  
+  @override
+  List<Object?> get props => [forceRefresh];
+}
 
 // SOLO BÚSQUEDA
 final class CargarTodosLosProductos extends ProductEvent {}

@@ -5,37 +5,38 @@ abstract class CartEvent extends Equatable {
   List<Object?> get props => [];
 }
 
+class LoadCart extends CartEvent {}
+
 class AddToCart extends CartEvent {
-  final Map<String, dynamic> product;
-  AddToCart(this.product);
+  final int productId;
+  AddToCart(this.productId);
 
   @override
-  List<Object?> get props => [product];
+  List<Object?> get props => [productId];
 }
 
 class RemoveFromCart extends CartEvent {
-  final String name;
-  RemoveFromCart(this.name);
+  final int id;
+  RemoveFromCart(this.id);
 
   @override
-  List<Object?> get props => [name];
+  List<Object?> get props => [id];
 }
 
 class IncreaseQuantity extends CartEvent {
-  final String name;
-  IncreaseQuantity(this.name);
+  final int id;
+  IncreaseQuantity(this.id);
 
   @override
-  List<Object?> get props => [name];
+  List<Object?> get props => [id];
 }
 
 class DecreaseQuantity extends CartEvent {
-  final String name;
-  DecreaseQuantity(this.name);
+  final int id;
+  DecreaseQuantity(this.id);
 
   @override
-  List<Object?> get props => [name];
+  List<Object?> get props => [id];
 }
-
 
 class ClearCart extends CartEvent {}

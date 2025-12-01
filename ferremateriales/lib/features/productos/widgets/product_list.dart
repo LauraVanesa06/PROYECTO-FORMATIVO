@@ -19,11 +19,18 @@ class ProductsList extends StatefulWidget {
 
 class _ProductsListState extends State<ProductsList> {
   bool _imagesCached = false; // Evita recargar varias veces
+  List<int> _cachedProductIds = []; // Para comparar productos por ID
 
   @override
   void didUpdateWidget(covariant ProductsList oldWidget) {
     super.didUpdateWidget(oldWidget);
-    if (oldWidget.products != widget.products) {
+    
+    // Solo actualizar si realmente cambiaron los productos (por ID)
+    final currentIds = widget.products.map((p) => p.id).toSet();
+    final previousIds = _cachedProductIds.toSet();
+    
+    if (!currentIds.containsAll(previousIds) || currentIds.length != previousIds.length) {
+      _cachedProductIds = widget.products.map((p) => p.id ?? 0).toList();
       _precacheProductImages();
     }
   }

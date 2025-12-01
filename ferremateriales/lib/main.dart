@@ -8,22 +8,20 @@ import 'package:ferremateriales/core/config/api_config.dart';
 import 'firebase_options.dart';
 import 'features/productos/bloc/cart_bloc.dart';
 import 'features/productos/bloc/product_bloc.dart';
+import 'features/productos/bloc/category_bloc.dart';
 import 'features/auth/bloc/auth_bloc.dart';
 import 'features/auth/bloc/auth_event.dart';
-import 'features/auth/bloc/auth_state.dart';
 import 'features/productos/cubit/theme_cubit.dart';
-import 'features/auth/views/login_view.dart';
-import 'features/productos/views/main_view.dart';
 import 'features/auth/services/auth_service.dart';
+import 'features/splash/views/splash_view.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp(
-    options: DefaultFirebaseOptions.currentPlatform,
-  );
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   final prefs = await SharedPreferences.getInstance();
 
-  ErrorWidget.builder = (FlutterErrorDetails details) => const SizedBox.shrink();
+  ErrorWidget.builder =
+      (FlutterErrorDetails details) => const SizedBox.shrink();
 
   runApp(MyApp(prefs: prefs));
 }
@@ -38,13 +36,14 @@ class MyApp extends StatelessWidget {
     return MultiBlocProvider(
       providers: [
         BlocProvider(
-          create: (_) => AuthBloc(
-            AuthService(baseUrl: ApiConfig.baseUrl),
-          )
-          ..add(ContinueAsGuest()),
+          create:
+              (_) =>
+                  AuthBloc(AuthService(baseUrl: ApiConfig.baseUrl))
+                    ..add(ContinueAsGuest()),
         ),
         BlocProvider(create: (_) => CartBloc()),
         BlocProvider(create: (_) => ProductBloc()),
+        BlocProvider(create: (_) => CategoryBloc()),
         BlocProvider(create: (_) => ThemeCubit(prefs)),
       ],
       child: BlocBuilder<ThemeCubit, ThemeState>(
@@ -59,30 +58,8 @@ class MyApp extends StatelessWidget {
               GlobalWidgetsLocalizations.delegate,
               GlobalCupertinoLocalizations.delegate,
             ],
-            supportedLocales: const [
-              Locale('es'),
-              Locale('en'),
-            ],
-            home: BlocListener<AuthBloc, AuthState>(
-              listener: (context, state) {
-                print('Main - Estado de auth: ${state.status}'); // Debug
-              },
-              child: BlocBuilder<AuthBloc, AuthState>(
-                builder: (context, authState) {
-                  print('Main - Construyendo con estado: ${authState.status}'); // Debug
-                  switch (authState.status) {
-                    case AuthStatus.success:
-                    case AuthStatus.guest:
-                      return const MainView();
-                    case AuthStatus.failure:
-                    case AuthStatus.loggedOut:
-                      return const LoginView();
-                    default:
-                      return const LoginView();
-                  }
-                },
-              ),
-            ),
+            supportedLocales: const [Locale('es'), Locale('en')],
+            home: const SplashView(),
           );
         },
       ),

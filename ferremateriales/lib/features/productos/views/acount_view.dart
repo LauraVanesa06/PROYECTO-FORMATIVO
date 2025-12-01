@@ -41,6 +41,7 @@ class _AcountViewState extends State<AcountView> {
   @override
   Widget build(BuildContext context) {
     final I10n = AppLocalizations.of(context)!;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     
     return BlocListener<AuthBloc, AuthState>(
       listener: (context, state) {
@@ -131,20 +132,20 @@ class _AcountViewState extends State<AcountView> {
         }
       },
       child: Scaffold(
-        backgroundColor: Colors.grey.shade50,
+        backgroundColor: isDark ? Colors.grey.shade900 : Colors.grey.shade50,
         appBar: AppBar(
-          backgroundColor: Colors.white,
+          backgroundColor: isDark ? Colors.grey.shade800 : Colors.white,
           elevation: 0,
           title: Text(
             I10n.account,
-            style: const TextStyle(
-              color: Color(0xFF222222),
+            style: TextStyle(
+              color: isDark ? Colors.white : const Color(0xFF222222),
               fontWeight: FontWeight.bold,
             ),
           ),
           centerTitle: true,
           leading: IconButton(
-            icon: const Icon(Icons.arrow_back, color: Color(0xFF222222)),
+            icon: Icon(Icons.arrow_back, color: isDark ? Colors.white : const Color(0xFF222222)),
             onPressed: () => Navigator.pop(context),
           ),
         ),
@@ -154,9 +155,9 @@ class _AcountViewState extends State<AcountView> {
             // Header con avatar
             Container(
               width: double.infinity,
-              decoration: const BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.only(
+              decoration: BoxDecoration(
+                color: isDark ? Colors.grey.shade800 : Colors.white,
+                borderRadius: const BorderRadius.only(
                   bottomLeft: Radius.circular(30),
                   bottomRight: Radius.circular(30),
                 ),
@@ -188,10 +189,10 @@ class _AcountViewState extends State<AcountView> {
                         children: [
                           Text(
                             state.nombre ?? widget.nombre,
-                            style: const TextStyle(
+                            style: TextStyle(
                               fontSize: 24,
                               fontWeight: FontWeight.bold,
-                              color: Color(0xFF222222),
+                              color: isDark ? Colors.white : const Color(0xFF222222),
                             ),
                           ),
                           const SizedBox(height: 4),
@@ -199,7 +200,7 @@ class _AcountViewState extends State<AcountView> {
                             state.email ?? widget.email,
                             style: TextStyle(
                               fontSize: 14,
-                              color: Colors.grey.shade600,
+                              color: isDark ? Colors.grey.shade400 : Colors.grey.shade600,
                             ),
                           ),
                         ],
@@ -222,10 +223,10 @@ class _AcountViewState extends State<AcountView> {
                     padding: const EdgeInsets.only(left: 8, bottom: 12),
                     child: Text(
                       I10n.personalinformation,
-                      style: const TextStyle(
+                      style: TextStyle(
                         fontSize: 18,
                         fontWeight: FontWeight.bold,
-                        color: Color(0xFF222222),
+                        color: isDark ? Colors.white : const Color(0xFF222222),
                       ),
                     ),
                   ),
@@ -233,16 +234,18 @@ class _AcountViewState extends State<AcountView> {
                   // Card de información
                   Container(
                     decoration: BoxDecoration(
-                      color: Colors.white,
+                      color: isDark ? Colors.grey.shade800 : Colors.white,
                       borderRadius: BorderRadius.circular(16),
-                      border: Border.all(color: Colors.grey.shade200),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.black.withOpacity(0.03),
-                          blurRadius: 8,
-                          offset: const Offset(0, 2),
-                        ),
-                      ],
+                      border: Border.all(color: isDark ? Colors.grey.shade700 : Colors.grey.shade200),
+                      boxShadow: isDark
+                          ? []
+                          : [
+                              BoxShadow(
+                                color: Colors.black.withOpacity(0.03),
+                                blurRadius: 8,
+                                offset: const Offset(0, 2),
+                              ),
+                            ],
                     ),
                     child: BlocBuilder<AuthBloc, AuthState>(
                       builder: (context, state) {
@@ -439,6 +442,8 @@ class _AcountViewState extends State<AcountView> {
     required String label,
     required String value,
   }) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    
     return Padding(
       padding: const EdgeInsets.all(16),
       child: Row(
@@ -465,16 +470,16 @@ class _AcountViewState extends State<AcountView> {
                   label,
                   style: TextStyle(
                     fontSize: 12,
-                    color: Colors.grey.shade600,
+                    color: isDark ? Colors.grey.shade400 : Colors.grey.shade600,
                     fontWeight: FontWeight.w500,
                   ),
                 ),
                 const SizedBox(height: 4),
                 Text(
                   value,
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontSize: 16,
-                    color: Color(0xFF222222),
+                    color: isDark ? Colors.white : const Color(0xFF222222),
                     fontWeight: FontWeight.w600,
                   ),
                 ),
@@ -487,9 +492,12 @@ class _AcountViewState extends State<AcountView> {
   }
 
   void _showEditDialog(BuildContext context, AppLocalizations I10n) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    
     showDialog(
       context: context,
       builder: (context) => Dialog(
+        backgroundColor: isDark ? Colors.grey.shade800 : Colors.white,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(24),
         ),
@@ -518,10 +526,10 @@ class _AcountViewState extends State<AcountView> {
                   Expanded(
                     child: Text(
                       I10n.modifyinformation,
-                      style: const TextStyle(
+                      style: TextStyle(
                         fontSize: 20,
                         fontWeight: FontWeight.bold,
-                        color: Color(0xFF222222),
+                        color: isDark ? Colors.white : const Color(0xFF222222),
                       ),
                     ),
                   ),
@@ -530,17 +538,18 @@ class _AcountViewState extends State<AcountView> {
               const SizedBox(height: 24),
               TextField(
                 controller: nombreController,
+                style: TextStyle(color: isDark ? Colors.white : Colors.black),
                 decoration: InputDecoration(
                   labelText: I10n.name,
-                  labelStyle: TextStyle(color: Colors.grey.shade600),
+                  labelStyle: TextStyle(color: isDark ? Colors.grey.shade400 : Colors.grey.shade600),
                   prefixIcon: const Icon(Icons.person_outline, color: Color(0xFF2e67a3)),
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(12),
-                    borderSide: BorderSide(color: Colors.grey.shade300),
+                    borderSide: BorderSide(color: isDark ? Colors.grey.shade600 : Colors.grey.shade300),
                   ),
                   enabledBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(12),
-                    borderSide: BorderSide(color: Colors.grey.shade300),
+                    borderSide: BorderSide(color: isDark ? Colors.grey.shade600 : Colors.grey.shade300),
                   ),
                   focusedBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(12),
@@ -551,17 +560,18 @@ class _AcountViewState extends State<AcountView> {
               const SizedBox(height: 16),
               TextField(
                 controller: emailController,
+                style: TextStyle(color: isDark ? Colors.white : Colors.black),
                 decoration: InputDecoration(
                   labelText: I10n.email,
-                  labelStyle: TextStyle(color: Colors.grey.shade600),
+                  labelStyle: TextStyle(color: isDark ? Colors.grey.shade400 : Colors.grey.shade600),
                   prefixIcon: const Icon(Icons.email_outlined, color: Color(0xFF2e67a3)),
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(12),
-                    borderSide: BorderSide(color: Colors.grey.shade300),
+                    borderSide: BorderSide(color: isDark ? Colors.grey.shade600 : Colors.grey.shade300),
                   ),
                   enabledBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(12),
-                    borderSide: BorderSide(color: Colors.grey.shade300),
+                    borderSide: BorderSide(color: isDark ? Colors.grey.shade600 : Colors.grey.shade300),
                   ),
                   focusedBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(12),

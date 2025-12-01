@@ -2,14 +2,14 @@ import 'package:equatable/equatable.dart';
 
 /// Define los posibles estados de autenticación
 enum AuthStatus {
-  initial,    // Cuando arranca la app
-  loading,    // Cuando está procesando (login, registro, etc.)
-  success,    // Login exitoso
-  failure,    // Fallo en autenticación
-  loggedOut,  // Cuando el usuario cierra sesión
-  guest,      // Usuario invitado
+  initial, // Cuando arranca la app
+  loading, // Cuando está procesando (login, registro, etc.)
+  success, // Login exitoso
+  failure, // Fallo en autenticación
+  loggedOut, // Cuando el usuario cierra sesión
+  guest, // Usuario invitado
   authenticated,
-  resetPasswordSent,  // Código de verificación enviado
+  resetPasswordSent, // Código de verificación enviado
   resetPasswordError, // Error al enviar código
 }
 
@@ -41,12 +41,13 @@ class AuthState extends Equatable {
     return AuthState(
       status: status ?? this.status,
       // Reiniciar error si el estado es exitoso, logout o invitado
-      error: (status == AuthStatus.success ||
-              status == AuthStatus.loggedOut ||
-              status == AuthStatus.guest ||
-              status == AuthStatus.resetPasswordSent)
-          ? null
-          : error ?? this.error,
+      error:
+          (status == AuthStatus.success ||
+                  status == AuthStatus.loggedOut ||
+                  status == AuthStatus.guest ||
+                  status == AuthStatus.resetPasswordSent)
+              ? null
+              : error ?? this.error,
       nombre: nombre ?? this.nombre,
       email: email ?? this.email,
       resetMessage: resetMessage ?? this.resetMessage,
@@ -55,5 +56,12 @@ class AuthState extends Equatable {
   }
 
   @override
-  List<Object?> get props => [status, error, nombre, email, resetMessage, resetToken];
+  List<Object?> get props => [
+    status,
+    error,
+    nombre,
+    email,
+    resetMessage,
+    resetToken,
+  ];
 }

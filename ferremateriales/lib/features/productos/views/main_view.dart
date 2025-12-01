@@ -10,8 +10,13 @@ import 'favorites_view.dart';
 import 'cart_view.dart';
 import 'profile_view.dart';
 
+// GlobalKey para acceder al estado de MainView desde otros widgets
+final GlobalKey<_MainViewState> mainViewKey = GlobalKey<_MainViewState>();
+
 class MainView extends StatefulWidget {
-  const MainView({super.key});
+  final int initialIndex;
+  
+  MainView({Key? key, this.initialIndex = 0}) : super(key: key);
 
   @override
   State<MainView> createState() => _MainViewState();
@@ -20,11 +25,21 @@ class MainView extends StatefulWidget {
 
 
 class _MainViewState extends State<MainView> {
-  int _selectedIndex = 0;
+  late int _selectedIndex;
+
+  // Método público para cambiar de tab desde otros widgets
+  void changeTab(int index) {
+    if (mounted && index >= 0 && index < 4) {
+      setState(() {
+        _selectedIndex = index;
+      });
+    }
+  }
 
   @override
   void initState() {
     super.initState();
+    _selectedIndex = widget.initialIndex;
     // Cargar cachés al iniciar (una sola petición HTTP para cada uno)
     _loadCaches();
   }
@@ -100,8 +115,13 @@ return Scaffold(
     
     return GestureDetector(
       onTap: () {
+        // No mostrar diálogo si está cargando o ya está autenticado
         if (authState.status == AuthStatus.guest && (index == 1 || index == 2)) {
           _showAuthDialogForSection(index);
+          return;
+        }
+        // Si no está autenticado y es una sección protegida, no navegar
+        if (authState.status != AuthStatus.success && authState.status != AuthStatus.guest && (index == 1 || index == 2)) {
           return;
         }
         setState(() => _selectedIndex = index);
@@ -127,8 +147,13 @@ return Scaffold(
   Widget _buildCartFAB(AuthState authState) {
     return GestureDetector(
       onTap: () {
+        // Solo mostrar diálogo si es invitado, no si está cargando
         if (authState.status == AuthStatus.guest) {
           _showAuthDialogForCart();
+          return;
+        }
+        // Si no está autenticado y no es invitado, no hacer nada
+        if (authState.status != AuthStatus.success) {
           return;
         }
         setState(() => _selectedIndex = 2);
@@ -214,18 +239,22 @@ return Scaffold(
                           Navigator.of(context).pop();
                         },
                         style: OutlinedButton.styleFrom(
-                          padding: const EdgeInsets.symmetric(vertical: 14),
+                          padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 4),
                           side: const BorderSide(color: Color(0xFF2e67a3)),
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(12),
                           ),
                         ),
-                        child: const Text(
-                          'Continuar como invitado',
-                          style: TextStyle(
-                            color: Color(0xFF2e67a3),
-                            fontSize: 14,
-                            fontWeight: FontWeight.w600,
+                        child: const FittedBox(
+                          fit: BoxFit.scaleDown,
+                          child: Text(
+                            'Continuar como invitado',
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                              color: Color(0xFF2e67a3),
+                              fontSize: 14,
+                              fontWeight: FontWeight.w600,
+                            ),
                           ),
                         ),
                       ),
@@ -330,18 +359,22 @@ return Scaffold(
                           Navigator.of(context).pop();
                         },
                         style: OutlinedButton.styleFrom(
-                          padding: const EdgeInsets.symmetric(vertical: 14),
+                          padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 4),
                           side: const BorderSide(color: Color(0xFF2e67a3)),
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(12),
                           ),
                         ),
-                        child: const Text(
-                          'Continuar como invitado',
-                          style: TextStyle(
-                            color: Color(0xFF2e67a3),
-                            fontSize: 14,
-                            fontWeight: FontWeight.w600,
+                        child: const FittedBox(
+                          fit: BoxFit.scaleDown,
+                          child: Text(
+                            'Continuar como invitado',
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                              color: Color(0xFF2e67a3),
+                              fontSize: 14,
+                              fontWeight: FontWeight.w600,
+                            ),
                           ),
                         ),
                       ),
