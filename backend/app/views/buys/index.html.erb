@@ -57,16 +57,13 @@
     </div> 
     <section id=sect1>
       <div class="degradado">
-        <p class= "titulo-cant">Cantidad total de Ventas: <%= @ventas_total %></p>
-        <div class="conten">
-          <div class="info3"><a class="info2"><%= @ventas_hoy %></a><a class="info">Hoy</a></div>
-          <div class="info3"><a class="info2"><%= @ventas_semana %></a><a class="info">Semana</a></div>
-          <div class="info3"><a class="info2"><%= @ventas_mes %></a><a class="info">Mes</a></div>
-          <div class="info3"><a class="info2"><%= @ventas_anio %></a><a class="info">Año</a></div>
-        </div>
-        <canvas id="grafica" style="max-height: 300px;"></canvas>
+        <p class="titulo-cant">Cantidad total de Ventas</p>
+        <p class="numero-ventas"><%= @ventas_total %></p>
       </div>
-      <div class="div-white"></div>
+      <button class="btn-ventas-fisicas" data-bs-toggle="modal" data-bs-target="#modalVentaFisica">
+        <i class="fas fa-plus"></i>
+        <span>Ventas Físicas</span>
+      </button>
     </section>
     <section id=sect2>
       <nav class="nav-filtros">
@@ -121,13 +118,6 @@
 
         </div>
       </div>
-
-      <div class="text-end mb-3">
-  <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#modalVentaFisica">
-    +
-  </button>
-</div>
-
     </section>
   </section>
 
@@ -784,16 +774,14 @@
 }
 
 #modalVentaFisica .modal-dialog {
-  margin-top: 20px !important;     /* Súbelo más si quieres */
-  transform: translateY(-20px);    /* Ajuste fino para subirlo visualmente */
+  margin-top: 20px !important;
+  transform: translateY(-160px);
 }
 
-/* Evitar que el modal quede demasiado ancho y recorte cosas */
 #modalVentaFisica .modal-dialog.modal-xl {
-  max-width: 90% !important;
+  max-width: 80% !important;
 }
 
-/* Hacer que el contenido interno respire más */
 #modalVentaFisica .modal-body {
   padding-top: 10px;
   padding-bottom: 20px;
@@ -801,11 +789,45 @@
 
 #modalVentaFisica input.form-control {
   margin-bottom: 10px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  padding: 10px 15px;
+  transition: all 0.2s ease;
+}
+
+#modalVentaFisica input.form-control:focus {
+  border-color: #2575d8;
+  box-shadow: 0 0 0 3px rgba(37, 117, 216, 0.1);
 }
 
 #modalVentaFisica .form-control {
-  padding: 7px 12px;
+  padding: 10px 15px;
   border-radius: 8px;
+  border: 1px solid #ddd;
+}
+
+#modalVentaFisica .btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2);
+}
+
+#modalVentaFisica .producto-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 20px rgba(37, 117, 216, 0.2);
+  border-color: #2575d8;
+}
+
+#modalVentaFisica table {
+  font-size: 13px;
+}
+
+#modalVentaFisica tbody tr {
+  border-bottom: 1px solid #e0e0e0;
+  transition: background-color 0.2s ease;
+}
+
+#modalVentaFisica tbody tr:hover {
+  background-color: #f5f7fa;
 }
 
 #modalVentaFisica .form-label {
@@ -818,88 +840,110 @@
 
 <div class="modal fade" id="modalVentaFisica" tabindex="-1" aria-labelledby="modalLabelVentaFisica" aria-hidden="true">
   <div class="modal-dialog modal-xl">
-    <div class="modal-content">
+    <div class="modal-content" style="border-radius: 15px; border: none; box-shadow: 0 20px 60px rgba(0,0,0,0.3);">
 
-      <div class="modal-header">
-        <h5 class="modal-title" id="modalLabelVentaFisica">Registrar Venta Física</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      <div class="modal-header" style="background: linear-gradient(135deg, #2575d8 0%, #509af3 100%); border: none; border-radius: 15px 15px 0 0; padding: 25px;">
+        <h5 class="modal-title" id="modalLabelVentaFisica" style="color: white; font-weight: 700; font-size: 22px;">
+          <i class="fas fa-shopping-cart" style="margin-right: 10px;"></i>Registrar Venta Física
+        </h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
 
-      <div class="modal-body">
+      <div class="modal-body" style="padding: 30px;">
         <form id="form-venta-fisica" action="/buys" method="post">
 
           <%= hidden_field_tag :authenticity_token, form_authenticity_token %>
 
-
-         <div class="row g-3 mb-4 align-items-end text-center">
-
-  <div class="col-md-3">
-    <label class="form-label">Cliente</label>
-    <input type="text" name="buy[client_name]" class="form-control" required>
-  </div>
-
-  <div class="col-md-3">
-    <label class="form-label">Correo</label>
-    <input type="email" name="buy[client_email]" class="form-control">
-  </div>
-
-  <div class="col-md-3">
-    <label class="form-label">Buscar producto</label>
-    <input type="text" id="filtroProducto" class="form-control" placeholder="Nombre o código">
-  </div>
-
-  <div class="col-md-3">
-    <label class="form-label">Código</label>
-    <input type="text" id="codigoBusqueda" class="form-control" placeholder="Código exacto">
-  </div>
-
-</div>
-
-
-          <!-- GRID DE PRODUCTOS -->
-          <div class="productos-grid">
-            <% @products.each do |p| %>
-              <div class="producto-card" data-nombre="<%= p.nombre.downcase %>" data-codigo="<%= p.codigo_producto.downcase %>">
-
-        <img src="<%= url_for(p.images.first) if p.images.attached? %>" class="producto-imagen">
-
-                <h6 class="producto-nombre"><%= p.nombre %></h6>
-                <p class="producto-codigo"><%= p.codigo_producto %></p>
-                <p class="producto-stock">Stock: <%= p.stock %></p>
-
-                <button type="button"
-                        class="btn btn-primary btn-sm seleccionar-producto"
-                        data-product-id="<%= p.id %>"
-                        data-product-name="<%= p.nombre %>"
-                        data-product-price="<%= p.precio %>"
-                        data-product-code="<%= p.codigo_producto %>">
-                  Seleccionar
-                </button>
-
+          <!-- INFORMACIÓN DEL CLIENTE -->
+          <div class="cliente-info-section" style="background: #f8f9fa; padding: 20px; border-radius: 12px; margin-bottom: 25px;">
+            <h6 style="color: #2c3e50; font-weight: 700; margin-bottom: 15px; font-size: 14px; text-transform: uppercase; letter-spacing: 0.5px;">
+              <i class="fas fa-user" style="margin-right: 8px; color: #2575d8;"></i>Información del Cliente
+            </h6>
+            <div class="row g-3">
+              <div class="col-md-6">
+                <label class="form-label" style="font-weight: 600; color: #2c3e50; font-size: 13px;">Cliente *</label>
+                <input type="text" name="buy[client_name]" class="form-control" placeholder="Nombre del cliente" required style="border-radius: 8px; border: 1px solid #ddd; padding: 10px 15px;">
               </div>
-            <% end %>
+              <div class="col-md-6">
+                <label class="form-label" style="font-weight: 600; color: #2c3e50; font-size: 13px;">Correo</label>
+                <input type="email" name="buy[client_email]" class="form-control" placeholder="correo@example.com" style="border-radius: 8px; border: 1px solid #ddd; padding: 10px 15px;">
+              </div>
+            </div>
           </div>
 
-          <hr>
+          <!-- BÚSQUEDA DE PRODUCTOS -->
+          <div class="busqueda-section" style="margin-bottom: 25px;">
+            <h6 style="color: #2c3e50; font-weight: 700; margin-bottom: 15px; font-size: 14px; text-transform: uppercase; letter-spacing: 0.5px;">
+              <i class="fas fa-search" style="margin-right: 8px; color: #2575d8;"></i>Buscar Productos
+            </h6>
+            <div class="row g-3">
+              <div class="col-md-6">
+                <input type="text" id="filtroProducto" class="form-control" placeholder="🔍 Buscar por nombre o código..." style="border-radius: 8px; border: 1px solid #ddd; padding: 10px 15px;">
+              </div>
+              <div class="col-md-6">
+                <input type="text" id="codigoBusqueda" class="form-control" placeholder="Código exacto..." style="border-radius: 8px; border: 1px solid #ddd; padding: 10px 15px;">
+              </div>
+            </div>
+          </div>
+
+          <!-- GRID DE PRODUCTOS -->
+          <div style="margin-bottom: 25px;">
+            <h6 style="color: #2c3e50; font-weight: 700; margin-bottom: 15px; font-size: 14px; text-transform: uppercase; letter-spacing: 0.5px;">
+              <i class="fas fa-box" style="margin-right: 8px; color: #2575d8;"></i>Productos Disponibles
+            </h6>
+            <div class="productos-grid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 15px; max-height: 400px; overflow-y: auto; padding-right: 10px;">
+              <% @products.each do |p| %>
+                <div class="producto-card" data-nombre="<%= p.nombre.downcase %>" data-codigo="<%= p.codigo_producto.downcase %>" style="background: white; border: 1px solid #e0e0e0; border-radius: 10px; padding: 12px; text-align: center; transition: all 0.3s ease; cursor: pointer;">
+                  <img src="<%= url_for(p.images.first) if p.images.attached? %>" class="producto-imagen" style="width: 80px; height: 80px; object-fit: contain; margin-bottom: 10px;">
+                  <h6 class="producto-nombre" style="font-size: 12px; font-weight: 700; color: #2c3e50; margin-bottom: 5px; min-height: 30px; display: flex; align-items: center; justify-content: center;"><%= p.nombre %></h6>
+                  <p class="producto-codigo" style="font-size: 11px; color: #7f8c8d; margin-bottom: 5px;"><%= p.codigo_producto %></p>
+                  <p class="producto-stock" style="font-size: 12px; color: #27ae60; font-weight: 700; margin-bottom: 10px;">Stock: <%= p.stock %></p>
+                  <button type="button" class="btn btn-sm seleccionar-producto" data-product-id="<%= p.id %>" data-product-name="<%= p.nombre %>" data-product-price="<%= p.precio %>" data-product-code="<%= p.codigo_producto %>" style="background: linear-gradient(135deg, #2575d8 0%, #509af3 100%); color: white; border: none; border-radius: 6px; padding: 6px 12px; font-size: 12px; font-weight: 600; width: 100%; transition: all 0.2s ease;">
+                    Seleccionar
+                  </button>
+                </div>
+              <% end %>
+            </div>
+          </div>
 
           <!-- PRODUCTOS SELECCIONADOS -->
-          <h5>Productos seleccionados</h5>
-          <table class="table" id="tabla-seleccionados">
-            <thead>
-              <tr>
-                <th>Producto</th>
-                <th>Cantidad</th>
-                <th>Precio</th>
-                <th>Subtotal</th>
-                <th></th>
-              </tr>
-            </thead>
-            <tbody></tbody>
-          </table>
+          <div style="margin-bottom: 25px;">
+            <h6 style="color: #2c3e50; font-weight: 700; margin-bottom: 15px; font-size: 14px; text-transform: uppercase; letter-spacing: 0.5px;">
+              <i class="fas fa-check-circle" style="margin-right: 8px; color: #27ae60;"></i>Productos Seleccionados
+            </h6>
+            <div style="max-height: 300px; overflow-y: auto; border: 1px solid #e0e0e0; border-radius: 10px; background: #f8f9fa;">
+              <table class="table table-sm" id="tabla-seleccionados" style="margin-bottom: 0;">
+                <thead style="background: #ecf0f1; position: sticky; top: 0;">
+                  <tr>
+                    <th style="color: #2c3e50; font-weight: 700; padding: 12px;">Producto</th>
+                    <th style="color: #2c3e50; font-weight: 700; padding: 12px; text-align: center;">Cantidad</th>
+                    <th style="color: #2c3e50; font-weight: 700; padding: 12px; text-align: right;">Precio</th>
+                    <th style="color: #2c3e50; font-weight: 700; padding: 12px; text-align: right;">Subtotal</th>
+                    <th style="color: #2c3e50; font-weight: 700; padding: 12px; text-align: center;">Acción</th>
+                  </tr>
+                </thead>
+                <tbody></tbody>
+              </table>
+            </div>
+          </div>
 
-          <h4>Total: $ <span id="total-venta">0</span></h4>
+          <!-- RESUMEN DE TOTAL -->
+          <div style="background: linear-gradient(135deg, #2575d8 0%, #509af3 100%); color: white; padding: 20px; border-radius: 10px; margin-bottom: 20px;">
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+              <h5 style="margin: 0; font-weight: 700; font-size: 16px;">Total de Venta</h5>
+              <h4 style="margin: 0; font-size: 28px; font-weight: 700;">$ <span id="total-venta">0</span></h4>
+            </div>
+          </div>
 
-          <button type="submit" class="btn btn-success w-100 mt-3">Registrar Venta</button>
+          <!-- BOTONES DE ACCIÓN -->
+          <div style="display: flex; gap: 10px;">
+            <button type="submit" class="btn w-100" style="background: linear-gradient(135deg, #27ae60 0%, #2ecc71 100%); color: white; border: none; border-radius: 8px; padding: 12px; font-weight: 700; font-size: 16px; transition: all 0.3s ease;">
+              <i class="fas fa-check" style="margin-right: 8px;"></i>Registrar Venta
+            </button>
+            <button type="button" class="btn w-100" data-bs-dismiss="modal" style="background: #95a5a6; color: white; border: none; border-radius: 8px; padding: 12px; font-weight: 700; font-size: 16px; transition: all 0.3s ease;">
+              <i class="fas fa-times" style="margin-right: 8px;"></i>Cancelar
+            </button>
+          </div>
 
         </form>
       </div>
