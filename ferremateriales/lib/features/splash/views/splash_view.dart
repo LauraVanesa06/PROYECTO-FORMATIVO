@@ -60,37 +60,53 @@ class _SplashViewState extends State<SplashView>
 
       if (!mounted) return;
 
-      // 2. Cargar TODOS los productos, productos destacados y categorías
+      // 2. Cargar TODOS los productos, destacados (más vendidos) y categorías en paralelo
       final productBloc = context.read<ProductBloc>();
       final categoryBloc = context.read<CategoryBloc>();
 
-      // Iniciar la carga de productos, destacados y categorías
-      productBloc.add(CargarDestacados());
+      // Cargar productos completos, destacados (más vendidos) y categorías simultáneamente
       productBloc.add(CargarTodosLosProductos());
+      productBloc.add(
+        CargarDestacados(),
+      ); // Obtiene los más vendidos del backend
       categoryBloc.add(LoadCategories());
 
-      // 3. Esperar a que los productos terminen de cargar (máximo 10 segundos)
-      print("Esperando a que los productos se carguen...");
+      // 3. Esperar a que los productos terminen de cargar (máximo 8 segundos)
+      print("Esperando a que los productos y destacados se carguen...");
       int attempts = 0;
-      while (attempts < 50) {
-        // 50 intentos * 200ms = 10 segundos máximo
+      bool productsLoaded = false;
+      bool featuredLoaded = false;
+
+      while (attempts < 40 && (!productsLoaded || !featuredLoaded)) {
+        // 40 intentos * 200ms = 8 segundos máximo
         await Future.delayed(const Duration(milliseconds: 200));
 
         if (!mounted) return;
 
         final currentState = productBloc.state;
+
         if (currentState is ProductLoadSuccess) {
-          print("✅ Productos cargados exitosamente en el splash");
-          break;
+          productsLoaded = true;
+          print("✅ Todos los productos cargados");
+        } else if (currentState is ProductDestacadosSuccess) {
+          featuredLoaded = true;
+          print("✅ Productos destacados (más vendidos) cargados");
         } else if (currentState is ProductLoadFailure) {
           print("⚠️ Error cargando productos en el splash");
           break;
         }
+
+        // Si ambos están cargados, salir del loop
+        if (productsLoaded && featuredLoaded) {
+          print("✅ Todos los datos cargados exitosamente");
+          break;
+        }
+
         attempts++;
       }
 
-      // 4. Esperar mínimo 2 segundos para mostrar el splash
-      await Future.delayed(const Duration(milliseconds: 4000));
+      // 4. Esperar solo 1 segundo adicional para la animación
+      await Future.delayed(const Duration(milliseconds: 1000));
 
       // 5. Esperar a que la animación termine
       await _animationController.forward();
@@ -151,6 +167,7 @@ class _SplashViewState extends State<SplashView>
                       height: 180,
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(30),
+                        color: Colors.white,
                         boxShadow: [
                           BoxShadow(
                             color: Colors.black.withOpacity(0.1),
@@ -164,6 +181,13 @@ class _SplashViewState extends State<SplashView>
                         child: Image.asset(
                           'assets/images/favicon.png',
                           fit: BoxFit.contain,
+                          errorBuilder: (context, error, stackTrace) {
+                            // Si falla, usar el logo alternativo
+                            return Image.asset(
+                              'assets/images/logo.jpg',
+                              fit: BoxFit.cover,
+                            );
+                          },
                         ),
                       ),
                     ),
