@@ -127,442 +127,225 @@
 
   <!-- grfaica de la seccion 1 -->
 <script>
-  document.addEventListener('DOMContentLoaded', () => {
-    fetch('/api/v1/clientes_por_mes')
-      .then(res => res.json())
-      .then(data => {
-        const meses = [
-          'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio',
-          'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'
-        ];
-
-        const valores = Object.values(data);
-        const etiquetas = Object.keys(data).map(num => meses[parseInt(num) - 1]);
-
-        // Filtrar solo los meses con valor > 0
-        const valoresFiltrados = valores.filter(v => v > 0);
-        const etiquetasFiltradas = etiquetas.filter((_, i) => valores[i] > 0);
-        const colores = [
-          '#1e88e5', '#103f91', '#1565c0', '#1976d2', '#2196f3',
-          '#3399ff', '#42a5f5', '#1e88e5', '#64b5f6', '#90caf9',
-          '#bbdefb', '#e3f2fd'
-        ].slice(0, etiquetasFiltradas.length);
-
-        const ctx = document.getElementById('graficoClientesMes').getContext('2d');
-
-        new Chart(ctx, {
-          type: 'doughnut',
-          data: {
-            labels: etiquetasFiltradas,
-            datasets: [{
-              data: valoresFiltrados,
-              backgroundColor: colores,
-              borderColor: '#bbbbbbff',
-              borderWidth: 2,
-              cutout: '40%'
-            }]
-          },
-          options: {
-            plugins: {
-              legend: { display: false },
-              datalabels: {
-                color: 'white',
-                font: {
-                  weight: 'bold',
-                  size: 14
-                },
-                formatter: (value, context) => {
-                  const label = context.chart.data.labels[context.dataIndex];
-                  return value > 0 ? `${label}: ${value}` : '';
-                },
-                display: (context) => context.dataset.data[context.dataIndex] > 0
-              }
-            }
-          },
-          plugins: [ChartDataLabels]
-        });
-      })
-      .catch(error => console.error("Error cargando clientes por mes:", error));
-  });
-</script>
-
-
-
-
-
-<!-- grafica 1 de la seccion 2 -->
-<script>
-  document.addEventListener('DOMContentLoaded', () => {
-    fetch('/api/v1/dashboard/porcentaje_stock')
-      .then(res => res.json())
-      .then(data => {
-        const porcentaje = data.porcentaje;
-        const totalSegmentos = 30;
-        const segmentosActivos = Math.round((porcentaje / 100) * totalSegmentos);
-        const datos = Array(totalSegmentos).fill(1);
-
-        const azulClaro = [187, 222, 251]; 
-        const azulOscuro = [13, 71, 161]; 
-
-        const colores = Array.from({ length: totalSegmentos }, (_, i) => {
-          if (i < segmentosActivos) {
-            const t = i / (segmentosActivos - 1 || 1); 
-            const r = Math.round(azulClaro[0] + (azulOscuro[0] - azulClaro[0]) * t);
-            const g = Math.round(azulClaro[1] + (azulOscuro[1] - azulClaro[1]) * t);
-            const b = Math.round(azulClaro[2] + (azulOscuro[2] - azulClaro[2]) * t);
-            return `rgb(${r}, ${g}, ${b})`;
-          } else {
-            return '#616161';
-          }
-        });
-
-        new Chart(document.getElementById('gaugeSegmentado'), {
-          type: 'doughnut',
-          data: {
-            datasets: [{
-              data: datos,
-              backgroundColor: colores,
-              borderColor: '#2b2d3fff',
-              borderWidth: 1.5,
-              hoverOffset: 0
-            }]
-          },
-          options: {
-            cutout: '65%',
-            rotation: -90,
-            circumference: 360,
-            plugins: {
-              legend: { display: false },
-              tooltip: { enabled: false }
-            }
-          }
-        });
-
-        const valorDiv = document.querySelector('.gauge-value');
-        if (valorDiv) valorDiv.innerHTML = `Stock<br>${porcentaje}%`;
-      })
-      .catch(error => console.error("Error cargando porcentaje de stock:", error));
-  });
-</script>
-
-
-<!-- grafica 2 de la seccion 2 -->
-<script>
-document.addEventListener('DOMContentLoaded', () => {
-  fetch('/api/v1/ventas_por_categoria')
-    .then(res => res.json())
-    .then(data => {
-      const ctx2 = document.getElementById('graficoVentas').getContext('2d');
-
-
-      const azulClaro = [187, 222, 251];
-      const azulOscuro = [13, 71, 161];
-
-      const total = data.valores.length;
-      const colores = Array.from({ length: total }, (_, i) => {
-        const t = i / (total - 1 || 1);
-        const r = Math.round(azulClaro[0] + (azulOscuro[0] - azulClaro[0]) * t);
-        const g = Math.round(azulClaro[1] + (azulOscuro[1] - azulClaro[1]) * t);
-        const b = Math.round(azulClaro[2] + (azulOscuro[2] - azulClaro[2]) * t);
-        return `rgb(${r}, ${g}, ${b})`;
+  const chartInstances = {};
+  const apiCache = {};
+  
+  function limpiarCache() {
+    Object.keys(apiCache).forEach(key => delete apiCache[key]);
+  }
+  
+  function fetchConCache(url) {
+    return fetch(url)
+      .then(res => res.json());
+  }
+  
+  function cargarGraficos() {
+    // Precarga de datos en paralelo
+    Promise.all([
+      fetchConCache('/api/v1/clientes_por_mes').catch(e => { console.error('Error clientes:', e); return {}; }),
+      fetchConCache('/api/v1/dashboard/porcentaje_stock').catch(e => { console.error('Error stock:', e); return {porcentaje: 0}; }),
+      fetchConCache('/api/v1/ventas_por_categoria').catch(e => { console.error('Error categoría:', e); return {etiquetas: [], valores: []}; }),
+      fetchConCache('/api/v1/finanzas').catch(e => { console.error('Error finanzas:', e); return {ingresos: 0, egresos: 0}; }),
+      fetchConCache('/api/v1/ventas_por_metodo_pago').catch(e => { console.error('Error pago:', e); return {etiquetas: [], valores: []}; }),
+      fetchConCache('/api/v1/ventas_periodo').catch(e => { console.error('Error periodo:', e); return {dia: 0, semana: 0, mes: 0}; })
+    ])
+    .then(([clientesMes, stock, ventasCategoria, finanzas, ventasPago, ventasPeriodo]) => {
+      // Usar requestAnimationFrame para mejor rendimiento
+      requestAnimationFrame(() => {
+        if (document.getElementById('graficoClientesMes') && clientesMes) crearGraficoClientesMes(clientesMes);
       });
-
-      new Chart(ctx2, {
-        type: 'bar',
-        data: {
-          labels: data.etiquetas,
-          datasets: [{
-            label: 'Ventas (unidades)',
-            data: data.valores,
-            backgroundColor: colores,
-            borderColor: colores,
-            borderWidth: 1
-          }]
-        },
-        options: {
-          indexAxis: 'y',
-          responsive: true,
-          maintainAspectRatio: false,
-          plugins: {
-            legend: { display: false },
-            datalabels: {
-              align: 'start',
-              anchor: 'end',
-              color: 'white',
-              formatter: (value, context) =>
-                context.chart.data.labels[context.dataIndex] + ' (' + value + ')',
-              font: {
-                size: 12,
-                weight: 'bold'
-              }
-            }
-          },
-          scales: {
-            x: {
-              beginAtZero: true,
-              ticks: { color: 'white' },
-              title: {
-                display: true,
-                text: 'Unidades vendidas',
-                color: 'white'
-              },
-              grid: { color: 'rgba(255,255,255,0.1)' }
-            },
-            y: {
-              ticks: { display: false },
-              grid: { display: false }
-            }
-          }
-        },
-        plugins: [ChartDataLabels]
+      
+      requestAnimationFrame(() => {
+        if (document.getElementById('gaugeSegmentado') && stock) crearGaugeStock(stock);
       });
+      
+      requestAnimationFrame(() => {
+        if (document.getElementById('graficoVentas') && ventasCategoria) crearGraficoVentas(ventasCategoria);
+      });
+      
+      if (finanzas) {
+        const el = document.getElementById("ingresos");
+        if (el) el.textContent = formatearPesos(finanzas.ingresos || 0);
+      }
+      
+      // Renderizar gráficos secundarios después
+      setTimeout(() => {
+        requestAnimationFrame(() => {
+          if (document.getElementById('graficoPago') && ventasPago) crearGraficoPago(ventasPago);
+        });
+        
+        requestAnimationFrame(() => {
+          if (document.getElementById('grafDia')) crearDoughnut('grafDia', ventasPeriodo.dia || 0, 'Día');
+          if (document.getElementById('grafSemana')) crearDoughnut('grafSemana', ventasPeriodo.semana || 0, 'Semana');
+          if (document.getElementById('grafMes')) crearDoughnut('grafMes', ventasPeriodo.mes || 0, 'Mes');
+        });
+      }, 50);
     })
-    .catch(err => console.error('Error al cargar ventas por categoría:', err));
-});
-</script>
+    .catch(error => console.error("Error general:", error));
+  }
+  
+  // Ejecutar al cargar la página
+  document.addEventListener('DOMContentLoaded', cargarGraficos);
+  
+  // Actualizar cuando se regresa a esta vista (para navegación dinámica)
+  window.addEventListener('popstate', cargarGraficos);
+  
+  // Si usas navegación AJAX, escucha cambios en el historial
+  if (window.history && window.history.pushState) {
+    const originalPushState = window.history.pushState;
+    window.history.pushState = function() {
+      originalPushState.apply(this, arguments);
+      if (window.location.pathname === '/' || window.location.pathname.includes('dashboard')) {
+        limpiarCache();
+        cargarGraficos();
+      }
+    };
+  }
 
-
-<!-- grafica de la seccion 3 -->
-
-<script>
   function formatearPesos(valor) {
     return `$${valor.toLocaleString("es-CO")}`;
   }
 
-  fetch('/api/v1/finanzas')
-    .then(res => res.json())
-    .then(data => {
-      document.getElementById("ingresos").textContent = formatearPesos(data.ingresos);
-      document.getElementById("egresos").textContent = formatearPesos(data.egresos);
-    })
-    .catch(err => console.error("Error al cargar datos financieros", err));
-</script>
+  function crearGraficoClientesMes(data) {
+    if (chartInstances.clientes) chartInstances.clientes.destroy();
+    
+    const meses = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio',
+      'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'];
+    const valores = Object.values(data);
+    const etiquetas = Object.keys(data).map(num => meses[parseInt(num) - 1]);
+    const valoresFiltrados = valores.filter(v => v > 0);
+    const etiquetasFiltradas = etiquetas.filter((_, i) => valores[i] > 0);
+    const colores = ['#1e88e5', '#103f91', '#1565c0', '#1976d2', '#2196f3',
+      '#3399ff', '#42a5f5', '#64b5f6', '#90caf9', '#bbdefb'].slice(0, etiquetasFiltradas.length);
 
-<!-- grafica 1 de la seccion 4 -->
-<script>
-  const canvas = document.getElementById('graficoPago');
-  const ctx = canvas.getContext('2d');
+    const canvas = document.getElementById('graficoClientesMes');
+    if (!canvas) return;
 
-  const scale = window.devicePixelRatio || 1;
-  const visibleWidth = 500;
-  const visibleHeight = 300;
-
-  canvas.width = visibleWidth * scale;
-  canvas.height = visibleHeight * scale;
-  canvas.style.width = visibleWidth + 'px';
-  canvas.style.height = visibleHeight + 'px';
-  ctx.scale(scale, scale);
-
-  fetch('/api/v1/ventas_por_metodo_pago')
-    .then(res => res.json())
-    .then(data => {
-      new Chart(ctx, {
-        type: 'bar',
-        data: {
-          labels: data.etiquetas,
-          datasets: [{
-            data: data.valores,
-            backgroundColor: [
-              '#0d47a1',
-              '#1976d2', 
-              '#42a5f5',
-              '#90caf9' 
-            ],
-            borderRadius: 5,
-            borderSkipped: false
-          }]
-        },
-        options: {
-          responsive: false,
-          plugins: {
-            legend: { display: false },
-            tooltip: { enabled: false },
-            datalabels: {
-              anchor: 'center',
-              align: 'center',
-              color: 'white',
-              font: {
-                family: 'Segoe UI',
-                weight: 'bold',
-                size: 30
-              },
-              formatter: function(value) {
-                return value;
-              }
-            }
-          },
-          scales: {
-            y: {
-              beginAtZero: true,
-              ticks: {
-                color: '#ffffff',
-                font: {
-                  size: 20
-                }
-              },
-              grid: {
-                color: '#666'
-              }
-            },
-            x: {
-              ticks: {
-                color: '#ffffff',
-                font: {
-                  size: 20
-                }
-              },
-              grid: {
-                color: '#666'
-              }
-            }
-          }
-        },
+    try {
+      chartInstances.clientes = new Chart(canvas.getContext('2d'), {
+        type: 'doughnut',
+        data: { labels: etiquetasFiltradas, datasets: [{ data: valoresFiltrados, backgroundColor: colores, borderColor: '#bbbbbbff', borderWidth: 2, cutout: '40%' }] },
+        options: { responsive: true, animation: { duration: 250 }, plugins: { legend: { display: false }, datalabels: { color: 'white', font: { weight: 'bold', size: 12 }, formatter: (value, context) => { const label = context.chart.data.labels[context.dataIndex]; return value > 0 ? `${label}: ${value}` : ''; }, display: (context) => context.dataset.data[context.dataIndex] > 0 } } },
         plugins: [ChartDataLabels]
       });
-    })
-    .catch(err => console.error('Error al cargar datos:', err));
-</script>
+    } catch(e) { console.error('Error clientes:', e); }
+  }
 
-
-<!-- grafica del seccion 5 -->
-<script>
-function crearDoughnut(id, cantidad, label) {
-  const ctx = document.getElementById(id).getContext('2d');
-
-  const centroTexto = {
-    id: 'centroTexto',
-    beforeDraw(chart) {
-      const { width, height } = chart;
-      const ctx = chart.ctx;
-      ctx.restore();
-      const fontSize = 16;
-      ctx.font = `bold ${fontSize}px Poppins`;
-      ctx.fillStyle = '#ffffff';
-      ctx.textAlign = 'center';
-      ctx.textBaseline = 'middle';
-      ctx.fillText(label, width / 2, height / 2 - 10);
-      ctx.fillText(cantidad, width / 2, height / 2 + 10);
-      ctx.save();
-    }
-  };
-
-  new Chart(ctx, {
-    type: 'doughnut',
-    data: {
-      labels: ['Dato', 'Restante'],
-      datasets: [{
-        data: [cantidad, 200 - cantidad],
-        backgroundColor: ['#547AA5', '#1c2735'], // azul-gris elegante
-        borderColor: ['transparent', 'transparent'],
-        borderWidth: 2
-      }]
-    },
-    options: {
-      cutout: '85%',
-      responsive: false,
-      plugins: {
-        legend: { display: false },
-        tooltip: { enabled: false }
+  function crearGaugeStock(data) {
+    if (chartInstances.stock) chartInstances.stock.destroy();
+    
+    const porcentaje = data.porcentaje || 0;
+    const totalSegmentos = 30;
+    const segmentosActivos = Math.round((porcentaje / 100) * totalSegmentos);
+    const azulClaro = [187, 222, 251]; 
+    const azulOscuro = [13, 71, 161]; 
+    const colores = Array.from({ length: totalSegmentos }, (_, i) => {
+      if (i < segmentosActivos) {
+        const t = i / (segmentosActivos - 1 || 1); 
+        const r = Math.round(azulClaro[0] + (azulOscuro[0] - azulClaro[0]) * t);
+        const g = Math.round(azulClaro[1] + (azulOscuro[1] - azulClaro[1]) * t);
+        const b = Math.round(azulClaro[2] + (azulOscuro[2] - azulClaro[2]) * t);
+        return `rgb(${r}, ${g}, ${b})`;
       }
-    },
-    plugins: [centroTexto]
-  });
-}
-
-fetch('/api/v1/inventario_por_categoria')
-  .then(res => res.json())
-  .then(data => {
-    new Chart(document.getElementById('tortaChart'), {
-      type: 'pie',
-      data: {
-        labels: data.labels,
-        datasets: [{
-          label: 'Inventario por categoría',
-          data: data.valores,
-          backgroundColor: [
-            '#1b2e44', '#2d3f58', '#3f5874', '#547AA5', '#7896BA', '#9FB9D4'
-          ],
-          borderColor: 'transparent',
-          borderWidth: 2
-        }]
-      },
-      options: {
-        radius: '90%',
-        plugins: {
-          legend: {
-            position: 'bottom',
-            labels: {
-              color: '#ffffff',
-              font: {
-                size: 10
-              }
-            }
-          }
-        }
-      }
+      return '#616161';
     });
-  });
 
-fetch('/api/v1/ventas_mensuales')
-  .then(res => res.json())
-  .then(data => {
-    new Chart(document.getElementById('lineChart'), {
-      type: 'line',
-      data: {
-        labels: data.labels,
-        datasets: [{
-          label: 'Ventas mensuales',
-          data: data.valores,
-          borderColor: '#579ae1ff',
-          backgroundColor: '#162536ff',
-          fill: false,
-          tension: 0.3
-        }]
-      },
-      options: {
-        plugins: {
-          legend: {
-            labels: {
-              color: '#ffffff',
-              font: {
-                family: 'sans-serif',
-                size: 14
-              }
-            }
-          }
-        },
-        scales: {
-          x: {
-            ticks: {
-              color: '#ffffff',
-            },
-            grid: {
-              color: '#162536ff'
-            }
-          },
-          y: {
-            beginAtZero: true,
-            ticks: {
-              color: '#ffffff',
-              callback: value => '$' + value
-            },
-            grid: {
-              color: '#162536ff'
-            }
-          }
-        }
-      }
+    const canvas = document.getElementById('gaugeSegmentado');
+    if (!canvas) return;
+
+    try {
+      chartInstances.stock = new Chart(canvas, {
+        type: 'doughnut',
+        data: { datasets: [{ data: Array(totalSegmentos).fill(1), backgroundColor: colores, borderColor: '#2b2d3fff', borderWidth: 1, hoverOffset: 0 }] },
+        options: { cutout: '65%', rotation: -90, circumference: 360, responsive: true, animation: { duration: 250 }, plugins: { legend: { display: false }, tooltip: { enabled: false } } }
+      });
+      const valorDiv = document.querySelector('.gauge-value');
+      if (valorDiv) valorDiv.innerHTML = `Stock<br>${porcentaje}%`;
+    } catch(e) { console.error('Error stock:', e); }
+  }
+
+  function crearGraficoVentas(data) {
+    if (chartInstances.ventas) chartInstances.ventas.destroy();
+    
+    const canvas = document.getElementById('graficoVentas');
+    if (!canvas) return;
+
+    const azulClaro = [187, 222, 251];
+    const azulOscuro = [13, 71, 161];
+    const total = (data.valores || []).length;
+    const colores = Array.from({ length: total }, (_, i) => {
+      const t = i / (total - 1 || 1);
+      const r = Math.round(azulClaro[0] + (azulOscuro[0] - azulClaro[0]) * t);
+      const g = Math.round(azulClaro[1] + (azulOscuro[1] - azulClaro[1]) * t);
+      const b = Math.round(azulClaro[2] + (azulOscuro[2] - azulClaro[2]) * t);
+      return `rgb(${r}, ${g}, ${b})`;
     });
-  });
 
-fetch('/api/v1/ventas_periodo')
-  .then(res => res.json())
-  .then(data => {
-    crearDoughnut('grafDia', data.dia, 'Día');
-    crearDoughnut('grafSemana', data.semana, 'Semana');
-    crearDoughnut('grafMes', data.mes, 'Mes');
-  })
-  .catch(error => console.error('Error al cargar ventas por periodo:', error));
+    try {
+      chartInstances.ventas = new Chart(canvas.getContext('2d'), {
+        type: 'bar',
+        data: { labels: data.etiquetas || [], datasets: [{ label: 'Ventas (unidades)', data: data.valores || [], backgroundColor: colores, borderColor: colores, borderWidth: 0 }] },
+        options: { indexAxis: 'y', responsive: true, maintainAspectRatio: false, animation: { duration: 250 }, plugins: { legend: { display: false }, datalabels: { align: 'start', anchor: 'end', color: 'white', formatter: (value, context) => context.chart.data.labels[context.dataIndex] + ' (' + value + ')', font: { size: 11, weight: 'bold' } } }, scales: { x: { beginAtZero: true, ticks: { color: 'white' }, grid: { color: 'rgba(255,255,255,0.1)' } }, y: { ticks: { display: false }, grid: { display: false } } } },
+        plugins: [ChartDataLabels]
+      });
+    } catch(e) { console.error('Error ventas:', e); }
+  }
+
+  function crearGraficoPago(data) {
+    if (chartInstances.pago) chartInstances.pago.destroy();
+    
+    const canvas = document.getElementById('graficoPago');
+    if (!canvas) return;
+
+    const ctx = canvas.getContext('2d');
+    const scale = window.devicePixelRatio || 1;
+    canvas.width = 500 * scale;
+    canvas.height = 300 * scale;
+    canvas.style.width = '500px';
+    canvas.style.height = '300px';
+    ctx.scale(scale, scale);
+
+    try {
+      chartInstances.pago = new Chart(ctx, {
+        type: 'bar',
+        data: { labels: data.etiquetas || [], datasets: [{ data: data.valores || [], backgroundColor: ['#0d47a1', '#1976d2', '#42a5f5', '#90caf9'], borderRadius: 4, borderSkipped: false }] },
+        options: { responsive: false, animation: { duration: 250 }, plugins: { legend: { display: false }, tooltip: { enabled: false }, datalabels: { anchor: 'center', align: 'center', color: 'white', font: { family: 'Segoe UI', weight: 'bold', size: 28 }, formatter: v => v } }, scales: { y: { beginAtZero: true, ticks: { color: '#ffffff', font: { size: 18 } }, grid: { color: '#666' } }, x: { ticks: { color: '#ffffff', font: { size: 18 } }, grid: { color: '#666' } } } },
+        plugins: [ChartDataLabels]
+      });
+    } catch(e) { console.error('Error pago:', e); }
+  }
+
+  function crearDoughnut(id, cantidad, label) {
+    if (chartInstances[id]) chartInstances[id].destroy();
+    
+    const canvas = document.getElementById(id);
+    if (!canvas) return;
+
+    const ctx = canvas.getContext('2d');
+    const centroTexto = {
+      id: 'centroTexto',
+      beforeDraw(chart) {
+        const { width, height } = chart;
+        ctx.restore();
+        ctx.font = 'bold 14px Poppins';
+        ctx.fillStyle = '#ffffff';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.fillText(label, width / 2, height / 2 - 10);
+        ctx.fillText(cantidad, width / 2, height / 2 + 10);
+        ctx.save();
+      }
+    };
+
+    try {
+      chartInstances[id] = new Chart(ctx, {
+        type: 'doughnut',
+        data: { labels: ['Dato', 'Restante'], datasets: [{ data: [cantidad, 200 - cantidad], backgroundColor: ['#547AA5', '#1c2735'], borderColor: ['transparent', 'transparent'], borderWidth: 0 }] },
+        options: { cutout: '85%', responsive: false, animation: { duration: 250 }, plugins: { legend: { display: false }, tooltip: { enabled: false } } },
+        plugins: [centroTexto]
+      });
+    } catch(e) { console.error('Error doughnut:', e); }
+  }
 </script>
 
 

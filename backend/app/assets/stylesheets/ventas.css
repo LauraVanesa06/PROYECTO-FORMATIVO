@@ -14,13 +14,9 @@
     width: 35%;
     max-width: 100%;
     height: auto !important;
-    box-shadow:
-    -5px 0 10px -1px rgb(17 17 17),
-    5px 0 10px -1px rgb(17 17 17);
     padding: 0;
     margin-left: 10px;
     gap: 0;
-    background-color: white;
 }
 #grafica{
     width: 80% !important;
@@ -32,7 +28,13 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    background: linear-gradient(#005ed8, white);
+    justify-content: center;
+    background: linear-gradient(135deg, #509af3 0%, #2575d8 100%);
+    border-radius: 25px;
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.3);
+    min-height: 200px;
+    margin-top: 20px;
+    margin-bottom: 20px;
 }
 .div-white{
     width: 100%;
@@ -61,13 +63,61 @@
     transition: width 0.2s;
 }
 .titulo-cant{
-    margin-top: 40px;
-    margin-bottom: 5px;
+    margin: 0 0 15px 0;
+    font-weight: 300;
+    font-family: 'Segoe UI', sans-serif;
+    font-size: 22px;
+    color: rgba(255, 255, 255, 0.95);
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    letter-spacing: 0.5px;
+}
+
+.numero-ventas{
+    margin: 0;
     font-weight: bold;
     font-family: 'Segoe UI', sans-serif;
-    font-size: 19px;
+    font-size: 70px;
     color: white;
+    text-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+    line-height: 1;
 }
+
+.btn-ventas-fisicas {
+    background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+    color: white;
+    border: none;
+    border-radius: 15px;
+    padding: 15px 35px;
+    font-size: 16px;
+    font-weight: 600;
+    margin-top: 30px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    transition: all 0.3s ease;
+    box-shadow: 0 8px 15px rgba(40, 167, 69, 0.3);
+}
+
+.btn-ventas-fisicas:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 12px 25px rgba(40, 167, 69, 0.4);
+    background: linear-gradient(135deg, #20c997 0%, #28a745 100%);
+}
+
+.btn-ventas-fisicas:active {
+    transform: translateY(-1px);
+}
+
+.btn-ventas-fisicas i {
+    font-size: 18px;
+}
+
+.btn-ventas-fisicas span {
+    font-family: 'Segoe UI', sans-serif;
+}
+
 .info{
     font-family: 'roboto', sans-serif;
     color: rgb(40, 40, 40);
