@@ -75,9 +75,16 @@ class CartService {
   }
 
   Future<void> increaseQuantity(int id) async {
+    final token = await storage.read(key: 'auth_token');
+    if (token == null) throw Exception('No token found');
+
     final response = await http.patch(
       Uri.parse('${ApiConfig.baseUrl}/api/v1/cart_items/$id'),
-      headers: ApiConfig.headers,
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer $token',
+        ...ApiConfig.headers,
+      },
       body: jsonEncode({'quantity_action': 'increase'}),
     );
     if (response.statusCode != 200) {
@@ -89,9 +96,16 @@ class CartService {
 
 
   Future<void> decreaseQuantity(int id) async {
+    final token = await storage.read(key: 'auth_token');
+    if (token == null) throw Exception('No token found');
+
     final response = await http.patch(
       Uri.parse('${ApiConfig.baseUrl}/api/v1/cart_items/$id'),
-      headers: ApiConfig.headers,
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer $token',
+        ...ApiConfig.headers,
+      },
       body: jsonEncode({'quantity_action': 'decrease'}),
     );
     if (response.statusCode != 200) {

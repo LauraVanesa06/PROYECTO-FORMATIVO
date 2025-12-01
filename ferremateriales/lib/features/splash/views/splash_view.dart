@@ -150,59 +150,74 @@ class _SplashViewState extends State<SplashView>
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-      body: Center(
+      body: SafeArea(
         child: AnimatedBuilder(
           animation: _animationController,
           builder: (context, child) {
             return FadeTransition(
               opacity: _fadeAnimation,
-              child: ScaleTransition(
-                scale: _scaleAnimation,
+              child: Center(
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    // Logo (icono de la app)
-                    Container(
-                      width: 180,
-                      height: 180,
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(30),
-                        color: Colors.white,
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.black.withOpacity(0.1),
-                            blurRadius: 20,
-                            spreadRadius: 5,
+                    const Spacer(flex: 2),
+                    // Logo con animación de escala
+                    ScaleTransition(
+                      scale: _scaleAnimation,
+                      child: Container(
+                        width: 150,
+                        height: 150,
+                        padding: const EdgeInsets.all(20),
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(30),
+                          color: Colors.white,
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.orange.withOpacity(0.1),
+                              blurRadius: 30,
+                              spreadRadius: 10,
+                            ),
+                          ],
+                        ),
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.circular(20),
+                          child: Image.asset(
+                            'assets/images/favicon.png',
+                            fit: BoxFit.contain,
+                            errorBuilder: (context, error, stackTrace) {
+                              return Icon(
+                                Icons.store,
+                                size: 80,
+                                color: Colors.orange.shade700,
+                              );
+                            },
                           ),
-                        ],
-                      ),
-                      child: ClipRRect(
-                        borderRadius: BorderRadius.circular(30),
-                        child: Image.asset(
-                          'assets/images/favicon.png',
-                          fit: BoxFit.contain,
-                          errorBuilder: (context, error, stackTrace) {
-                            // Si falla, usar el logo alternativo
-                            return Image.asset(
-                              'assets/images/logo.jpg',
-                              fit: BoxFit.cover,
-                            );
-                          },
                         ),
                       ),
                     ),
-                    const SizedBox(height: 30),
-                    // Indicador de carga
+                    const Spacer(flex: 1),
+                    // Indicador de carga con animación
                     SizedBox(
-                      width: 40,
-                      height: 40,
+                      width: 50,
+                      height: 50,
                       child: CircularProgressIndicator(
-                        strokeWidth: 3,
+                        strokeWidth: 4,
                         valueColor: AlwaysStoppedAnimation<Color>(
                           Colors.orange.shade700,
                         ),
                       ),
                     ),
+                    const SizedBox(height: 16),
+                    // Texto de carga
+                    Text(
+                      'Cargando productos...',
+                      style: TextStyle(
+                        fontSize: 14,
+                        color: Colors.grey.shade600,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                    const Spacer(flex: 2),
                   ],
                 ),
               ),

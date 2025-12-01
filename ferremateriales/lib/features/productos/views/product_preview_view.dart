@@ -422,31 +422,25 @@ class _ProductPreviewViewState extends State<ProductPreviewView> {
               child: BlocBuilder<AuthBloc, AuthState>(
                 builder: (context, authState) {
                   return ElevatedButton.icon(
-                    onPressed:
-                        (widget.product.stock ?? 0) > 0
-                            ? () {
-                              // Verificar si el usuario es invitado
-                              if (authState.status == AuthStatus.guest) {
-                                _showAuthDialog(
-                                  context,
-                                  action: 'agregar productos al carrito',
-                                );
-                                return;
-                              }
-
-                              // Crear el mapa para el carrito
-                              final productMap = {
-                                'id': widget.product.id,
-                                'name': widget.product.nombre ?? 'Sin nombre',
-                                'price': widget.product.precio ?? 0.0,
-                                'imageUrl': widget.product.imagenUrl ?? '',
-                                'quantity': quantity,
-                                'stock': widget.product.stock ?? 0,
-                              };
-
-                              context.read<CartBloc>().add(
-                                AddToCart(productMap),
+                    onPressed: (widget.product.stock ?? 0) > 0
+                        ? () {
+                            // Verificar si el usuario es invitado
+                            if (authState.status == AuthStatus.guest) {
+                              _showAuthDialog(
+                                context,
+                                action: 'agregar productos al carrito',
                               );
+                              return;
+                            }
+
+                            // Agregar al carrito
+                            if (widget.product.id != null) {
+                              // Si quantity > 1, agregar múltiples veces
+                              for (int i = 0; i < quantity; i++) {
+                                context.read<CartBloc>().add(
+                                      AddToCart(widget.product.id!),
+                                    );
+                              }
 
                               ScaffoldMessenger.of(context).showSnackBar(
                                 SnackBar(
@@ -478,8 +472,9 @@ class _ProductPreviewViewState extends State<ProductPreviewView> {
                                 ),
                               );
                             }
-                            : null,
-                    icon: const Icon(Icons.shopping_cart, color: Colors.white),
+                          }
+                        : null,
+                            icon: const Icon(Icons.shopping_cart, color: Colors.white),
                     label: const Text(
                       'Agregar al carrito',
                       style: TextStyle(

@@ -407,7 +407,9 @@ class _ProductCardState extends State<ProductCard> {
                       color: isDark ? Colors.grey.shade800.withOpacity(0.9) : Colors.white.withOpacity(0.95),
                       shape: BoxShape.circle,
                       border: Border.all(
-                        color: isFavorite ? Colors.red.withOpacity(0.3) : Colors.grey.shade300,
+                        color: (authState.status != AuthStatus.guest && isFavorite) 
+                            ? Colors.red.withOpacity(0.3) 
+                            : Colors.grey.shade300,
                         width: 2,
                       ),
                       boxShadow: isDark
@@ -422,8 +424,12 @@ class _ProductCardState extends State<ProductCard> {
                     ),
                     child: IconButton(
                       icon: Icon(
-                        isFavorite ? Icons.favorite : Icons.favorite_border,
-                        color: isFavorite ? Colors.red : Colors.grey.shade400,
+                        (authState.status != AuthStatus.guest && isFavorite) 
+                            ? Icons.favorite 
+                            : Icons.favorite_border,
+                        color: (authState.status != AuthStatus.guest && isFavorite) 
+                            ? Colors.red 
+                            : Colors.grey.shade400,
                         size: 22,
                       ),
                       padding: EdgeInsets.zero,
