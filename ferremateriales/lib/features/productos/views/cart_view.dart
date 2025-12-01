@@ -34,6 +34,12 @@ class _CartViewState extends State<CartView>
     context.read<CartBloc>().add(LoadCart());
   }
 
+  Future<void> _refreshCart() async {
+    context.read<CartBloc>().add(LoadCart());
+    // Esperar un poco para que se complete la recarga
+    await Future.delayed(const Duration(milliseconds: 500));
+  }
+
   @override
   Widget build(BuildContext context) {
     super.build(context);
@@ -69,40 +75,48 @@ class _CartViewState extends State<CartView>
           ),
           body: isLoading
               ? const LoadingShimmer(isGrid: false)
-              : cartItems.isEmpty
-                  ? Center(
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Icon(
-                            Icons.shopping_cart_outlined,
-                            size: 100,
-                            color: isDark
-                                ? Colors.grey.shade600
-                                : Colors.grey.shade300,
-                          ),
-                          const SizedBox(height: 16),
-                          Text(
-                            l10n.emptyCart,
-                            style: TextStyle(
-                              fontSize: 18,
-                              color: isDark
-                                  ? Colors.grey.shade400
-                                  : Colors.grey.shade600,
+              : RefreshIndicator(
+                  onRefresh: _refreshCart,
+                  color: Colors.orange.shade700,
+                  child: cartItems.isEmpty
+                      ? ListView(
+                          children: [
+                            SizedBox(height: MediaQuery.of(context).size.height * 0.3),
+                            Center(
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Icon(
+                                    Icons.shopping_cart_outlined,
+                                    size: 100,
+                                    color: isDark
+                                        ? Colors.grey.shade600
+                                        : Colors.grey.shade300,
+                                  ),
+                                  const SizedBox(height: 16),
+                                  Text(
+                                    l10n.emptyCart,
+                                    style: TextStyle(
+                                      fontSize: 18,
+                                      color: isDark
+                                          ? Colors.grey.shade400
+                                          : Colors.grey.shade600,
+                                    ),
+                                  ),
+                                ],
+                              ),
                             ),
-                          ),
-                        ],
-                      ),
-                    )
-                  : Column(
-                      children: [
-                        Expanded(
-                          child: ListView.builder(
-                            padding: const EdgeInsets.all(16),
-                            itemCount: cartItems.length,
-                            itemBuilder: (context, index) {
-                              final item = cartItems[index];
-                              final product = item.product;
+                          ],
+                        )
+                      : Column(
+                          children: [
+                            Expanded(
+                              child: ListView.builder(
+                                padding: const EdgeInsets.all(16),
+                                itemCount: cartItems.length,
+                                itemBuilder: (context, index) {
+                                  final item = cartItems[index];
+                                  final product = item.product;
 
                               return Container(
                                 margin: const EdgeInsets.only(bottom: 16),
@@ -410,6 +424,7 @@ class _CartViewState extends State<CartView>
                         ),
                       ],
                     ),
+                ),
           );
         },
       );

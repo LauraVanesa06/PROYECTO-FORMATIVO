@@ -84,6 +84,11 @@ class _FavoritesViewState extends State<FavoritesView> with AutomaticKeepAliveCl
     }
   }
 
+  Future<void> _refreshFavorites() async {
+    setState(() => _isLoading = true);
+    await _loadFavorites();
+  }
+
   @override
   Widget build(BuildContext context) {
     super.build(context); // Necesario para AutomaticKeepAliveClientMixin
@@ -104,34 +109,37 @@ class _FavoritesViewState extends State<FavoritesView> with AutomaticKeepAliveCl
         ),
         centerTitle: true,
       ),
-body: _isLoading
-    ? const LoadingShimmer(isGrid: false) // 👈 Use the new shimmer
-    : _favorites.isEmpty
-        ? Center(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Icon(
-                  Icons.favorite_border,
-                  size: 100,
-                  color: isDark ? Colors.grey.shade600 : Colors.grey.shade300,
-                ),
-                const SizedBox(height: 16),
-                Text(
-                  l10n.donthavefavorite,
-                  style: TextStyle(
-                    fontSize: 18,
-                    color: isDark ? Colors.grey.shade400 : Colors.grey.shade600,
-                  ),
-                ),
-              ],
-            ),
-          )
-        : ListView.builder(
-            padding: const EdgeInsets.only(left: 16, right: 16, top: 16, bottom: 100),
-            itemCount: _favorites.length,
-            itemBuilder: (context, index) {
-              final fav = _favorites[index];
+      body: _isLoading
+          ? const LoadingShimmer(isGrid: false) // 👈 Use the new shimmer
+          : RefreshIndicator(
+              onRefresh: _refreshFavorites,
+              color: Colors.orange.shade700,
+              child: _favorites.isEmpty
+                  ? Center(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Icon(
+                            Icons.favorite_border,
+                            size: 100,
+                            color: isDark ? Colors.grey.shade600 : Colors.grey.shade300,
+                          ),
+                          const SizedBox(height: 16),
+                          Text(
+                            l10n.donthavefavorite,
+                            style: TextStyle(
+                              fontSize: 18,
+                              color: isDark ? Colors.grey.shade400 : Colors.grey.shade600,
+                            ),
+                          ),
+                        ],
+                      ),
+                    )
+                  : ListView.builder(
+                      padding: const EdgeInsets.only(left: 16, right: 16, top: 16, bottom: 100),
+                      itemCount: _favorites.length,
+                      itemBuilder: (context, index) {
+                        final fav = _favorites[index];
 
               return Container(
                 margin: const EdgeInsets.only(bottom: 16),
@@ -349,6 +357,7 @@ body: _isLoading
             );
           },
         ),
+      ),
     );
   }
 }
